@@ -2,7 +2,7 @@
 
 namespace PeterDoStuff
 {
-    public class Class1
+    public class GameOfLife
     {
 
     }
