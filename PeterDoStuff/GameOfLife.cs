@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Resources;
+using static PeterDoStuff.GameOfLife;
 
 namespace PeterDoStuff
 {
@@ -40,7 +41,6 @@ namespace PeterDoStuff
         {
             foreach (var cell in _cells.Values)
             {
-                cell.CountLiveNeighbours();
                 cell.CalculateNext();
             }
 
@@ -79,7 +79,7 @@ namespace PeterDoStuff
             }
 
             private int _liveNeighbours = 0;
-            internal void CountLiveNeighbours()
+            private void CountLiveNeighbours()
             {
                 _liveNeighbours = _neighbours.Count(c => c.State == CellState.Live);
             }
@@ -87,6 +87,7 @@ namespace PeterDoStuff
             private CellState _nextState;
             internal void CalculateNext()
             {
+                CountLiveNeighbours();
                 _nextState = State;
                 if (State == CellState.Live)
                 {
