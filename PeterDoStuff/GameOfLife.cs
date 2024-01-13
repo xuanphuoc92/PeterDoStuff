@@ -6,7 +6,7 @@ using static PeterDoStuff.GameOfLife;
 
 namespace PeterDoStuff
 {
-    public class GameOfLife
+    public class GameOfLife : IDisposable
     {
         public GameOfLife(int width, int height)
         {
@@ -14,6 +14,12 @@ namespace PeterDoStuff
             Height = height;
             InitCells();
         }
+
+        public void Dispose()
+        {
+            _cells.Clear();
+        }
+
 
         private Dictionary<(int, int), Cell> _cells = new Dictionary<(int, int), Cell> ();
         private void InitCells()

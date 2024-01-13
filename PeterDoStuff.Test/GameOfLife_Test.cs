@@ -10,7 +10,7 @@ namespace PeterDoStuff.Test
         public void _01_DeadDueToIsolation()
         {
             // [O]
-            var game = new GameOfLife(1, 1);
+            using var game = new GameOfLife(1, 1);
             game.GetCell(1, 1).State = CellState.Live;
             game.Next();
             game.GetCell(1, 1).State.Should().Be(CellState.Dead);
@@ -22,7 +22,7 @@ namespace PeterDoStuff.Test
             // [ ][O][ ]
             // [O][ ][O]
             // [ ][O][ ]
-            var game = new GameOfLife(3, 3);
+            using var game = new GameOfLife(3, 3);
             game.GetCell(1, 2).State = CellState.Live;
             game.GetCell(2, 1).State = CellState.Live;
             game.GetCell(3, 2).State = CellState.Live;
@@ -52,7 +52,7 @@ namespace PeterDoStuff.Test
             // [O][ ][O]
             // [O][O][O]
 
-            var game = new GameOfLife(3, 3);
+            using var game = new GameOfLife(3, 3);
             game.GetCell(1, 2).State = CellState.Live;
             game.GetCell(2, 1).State = CellState.Live;
             game.GetCell(3, 2).State = CellState.Live;
