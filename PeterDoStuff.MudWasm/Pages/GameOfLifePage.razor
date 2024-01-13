@@ -1,0 +1,63 @@
+﻿@page "/GameOfLife"
+@inject GameOfLife Game
+
+<PageTitle>Conway's Game of Life</PageTitle>
+
+<MudText Typo="Typo.h3" GutterBottom="true">Conway's Game of Life</MudText>
+<MudText Class="mb-8">This is playground for Conway's Game of Life. Limitted size: 30x30.</MudText>
+@* Gamebar *@
+<div class="d-flex justify-space-around flex-grow-1 gap-4 align-center">
+    <MudButton Variant="Variant.Filled" OnClick="Clear">
+        Clear
+    </MudButton>
+    <MudButton Variant="Variant.Filled" OnClick="Next">
+        Next
+    </MudButton>
+</div>
+
+@for (int x = 1; x <= Game.Width; x++)
+{
+    <div class="d-flex justify-md-center">
+    @for (int y = 1; y <= Game.Height; y++)
+    {
+        var cell = Game.GetCell(x, y);
+        <MudPaper Height="25px" Width="25px"
+            Class="d-flex justify-center align-center"
+            Style=@($"background-color:{GetColor(cell)}")
+            @onclick="() => Flip(cell)"/>
+    }
+    </div>
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Clear();
+    }
+
+    private void Clear()
+    {
+        Game = new GameOfLife(30, 30);
+    }
+
+    private void Next()
+    {
+        Game.Next();
+    }
+
+    private string GetColor(GameOfLife.Cell cell)
+    {
+        return cell.State == GameOfLife.CellState.Live
+            ? Colors.Teal.Lighten1
+            : "none";
+    }
+
+    private void Flip(GameOfLife.Cell cell)
+    {
+        if (cell.State == GameOfLife.CellState.Live)
+            cell.State = GameOfLife.CellState.Dead;
+        else
+            cell.State = GameOfLife.CellState.Live;
+    }
+}
