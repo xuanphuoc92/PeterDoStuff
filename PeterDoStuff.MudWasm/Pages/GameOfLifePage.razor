@@ -5,10 +5,13 @@
 
 <MudText Typo="Typo.h3" GutterBottom="true">Conway's Game of Life</MudText>
 <MudText Class="mb-8">This is playground for Conway's Game of Life. Limitted size: 30x30.</MudText>
+<MudText Class="mb-8">Find the complete and better playgrounds at: 
+    <MudLink Href="https://playgameoflife.com/" Typo="Typo.body2" Color="Color.Inherit"><b>Play John Conway's Game of Life</b></MudLink>
+</MudText>
 
 @* Game control bar *@
 <div class="d-flex justify-space-around flex-grow-1 gap-4 align-center">
-    <MudButton Variant="Variant.Filled" OnClick="Clear" StartIcon="@Icons.Material.Filled.ClearAll">
+    <MudButton Variant="Variant.Filled" OnClick="Clear" StartIcon="@Icons.Material.Filled.Replay">
         Clear
     </MudButton>
     @if (isStart == false)
@@ -87,7 +90,7 @@
     private string GetColor(GameOfLife.Cell cell)
     {
         return cell.State == GameOfLife.CellState.Live
-            ? Colors.Teal.Lighten1
+            ? Colors.Lime.Accent3
             : "none";
     }
 
