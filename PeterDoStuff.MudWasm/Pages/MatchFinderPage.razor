@@ -1,0 +1,107 @@
+﻿@page "/matchFinder"
+@inject MatchFinder Game
+
+<PageTitle>Match Finder</PageTitle>
+
+<MudText Typo="Typo.h3" GutterBottom="true">
+    <MudIcon Size="Size.Large" Icon="@Icons.Material.Filled.Search" />
+    Match Finder
+</MudText>
+
+@* Gamebar *@
+<div class="d-flex justify-space-around flex-grow-1 gap-4 align-center">
+    <MudButton Variant="Variant.Filled" OnClick="Restart">Restart</MudButton>
+    <div>
+        <MudText>Time</MudText>
+        <MudText Typo="Typo.h6">@Time</MudText>
+        </div>
+    </div>
+
+    <MudDivider DividerType="DividerType.Middle" Class="my-6" />
+
+    @for (int r = 0; r < 6; r++)
+{
+    <div class="d-flex justify-center">
+        @for (int c = 0; c < 5; c++)
+        {
+            var cell = Game.Cells[c * 6 + r];
+            <MudButton Class="d-flex justify-center align-center border-2 border-solid mud-border-lines-default rounded-0"
+                       Style=@($"height:64px;width:64px;background-color:{GetBackgroundColor(cell)}")
+                       @onclick="() => Pick(cell)">
+                @if (cell.IsPicked || cell.IsMatched)
+                {
+                    <MudIcon Icon="@GetIcon(cell)" Size="@Size.Large" />
+                }
+            </MudButton>
+        }
+    </div>
+}
+
+@code
+{
+    private int Time = 0;
+    private Timer Timer;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Timer = new Timer(Tick, null, 0, 1000);
+    }
+
+    private void Tick(object? _ = null)
+    {
+        Time = GetLiveSeconds();
+        InvokeAsync(StateHasChanged);
+    }
+
+    private int GetLiveSeconds()
+    {
+        if (Game.StartTime == null) return 0;
+        DateTime end = Game.EndTime != null ? Game.EndTime.Value : DateTime.Now;
+        return (int)(end - Game.StartTime.Value).TotalSeconds;
+    }
+
+    private void Restart()
+    {
+        Game = Game.Reset().AddRandoms(30);
+        Tick();
+    }
+
+    private void Pick(MatchFinder.Cell cell)
+    {
+        Game.Pick(cell);
+    }
+
+    private readonly List<string> _icons = new List<string>()
+    {
+        Icons.Material.Filled.CrueltyFree,
+        Icons.Material.Filled.BrightnessHigh,
+        Icons.Material.Filled.Search,
+        Icons.Material.Filled.EmojiEmotions,
+        Icons.Material.Filled.Flag,
+        Icons.Custom.Uncategorized.Radioactive,
+        Icons.Material.Filled.AcUnit,
+        Icons.Material.Filled.Favorite,
+        Icons.Material.Filled.AccessTime,
+        Icons.Custom.Brands.Reddit,
+        Icons.Material.Filled.Android,
+        Icons.Material.Filled.Anchor,
+        @Icons.Custom.Brands.Apple,
+        @Icons.Custom.Brands.Twitter,
+        @Icons.Custom.Brands.Linux,
+        Icons.Material.Filled.Brightness3
+    };
+    private string GetIcon(MatchFinder.Cell cell)
+    {
+        return _icons[cell.Content];
+    }
+
+    private string GetBackgroundColor(MatchFinder.Cell cell)
+    {
+        if (cell.IsMatched)
+            return Colors.Green.Lighten1;
+        if (cell.IsPicked)
+            return Colors.Blue.Lighten1;
+        return "none";
+    }
+}
