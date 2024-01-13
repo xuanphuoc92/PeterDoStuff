@@ -12,5 +12,6 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 builder.Services.AddMudServices();
 
 builder.Services.AddScoped(_ => new GameOfLife(1,1));
+builder.Services.AddScoped(_ => MineSweeper.New(10, 10).RandomizeMines(10).Start());
 
 await builder.Build().RunAsync();
