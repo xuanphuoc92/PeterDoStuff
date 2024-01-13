@@ -5,16 +5,32 @@
 
 <MudText Typo="Typo.h3" GutterBottom="true">Conway's Game of Life</MudText>
 <MudText Class="mb-8">This is playground for Conway's Game of Life. Limitted size: 30x30.</MudText>
-@* Gamebar *@
+
+@* Game control bar *@
 <div class="d-flex justify-space-around flex-grow-1 gap-4 align-center">
-    <MudButton Variant="Variant.Filled" OnClick="Clear">
+    <MudButton Variant="Variant.Filled" OnClick="Clear" StartIcon="@Icons.Material.Filled.ClearAll">
         Clear
     </MudButton>
-    <MudButton Variant="Variant.Filled" OnClick="Next">
+    @if (isStart == false)
+    {
+        <MudButton Variant="Variant.Filled" OnClick="Start" StartIcon="@Icons.Material.Filled.PlayArrow">
+            Start
+        </MudButton>
+    }
+    else
+    {
+        <MudButton Variant="Variant.Filled" OnClick="Stop" StartIcon="@Icons.Material.Filled.Stop">
+            Stop
+        </MudButton>
+    }
+    <MudButton Variant="Variant.Filled" OnClick="Next" StartIcon="@Icons.Material.Filled.SkipNext">
         Next
     </MudButton>
 </div>
 
+<MudDivider DividerType="DividerType.Middle" Class="my-6" />
+
+@* Game grid *@
 @for (int x = 1; x <= Game.Width; x++)
 {
     <div class="d-flex justify-md-center">
@@ -30,15 +46,37 @@
 }
 
 @code {
+    private bool isStart = false;
+    private Timer Timer;
+
     protected override void OnInitialized()
     {
         base.OnInitialized();
         Clear();
+        Timer = new Timer(Tick, null, 0, 500);
+    }
+
+    private void Tick(object? _ = null)
+    {
+        if (isStart == false) return;
+        Next();
+        InvokeAsync(StateHasChanged);
     }
 
     private void Clear()
     {
         Game = new GameOfLife(30, 30);
+        isStart = false;
+    }
+
+    private void Start()
+    {
+        isStart = true;
+    }
+
+    private void Stop()
+    {
+        isStart = false;
     }
 
     private void Next()
