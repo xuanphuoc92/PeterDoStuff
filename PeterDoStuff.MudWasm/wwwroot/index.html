@@ -8,14 +8,107 @@
     <base href="/" />
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
     <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
+
+    <!--Loading ring from https://codepen.io/Curlmuhi/pen/ExKWXKO-->
+    <style>
+        .pds_full_page {
+            height: 100vh;
+            width: 100vw;
+            background-color: #33333d; /*Remove the color if your main theme is not dark.*/
+        }
+
+        .pds_loading_ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            width: 150px;
+            height: 150px;
+            background: transparent;
+            border: 3px solid #3c3c3c;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 150px;
+            font-family: sans-serif;
+            font-size: 20px;
+            color: #756bc5;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px #756bc5;
+            box-shadow: 0 0 20px rgba(0,0,0,.5);
+        }
+
+            .pds_loading_ring:before {
+                content: '';
+                position: absolute;
+                top: -3px;
+                left: -3px;
+                width: 100%;
+                height: 100%;
+                border: 3px solid transparent;
+                border-top: 3px solid #756bc5;
+                border-right: 3px solid #756bc5;
+                border-radius: 50%;
+                animation: animateC 2s linear infinite;
+            }
+
+        .pds_loading_span {
+            display: block;
+            position: absolute;
+            top: calc(50% - 2px);
+            left: 50%;
+            width: 50%;
+            height: 4px;
+            background: transparent;
+            transform-origin: left;
+            animation: animate 2s linear infinite;
+        }
+
+            .pds_loading_span:before {
+                content: '';
+                position: absolute;
+                width: 16px;
+                height: 16px;
+                border-radius: 50%;
+                background: #756bc5;
+                top: -6px;
+                right: -8px;
+                box-shadow: 0 0 20px #756bc5;
+            }
+
+        @keyframes animateC {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes animate {
+            0% {
+                transform: rotate(45deg);
+            }
+
+            100% {
+                transform: rotate(405deg);
+            }
+        }
+    </style>
 </head>
 
 <body>
     <div id="app">
-        <div style="position: absolute; left: 50%; top: 30%;">
-            <div style="position: relative; left: -50%;">
-                <!--Make your app loading text/logo/image here-->
-                <img src="images/loading.gif" /><br />
+        <div class="pds_full_page">
+            <div style="position: absolute; left: 50%; top: 30%;">
+                <div style="position: relative; left: -50%;">
+                    <!--Make your app loading text/logo/image here-->
+                    <div class="pds_loading_ring">
+                        Loading
+                        <span class="pds_loading_span"></span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
