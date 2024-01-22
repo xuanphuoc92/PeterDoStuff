@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Hosting.StaticWebAssets;
 using MudBlazor.Services;
+using PeterDoStuff;
 using PeterDoStuff.MudServer.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +14,10 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddMudServices();
+
+builder.Services.AddScoped(_ => new GameOfLife(1, 1));
+builder.Services.AddScoped(_ => MineSweeper.New(10, 10).RandomizeMines(10).Start());
+builder.Services.AddScoped(_ => MatchFinder.New().Reset().AddRandoms(30));
 
 var app = builder.Build();
 
