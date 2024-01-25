@@ -1,0 +1,58 @@
+﻿@page "/fileScanner"
+@using System.Text
+
+@inject IJSRuntime JS
+
+<PageTitle>File Scanner</PageTitle>
+
+<MudText Typo="Typo.h3" GutterBottom="true">
+    <MudIcon Size="Size.Large" Icon="@Icons.Material.Filled.InsertDriveFile" />
+    File Scanner
+</MudText>
+
+<MudText Class="mb-8">Select your zip file to scan for statistics.</MudText>
+
+<MudFileUpload T="IBrowserFile" FilesChanged="SelectFile">
+    <ButtonTemplate>
+        <MudButton HtmlTag="label"
+                   Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.CloudUpload"
+                   for="@context.Id">
+            Select Zip File
+        </MudButton>
+    </ButtonTemplate>
+</MudFileUpload>
+
+<MudDivider DividerType="DividerType.Middle" Class="my-6" />
+
+<MudText Typo="Typo.h5" Class="mb-8" Color="Color.Secondary">@ScanResult</MudText>
+
+    @code {
+    private string ScanResult = "Select your zip file";
+
+    public async Task SelectFile(IBrowserFile file)
+    {
+        ScanResult = "Scanning...";
+        DateTime start = DateTime.Now;
+        using MemoryStream inputFileStream = new MemoryStream();
+        await file.OpenReadStream(file.Size).CopyToAsync(inputFileStream);
+        using FileScanner scanner = new FileScanner();        
+        var scanResult = scanner.ScanZip(inputFileStream);
+        if (scanResult != FileScanner.SUCCESSFUL)
+        {
+            ScanResult = scanResult;
+            return;
+        }
+
+        string csvFileName = file.Name + ".csv";
+        using MemoryStream csvFileStream = new MemoryStream(
+            Encoding.UTF8.GetBytes(scanner.ToCsv()));
+
+        using var streamRef = new DotNetStreamReference(stream: csvFileStream);
+        await JS.InvokeVoidAsync("downloadFileFromStream", csvFileName, streamRef);
+
+        DateTime end = DateTime.Now;
+        ScanResult = scanResult + $" (in {(end - start).TotalSeconds} seconds)";
+    }
+}

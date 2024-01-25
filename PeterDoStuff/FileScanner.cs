@@ -20,7 +20,21 @@ namespace PeterDoStuff
             try
             {
                 using FileStream fileStream = File.OpenRead(path);
-                using ZipArchive archive = new ZipArchive(fileStream);
+                return ScanZip(fileStream);
+            }
+            catch (Exception ex) 
+            {
+                return ex.Message;
+            }
+        }
+
+        public const string SUCCESSFUL = "Scan is successful";
+
+        public string ScanZip(Stream stream)
+        {
+            try
+            {
+                using ZipArchive archive = new ZipArchive(stream);
                 ZipStats.Clear();
                 foreach (ZipArchiveEntry entry in archive.Entries)
                 {
@@ -32,7 +46,7 @@ namespace PeterDoStuff
                     };
                     ZipStats.Add(stat);
                 }
-                return "Zip scan is successful";
+                return SUCCESSFUL;
             }
             catch (Exception ex) 
             {

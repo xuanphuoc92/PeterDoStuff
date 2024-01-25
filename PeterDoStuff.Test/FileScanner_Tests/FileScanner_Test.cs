@@ -16,7 +16,7 @@ namespace PeterDoStuff.Test.FileScanner_Tests
         {
             using var scanner = new FileScanner();
             var result = scanner.ScanZip("FileScanner_Tests\\TestZipFile.zip");
-            result.Should().Be("Zip scan is successful");
+            result.Should().Be(FileScanner.SUCCESSFUL);
             scanner.ZipStats.Count.Should().Be(4);
             string csvContent = scanner.ToCsv();
             Console.WriteLine(csvContent);
@@ -27,7 +27,7 @@ namespace PeterDoStuff.Test.FileScanner_Tests
         {
             using var scanner = new FileScanner();
             var result = scanner.ScanZip("NonExistFile.zip");
-            result.Should().NotBe("Zip scan is successful");
+            result.Should().NotBe(FileScanner.SUCCESSFUL);
             Console.WriteLine(result);
         }
 
@@ -36,7 +36,7 @@ namespace PeterDoStuff.Test.FileScanner_Tests
         {
             using var scanner = new FileScanner();
             var result = scanner.ScanZip("FileScanner_Tests\\TestTextFile.txt");
-            result.Should().NotBe("Zip scan is successful");
+            result.Should().NotBe(FileScanner.SUCCESSFUL);
             Console.WriteLine(result);
         }
     }
