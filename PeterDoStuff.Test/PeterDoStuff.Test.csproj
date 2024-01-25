@@ -21,4 +21,13 @@
     <ProjectReference Include="..\PeterDoStuff\PeterDoStuff.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="FileScanner_Tests\TestTextFile.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="FileScanner_Tests\TestZipFile.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
