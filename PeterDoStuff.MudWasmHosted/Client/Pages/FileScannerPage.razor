@@ -10,14 +10,17 @@
     File Scanner
 </MudText>
 
-<MudText Class="mb-8">Select your zip file to scan for statistics.</MudText>
+<MudText Class="mb-8">
+    <p>Select your zip file to scan for statistics.</p>
+    <p>The result of the statistics will be downloaded for your view after scanning.</p>
+</MudText>
 
 <MudFileUpload T="IBrowserFile" FilesChanged="SelectFile">
     <ButtonTemplate>
         <MudButton HtmlTag="label"
                    Variant="Variant.Filled"
                    Color="Color.Primary"
-                   StartIcon="@Icons.Material.Filled.CloudUpload"
+                   StartIcon="@Icons.Material.Filled.InsertDriveFile"
                    for="@context.Id">
             Select Zip File
         </MudButton>
@@ -26,13 +29,17 @@
 
 <MudDivider DividerType="DividerType.Middle" Class="my-6" />
 
-<MudText Typo="Typo.h5" Class="mb-8" Color="Color.Secondary">@ScanResult</MudText>
+<MudText Class="mb-8" Color="Color.Secondary">@ScanResult</MudText>
+
+<LoadingOverlay @ref="ScanOverlay"/>
 
     @code {
     private string ScanResult = "Select your zip file";
+    private LoadingOverlay ScanOverlay;
 
     public async Task SelectFile(IBrowserFile file)
     {
+        ScanOverlay.Show("Scanning");
         ScanResult = "Scanning...";
         DateTime start = DateTime.Now;
         using MemoryStream inputFileStream = new MemoryStream();
@@ -42,6 +49,7 @@
         if (scanResult != FileScanner.SUCCESSFUL)
         {
             ScanResult = scanResult;
+            ScanOverlay.Hide();
             return;
         }
 
@@ -54,5 +62,7 @@
 
         DateTime end = DateTime.Now;
         ScanResult = scanResult + $" (in {(end - start).TotalSeconds} seconds)";
+
+        ScanOverlay.Hide();
     }
 }
