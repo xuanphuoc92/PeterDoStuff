@@ -1,3 +1,4 @@
+/*ref: https://learn.microsoft.com/en-us/aspnet/core/blazor/file-downloads?view=aspnetcore-6.0#download-from-a-stream*/
 window.downloadFileFromStream = async (fileName, contentStreamReference) => {
     const arrayBuffer = await contentStreamReference.arrayBuffer();
     const blob = new Blob([arrayBuffer]);
