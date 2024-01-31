@@ -1,4 +1,6 @@
-﻿using FluentAssertions;
+﻿using ApprovalTests.Reporters;
+using FluentAssertions;
+using PeterDoStuff.Test.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +11,7 @@ using System.Threading.Tasks;
 namespace PeterDoStuff.Test.FileScanner_Tests
 {
     [TestClass]
+    [UseReporter(typeof(DiffReporter))]
     public class FileScanner_Test
     {
         [TestMethod]
@@ -19,7 +22,8 @@ namespace PeterDoStuff.Test.FileScanner_Tests
             result.Should().Be(FileScanner.SUCCESSFUL);
             scanner.ZipStats.Count.Should().Be(4);
             string csvContent = scanner.ToCsv();
-            Console.WriteLine(csvContent);
+            csvContent.WriteToConsole();
+            csvContent.Verify();
         }
 
         [TestMethod]
@@ -28,7 +32,7 @@ namespace PeterDoStuff.Test.FileScanner_Tests
             using var scanner = new FileScanner();
             var result = scanner.ScanZip("NonExistFile.zip");
             result.Should().NotBe(FileScanner.SUCCESSFUL);
-            Console.WriteLine(result);
+            result.WriteToConsole();
         }
 
         [TestMethod]
@@ -37,7 +41,7 @@ namespace PeterDoStuff.Test.FileScanner_Tests
             using var scanner = new FileScanner();
             var result = scanner.ScanZip("FileScanner_Tests\\TestTextFile.txt");
             result.Should().NotBe(FileScanner.SUCCESSFUL);
-            Console.WriteLine(result);
+            result.WriteToConsole();
         }
     }
 }
