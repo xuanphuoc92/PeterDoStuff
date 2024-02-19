@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting.StaticWebAssets;
 using Microsoft.AspNetCore.ResponseCompression;
+using PeterDoStuff.Database;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,10 @@ StaticWebAssetsLoader.UseStaticWebAssets(builder.Environment, builder.Configurat
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+
+// Create the singleton MemoryDb
+MemoryDb db = new MemoryDb();
+builder.Services.AddSingleton(_ => db);
 
 var app = builder.Build();
 
