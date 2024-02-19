@@ -33,51 +33,73 @@ namespace PeterDoStuff.Database
         private readonly SQLiteConnection _sharedConnection;
         private readonly SQLiteTransaction _transaction;
 
-        public MemoryConnection(SQLiteConnection sharedConnection)
+        internal MemoryConnection(SQLiteConnection sharedConnection)
         {
             _sharedConnection = sharedConnection;
             _transaction = _sharedConnection.BeginTransaction();
         }
 
-        public Task<IEnumerable<T>> QueryAsync<T>(string sql, object? param = null)
+        /// <summary>
+        /// Query by SQL with parameters
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sql">E.g. "SELECT * FROM [_TestTable] where ID = {0} and CreatedTime > {1};</param>
+        /// <param name="parameters">E.g. "1001a", DateTime.Today</param>
+        /// <returns></returns>
+        public Task<IEnumerable<T>> QueryAsync<T>(string sql, params object[] parameters)
         {
-            return _sharedConnection.QueryAsync<T>(sql, param, _transaction);
-        }
-
-        public Task<IEnumerable<dynamic>> QueryAsync(string sql, object? param = null)
-            => QueryAsync<dynamic>(sql, param);
-
-        public Task<IEnumerable<dynamic>> QueryAsync(Command command)
-        {
+            var command = SqlCommand.New(sql, parameters);
             object param = new DynamicParameters(command.Parameters);
-            return QueryAsync(command.Expression, param);
+            return _sharedConnection.QueryAsync<T>(command.Sql, param);
         }
 
-        public Task<int> ExecuteAsync(string sql, object? param = null) 
+        /// <summary>
+        /// Query by SQL with parameters
+        /// </summary>
+        /// <param name="sql">E.g. "SELECT * FROM [_TestTable] where ID = {0} and CreatedTime > {1};</param>
+        /// <param name="parameters">E.g. "1001a", DateTime.Today</param>
+        /// <returns></returns>
+        public Task<IEnumerable<dynamic>> QueryAsync(string sql, params object[] parameters)
         {
+            return QueryAsync<dynamic>(sql, parameters);
+        }
+
+        /// <summary>
+        /// Execute SQL commands with parameters
+        /// </summary>
+        /// <param name="sql">E.g. "Update [_TestTable] Set Amount = 0 where ID = {0} and CreatedTime > {1};</param>
+        /// <param name="parameters">E.g. "1001a", DateTime.Today</param>
+        /// <returns></returns>
+        public Task<int> ExecuteAsync(string sql, params object[] parameters) 
+        {
+            var command = SqlCommand.New(sql, parameters);
+            object param = new DynamicParameters(command.Parameters);
             return _sharedConnection.ExecuteAsync(sql, param, _transaction);
         }
 
-        //public Task<int> ExecuteAsync(Command command)
-        //{
-        //    object param = new DynamicParameters(command.Parameters);
-        //    return ExecuteAsync(command.Expression, param);
-        //}
-
+        /// <summary>
+        /// Commit the transaction
+        /// </summary>
         public void Commit()
         {
             _transaction.Commit();
         }
-
+                
         public void Dispose()
         {
             _transaction.Dispose();
         }
 
+        /// <summary>
+        /// Query whether the table exists
+        /// </summary>
+        /// <param name="table">Name of the table</param>
+        /// <returns></returns>
         public async Task<bool> TableExists(string table)
         {
-            var command = Command.New("SELECT name FROM sqlite_master WHERE sqlite_master.type = 'table' AND name = {0}", table);
-            var queryResult = await QueryAsync(command);
+            var queryResult = await QueryAsync(
+                sql: "SELECT name FROM sqlite_master WHERE sqlite_master.type = 'table' AND name = {0}", 
+                parameters: table);
             return queryResult.Any();
         }
     }

@@ -5,39 +5,36 @@ using System.Text;
 
 namespace PeterDoStuff.Database
 {
-    public class Command
+    internal class SqlCommand
     {
-        public string Expression { get; private set; } = "";
+        public string Sql { get; private set; } = "";
         public Dictionary<string, object> Parameters { get; private set; } = new Dictionary<string, object>();
 
-        private Command() { }
+        private SqlCommand() { }
         
-        public static Command New() => new Command();
+        public static SqlCommand New() => new SqlCommand();
 
-        public static Command New(string expression, params object[] parameters)
+        public static SqlCommand New(string sql, params object[] parameters)
         {
             var command = New();
-            command.AppendLine(expression, parameters);
+            command.AppendLine(sql, parameters);
             return command; 
         }
 
-        public Command AppendLine(string expression, object[] parameters)
+        public SqlCommand AppendLine(string sql, object[] parameters)
         {
-            Expression += RecordAndFormat(expression, parameters);
+            Sql += RecordAndFormat(sql, parameters);
             return this;
         }
 
-        private string RecordAndFormat(string expression, object[] parameters)
+        private string RecordAndFormat(string sql, object[] parameters)
         {
             var keys = RecordParameters(parameters);
-            return string.Format(expression, keys);
+            return string.Format(sql, keys);
         }
 
         private string[] RecordParameters(object[] parameters)
         {
-            //if (parameters.Any() == false)
-            //    return new string[0];
-
             List<string> keys = new List<string>();
             foreach (object parameter in parameters)
             {
