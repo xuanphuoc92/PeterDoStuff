@@ -19,5 +19,14 @@ namespace PeterDoStuff.MudWasmHosted.Server.Controllers
         {
             _db = db;
         }
+
+        [HttpPost]
+        public async Task<IEnumerable<dynamic>> Post([FromBody] string sql)
+        {
+            using var conn = _db.Open();
+            var result = await conn.QueryAsync(sql);
+            conn.Commit();
+            return result;
+        }
     }
 }

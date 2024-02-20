@@ -1,0 +1,45 @@
+﻿@page "/database"
+@inject HttpClient Http
+@using PeterDoStuff.MudWasmHosted.Shared
+
+<PageTitle>Database</PageTitle>
+
+<MudText Typo="Typo.h3" GutterBottom="true">Database</MudText>
+<MudText Class="mb-8">This component demonstrates memory database of the server.</MudText>
+<MudButton Color="resultStatus" Variant="Variant.Filled" @onclick="ExecuteSql">Execute</MudButton>
+<br />
+<br />
+<MudTextField T="string" Label="SQL" Variant="Variant.Outlined" Lines="5"
+    @bind-Value="sqlValue"
+    Style="@codeStyle" />
+
+<MudTextField T="string" Label="Result (JSON)" Variant="Variant.Outlined" AutoGrow Lines="10"
+    @bind-Value="resultValue"
+    Style="@codeStyle" />
+
+<LoadingOverlay @ref="loadingOverlay" />
+
+@code {
+
+    private string resultValue, sqlValue = @"DROP TABLE IF EXISTS [_TestTable_];
+CREATE TABLE [_TestTable_] ([Number] int, [Name] nvarchar(100));
+INSERT INTO [_TestTable_] ([Number], [Name]) VALUES (1, 'Alice'), (2, 'Bob'), (3, 'Carol');
+SELECT * FROM [_TestTable_];";
+
+    private MudBlazor.Color resultStatus = Color.Primary;
+
+    private string codeStyle = "font-family: Fira Code, Consolas, Input, DejaVu Sans Mono, JetBrains Mono, and MonoLisa;";
+
+    private LoadingOverlay loadingOverlay;
+
+    private async Task ExecuteSql()
+    {
+        await loadingOverlay.Show("Executing");
+        var response = await Http.PostAsJsonAsync<string>("Database", sqlValue);
+        resultStatus = response.StatusCode == System.Net.HttpStatusCode.OK
+            ? Color.Success
+            : Color.Error;
+        resultValue = await response.Content.ReadAsStringAsync();
+        loadingOverlay.Hide();
+    }
+}
