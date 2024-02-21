@@ -1,4 +1,6 @@
-﻿using PeterDoStuff.Database;
+﻿using FluentAssertions;
+using PeterDoStuff.Database;
+using PeterDoStuff.Test.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +17,16 @@ namespace PeterDoStuff.Test.Database
             return new SqlServerDb(
                 connString: "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=PeterDoStuffDb;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"
                 );
+        }
+
+        [TestMethod]
+        public void _99_InvalidConnString()
+        {
+            using var db = new SqlServerDb(
+                connString: "InvalidConnString");
+            Action tryOpenConnection = () => { using var conn = db.Open(); };
+            var exception = tryOpenConnection.Should().Throw<Exception>().Subject.Single();
+            exception.Message.WriteToConsole();
         }
     }
 }

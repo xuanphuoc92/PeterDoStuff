@@ -9,6 +9,9 @@ namespace PeterDoStuff.Test.Extensions
         /// </summary>
         /// <param name="this"></param>
         public static void Verify(this string @this)
-            => Approvals.Verify(@this);
+        {
+            @this.WriteToConsole();
+            Approvals.Verify(@this);
+        }
     }
 }

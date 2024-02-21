@@ -22,7 +22,6 @@ namespace PeterDoStuff.Test.FileScanner_Tests
             result.Should().Be(FileScanner.SUCCESSFUL);
             scanner.ZipStats.Count.Should().Be(4);
             string csvContent = scanner.ToCsv();
-            csvContent.WriteToConsole();
             csvContent.Verify();
         }
 

@@ -35,9 +35,20 @@ namespace PeterDoStuff.Database
     {
         public SqlServerConnection(string connString)
         {
-            _connection = new SqlConnection(connString);
-            _connection.Open();
-            _transaction = _connection.BeginTransaction();
+            try
+            {
+                _connection = new SqlConnection(connString);
+                _connection.Open();
+                _transaction = _connection.BeginTransaction();
+            }
+            catch (Exception ex)
+            {
+                var message = new StringBuilder();
+                message.AppendLine("Unable to connect to database.");
+                message.AppendLine("Please check on the connection string.");
+                message.AppendLine("More details: " + ex.Message);
+                throw new Exception(message.ToString());
+            }
         }
 
         public override void Commit()

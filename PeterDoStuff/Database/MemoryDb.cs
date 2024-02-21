@@ -29,12 +29,6 @@ namespace PeterDoStuff.Database
         }
     }
 
-    public class DbOutput
-    {
-        public IEnumerable<dynamic> Query { get; set; }
-        public int Execute { get; set; }
-    }
-
     public class MemoryConnection : BaseConnection
     {
         internal MemoryConnection(SQLiteConnection sharedConnection)
