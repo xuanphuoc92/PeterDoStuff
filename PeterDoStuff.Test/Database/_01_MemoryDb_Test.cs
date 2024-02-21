@@ -11,7 +11,7 @@ namespace PeterDoStuff.Test.Database
     [TestClass]
     public class _01_MemoryDb_Test
     {
-        private static async Task TestCreateTable(MemoryConnection conn)
+        private static async Task TestCreateTable(BaseConnection conn)
         {
             // Drop the table first
             await conn.ExecuteAsync("DROP TABLE IF EXISTS [_TestTable_];");

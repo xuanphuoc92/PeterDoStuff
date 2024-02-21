@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Data.SQLite;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace PeterDoStuff.Database
 {
-    public class MemoryDb : IDisposable
+    public class MemoryDb : BaseDb
     {
         private readonly SQLiteConnection _sharedConnection = new SQLiteConnection("Data Source=:memory:");
         public MemoryDb()
@@ -16,13 +17,13 @@ namespace PeterDoStuff.Database
             _sharedConnection.Open();
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             _sharedConnection.Close();
             _sharedConnection.Dispose();
         }
 
-        public MemoryConnection Open()
+        public override BaseConnection Open()
         {
             return new MemoryConnection(_sharedConnection);
         }
@@ -60,74 +61,31 @@ namespace PeterDoStuff.Database
         public int Execute { get; set; }
     }
 
-    public class MemoryConnection : IDisposable
+    public class MemoryConnection : BaseConnection
     {
-        private readonly SQLiteConnection _sharedConnection;
-        private readonly SQLiteTransaction _transaction;
-
         internal MemoryConnection(SQLiteConnection sharedConnection)
         {
-            _sharedConnection = sharedConnection;
-            _transaction = _sharedConnection.BeginTransaction();
-        }
-
-        /// <summary>
-        /// Query by SQL with parameters
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="sql">E.g. "SELECT * FROM [_TestTable] where ID = {0} and CreatedTime > {1};</param>
-        /// <param name="parameters">E.g. "1001a", DateTime.Today</param>
-        /// <returns></returns>
-        public Task<IEnumerable<T>> QueryAsync<T>(string sql, params object[] parameters)
-        {
-            var command = SqlCommand.New(sql, parameters);
-            object param = new DynamicParameters(command.Parameters);
-            return _sharedConnection.QueryAsync<T>(command.Sql, param);
-        }
-
-        /// <summary>
-        /// Query by SQL with parameters
-        /// </summary>
-        /// <param name="sql">E.g. "SELECT * FROM [_TestTable] where ID = {0} and CreatedTime > {1};</param>
-        /// <param name="parameters">E.g. "1001a", DateTime.Today</param>
-        /// <returns></returns>
-        public Task<IEnumerable<dynamic>> QueryAsync(string sql, params object[] parameters)
-        {
-            return QueryAsync<dynamic>(sql, parameters);
-        }
-
-        /// <summary>
-        /// Execute SQL commands with parameters
-        /// </summary>
-        /// <param name="sql">E.g. "Update [_TestTable] Set Amount = 0 where ID = {0} and CreatedTime > {1};</param>
-        /// <param name="parameters">E.g. "1001a", DateTime.Today</param>
-        /// <returns></returns>
-        public Task<int> ExecuteAsync(string sql, params object[] parameters) 
-        {
-            var command = SqlCommand.New(sql, parameters);
-            object param = new DynamicParameters(command.Parameters);
-            return _sharedConnection.ExecuteAsync(sql, param, _transaction);
+            _connection = sharedConnection;
+            _transaction = _connection.BeginTransaction();
         }
 
         /// <summary>
         /// Commit the transaction
         /// </summary>
-        public void Commit()
+        public override void Commit()
         {
             _transaction.Commit();
         }
-                
-        public void Dispose()
+
+        /// <summary>
+        /// Dispose the transaction (if not committed, the transaction will be rolled back)
+        /// </summary>
+        public override void Dispose()
         {
             _transaction.Dispose();
         }
 
-        /// <summary>
-        /// Query whether the table exists
-        /// </summary>
-        /// <param name="table">Name of the table</param>
-        /// <returns></returns>
-        public async Task<bool> TableExists(string table)
+        public override async Task<bool> TableExists(string table)
         {
             var queryResult = await QueryAsync(
                 sql: "SELECT name FROM sqlite_master WHERE sqlite_master.type = 'table' AND name = {0}", 
