@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
 using System.Text;
 using System.Threading.Tasks;
@@ -65,7 +66,7 @@ namespace PeterDoStuff.Database
         {
             var command = SqlCommand.New(sql, parameters);
             object param = new DynamicParameters(command.Parameters);
-            return _connection.QueryAsync<T>(command.Sql, param);
+            return _connection.QueryAsync<T>(command.Sql, param, _transaction);
         }
 
         /// <summary>

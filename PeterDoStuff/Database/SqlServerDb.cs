@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -51,9 +52,12 @@ namespace PeterDoStuff.Database
             _connection.Dispose();
         }
 
-        public override Task<bool> TableExists(string table)
+        public override async Task<bool> TableExists(string table)
         {
-            throw new NotImplementedException();
+            var queryResult = await QueryAsync(
+                sql: "SELECT t.name FROM sys.tables t WHERE t.is_ms_shipped = 0 AND t.name = {0}",
+                parameters: table);
+            return queryResult.Any();
         }
     }
 }

@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 
 namespace PeterDoStuff.Test.Database
 {
-    [TestClass]
     public abstract class _00_BaseDb_Test
     {
         protected abstract BaseDb SetDb();
@@ -36,7 +35,7 @@ namespace PeterDoStuff.Test.Database
         public async Task _01_Commit()
         {
             using var db = SetDb();
-            
+
             using (var conn = db.Open())
             {
                 await TestCreateTable(conn);
@@ -56,6 +55,12 @@ namespace PeterDoStuff.Test.Database
         public async Task _02_Rollback()
         {
             using var db = SetDb();
+
+            using (var conn = db.Open())
+            {
+                await conn.ExecuteAsync("DROP TABLE IF EXISTS [_TestTable_];");
+                conn.Commit();
+            }
 
             using (var conn = db.Open())
             {
@@ -112,7 +117,7 @@ DELETE FROM [_TestTable_];");
 
             using var conn = db.Open();
             var rowCount = await conn.ExecuteAsync("DROP TABLE IF EXISTS [_TestTable_]");
-            rowCount.Should().Be(0);
+            rowCount.Should().Be(db is MemoryDb ? 0 : -1);
 
             // Mixed, ended with Query
             rowCount = await conn.ExecuteAsync(SqlCommand.SAMPLE_TEST_SQL);
@@ -131,11 +136,13 @@ DELETE FROM [_TestTable_];");
             rowCount.Should().Be(-1);
 
             rowCount = await conn.ExecuteAsync("DROP TABLE IF EXISTS [_TestTable_]");
-            rowCount.Should().Be(3);
+            rowCount.Should().Be(db is MemoryDb ? 3 : -1);
 
             // Execute behaviour:
             // If SQL is pure Query, return -1
             // If SQL is mixed and ended with Query, return **SUM** of Execute.
+            // Execute over Table in SQLite = rows cached in table
+            // Execute over Table in SQL Server = -1
         }
 
         [TestMethod]
@@ -144,7 +151,7 @@ DELETE FROM [_TestTable_];");
             using var db = SetDb();
 
             var output = await db.ExecuteOrQueryAsync("DROP TABLE IF EXISTS [_TestTable_]");
-            output.Execute.Should().Be(0);
+            output.Execute.Should().Be(db is MemoryDb ? 0 : -1);
 
             output = await db.ExecuteOrQueryAsync(SqlCommand.SAMPLE_TEST_SQL);
             output.Query.Should().HaveCount(3);
@@ -156,7 +163,7 @@ DELETE FROM [_TestTable_];");
             output.Query.Should().HaveCount(0);
 
             output = await db.ExecuteOrQueryAsync("DROP TABLE IF EXISTS [_TestTable_]");
-            output.Execute.Should().Be(3);
+            output.Execute.Should().Be(db is MemoryDb ? 3 : -1);
         }
     }
 }
