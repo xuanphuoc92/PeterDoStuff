@@ -5,8 +5,13 @@ using System.Text;
 
 namespace PeterDoStuff.Database
 {
-    internal class SqlCommand
+    public class SqlCommand
     {
+        public const string SAMPLE_TEST_SQL = @"DROP TABLE IF EXISTS [_TestTable_];
+CREATE TABLE [_TestTable_] ([Number] int, [Name] nvarchar(100));
+INSERT INTO [_TestTable_] ([Number], [Name]) VALUES (1, 'Alice'), (2, 'Bob'), (3, 'Carol');
+SELECT * FROM [_TestTable_];";
+
         public string Sql { get; private set; } = "";
         public Dictionary<string, object> Parameters { get; private set; } = new Dictionary<string, object>();
 

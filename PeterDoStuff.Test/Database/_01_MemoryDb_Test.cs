@@ -69,5 +69,92 @@ namespace PeterDoStuff.Test.Database
                 tableExists.Should().BeFalse();
             }
         }
+
+        [TestMethod]
+        public async Task _03_Query()
+        {
+            using var db = new MemoryDb();
+
+            using var conn = db.Open();
+            var result = await conn.QueryAsync("DROP TABLE IF EXISTS [_TestTable_]");
+            result.Should().BeEmpty();
+
+            // Mixed, ended with Query
+            result = await conn.QueryAsync(SqlCommand.SAMPLE_TEST_SQL);
+            result.Should().HaveCount(3);
+
+            result = await conn.QueryAsync("SELECT * FROM [_TestTable_];");
+            result.Should().HaveCount(3);
+
+            // Mixed, ended with Execute
+            result = await conn.QueryAsync(@"SELECT * FROM [_TestTable_];
+SELECT [Number] FROM [_TestTable_];
+DELETE FROM [_TestTable_];");
+            result.Should().HaveCount(3);
+
+            result = await conn.QueryAsync("SELECT * FROM [_TestTable_];");
+            result.Should().BeEmpty();
+
+            result = await conn.QueryAsync("DROP TABLE IF EXISTS [_TestTable_]");
+            result.Should().BeEmpty();
+
+            // Query behaviour:
+            // If SQL is pure Execute, return Empty.
+            // If SQL is mixed and ended with Execute, return **LAST** Query.
+        }
+
+        [TestMethod]
+        public async Task _04_Execute()
+        {
+            using var db = new MemoryDb();
+
+            using var conn = db.Open();
+            var rowCount = await conn.ExecuteAsync("DROP TABLE IF EXISTS [_TestTable_]");
+            rowCount.Should().Be(0);
+
+            // Mixed, ended with Query
+            rowCount = await conn.ExecuteAsync(SqlCommand.SAMPLE_TEST_SQL);
+            rowCount.Should().Be(3);
+
+            rowCount = await conn.ExecuteAsync("SELECT * FROM [_TestTable_];");
+            rowCount.Should().Be(-1);
+
+            // Mixed, ended with Execute
+            rowCount = await conn.ExecuteAsync(@"SELECT * FROM [_TestTable_];
+SELECT [Number] FROM [_TestTable_];
+DELETE FROM [_TestTable_];");
+            rowCount.Should().Be(3);
+
+            rowCount = await conn.ExecuteAsync("SELECT * FROM [_TestTable_];");
+            rowCount.Should().Be(-1);
+
+            rowCount = await conn.ExecuteAsync("DROP TABLE IF EXISTS [_TestTable_]");
+            rowCount.Should().Be(3);
+
+            // Execute behaviour:
+            // If SQL is pure Query, return -1
+            // If SQL is mixed and ended with Query, return **SUM** of Execute.
+        }
+
+        [TestMethod]
+        public async Task _05_ExecuteOrQuery()
+        {
+            using var db = new MemoryDb();
+
+            var output = await db.ExecuteOrQueryAsync("DROP TABLE IF EXISTS [_TestTable_]");
+            output.Execute.Should().Be(0);
+
+            output = await db.ExecuteOrQueryAsync(SqlCommand.SAMPLE_TEST_SQL);
+            output.Query.Should().HaveCount(3);
+
+            output = await db.ExecuteOrQueryAsync("DELETE FROM [_TestTable_];");            
+            output.Execute.Should().Be(3);
+
+            output = await db.ExecuteOrQueryAsync("SELECT * FROM [_TestTable_];");            
+            output.Query.Should().HaveCount(0);
+
+            output = await db.ExecuteOrQueryAsync("DROP TABLE IF EXISTS [_TestTable_]");
+            output.Execute.Should().Be(3);
+        }
     }
 }

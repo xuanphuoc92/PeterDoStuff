@@ -21,12 +21,9 @@ namespace PeterDoStuff.MudWasmHosted.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IEnumerable<dynamic>> Post([FromBody] string sql)
+        public Task<DbOutput> Post([FromBody] string sql)
         {
-            using var conn = _db.Open();
-            var result = await conn.QueryAsync(sql);
-            conn.Commit();
-            return result;
+            return _db.ExecuteOrQueryAsync(sql);
         }
     }
 }

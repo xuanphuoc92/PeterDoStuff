@@ -1,5 +1,6 @@
 ﻿@page "/database"
 @inject HttpClient Http
+@using PeterDoStuff.Database
 @using PeterDoStuff.MudWasmHosted.Shared
 
 <PageTitle>Database</PageTitle>
@@ -21,10 +22,7 @@
 
 @code {
 
-    private string resultValue, sqlValue = @"DROP TABLE IF EXISTS [_TestTable_];
-CREATE TABLE [_TestTable_] ([Number] int, [Name] nvarchar(100));
-INSERT INTO [_TestTable_] ([Number], [Name]) VALUES (1, 'Alice'), (2, 'Bob'), (3, 'Carol');
-SELECT * FROM [_TestTable_];";
+    private string resultValue, sqlValue = SqlCommand.SAMPLE_TEST_SQL;
 
     private MudBlazor.Color resultStatus = Color.Primary;
 
