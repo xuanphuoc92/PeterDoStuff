@@ -27,32 +27,6 @@ namespace PeterDoStuff.Database
         {
             return new MemoryConnection(_sharedConnection);
         }
-
-        public async Task<DbOutput> ExecuteOrQueryAsync(string sql, params object[] parameters)
-        {
-            // To acquire both outputs without causing double commits, make 2 transactions:
-            // First one is rolledback and second one is committed
-
-            IEnumerable<dynamic> queryOutput;
-            using (var conn = Open())
-            {
-                queryOutput = await conn.QueryAsync(sql, parameters);
-                //conn.Commit();
-            }
-
-            int executeOutput;
-            using (var conn = Open())
-            {
-                executeOutput = await conn.ExecuteAsync(sql, parameters);
-                conn.Commit();
-            }
-
-            return new DbOutput()
-            {
-                Query = queryOutput,
-                Execute = executeOutput                
-            };
-        }
     }
 
     public class DbOutput
