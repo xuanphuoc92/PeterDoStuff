@@ -7,20 +7,54 @@
 
 <MudText Typo="Typo.h3" GutterBottom="true">Database</MudText>
 <MudText Class="mb-8">This component demonstrates memory database of the server.</MudText>
-<MudButton Color="resultStatus" Variant="Variant.Filled" @onclick="ExecuteSql">Execute</MudButton>
-<br />
-<br />
-<MudTextField T="string" Label="SQL" Variant="Variant.Outlined" Lines="5"
-    @bind-Value="sqlValue"
-    Style="@codeStyle" />
 
-<MudTextField T="string" Label="Result (JSON)" Variant="Variant.Outlined" AutoGrow Lines="10"
-    @bind-Value="resultValue"
-    Style="@codeStyle" />
+@if (accessGranted)
+{
+    <MudButton Color="resultStatus" Variant="Variant.Filled" @onclick="ExecuteSql">Execute</MudButton>
+        <br />
+        <br />
+        <MudTextField T="string" Label="SQL" Variant="Variant.Outlined" Lines="5"
+            @bind-Value="sqlValue"
+            Style="@codeStyle" />
+
+        <MudTextField T="string" Label="Result (JSON)" Variant="Variant.Outlined" AutoGrow Lines="10"
+            @bind-Value="resultValue"
+        Style="@codeStyle" />
+}
+else
+{
+    <MudTextField T="string" Label="Access Key" Variant="Variant.Outlined" InputType="InputType.Password"
+        @bind-Value="accessKey"
+        @onkeydown="AccessEnter"
+    />
+    <br />
+    <br />
+    <MudButton Color="Color.Primary" Variant="Variant.Filled" @onclick="AccessDatabase">Access</MudButton>
+}
 
 <LoadingOverlay @ref="loadingOverlay" />
 
 @code {
+    private bool accessGranted = false;
+    private string accessKey = "";
+
+    private async Task AccessEnter(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+            await AccessDatabase();
+    }
+
+    private async Task AccessDatabase()
+    {
+        await loadingOverlay.Show("Accessing");
+        await Task.Delay(200);
+        if (accessKey == "access")
+        {
+            accessGranted = true;
+            accessKey = "";
+        }
+        loadingOverlay.Hide();
+    }
 
     private string resultValue, sqlValue = SqlCommand.SAMPLE_TEST_SQL;
 
