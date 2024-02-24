@@ -35,16 +35,17 @@ namespace PeterDoStuff.MudWasmHosted.Server.Controllers
         {
             var dbAccess = new DbAccess();
             
-            var databaseAccessKey = Environment.GetEnvironmentVariable("DatabaseAccessKey");
-            if (databaseAccessKey == null)
+            var databaseAccessKey = Environment.GetEnvironmentVariable("DatabaseAccessKey") 
+                ?? DEFAULT_ACCESS_KEY;
+
+            if (accessKey == databaseAccessKey)
             {
-                dbAccess.Warning = "You are using the default access key. Please set Environment Variable [DatabaseAccessKey] to stop using the default access key.";
-                databaseAccessKey = DEFAULT_ACCESS_KEY;
+                dbAccess.IsSuccess = true;
+                dbAccess.Token = dbAccess.IsSuccess ? databaseAccessKey : "";
+                
+                if (databaseAccessKey == DEFAULT_ACCESS_KEY)
+                    dbAccess.Warning = "You are using the default access key. Please set Environment Variable [DatabaseAccessKey] to stop using the default access key.";
             }
-
-            dbAccess.IsSuccess = accessKey == databaseAccessKey;
-            dbAccess.Token = dbAccess.IsSuccess ? databaseAccessKey : "";
-
             return dbAccess;
         }
     }

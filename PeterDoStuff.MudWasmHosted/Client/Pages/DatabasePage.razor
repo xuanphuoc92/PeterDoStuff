@@ -95,7 +95,10 @@ else
     {
         await loadingOverlay.Show("Accessing");
         await Task.Delay(200);
-        if (accessKey == "access")
+        var response = await Http.PostAsJsonAsync<string>("Database/access", accessKey);
+        var isSuccess = response.StatusCode == System.Net.HttpStatusCode.OK
+            && (await response.Content.ReadFromJsonAsync<DbAccess>()).IsSuccess;
+        if (isSuccess)
         {
             accessGranted = true;
             accessKey = "";
