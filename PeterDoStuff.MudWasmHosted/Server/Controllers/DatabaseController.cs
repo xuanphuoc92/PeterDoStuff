@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PeterDoStuff.Database;
+using PeterDoStuff.MudWasmHosted.Server.Auth;
 using PeterDoStuff.MudWasmHosted.Shared;
 
 namespace PeterDoStuff.MudWasmHosted.Server.Controllers
@@ -22,11 +23,13 @@ namespace PeterDoStuff.MudWasmHosted.Server.Controllers
         }
 
         [HttpPost]
+        [SimpleAuth(ENVIRONMENT_VAR_KEY, DEFAULT_ACCESS_KEY)]
         public Task<DbOutput> Post([FromBody] string sql)
         {
             return _db.ExecuteOrQueryAsync(sql);
         }
 
+        private const string ENVIRONMENT_VAR_KEY = "DatabaseAccessKey";
         private const string DEFAULT_ACCESS_KEY = "access";
 
         [HttpPost]
@@ -35,7 +38,7 @@ namespace PeterDoStuff.MudWasmHosted.Server.Controllers
         {
             var dbAccess = new DbAccess();
             
-            var databaseAccessKey = Environment.GetEnvironmentVariable("DatabaseAccessKey") 
+            var databaseAccessKey = Environment.GetEnvironmentVariable(ENVIRONMENT_VAR_KEY) 
                 ?? DEFAULT_ACCESS_KEY;
 
             if (databaseAccessKey == DEFAULT_ACCESS_KEY)

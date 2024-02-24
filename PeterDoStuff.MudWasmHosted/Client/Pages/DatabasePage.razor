@@ -4,6 +4,8 @@
 @using PeterDoStuff.Extensions
 @using PeterDoStuff.MudWasmHosted.Shared
 @using System.Reflection;
+@using System.Text
+@using System.Text.Json
 
 <PageTitle>Database</PageTitle>
 
@@ -104,11 +106,7 @@ else
         var response = await Http.PostAsJsonAsync<string>("Database/access", accessKey);
         DbAccess dbAccess = await response.Content.ReadFromJsonAsync<DbAccess>();
         accessWarning = dbAccess.Warning;
-        if (dbAccess.IsSuccess)
-        {
-            accessGranted = true;
-            accessKey = "";
-        }
+        accessGranted = dbAccess.IsSuccess;
         loadingOverlay.Hide();
     }
 
@@ -126,7 +124,14 @@ else
     private async Task ExecuteSql()
     {
         await loadingOverlay.Show("Executing");
-        var response = await Http.PostAsJsonAsync<string>("Database", sqlValue);
+
+        var request = new HttpRequestMessage(HttpMethod.Post, "Database");
+        var jsonContent = JsonSerializer.Serialize(sqlValue);
+        request.Content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+        request.Headers.Add("SimpleAuth", accessKey);
+
+        var response = await Http.SendAsync(request);
+
         var success = response.StatusCode == System.Net.HttpStatusCode.OK;
         resultStatus = success
             ? Color.Success
