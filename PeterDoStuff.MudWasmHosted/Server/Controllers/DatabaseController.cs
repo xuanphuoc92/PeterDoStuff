@@ -6,7 +6,7 @@ using PeterDoStuff.MudWasmHosted.Shared;
 namespace PeterDoStuff.MudWasmHosted.Server.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class DatabaseController : ControllerBase
     {
         //private readonly ILogger<DatabaseController> _logger;

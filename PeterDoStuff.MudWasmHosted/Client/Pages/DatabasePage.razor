@@ -9,7 +9,10 @@
 
 <PageTitle>Database</PageTitle>
 
-<MudText Typo="Typo.h3" GutterBottom="true">Database</MudText>
+<MudText Typo="Typo.h3" GutterBottom="true">
+    <MudIcon Size="Size.Large" Icon="@Icons.Material.Filled.Storage" />
+    Database
+</MudText>
 <MudText Class="mb-8">This component demonstrates memory database of the server.</MudText>
 
 @if (accessGranted)
@@ -20,59 +23,53 @@
         <br />
         <br />
     }
-    <MudButton Color="resultStatus" Variant="Variant.Filled" @onclick="ExecuteSql">Execute</MudButton>
+    <MudButton Color="Color.Primary" Variant="Variant.Filled" @onclick="ExecuteSql">Execute</MudButton>
     <br />
     <br />
     <MudTextField T="string" Label="SQL" Variant="Variant.Outlined" AutoGrow Lines="5"
         @bind-Value="sqlValue"
         Style="@($"font-family: {codeFontFamily}")" />
 
-    <MudPaper Class="d-flex flex-column" Outlined="true">
-        <MudList>
-            <MudListItem>
-                <div class="d-flex">
-                    <MudText>Query:</MudText>
-                    <MudText Inline="true" Class="ml-auto">@output?.DynamicQuery()?.Count()</MudText>
-                </div>
-            </MudListItem>
-            <MudListItem>
-                <div class="d-flex">
-                    <MudText>Execute:</MudText>
-                    <MudText Inline="true" Class="ml-auto">@output?.Execute</MudText>
-                </div>
-            </MudListItem>
-            @if (error != null)
-            {
-                <MudListItem>
-                    <MudTextField T="string" Label="Error" Variant="Variant.Outlined" ReadOnly="true" AutoGrow Lines="10"
-                        @bind-Value="error"
-                        Style="@($"font-family: {codeFontFamily}; color: {Colors.Red.Default}")" />
-                </MudListItem>
-            }
-        </MudList>
-    </MudPaper>
-
-    @if (output != null && output.DynamicQuery().Any())
+    @if (error != null)
     {
-        object first = output.DynamicQuery().First();
-        IEnumerable<string> columns = first.GetPropertyNames();
-        <MudTable Items="output.DynamicQuery().AsEnumerable<object>()" Hover="true" SortLabel="Sort By" Elevation="0">
-            <HeaderContent>
-                @foreach (var column in columns)
-                {
-                    <MudTh>@column</MudTh>
-                }
-            </HeaderContent>
-            <RowTemplate>
-                @foreach (var column in columns)
-                {
-                    <MudTd DataLabel="@column">@context.GetPropertyValue(column)</MudTd>
-                }
-            </RowTemplate>
-            <PagerContent>
-                <MudTablePager PageSizeOptions="new int[]{50, 100}" />
-            </PagerContent>
-        </MudTable>
+        <MudTextField T="string" Label="Error" Variant="Variant.Outlined" ReadOnly="true" AutoGrow Lines="10"
+            @bind-Value="error"
+            Style="@($"font-family: {codeFontFamily}; color: {Colors.Red.Default}")" />
+    }
+
+    @if (output != null)
+    {
+        @if (output.Execute >= 0)
+        {
+            <MudCard Outlined="true">
+                <MudCardContent>
+                    <MudText Class="mb-8">@($"{output.Execute} row{(output.Execute > 1 ? "s" : "")} affected")</MudText>
+                </MudCardContent>
+            </MudCard>
+        }
+
+        @if (output.DynamicQuery().Any())
+        {
+            object first = output.DynamicQuery().First();
+            IEnumerable<string> columns = first.GetPropertyNames();
+            <MudTable Items="output.DynamicQuery().AsEnumerable<object>()" Hover="true" SortLabel="Sort By" Elevation="0">
+                <HeaderContent>
+                    @foreach (var column in columns)
+                    {
+                        <MudTh>@column</MudTh>
+                    }
+                </HeaderContent>
+                <RowTemplate>
+                    @foreach (var column in columns)
+                    {
+                        <MudTd DataLabel="@column">@context.GetPropertyValue(column)</MudTd>
+                    }
+                </RowTemplate>
+                <PagerContent>
+                    <MudTablePager PageSizeOptions="new int[]{50, 100}" />
+                </PagerContent>
+            </MudTable>
+        }
     }
 }
 else
@@ -103,7 +100,7 @@ else
     {
         await loadingOverlay.Show("Accessing");
         await Task.Delay(200);
-        var response = await Http.PostAsJsonAsync<string>("Database/access", accessKey);
+        var response = await Http.PostAsJsonAsync<string>("api/Database/access", accessKey);
         DbAccess dbAccess = await response.Content.ReadFromJsonAsync<DbAccess>();
         accessWarning = dbAccess.Warning;
         accessGranted = dbAccess.IsSuccess;
@@ -111,8 +108,6 @@ else
     }
 
     private string sqlValue = SqlCommand.SAMPLE_TEST_SQL;
-
-    private MudBlazor.Color resultStatus = Color.Primary;
 
     private string codeFontFamily = "Fira Code, Consolas, Input, DejaVu Sans Mono, JetBrains Mono, and MonoLisa;";
 
@@ -125,7 +120,7 @@ else
     {
         await loadingOverlay.Show("Executing");
 
-        var request = new HttpRequestMessage(HttpMethod.Post, "Database");
+        var request = new HttpRequestMessage(HttpMethod.Post, "api/Database");
         var jsonContent = JsonSerializer.Serialize(sqlValue);
         request.Content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
         request.Headers.Add("SimpleAuth", accessKey);
@@ -133,12 +128,10 @@ else
         var response = await Http.SendAsync(request);
 
         var success = response.StatusCode == System.Net.HttpStatusCode.OK;
-        resultStatus = success
-            ? Color.Success
-            : Color.Error;
         string resultValue = await response.Content.ReadAsStringAsync();
         error = success ? null : resultValue;
         output = success ? await response.Content.ReadFromJsonAsync<DbOutput>() : null;
+
         loadingOverlay.Hide();
     }
 }

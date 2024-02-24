@@ -43,7 +43,14 @@ namespace PeterDoStuff.Database
 
     public class DbOutput
     {
-        public IEnumerable<dynamic> DynamicQuery() => Query;
+        private IEnumerable<dynamic> _dynamicQuery = null;
+        public IEnumerable<dynamic> DynamicQuery()
+        {
+            if (_dynamicQuery == null)
+                _dynamicQuery = Query;
+            return _dynamicQuery;
+        }
+
         public IEnumerable<IDictionary<string, object>> Query { get; set; }
         public int Execute { get; set; }
     }
