@@ -35,7 +35,7 @@ namespace PeterDoStuff.Database
 
             return new DbOutput()
             {
-                QueryRaw = queryOutput.Cast<IDictionary<string, object>>(),
+                Query = queryOutput.Cast<IDictionary<string, object>>(),
                 Execute = executeOutput
             };
         }
@@ -43,8 +43,8 @@ namespace PeterDoStuff.Database
 
     public class DbOutput
     {
-        public IEnumerable<dynamic> Query() => QueryRaw;
-        public IEnumerable<IDictionary<string, object>> QueryRaw { get; set; }
+        public IEnumerable<dynamic> DynamicQuery() => Query;
+        public IEnumerable<IDictionary<string, object>> Query { get; set; }
         public int Execute { get; set; }
     }
 

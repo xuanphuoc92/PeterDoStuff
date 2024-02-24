@@ -25,7 +25,7 @@
             <MudListItem>
                 <div class="d-flex">
                     <MudText>Query:</MudText>
-                    <MudText Inline="true" Class="ml-auto">@output?.Query()?.Count()</MudText>
+                    <MudText Inline="true" Class="ml-auto">@output?.DynamicQuery()?.Count()</MudText>
                 </div>
             </MudListItem>
             <MudListItem>
@@ -45,11 +45,11 @@
         </MudList>
     </MudPaper>
 
-    @if (output != null && output.Query().Any())
+    @if (output != null && output.DynamicQuery().Any())
     {
-        object first = output.Query().First();
+        object first = output.DynamicQuery().First();
         IEnumerable<string> columns = first.GetPropertyNames();
-        <MudTable Items="output.Query().AsEnumerable<object>()" Hover="true" SortLabel="Sort By" Elevation="0">
+        <MudTable Items="output.DynamicQuery().AsEnumerable<object>()" Hover="true" SortLabel="Sort By" Elevation="0">
             <HeaderContent>
                 @foreach (var column in columns)
                 {
