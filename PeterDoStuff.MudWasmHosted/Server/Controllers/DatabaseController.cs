@@ -38,13 +38,13 @@ namespace PeterDoStuff.MudWasmHosted.Server.Controllers
             var databaseAccessKey = Environment.GetEnvironmentVariable("DatabaseAccessKey") 
                 ?? DEFAULT_ACCESS_KEY;
 
+            if (databaseAccessKey == DEFAULT_ACCESS_KEY)
+                dbAccess.Warning = "You are using the default access key. Please set Environment Variable [DatabaseAccessKey] to stop using the default access key.";
+
             if (accessKey == databaseAccessKey)
             {
                 dbAccess.IsSuccess = true;
                 dbAccess.Token = dbAccess.IsSuccess ? databaseAccessKey : "";
-                
-                if (databaseAccessKey == DEFAULT_ACCESS_KEY)
-                    dbAccess.Warning = "You are using the default access key. Please set Environment Variable [DatabaseAccessKey] to stop using the default access key.";
             }
             return dbAccess;
         }

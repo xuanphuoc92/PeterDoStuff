@@ -12,13 +12,18 @@
 
 @if (accessGranted)
 {
+    @if (string.IsNullOrEmpty(accessWarning) == false)
+    {
+        <MudText Color="Color.Warning">Warning: @accessWarning</MudText>
+        <br />
+        <br />
+    }
     <MudButton Color="resultStatus" Variant="Variant.Filled" @onclick="ExecuteSql">Execute</MudButton>
     <br />
     <br />
     <MudTextField T="string" Label="SQL" Variant="Variant.Outlined" AutoGrow Lines="5"
         @bind-Value="sqlValue"
         Style="@($"font-family: {codeFontFamily}")" />
-
 
     <MudPaper Class="d-flex flex-column" Outlined="true">
         <MudList>
@@ -84,6 +89,7 @@ else
 @code {
     private bool accessGranted = false;
     private string accessKey = "";
+    private string accessWarning = null;
 
     private async Task AccessEnter(KeyboardEventArgs e)
     {
@@ -96,9 +102,9 @@ else
         await loadingOverlay.Show("Accessing");
         await Task.Delay(200);
         var response = await Http.PostAsJsonAsync<string>("Database/access", accessKey);
-        var isSuccess = response.StatusCode == System.Net.HttpStatusCode.OK
-            && (await response.Content.ReadFromJsonAsync<DbAccess>()).IsSuccess;
-        if (isSuccess)
+        DbAccess dbAccess = await response.Content.ReadFromJsonAsync<DbAccess>();
+        accessWarning = dbAccess.Warning;
+        if (dbAccess.IsSuccess)
         {
             accessGranted = true;
             accessKey = "";
