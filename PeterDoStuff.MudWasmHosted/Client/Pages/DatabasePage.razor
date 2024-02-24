@@ -1,6 +1,7 @@
 ﻿@page "/database"
 @inject HttpClient Http
 @using PeterDoStuff.Database
+@using PeterDoStuff.Extensions
 @using PeterDoStuff.MudWasmHosted.Shared
 @using System.Reflection;
 
@@ -18,16 +19,13 @@
         @bind-Value="sqlValue"
         Style="@($"font-family: {codeFontFamily}")" />
 
-    <MudTextField T="string" Label="Result (JSON)" Variant="Variant.Outlined" AutoGrow Lines="10"
-        @bind-Value="resultValue"
-        Style="@($"font-family: {codeFontFamily}")" />
 
     <MudPaper Class="d-flex flex-column" Outlined="true">
         <MudList>
             <MudListItem>
                 <div class="d-flex">
                     <MudText>Query:</MudText>
-                    <MudText Inline="true" Class="ml-auto">@output?.Query?.Count()</MudText>
+                    <MudText Inline="true" Class="ml-auto">@output?.Query()?.Count()</MudText>
                 </div>
             </MudListItem>
             <MudListItem>
@@ -47,28 +45,28 @@
         </MudList>
     </MudPaper>
 
-    @* @if (output != null && output.Query.Any())
+    @if (output != null && output.Query().Any())
     {
-        var first = output.Query.First();
-        IEnumerable<string> columns = ((TypeInfo)first.GetType()).DeclaredProperties.Select(p => p.Name);
-        <MudTable Items="output.Query" Hover="true" SortLabel="Sort By" Elevation="0">
+        object first = output.Query().First();
+        IEnumerable<string> columns = first.GetPropertyNames();
+        <MudTable Items="output.Query().AsEnumerable<object>()" Hover="true" SortLabel="Sort By" Elevation="0">
             <HeaderContent>
                 @foreach (var column in columns)
                 {
-                    <MudTh><MudTableSortLabel SortBy="new Func<dynamic, object?>(x => x.GetType().GetProperty(column)?.GetValue(x, null))">@column</MudTableSortLabel></MudTh>
+                    <MudTh>@column</MudTh>
                 }
             </HeaderContent>
             <RowTemplate>
                 @foreach (var column in columns)
                 {
-                    <MudTd DataLabel="@column">@context.GetType().GetProperty(column)?.GetValue(@context, null)</MudTd>
+                    <MudTd DataLabel="@column">@context.GetPropertyValue(column)</MudTd>
                 }
             </RowTemplate>
             <PagerContent>
                 <MudTablePager PageSizeOptions="new int[]{50, 100}" />
             </PagerContent>
         </MudTable>
-    } *@
+    }
 }
 else
 {
@@ -105,7 +103,7 @@ else
         loadingOverlay.Hide();
     }
 
-    private string resultValue, sqlValue = SqlCommand.SAMPLE_TEST_SQL;
+    private string sqlValue = SqlCommand.SAMPLE_TEST_SQL;
 
     private MudBlazor.Color resultStatus = Color.Primary;
 
@@ -124,7 +122,7 @@ else
         resultStatus = success
             ? Color.Success
             : Color.Error;
-        resultValue = await response.Content.ReadAsStringAsync();
+        string resultValue = await response.Content.ReadAsStringAsync();
         error = success ? null : resultValue;
         output = success ? await response.Content.ReadFromJsonAsync<DbOutput>() : null;
         loadingOverlay.Hide();

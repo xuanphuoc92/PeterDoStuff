@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -34,7 +35,7 @@ namespace PeterDoStuff.Database
 
             return new DbOutput()
             {
-                Query = queryOutput,
+                QueryRaw = queryOutput.Cast<IDictionary<string, object>>(),
                 Execute = executeOutput
             };
         }
@@ -42,7 +43,8 @@ namespace PeterDoStuff.Database
 
     public class DbOutput
     {
-        public IEnumerable<dynamic> Query { get; set; }
+        public IEnumerable<dynamic> Query() => QueryRaw;
+        public IEnumerable<IDictionary<string, object>> QueryRaw { get; set; }
         public int Execute { get; set; }
     }
 

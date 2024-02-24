@@ -154,13 +154,13 @@ DELETE FROM [_TestTable_];");
             output.Execute.Should().Be(db is MemoryDb ? 0 : -1);
 
             output = await db.ExecuteOrQueryAsync(SqlCommand.SAMPLE_TEST_SQL);
-            output.Query.Should().HaveCount(3);
+            output.Query().Should().HaveCount(3);
 
             output = await db.ExecuteOrQueryAsync("DELETE FROM [_TestTable_];");            
             output.Execute.Should().Be(3);
 
             output = await db.ExecuteOrQueryAsync("SELECT * FROM [_TestTable_];");            
-            output.Query.Should().HaveCount(0);
+            output.Query().Should().HaveCount(0);
 
             output = await db.ExecuteOrQueryAsync("DROP TABLE IF EXISTS [_TestTable_]");
             output.Execute.Should().Be(db is MemoryDb ? 3 : -1);
