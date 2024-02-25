@@ -1,10 +1,9 @@
 ﻿<MudNavMenu>
     <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
-    <MudNavLink Href="database" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Storage">Database</MudNavLink>
     <MudNavLink Href="counter" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">Counter</MudNavLink>
     <MudNavLink Href="fetchdata" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List">Fetch data</MudNavLink>
-    <MudNavLink Href="gameOfLife" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.CrueltyFree">Game of Life</MudNavLink>
-    <MudNavLink Href="mineSweeper" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.BrightnessHigh">Minesweeper</MudNavLink>
-    <MudNavLink Href="matchFinder" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Search">Match Finder</MudNavLink>
-    <MudNavLink Href="fileScanner" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.InsertDriveFile">File Scanner</MudNavLink>
+    @foreach (var item in PlaygroundItem.Items)
+    {
+        <MudNavLink Href="@item.Link" Match="NavLinkMatch.Prefix" Icon="@item.Icon">@item.Title</MudNavLink>
+    }
 </MudNavMenu>

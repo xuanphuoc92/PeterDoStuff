@@ -2,12 +2,48 @@
 
 <PageTitle>Peter Do Stuff - Home</PageTitle>
 
-<MudText Typo="Typo.h3" GutterBottom="true">
-    <MudIcon Size="Size.Large" Icon="@Icons.Material.Filled.Home" />
-    Hello to my playground!
-</MudText>
-<MudText Class="mb-8">Welcome to my playground, powered by MudBlazor!</MudText>
-<MudAlert Severity="Severity.Normal">You can find documentation and examples of MudBlazor - the library that powers the front-end of this website: <MudLink Href="https://mudblazor.com" Typo="Typo.body2" Color="Color.Inherit"><b>www.mudblazor.com</b></MudLink></MudAlert>
-<MudAlert Severity="Severity.Normal" Icon="@Icons.Custom.Brands.MudBlazor">Check out their GitHub: <MudLink Href="https://github.com/MudBlazor/MudBlazor/" Typo="Typo.body2" Color="Color.Inherit"><b>github.com/MudBlazor/MudBlazor/</b></MudLink></MudAlert>
-<MudAlert Severity="Severity.Normal" Icon="@Icons.Custom.Brands.GitHub">Check out my GitHub: <MudLink Href="https://github.com/xuanphuoc92" Typo="Typo.body2" Color="Color.Inherit"><b>github.com/xuanphuoc92</b></MudLink></MudAlert>
-<MudAlert Severity="Severity.Normal" Icon="@Icons.Material.Filled.CrueltyFree">And check out the games from the menu!</MudAlert>
+<MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.False">
+    <MudGrid>
+        <MudItem xs="12" sm="12" md="3" >
+            <img width="150em" height="150em"
+                 src="https://media.licdn.com/dms/image/D5603AQHJ-L66khOU6g/profile-displayphoto-shrink_400_400/0/1704887396041?e=1714608000&amp;v=beta&amp;t=wo56XCRSJAdNjgMiILM0yXDF-tOb2ldmnvpTE4kS6sg"
+                 alt="Profile Photo"
+                 style="border-radius: 50%; border-width: 0.5em" />
+
+            <br />
+            <br />
+            <MudDivider />
+            <MudIconButton Href="https://www.linkedin.com/in/peter-vo-43bb1337/" Icon="@Icons.Custom.Brands.LinkedIn" Target="_blank" />
+            <MudIconButton Href="https://github.com/xuanphuoc92" Icon="@Icons.Custom.Brands.GitHub" Target="_blank" />
+            @* <MudPaper Elevation="2">
+            </MudPaper> *@
+        </MudItem>
+        <MudItem xs="12" sm="12" md="9">
+            @* <MudPaper Elevation="2" Class="pa-4"></MudPaper> *@
+            <MudText Typo="Typo.h3" GutterBottom="true">
+                @* <MudIcon Size="Size.Large" Icon="@Icons.Material.Filled.Home" /> *@
+                Peter's playground
+            </MudText>
+            <MudAlert Severity="Severity.Normal" Icon="@Icons.Material.Filled.Star">Welcome to my playground!</MudAlert>
+
+            @foreach (var item in PlaygroundItem.Items)
+            {
+                <MudLink Href="@item.Link" Underline="Underline.None">
+                    <MudPaper Elevation="2" Class="pa-4">
+                        <MudText Typo="Typo.h5" GutterBottom="true">
+                            <MudIcon Style="font-size:0.75em;" Icon="@item.Icon" />
+                            @item.Title
+                        </MudText>
+                        <MudDivider/>
+                        <MudText>
+                            @item.Description
+                        </MudText>
+                    </MudPaper>
+                </MudLink>
+                <br/>
+                <br />
+            }
+
+        </MudItem>
+    </MudGrid>
+</MudContainer>
