@@ -23,7 +23,7 @@ namespace PeterDoStuff.Database
             _sharedConnection.Dispose();
         }
 
-        public override BaseConnection Open()
+        protected override BaseConnection NewConnection()
         {
             return new MemoryConnection(_sharedConnection);
         }
@@ -40,7 +40,7 @@ namespace PeterDoStuff.Database
         /// <summary>
         /// Commit the transaction
         /// </summary>
-        public override void Commit()
+        protected override void ActualCommit()
         {
             _transaction.Commit();
         }
@@ -48,7 +48,7 @@ namespace PeterDoStuff.Database
         /// <summary>
         /// Dispose the transaction (if not committed, the transaction will be rolled back)
         /// </summary>
-        public override void Dispose()
+        protected override void ActualDispose()
         {
             _transaction.Dispose();
         }

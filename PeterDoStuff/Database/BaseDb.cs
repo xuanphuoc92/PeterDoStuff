@@ -11,8 +11,14 @@ namespace PeterDoStuff.Database
 {
     public abstract class BaseDb : IDisposable
     {
-        public abstract BaseConnection Open();
         public abstract void Dispose();
+
+        protected abstract BaseConnection NewConnection();
+
+        public BaseConnection Open()
+        {
+            return NewConnection();
+        }
 
         public async Task<DbOutput> ExecuteOrQueryAsync(string sql, params object[] parameters)
         {
@@ -60,15 +66,27 @@ namespace PeterDoStuff.Database
         protected DbConnection _connection;
         protected DbTransaction _transaction;
 
+        protected abstract void ActualCommit();
+
+        protected abstract void ActualDispose();
+
+        internal bool ContainsExecute { get; set; } = false;
+
         /// <summary>
         /// Commit the transaction
         /// </summary>
-        public abstract void Commit();
+        public void Commit()
+        {
+            ActualCommit();
+        }
 
         /// <summary>
         /// Dispose the transaction (if not committed, the transaction will be rolled back)
         /// </summary>
-        public abstract void Dispose();
+        public void Dispose()
+        {
+            ActualDispose();
+        }
 
         /// <summary>
         /// Query by SQL with parameters
@@ -101,11 +119,14 @@ namespace PeterDoStuff.Database
         /// <param name="sql">E.g. "Update [_TestTable] Set Amount = 0 where ID = {0} and CreatedTime > {1};</param>
         /// <param name="parameters">E.g. "1001a", DateTime.Today</param>
         /// <returns></returns>
-        public Task<int> ExecuteAsync(string sql, params object[] parameters)
+        public async Task<int> ExecuteAsync(string sql, params object[] parameters)
         {
             var command = SqlCommand.New(sql, parameters);
             object param = new DynamicParameters(command.Parameters);
-            return _connection.ExecuteAsync(sql, param, _transaction);
+            int executed = await _connection.ExecuteAsync(sql, param, _transaction);
+            if (executed > 0)
+                ContainsExecute = true;
+            return executed;
         }
 
         /// <summary>

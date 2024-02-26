@@ -21,7 +21,7 @@ namespace PeterDoStuff.Database
             _connString = connString;
         }
 
-        public override BaseConnection Open()
+        protected override BaseConnection NewConnection()
         {
             return new SqlServerConnection(_connString);
         }
@@ -51,13 +51,13 @@ namespace PeterDoStuff.Database
             }
         }
 
-        public override void Commit()
+        protected override void ActualCommit()
         {
             _transaction.Commit();
             _connection.Close();
         }
 
-        public override void Dispose()
+        protected override void ActualDispose()
         {
             _transaction.Dispose();
             _connection.Dispose();
