@@ -165,5 +165,168 @@ DELETE FROM [_TestTable_];");
             output = await db.ExecuteOrQueryAsync("DROP TABLE IF EXISTS [_TestTable_]");
             output.Execute.Should().Be(db is MemoryDb ? 3 : -1);
         }
+
+        [TestMethod]
+        public async Task _06_Nested_InRollback_OutRollback()
+        {
+            using var db = SetDb();
+
+            await db.ExecuteOrQueryAsync(SqlCommand.SAMPLE_TEST_SQL);
+
+            using (var outerConn = db.Open())
+            {
+                await NegativeVerify(outerConn);
+            }
+
+            using (var outerConn = db.Open())
+            {
+                using (var innerConn = db.Open())
+                {
+                    await NegativeVerify(innerConn);
+                    await ExecuteChange(innerConn);
+                    await PositiveVerify(innerConn);
+                }
+                await NegativeVerify(outerConn);
+                await ExecuteChange(outerConn);
+                await PositiveVerify(outerConn);
+            }
+
+            using (var outerConn = db.Open())
+            {
+                await NegativeVerify(outerConn);
+            }
+        }
+
+        [TestMethod]
+        public async Task _07_Nested_InRollback_OutCommit()
+        {
+            using var db = SetDb();
+
+            await db.ExecuteOrQueryAsync(SqlCommand.SAMPLE_TEST_SQL);
+
+            using (var outerConn = db.Open())
+            {
+                await NegativeVerify(outerConn);
+            }
+
+            using (var outerConn = db.Open())
+            {
+                using (var innerConn = db.Open())
+                {
+                    await NegativeVerify(innerConn);
+                    await ExecuteChange(innerConn);
+                    await PositiveVerify(innerConn);
+                }
+                await NegativeVerify(outerConn);
+                await ExecuteChange(outerConn);
+                await PositiveVerify(outerConn);
+                outerConn.Commit();
+            }
+
+            using (var outerConn = db.Open())
+            {
+                await PositiveVerify(outerConn);
+            }
+        }
+
+        [TestMethod]
+        public async Task _08_Nested_InCommit_OutRollback()
+        {
+            using var db = SetDb();
+
+            await db.ExecuteOrQueryAsync(SqlCommand.SAMPLE_TEST_SQL);
+
+            using (var outerConn = db.Open())
+            {
+                await NegativeVerify(outerConn);
+            }
+
+            using (var outerConn = db.Open())
+            {
+                using (var innerConn = db.Open())
+                {
+                    await NegativeVerify(innerConn);
+                    await ExecuteChange(innerConn);
+                    await PositiveVerify(innerConn);
+                    innerConn.Commit();
+                }
+                await PositiveVerify(outerConn);
+                //await ExecuteChange(outerConn);
+                //await PositiveVerify(outerConn);
+            }
+
+            using (var outerConn = db.Open())
+            {
+                await NegativeVerify(outerConn);
+            }
+        }
+
+        [TestMethod]
+        public async Task _09_Nested_InCommit_OutCommit()
+        {
+            using var db = SetDb();
+
+            await db.ExecuteOrQueryAsync(SqlCommand.SAMPLE_TEST_SQL);
+
+            using (var outerConn = db.Open())
+            {
+                await NegativeVerify(outerConn);
+            }
+
+            using (var outerConn = db.Open())
+            {
+                using (var innerConn = db.Open())
+                {
+                    await NegativeVerify(innerConn);
+                    await ExecuteChange(innerConn);
+                    await PositiveVerify(innerConn);
+                    innerConn.Commit();
+                }
+                await PositiveVerify(outerConn);
+                //await ExecuteChange(outerConn);
+                //await PositiveVerify(outerConn);
+                outerConn.Commit();
+            }
+
+            using (var outerConn = db.Open())
+            {
+                await NegativeVerify(outerConn);
+            }
+        }
+
+        private async Task ExecuteChange(BaseConnection conn)
+        {
+            int execute;
+            execute = await conn.ExecuteAsync("INSERT INTO [_TestTable_] (Number, Name) VALUES (4, 'David')");
+            execute.Should().Be(1);
+            execute = await conn.ExecuteAsync("UPDATE [_TestTable_] SET Name = 'Alex' WHERE Number = 1");
+            execute.Should().Be(1);
+            execute = await conn.ExecuteAsync("DELETE FROM [_TestTable_] WHERE Number = 2");
+            execute.Should().Be(1);
+        }
+
+        private class TestTableRow
+        {
+            public int Number;
+            public string Name;
+        }
+
+        private async Task PositiveVerify(BaseConnection conn)
+        {
+            var query = await conn.QueryAsync<TestTableRow>("SELECT * FROM [_TestTable_]");
+            query.Should().HaveCount(3);
+            query.Single(d => d.Number == 1).Name.Should().Be("Alex");
+            query.Single(d => d.Number == 3).Name.Should().Be("Carol");
+            query.Single(d => d.Number == 4).Name.Should().Be("David");
+        }
+
+        private async Task NegativeVerify(BaseConnection conn)
+        {
+            var query = await conn.QueryAsync<TestTableRow>("SELECT * FROM [_TestTable_]");
+            query.Should().HaveCount(3);
+            query.Single(d => d.Number == 1).Name.Should().Be("Alice");
+            query.Single(d => d.Number == 2).Name.Should().Be("Bob");
+            query.Single(d => d.Number == 3).Name.Should().Be("Carol");
+        }
     }
 }
