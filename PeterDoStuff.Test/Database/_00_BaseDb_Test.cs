@@ -12,22 +12,22 @@ namespace PeterDoStuff.Test.Database
     {
         protected abstract BaseDb SetDb();
 
-        private static async Task TestCreateTable(BaseConnection conn)
+        private static async Task TestCreateTable(BaseDb db)
         {
             // Drop the table first
-            await conn.ExecuteAsync("DROP TABLE IF EXISTS [_TestTable_];");
+            await db.ExecuteAsync("DROP TABLE IF EXISTS [_TestTable_];");
 
             bool tableExists;
             
             // Table dropped, should not exist
-            tableExists = await conn.TableExists("_TestTable_");
+            tableExists = await db.TableExists("_TestTable_");
             tableExists.Should().BeFalse();
 
             // Table created
-            await conn.ExecuteAsync("CREATE TABLE [_TestTable_] ([Id] uniqueidentifier);");
+            await db.ExecuteAsync("CREATE TABLE [_TestTable_] ([Id] uniqueidentifier);");
 
             // Within transaction, table is queried and exists
-            tableExists = await conn.TableExists("_TestTable_");
+            tableExists = await db.TableExists("_TestTable_");
             tableExists.Should().BeTrue();
         }
 
@@ -38,7 +38,7 @@ namespace PeterDoStuff.Test.Database
 
             using (var conn = db.Open())
             {
-                await TestCreateTable(conn);
+                await TestCreateTable(db);
                 //The transaction is committed
                 conn.Commit();
             }
@@ -46,7 +46,7 @@ namespace PeterDoStuff.Test.Database
             using (var conn = db.Open())
             {
                 // Outside and in another transaction, the table exist
-                bool tableExists = await conn.TableExists("_TestTable_");
+                bool tableExists = await db.TableExists("_TestTable_");
                 tableExists.Should().BeTrue();
             }
         }
@@ -58,13 +58,13 @@ namespace PeterDoStuff.Test.Database
 
             using (var conn = db.Open())
             {
-                await conn.ExecuteAsync("DROP TABLE IF EXISTS [_TestTable_];");
+                await db.ExecuteAsync("DROP TABLE IF EXISTS [_TestTable_];");
                 conn.Commit();
             }
 
             using (var conn = db.Open())
             {
-                await TestCreateTable(conn);
+                await TestCreateTable(db);
                 // But transaction not committed
                 //conn.Commit();
             }
@@ -72,7 +72,7 @@ namespace PeterDoStuff.Test.Database
             using (var conn = db.Open())
             {
                 // Outside and in another transaction, table not exist
-                bool tableExists = await conn.TableExists("_TestTable_");
+                bool tableExists = await db.TableExists("_TestTable_");
                 tableExists.Should().BeFalse();
             }
         }
@@ -83,26 +83,26 @@ namespace PeterDoStuff.Test.Database
             using var db = SetDb();
 
             using var conn = db.Open();
-            var result = await conn.QueryAsync("DROP TABLE IF EXISTS [_TestTable_]");
+            var result = await db.QueryAsync("DROP TABLE IF EXISTS [_TestTable_]");
             result.Should().BeEmpty();
 
             // Mixed, ended with Query
-            result = await conn.QueryAsync(SqlCommand.SAMPLE_TEST_SQL);
+            result = await db.QueryAsync(SqlCommand.SAMPLE_TEST_SQL);
             result.Should().HaveCount(3);
 
-            result = await conn.QueryAsync("SELECT * FROM [_TestTable_];");
+            result = await db.QueryAsync("SELECT * FROM [_TestTable_];");
             result.Should().HaveCount(3);
 
             // Mixed, ended with Execute
-            result = await conn.QueryAsync(@"SELECT * FROM [_TestTable_];
+            result = await db.QueryAsync(@"SELECT * FROM [_TestTable_];
 SELECT [Number] FROM [_TestTable_];
 DELETE FROM [_TestTable_];");
             result.Should().HaveCount(3);
 
-            result = await conn.QueryAsync("SELECT * FROM [_TestTable_];");
+            result = await db.QueryAsync("SELECT * FROM [_TestTable_];");
             result.Should().BeEmpty();
 
-            result = await conn.QueryAsync("DROP TABLE IF EXISTS [_TestTable_]");
+            result = await db.QueryAsync("DROP TABLE IF EXISTS [_TestTable_]");
             result.Should().BeEmpty();
 
             // Query behaviour:
@@ -116,26 +116,26 @@ DELETE FROM [_TestTable_];");
             using var db = SetDb();
 
             using var conn = db.Open();
-            var rowCount = await conn.ExecuteAsync("DROP TABLE IF EXISTS [_TestTable_]");
+            var rowCount = await db.ExecuteAsync("DROP TABLE IF EXISTS [_TestTable_]");
             rowCount.Should().Be(db is MemoryDb ? 0 : -1);
 
             // Mixed, ended with Query
-            rowCount = await conn.ExecuteAsync(SqlCommand.SAMPLE_TEST_SQL);
+            rowCount = await db.ExecuteAsync(SqlCommand.SAMPLE_TEST_SQL);
             rowCount.Should().Be(3);
 
-            rowCount = await conn.ExecuteAsync("SELECT * FROM [_TestTable_];");
+            rowCount = await db.ExecuteAsync("SELECT * FROM [_TestTable_];");
             rowCount.Should().Be(-1);
 
             // Mixed, ended with Execute
-            rowCount = await conn.ExecuteAsync(@"SELECT * FROM [_TestTable_];
+            rowCount = await db.ExecuteAsync(@"SELECT * FROM [_TestTable_];
 SELECT [Number] FROM [_TestTable_];
 DELETE FROM [_TestTable_];");
             rowCount.Should().Be(3);
 
-            rowCount = await conn.ExecuteAsync("SELECT * FROM [_TestTable_];");
+            rowCount = await db.ExecuteAsync("SELECT * FROM [_TestTable_];");
             rowCount.Should().Be(-1);
 
-            rowCount = await conn.ExecuteAsync("DROP TABLE IF EXISTS [_TestTable_]");
+            rowCount = await db.ExecuteAsync("DROP TABLE IF EXISTS [_TestTable_]");
             rowCount.Should().Be(db is MemoryDb ? 3 : -1);
 
             // Execute behaviour:
@@ -175,25 +175,25 @@ DELETE FROM [_TestTable_];");
 
             using (var outerConn = db.Open())
             {
-                await NegativeVerify(outerConn);
+                await NegativeVerify(db);
             }
 
             using (var outerConn = db.Open())
             {
                 using (var innerConn = db.Open())
                 {
-                    await NegativeVerify(innerConn);
-                    await ExecuteChange(innerConn);
-                    await PositiveVerify(innerConn);
+                    await NegativeVerify(db);
+                    await ExecuteChange(db);
+                    await PositiveVerify(db);
                 }
-                await NegativeVerify(outerConn);
-                await ExecuteChange(outerConn);
-                await PositiveVerify(outerConn);
+                await NegativeVerify(db);
+                await ExecuteChange(db);
+                await PositiveVerify(db);
             }
 
             using (var outerConn = db.Open())
             {
-                await NegativeVerify(outerConn);
+                await NegativeVerify(db);
             }
         }
 
@@ -206,26 +206,26 @@ DELETE FROM [_TestTable_];");
 
             using (var outerConn = db.Open())
             {
-                await NegativeVerify(outerConn);
+                await NegativeVerify(db);
             }
 
             using (var outerConn = db.Open())
             {
                 using (var innerConn = db.Open())
                 {
-                    await NegativeVerify(innerConn);
-                    await ExecuteChange(innerConn);
-                    await PositiveVerify(innerConn);
+                    await NegativeVerify(db);
+                    await ExecuteChange(db);
+                    await PositiveVerify(db);
                 }
-                await NegativeVerify(outerConn);
-                await ExecuteChange(outerConn);
-                await PositiveVerify(outerConn);
+                await NegativeVerify(db);
+                await ExecuteChange(db);
+                await PositiveVerify(db);
                 outerConn.Commit();
             }
 
             using (var outerConn = db.Open())
             {
-                await PositiveVerify(outerConn);
+                await PositiveVerify(db);
             }
         }
 
@@ -238,26 +238,26 @@ DELETE FROM [_TestTable_];");
 
             using (var outerConn = db.Open())
             {
-                await NegativeVerify(outerConn);
+                await NegativeVerify(db);
             }
 
             using (var outerConn = db.Open())
             {
                 using (var innerConn = db.Open())
                 {
-                    await NegativeVerify(innerConn);
-                    await ExecuteChange(innerConn);
-                    await PositiveVerify(innerConn);
+                    await NegativeVerify(db);
+                    await ExecuteChange(db);
+                    await PositiveVerify(db);
                     innerConn.Commit();
                 }
-                await PositiveVerify(outerConn);
-                //await ExecuteChange(outerConn);
-                //await PositiveVerify(outerConn);
+                await PositiveVerify(db);
+                //await ExecuteChange(db);
+                //await PositiveVerify(db);
             }
 
             using (var outerConn = db.Open())
             {
-                await NegativeVerify(outerConn);
+                await NegativeVerify(db);
             }
         }
 
@@ -270,38 +270,38 @@ DELETE FROM [_TestTable_];");
 
             using (var outerConn = db.Open())
             {
-                await NegativeVerify(outerConn);
+                await NegativeVerify(db);
             }
 
             using (var outerConn = db.Open())
             {
                 using (var innerConn = db.Open())
                 {
-                    await NegativeVerify(innerConn);
-                    await ExecuteChange(innerConn);
-                    await PositiveVerify(innerConn);
+                    await NegativeVerify(db);
+                    await ExecuteChange(db);
+                    await PositiveVerify(db);
                     innerConn.Commit();
                 }
-                await PositiveVerify(outerConn);
-                //await ExecuteChange(outerConn);
-                //await PositiveVerify(outerConn);
+                await PositiveVerify(db);
+                //await ExecuteChange(db);
+                //await PositiveVerify(db);
                 outerConn.Commit();
             }
 
             using (var outerConn = db.Open())
             {
-                await NegativeVerify(outerConn);
+                await NegativeVerify(db);
             }
         }
 
-        private async Task ExecuteChange(BaseConnection conn)
+        private async Task ExecuteChange(BaseDb db)
         {
             int execute;
-            execute = await conn.ExecuteAsync("INSERT INTO [_TestTable_] (Number, Name) VALUES (4, 'David')");
+            execute = await db.ExecuteAsync("INSERT INTO [_TestTable_] (Number, Name) VALUES (4, 'David')");
             execute.Should().Be(1);
-            execute = await conn.ExecuteAsync("UPDATE [_TestTable_] SET Name = 'Alex' WHERE Number = 1");
+            execute = await db.ExecuteAsync("UPDATE [_TestTable_] SET Name = 'Alex' WHERE Number = 1");
             execute.Should().Be(1);
-            execute = await conn.ExecuteAsync("DELETE FROM [_TestTable_] WHERE Number = 2");
+            execute = await db.ExecuteAsync("DELETE FROM [_TestTable_] WHERE Number = 2");
             execute.Should().Be(1);
         }
 
@@ -311,18 +311,18 @@ DELETE FROM [_TestTable_];");
             public string Name;
         }
 
-        private async Task PositiveVerify(BaseConnection conn)
+        private async Task PositiveVerify(BaseDb db)
         {
-            var query = await conn.QueryAsync<TestTableRow>("SELECT * FROM [_TestTable_]");
+            var query = await db.QueryAsync<TestTableRow>("SELECT * FROM [_TestTable_]");
             query.Should().HaveCount(3);
             query.Single(d => d.Number == 1).Name.Should().Be("Alex");
             query.Single(d => d.Number == 3).Name.Should().Be("Carol");
             query.Single(d => d.Number == 4).Name.Should().Be("David");
         }
 
-        private async Task NegativeVerify(BaseConnection conn)
+        private async Task NegativeVerify(BaseDb db)
         {
-            var query = await conn.QueryAsync<TestTableRow>("SELECT * FROM [_TestTable_]");
+            var query = await db.QueryAsync<TestTableRow>("SELECT * FROM [_TestTable_]");
             query.Should().HaveCount(3);
             query.Single(d => d.Number == 1).Name.Should().Be("Alice");
             query.Single(d => d.Number == 2).Name.Should().Be("Bob");

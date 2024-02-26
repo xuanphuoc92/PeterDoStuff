@@ -14,11 +14,26 @@ namespace PeterDoStuff.Database
         public abstract void Dispose();
 
         protected abstract BaseConnection NewConnection();
+        
+        private BaseConnection Conn { get; set; }
 
         public BaseConnection Open()
         {
-            return NewConnection();
+            Conn = NewConnection();
+            return Conn;
         }
+
+        public Task<IEnumerable<T>> QueryAsync<T>(string sql, params object[] parameters)
+            => Conn.QueryAsync<T>(sql, parameters);
+
+        public Task<IEnumerable<dynamic>> QueryAsync(string sql, params object[] parameters)
+            => Conn.QueryAsync(sql, parameters);
+
+        public Task<int> ExecuteAsync(string sql, params object[] parameters)
+            => Conn.ExecuteAsync(sql, parameters);
+
+        public Task<bool> TableExists(string table)
+            => Conn.TableExists(table);
 
         public async Task<DbOutput> ExecuteOrQueryAsync(string sql, params object[] parameters)
         {
@@ -95,7 +110,7 @@ namespace PeterDoStuff.Database
         /// <param name="sql">E.g. "SELECT * FROM [_TestTable] where ID = {0} and CreatedTime > {1};</param>
         /// <param name="parameters">E.g. "1001a", DateTime.Today</param>
         /// <returns></returns>
-        public Task<IEnumerable<T>> QueryAsync<T>(string sql, params object[] parameters)
+        internal Task<IEnumerable<T>> QueryAsync<T>(string sql, params object[] parameters)
         {
             var command = SqlCommand.New(sql, parameters);
             object param = new DynamicParameters(command.Parameters);
@@ -108,7 +123,7 @@ namespace PeterDoStuff.Database
         /// <param name="sql">E.g. "SELECT * FROM [_TestTable] where ID = {0} and CreatedTime > {1};</param>
         /// <param name="parameters">E.g. "1001a", DateTime.Today</param>
         /// <returns></returns>
-        public Task<IEnumerable<dynamic>> QueryAsync(string sql, params object[] parameters)
+        internal Task<IEnumerable<dynamic>> QueryAsync(string sql, params object[] parameters)
         {
             return QueryAsync<dynamic>(sql, parameters);
         }
@@ -119,7 +134,7 @@ namespace PeterDoStuff.Database
         /// <param name="sql">E.g. "Update [_TestTable] Set Amount = 0 where ID = {0} and CreatedTime > {1};</param>
         /// <param name="parameters">E.g. "1001a", DateTime.Today</param>
         /// <returns></returns>
-        public async Task<int> ExecuteAsync(string sql, params object[] parameters)
+        internal async Task<int> ExecuteAsync(string sql, params object[] parameters)
         {
             var command = SqlCommand.New(sql, parameters);
             object param = new DynamicParameters(command.Parameters);
@@ -134,6 +149,6 @@ namespace PeterDoStuff.Database
         /// </summary>
         /// <param name="table">Name of the table</param>
         /// <returns></returns>
-        public abstract Task<bool> TableExists(string table);
+        internal abstract Task<bool> TableExists(string table);
     }
 }

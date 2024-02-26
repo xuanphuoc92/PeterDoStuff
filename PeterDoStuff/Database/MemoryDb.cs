@@ -53,7 +53,7 @@ namespace PeterDoStuff.Database
             _transaction.Dispose();
         }
 
-        public override async Task<bool> TableExists(string table)
+        internal override async Task<bool> TableExists(string table)
         {
             var queryResult = await QueryAsync(
                 sql: "SELECT name FROM sqlite_master WHERE sqlite_master.type = 'table' AND name = {0}", 

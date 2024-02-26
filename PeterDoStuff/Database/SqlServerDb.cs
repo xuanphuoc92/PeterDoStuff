@@ -63,7 +63,7 @@ namespace PeterDoStuff.Database
             _connection.Dispose();
         }
 
-        public override async Task<bool> TableExists(string table)
+        internal override async Task<bool> TableExists(string table)
         {
             var queryResult = await QueryAsync(
                 sql: "SELECT t.name FROM sys.tables t WHERE t.is_ms_shipped = 0 AND t.name = {0}",

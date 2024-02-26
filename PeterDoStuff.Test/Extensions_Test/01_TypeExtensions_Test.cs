@@ -73,7 +73,7 @@ namespace PeterDoStuff.Test.Extensions_Test
         {
             using var db = new MemoryDb();
             using var conn = db.Open();
-            var result = await conn.QueryAsync(SqlCommand.SAMPLE_TEST_SQL);
+            var result = await db.QueryAsync(SqlCommand.SAMPLE_TEST_SQL);
             dynamic obj = result.First();            
 
             var properties = ((object)obj).GetPropertyNames();
