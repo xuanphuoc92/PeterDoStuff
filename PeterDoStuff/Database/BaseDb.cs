@@ -66,9 +66,13 @@ namespace PeterDoStuff.Database
         protected DbConnection _connection;
         protected DbTransaction _transaction;
 
-        protected abstract void ActualCommit();
+        protected abstract void OuterCommit();
 
-        protected abstract void ActualDispose();
+        protected abstract void OuterDispose();
+
+        protected virtual void InnerCommit() { }
+
+        protected virtual void InnerDispose() { }
 
         internal bool ContainsExecute { get; set; } = false;
 
@@ -77,7 +81,8 @@ namespace PeterDoStuff.Database
         /// </summary>
         public void Commit()
         {
-            ActualCommit();
+            InnerCommit();
+            OuterCommit();
         }
 
         /// <summary>
@@ -85,7 +90,8 @@ namespace PeterDoStuff.Database
         /// </summary>
         public void Dispose()
         {
-            ActualDispose();
+            InnerDispose();
+            OuterDispose();
         }
 
         /// <summary>

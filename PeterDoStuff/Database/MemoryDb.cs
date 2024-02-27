@@ -40,7 +40,7 @@ namespace PeterDoStuff.Database
         /// <summary>
         /// Commit the transaction
         /// </summary>
-        protected override void ActualCommit()
+        protected override void OuterCommit()
         {
             _transaction.Commit();
         }
@@ -48,7 +48,7 @@ namespace PeterDoStuff.Database
         /// <summary>
         /// Dispose the transaction (if not committed, the transaction will be rolled back)
         /// </summary>
-        protected override void ActualDispose()
+        protected override void OuterDispose()
         {
             _transaction.Dispose();
         }
