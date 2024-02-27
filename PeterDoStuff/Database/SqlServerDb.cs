@@ -53,22 +53,14 @@ namespace PeterDoStuff.Database
 
         protected override void OuterCommit()
         {
+            _transaction.Commit();
             _connection.Close();
         }
 
         protected override void OuterDispose()
         {
-            _connection.Dispose();
-        }
-
-        protected override void InnerCommit()
-        {
-            _transaction.Commit();
-        }
-
-        protected override void InnerDispose()
-        {
             _transaction.Dispose();
+            _connection.Dispose();
         }
 
         public override async Task<bool> TableExists(string table)

@@ -186,8 +186,6 @@ DELETE FROM [_TestTable_];");
                     await ExecuteChange(innerConn);
                     await PositiveVerify(innerConn);
                 }
-                await NegativeVerify(outerConn);
-                await ExecuteChange(outerConn);
                 await PositiveVerify(outerConn);
             }
 
@@ -197,40 +195,9 @@ DELETE FROM [_TestTable_];");
             }
         }
 
-        [TestMethod]
-        public async Task _07_Nested_InRollback_OutCommit()
-        {
-            using var db = SetDb();
-
-            await db.ExecuteOrQueryAsync(SqlCommand.SAMPLE_TEST_SQL);
-
-            using (var outerConn = db.Open())
-            {
-                await NegativeVerify(outerConn);
-            }
-
-            using (var outerConn = db.Open())
-            {
-                using (var innerConn = db.Open())
-                {
-                    await NegativeVerify(innerConn);
-                    await ExecuteChange(innerConn);
-                    await PositiveVerify(innerConn);
-                }
-                await NegativeVerify(outerConn);
-                await ExecuteChange(outerConn);
-                await PositiveVerify(outerConn);
-                outerConn.Commit();
-            }
-
-            using (var outerConn = db.Open())
-            {
-                await PositiveVerify(outerConn);
-            }
-        }
 
         [TestMethod]
-        public async Task _08_Nested_InCommit_OutRollback()
+        public async Task _07_Nested_InCommit_OutRollback()
         {
             using var db = SetDb();
 
@@ -251,13 +218,41 @@ DELETE FROM [_TestTable_];");
                     innerConn.Commit();
                 }
                 await PositiveVerify(outerConn);
-                //await ExecuteChange(outerConn);
-                //await PositiveVerify(outerConn);
             }
 
             using (var outerConn = db.Open())
             {
                 await NegativeVerify(outerConn);
+            }
+        }
+
+        [TestMethod]
+        public async Task _08_Nested_InRollback_OutCommit()
+        {
+            using var db = SetDb();
+
+            await db.ExecuteOrQueryAsync(SqlCommand.SAMPLE_TEST_SQL);
+
+            using (var outerConn = db.Open())
+            {
+                await NegativeVerify(outerConn);
+            }
+
+            using (var outerConn = db.Open())
+            {
+                using (var innerConn = db.Open())
+                {
+                    await NegativeVerify(innerConn);
+                    await ExecuteChange(innerConn);
+                    await PositiveVerify(innerConn);
+                }
+                await PositiveVerify(outerConn);
+                outerConn.Commit();
+            }
+
+            using (var outerConn = db.Open())
+            {
+                await PositiveVerify(outerConn);
             }
         }
 
@@ -283,14 +278,12 @@ DELETE FROM [_TestTable_];");
                     innerConn.Commit();
                 }
                 await PositiveVerify(outerConn);
-                //await ExecuteChange(outerConn);
-                //await PositiveVerify(outerConn);
                 outerConn.Commit();
             }
 
             using (var outerConn = db.Open())
             {
-                await NegativeVerify(outerConn);
+                await PositiveVerify(outerConn);
             }
         }
 

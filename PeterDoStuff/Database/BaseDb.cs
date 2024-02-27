@@ -15,9 +15,17 @@ namespace PeterDoStuff.Database
 
         protected abstract BaseConnection NewConnection();
 
+        internal int Scope { get; set; } = 0;
+        internal BaseConnection? CurrentConn { get; set; }
         public BaseConnection Open()
         {
-            return NewConnection();
+            if (Scope == 0) // Outermost connection
+            {
+                CurrentConn = NewConnection();
+                CurrentConn.Db = this;
+            }
+            Scope++;
+            return CurrentConn;
         }
 
         public async Task<DbOutput> ExecuteOrQueryAsync(string sql, params object[] parameters)
@@ -70,11 +78,17 @@ namespace PeterDoStuff.Database
 
         protected abstract void OuterDispose();
 
-        protected virtual void InnerCommit() { }
+        protected virtual void InnerCommit() 
+        {
+            // Do nothing
+        }
 
-        protected virtual void InnerDispose() { }
+        protected virtual void InnerDispose() 
+        {
+            Db.Scope--;
+        }
 
-        internal bool ContainsExecute { get; set; } = false;
+        internal BaseDb Db { get; set; }
 
         /// <summary>
         /// Commit the transaction
@@ -82,7 +96,8 @@ namespace PeterDoStuff.Database
         public void Commit()
         {
             InnerCommit();
-            OuterCommit();
+            if (Db.Scope == 1)
+                OuterCommit();
         }
 
         /// <summary>
@@ -91,7 +106,8 @@ namespace PeterDoStuff.Database
         public void Dispose()
         {
             InnerDispose();
-            OuterDispose();
+            if (Db.Scope == 0)
+                OuterDispose();
         }
 
         /// <summary>
@@ -129,9 +145,7 @@ namespace PeterDoStuff.Database
         {
             var command = SqlCommand.New(sql, parameters);
             object param = new DynamicParameters(command.Parameters);
-            int executed = await _connection.ExecuteAsync(sql, param, _transaction);
-            if (executed > 0)
-                ContainsExecute = true;
+            int executed = await _connection.ExecuteAsync(sql, param, _transaction);            
             return executed;
         }
 
