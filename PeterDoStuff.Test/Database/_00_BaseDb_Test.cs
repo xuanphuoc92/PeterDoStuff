@@ -328,5 +328,90 @@ DELETE FROM [_TestTable_];");
             query.Single(d => d.Number == 2).Name.Should().Be("Bob");
             query.Single(d => d.Number == 3).Name.Should().Be("Carol");
         }
+
+        [TestMethod]
+        public async Task _10_NestedRollback()
+        {
+            using var db = SetDb();
+            using (var conn = db.Open())
+            {
+                await Setup_NestedTransactions(conn);
+                conn.Commit();
+            }
+
+            using (var conn1 = db.Open())
+            {
+                await Verify_NestedTransactions(conn1, 0);
+                await Update_NestedTransactions(conn1);
+                using (var conn2 = db.Open())
+                {
+                    await Verify_NestedTransactions(conn2, 1);
+                    await Update_NestedTransactions(conn2);
+                    using (var conn3 = db.Open())
+                    {
+                        await Verify_NestedTransactions(conn3, 2);
+                        await Update_NestedTransactions(conn3);
+                    }
+                }
+            }
+
+            using (var conn1 = db.Open())
+            {
+                await Verify_NestedTransactions(conn1, 0);
+            }
+        }
+
+        [TestMethod]
+        public async Task _11_NestedCommits()
+        {
+            using var db = SetDb();
+            using (var conn = db.Open())
+            {
+                await Setup_NestedTransactions(conn);
+                conn.Commit();
+            }
+
+            using (var conn1 = db.Open())
+            {
+                await Verify_NestedTransactions(conn1, 0);
+                await Update_NestedTransactions(conn1);
+                using (var conn2 = db.Open())
+                {
+                    await Verify_NestedTransactions(conn2, 1);
+                    await Update_NestedTransactions(conn2);
+                    using (var conn3 = db.Open())
+                    {
+                        await Verify_NestedTransactions(conn3, 2);
+                        await Update_NestedTransactions(conn3);
+                        conn3.Commit();
+                    }
+                    conn2.Commit();
+                }
+                conn1.Commit();
+            }
+
+            using (var conn1 = db.Open())
+            {
+                await Verify_NestedTransactions(conn1, 3);
+            }
+        }
+
+        private static async Task Setup_NestedTransactions(BaseConnection conn)
+        {
+            await conn.ExecuteAsync("DROP TABLE IF EXISTS [_TestTable_];");
+            await conn.ExecuteAsync("CREATE TABLE [_TestTable_] (Id int);");
+            await conn.ExecuteAsync("INSERT INTO [_TestTable_] (Id) VALUES (0);");
+        }
+
+        private static async Task Verify_NestedTransactions(BaseConnection conn, int verifiedValue)
+        {
+            int value = (await conn.QueryAsync("SELECT Id FROM [_TestTable_];")).Single().Id;
+            value.Should().Be(verifiedValue);
+        }
+
+        private static async Task Update_NestedTransactions(BaseConnection conn)
+        {
+            await conn.ExecuteAsync("UPDATE [_TestTable_] SET Id = Id + 1;");
+        }
     }
 }
