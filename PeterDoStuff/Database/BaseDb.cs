@@ -25,6 +25,7 @@ namespace PeterDoStuff.Database
                 CurrentConn = NewConnection();
                 CurrentConn.Db = this;
             }
+            CurrentConn.RegisterScope();
             return CurrentConn;
         }
 
@@ -80,13 +81,30 @@ namespace PeterDoStuff.Database
 
         internal BaseDb Db { get; set; }
 
+        private List<bool> ScopeCommits { get; set; } = new List<bool>();
+        private Stack<int> ScopeStack { get; set; } = new Stack<int>();
+        private int CurrentScope { get; set; }
+
+        internal void RegisterScope()
+        {
+            CurrentScope = ScopeCommits.Count;
+            ScopeCommits.Add(false);
+            ScopeStack.Push(CurrentScope);
+        }
+
         /// <summary>
         /// Commit the transaction
         /// </summary>
         public void Commit()
         {
+            ScopeCommits[CurrentScope] = true;
+
             if (Db.Scope == 0)
+            {
+                if (ScopeCommits.Contains(false))
+                    throw new Exception("Cannot commit connection with non-committed inner connection(s)");
                 OuterCommit();
+            }
         }
 
         /// <summary>
@@ -94,10 +112,16 @@ namespace PeterDoStuff.Database
         /// </summary>
         public void Dispose()
         {
+            // Pop the CurrentScope, set CurrentScope as next Scope
+            ScopeStack.Pop();
+            CurrentScope = ScopeStack.Any() ? ScopeStack.Peek() : -1;
+
             if (Db.Scope == 0)
             {
                 OuterDispose();
                 Db.CurrentConn = null;
+                ScopeCommits.Clear();
+                ScopeStack.Clear();
             }
             Db.Scope--;
         }
