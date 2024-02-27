@@ -15,16 +15,16 @@ namespace PeterDoStuff.Database
 
         protected abstract BaseConnection NewConnection();
 
-        internal int Scope { get; set; } = 0;
+        internal int Scope { get; set; } = -1;
         internal BaseConnection? CurrentConn { get; set; }
         public BaseConnection Open()
         {
-            if (Scope == 0) // Outermost connection
+            Scope++;
+            if (Scope == 0) // Create a new Connection for the Outermost Scope
             {
                 CurrentConn = NewConnection();
                 CurrentConn.Db = this;
             }
-            Scope++;
             return CurrentConn;
         }
 
@@ -78,16 +78,6 @@ namespace PeterDoStuff.Database
 
         protected abstract void OuterDispose();
 
-        protected virtual void InnerCommit() 
-        {
-            // Do nothing
-        }
-
-        protected virtual void InnerDispose() 
-        {
-            Db.Scope--;
-        }
-
         internal BaseDb Db { get; set; }
 
         /// <summary>
@@ -95,8 +85,7 @@ namespace PeterDoStuff.Database
         /// </summary>
         public void Commit()
         {
-            InnerCommit();
-            if (Db.Scope == 1)
+            if (Db.Scope == 0)
                 OuterCommit();
         }
 
@@ -105,9 +94,12 @@ namespace PeterDoStuff.Database
         /// </summary>
         public void Dispose()
         {
-            InnerDispose();
             if (Db.Scope == 0)
+            {
                 OuterDispose();
+                Db.CurrentConn = null;
+            }
+            Db.Scope--;
         }
 
         /// <summary>
