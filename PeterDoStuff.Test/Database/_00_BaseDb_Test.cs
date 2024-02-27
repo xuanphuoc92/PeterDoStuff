@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using PeterDoStuff.Database;
+using PeterDoStuff.Test.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -247,12 +248,9 @@ DELETE FROM [_TestTable_];");
                     await PositiveVerify(innerConn);
                 }
                 await PositiveVerify(outerConn);
-                outerConn.Commit();
-            }
-
-            using (var outerConn = db.Open())
-            {
-                await PositiveVerify(outerConn);
+                Action commitAction = () => outerConn.Commit();
+                var ex = commitAction.Should().Throw<Exception>().Subject.Single();
+                ex.WriteToConsole();
             }
         }
 
@@ -386,6 +384,45 @@ DELETE FROM [_TestTable_];");
             using (var conn1 = db.Open())
             {
                 await Verify_NestedTransactions(conn1, 3);
+            }
+        }
+
+        [TestMethod]
+        public async Task _12_Nested_InnerRollback_Exist()
+        {
+            using var db = SetDb();
+            using (var outer = db.Open())
+            {
+                await Setup_NestedTransactions(outer);
+                outer.Commit();
+            }
+            
+            using (var outer = db.Open())
+            {
+                using (var inner = db.Open())
+                {
+                    await Verify_NestedTransactions(inner, 0);
+                    await Update_NestedTransactions(inner);
+                    inner.Commit();
+                }
+
+                using (var inner = db.Open())
+                {
+                    await Verify_NestedTransactions(inner, 1);
+                    await Update_NestedTransactions(inner);
+                    //inner.Commit();
+                }
+
+                using (var inner = db.Open())
+                {
+                    await Verify_NestedTransactions(inner, 2);
+                    await Update_NestedTransactions(inner);
+                    inner.Commit();
+                }
+
+                Action commitAction = () => outer.Commit();
+                var exception = commitAction.Should().Throw<Exception>().Subject.Single();
+                exception.WriteToConsole();
             }
         }
 

@@ -14,5 +14,19 @@ namespace PeterDoStuff.Test.Extensions
         /// <param name="this"></param>
         public static void WriteToConsole(this string @this)
             => Console.WriteLine(@this);
+
+        /// <summary>
+        /// Write Exception to Console
+        /// </summary>
+        /// <param name="this"></param>
+        public static void WriteToConsole(this Exception @this)
+        {
+            Exception? ex = @this;
+            while (ex != null)
+            {
+                Console.WriteLine(ex.Message + '\n' + ex.StackTrace);
+                ex = ex.InnerException;
+            }
+        }
     }
 }
