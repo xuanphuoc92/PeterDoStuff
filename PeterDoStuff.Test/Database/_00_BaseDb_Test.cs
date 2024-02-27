@@ -343,7 +343,11 @@ DELETE FROM [_TestTable_];");
                         await Verify_NestedTransactions(conn3, 2);
                         await Update_NestedTransactions(conn3);
                     }
+                    await Verify_NestedTransactions(conn2, 3);
+                    await Update_NestedTransactions(conn2);
                 }
+                await Verify_NestedTransactions(conn1, 4);
+                await Update_NestedTransactions(conn1);
             }
 
             using (var conn1 = db.Open())
@@ -376,14 +380,18 @@ DELETE FROM [_TestTable_];");
                         await Update_NestedTransactions(conn3);
                         conn3.Commit();
                     }
+                    await Verify_NestedTransactions(conn2, 3);
+                    await Update_NestedTransactions(conn2);
                     conn2.Commit();
                 }
+                await Verify_NestedTransactions(conn1, 4);
+                await Update_NestedTransactions(conn1);
                 conn1.Commit();
             }
 
             using (var conn1 = db.Open())
             {
-                await Verify_NestedTransactions(conn1, 3);
+                await Verify_NestedTransactions(conn1, 5);
             }
         }
 
@@ -423,6 +431,11 @@ DELETE FROM [_TestTable_];");
                 Action commitAction = () => outer.Commit();
                 var exception = commitAction.Should().Throw<Exception>().Subject.Single();
                 exception.WriteToConsole();
+            }
+
+            using (var outer = db.Open())
+            {
+                await Verify_NestedTransactions(outer, 0);
             }
         }
 
