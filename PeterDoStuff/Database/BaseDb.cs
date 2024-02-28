@@ -15,17 +15,21 @@ namespace PeterDoStuff.Database
 
         protected abstract BaseConnection NewConnection();
 
-        internal int Scope { get; set; } = -1;
+        private int Scope { get; set; } = -1;
+        internal bool IsOutermostScope() => Scope == 0;
+        private void MoveDownScope() => Scope++;
+        internal void MoveUpScope() => Scope--;
+
         internal BaseConnection? CurrentConn { get; set; }
         public BaseConnection Open()
         {
-            Scope++;
-            if (Scope == 0) // Create a new Connection for the Outermost Scope
+            MoveDownScope();
+            if (IsOutermostScope()) // Create a new Connection for the Outermost Scope
             {
                 CurrentConn = NewConnection();
                 CurrentConn.Db = this;
             }
-            CurrentConn.RegisterScope();
+            CurrentConn.Register();
             return CurrentConn;
         }
 
@@ -81,15 +85,18 @@ namespace PeterDoStuff.Database
 
         internal BaseDb Db { get; set; }
 
-        private List<bool> ScopeCommits { get; set; } = new List<bool>();
-        private Stack<int> ScopeStack { get; set; } = new Stack<int>();
-        private int CurrentScope { get; set; }
+        private List<bool> ConnCommits { get; set; } = new List<bool>();
+        private Stack<int> ConnStack { get; set; } = new Stack<int>();
+        private int CurrentConnIndex { get; set; }
 
-        internal void RegisterScope()
+        /// <summary>
+        /// Register the connection, to track any inner rollback.
+        /// </summary>
+        internal void Register()
         {
-            CurrentScope = ScopeCommits.Count;
-            ScopeCommits.Add(false);
-            ScopeStack.Push(CurrentScope);
+            CurrentConnIndex = ConnCommits.Count;
+            ConnCommits.Add(false);
+            ConnStack.Push(CurrentConnIndex);
         }
 
         /// <summary>
@@ -97,11 +104,12 @@ namespace PeterDoStuff.Database
         /// </summary>
         public void Commit()
         {
-            ScopeCommits[CurrentScope] = true;
+            // Flag that the connection has been commited
+            ConnCommits[CurrentConnIndex] = true;
 
-            if (Db.Scope == 0)
+            if (Db.IsOutermostScope())
             {
-                if (ScopeCommits.Contains(false))
+                if (ConnCommits.Contains(false))
                     throw new Exception("Cannot commit connection with non-committed inner connection(s)");
                 OuterCommit();
             }
@@ -112,18 +120,19 @@ namespace PeterDoStuff.Database
         /// </summary>
         public void Dispose()
         {
-            // Pop the CurrentScope, set CurrentScope as next Scope
-            ScopeStack.Pop();
-            CurrentScope = ScopeStack.Any() ? ScopeStack.Peek() : -1;
+            // Pop the Current Connection
+            // Get the last connection from the top of the stack and set it as the Current Connection
+            ConnStack.Pop();
+            CurrentConnIndex = ConnStack.Any() ? ConnStack.Peek() : -1;
 
-            if (Db.Scope == 0)
+            if (Db.IsOutermostScope())
             {
                 OuterDispose();
                 Db.CurrentConn = null;
-                ScopeCommits.Clear();
-                ScopeStack.Clear();
+                ConnCommits.Clear();
+                ConnStack.Clear();
             }
-            Db.Scope--;
+            Db.MoveUpScope();
         }
 
         /// <summary>
