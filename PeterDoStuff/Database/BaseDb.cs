@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace PeterDoStuff.Database
 {
+    /// <summary>
+    /// Interface to an SQL Database.
+    /// </summary>
     public abstract class BaseDb : IDisposable
     {
         public abstract void Dispose();
@@ -21,6 +24,11 @@ namespace PeterDoStuff.Database
         internal void MoveUpScope() => Scope--;
 
         internal BaseConnection? CurrentConn { get; set; }
+        
+        /// <summary>
+        /// Open a new connection/transaction with the database
+        /// </summary>
+        /// <returns></returns>
         public BaseConnection Open()
         {
             MoveDownScope();
@@ -34,11 +42,13 @@ namespace PeterDoStuff.Database
         }
     }
 
-
+    /// <summary>
+    /// Interface of wrapper for an SQL Database's Connection/Transaction.
+    /// </summary>
     public abstract class BaseConnection : IDisposable
     {
-        protected DbConnection _connection;
-        protected DbTransaction _transaction;
+        protected DbConnection DbConnection;
+        protected DbTransaction DbTransaction;
 
         protected abstract void OuterCommit();
 
@@ -61,7 +71,7 @@ namespace PeterDoStuff.Database
         }
 
         /// <summary>
-        /// Commit the transaction
+        /// Commit the connection/transaction
         /// </summary>
         public void Commit()
         {
@@ -77,7 +87,7 @@ namespace PeterDoStuff.Database
         }
 
         /// <summary>
-        /// Dispose the transaction (if not committed, the transaction will be rolled back)
+        /// Dispose the connection/ transaction (if not committed, the connection/transaction will be rolled back)
         /// </summary>
         public void Dispose()
         {
@@ -100,20 +110,31 @@ namespace PeterDoStuff.Database
         /// Query by SQL with parameters
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="sql">E.g. "SELECT * FROM [_TestTable] where ID = {0} and CreatedTime > {1};</param>
+        /// <param name="sql">E.g. "SELECT * FROM [_TestTable] where ID = {0} and CreatedTime > {1};"</param>
         /// <param name="parameters">E.g. "1001a", DateTime.Today</param>
         /// <returns></returns>
         public Task<IEnumerable<T>> QueryAsync<T>(string sql, params object[] parameters)
         {
             var command = SqlCommand.New(sql, parameters);
+            return QueryAsync<T>(command);
+        }
+
+        /// <summary>
+        /// Query by SqlCommand
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="command">SqlCommand.New("SELECT * FROM [_TestTable] where ID = {0} and CreatedTime > {1};", "1001a", DateTime.Today)</param>
+        /// <returns></returns>
+        public Task<IEnumerable<T>> QueryAsync<T>(SqlCommand command)
+        {
             object param = new DynamicParameters(command.Parameters);
-            return _connection.QueryAsync<T>(command.Sql, param, _transaction);
+            return DbConnection.QueryAsync<T>(command.Sql, param, DbTransaction);
         }
 
         /// <summary>
         /// Query by SQL with parameters
         /// </summary>
-        /// <param name="sql">E.g. "SELECT * FROM [_TestTable] where ID = {0} and CreatedTime > {1};</param>
+        /// <param name="sql">E.g. "SELECT * FROM [_TestTable] where ID = {0} and CreatedTime > {1};"</param>
         /// <param name="parameters">E.g. "1001a", DateTime.Today</param>
         /// <returns></returns>
         public Task<IEnumerable<dynamic>> QueryAsync(string sql, params object[] parameters)
@@ -124,19 +145,31 @@ namespace PeterDoStuff.Database
         /// <summary>
         /// Execute SQL commands with parameters
         /// </summary>
-        /// <param name="sql">E.g. "Update [_TestTable] Set Amount = 0 where ID = {0} and CreatedTime > {1};</param>
+        /// <param name="sql">E.g. "Update [_TestTable] Set Amount = 0 where ID = {0} and CreatedTime > {1};"</param>
         /// <param name="parameters">E.g. "1001a", DateTime.Today</param>
         /// <returns></returns>
         public async Task<int> ExecuteAsync(string sql, params object[] parameters)
         {
             var command = SqlCommand.New(sql, parameters);
+            return await ExecuteAsync(command);
+        }
+
+        /// <summary>
+        /// Execute by SQLCommand
+        /// </summary>
+        /// <param name="command">SqlCommand.New("Update [_TestTable] Set Amount = 0 where ID = {0} and CreatedTime > {1};", "1001a", DateTime.Today)</param>
+        /// <returns></returns>
+        public async Task<int> ExecuteAsync(SqlCommand command)
+        {
             object param = new DynamicParameters(command.Parameters);
-            int executed = await _connection.ExecuteAsync(sql, param, _transaction);            
+            int executed = await DbConnection.ExecuteAsync(command.Sql, param, DbTransaction);
             return executed;
         }
 
         /// <summary>
-        /// Query whether the table exists
+        /// Query whether the table exists.
+        /// Q: Why is this abstract at the BaseDb?
+        /// A: Different SQL databases will have different SQL commands to query whether a table exists.
         /// </summary>
         /// <param name="table">Name of the table</param>
         /// <returns></returns>

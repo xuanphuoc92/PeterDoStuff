@@ -5,6 +5,9 @@ using System.Text;
 
 namespace PeterDoStuff.Database
 {
+    /// <summary>
+    /// Instance of SQL Command with support to prevent SQL injection.
+    /// </summary>
     public class SqlCommand
     {
         public const string SAMPLE_TEST_SQL = @"DROP TABLE IF EXISTS [_TestTable_];

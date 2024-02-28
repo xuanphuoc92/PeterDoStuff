@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace PeterDoStuff.Database
 {
+    /// <summary>
+    /// Inteface to a virtual SQL database within the Memory, using SQLite.
+    /// </summary>
     public class MemoryDb : BaseDb
     {
         private readonly SQLiteConnection _sharedConnection = new SQLiteConnection("Data Source=:memory:");
@@ -29,12 +32,15 @@ namespace PeterDoStuff.Database
         }
     }
 
+    /// <summary>
+    /// Inteface to a virtual SQL database's Connection/Transaction.
+    /// </summary>
     public class MemoryConnection : BaseConnection
     {
         internal MemoryConnection(SQLiteConnection sharedConnection)
         {
-            _connection = sharedConnection;
-            _transaction = _connection.BeginTransaction();
+            DbConnection = sharedConnection;
+            DbTransaction = DbConnection.BeginTransaction();
         }
 
         /// <summary>
@@ -42,7 +48,7 @@ namespace PeterDoStuff.Database
         /// </summary>
         protected override void OuterCommit()
         {
-            _transaction.Commit();
+            DbTransaction.Commit();
         }
 
         /// <summary>
@@ -50,7 +56,7 @@ namespace PeterDoStuff.Database
         /// </summary>
         protected override void OuterDispose()
         {
-            _transaction.Dispose();
+            DbTransaction.Dispose();
         }
 
         public override async Task<bool> TableExists(string table)

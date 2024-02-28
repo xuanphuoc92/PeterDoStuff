@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace PeterDoStuff.Database
 {
+    /// <summary>
+    /// Inteface to an SQL server database, based on the Connection String.
+    /// </summary>
     public class SqlServerDb : BaseDb
     {
         private readonly string _connString;
@@ -31,15 +34,18 @@ namespace PeterDoStuff.Database
         }
     }
 
+    /// <summary>
+    /// Inteface to an SQL server database's Connection/Transaction.
+    /// </summary>
     public class SqlServerConnection : BaseConnection
     {
         public SqlServerConnection(string connString)
         {
             try
             {
-                _connection = new SqlConnection(connString);
-                _connection.Open();
-                _transaction = _connection.BeginTransaction();
+                DbConnection = new SqlConnection(connString);
+                DbConnection.Open();
+                DbTransaction = DbConnection.BeginTransaction();
             }
             catch (Exception ex)
             {
@@ -53,14 +59,14 @@ namespace PeterDoStuff.Database
 
         protected override void OuterCommit()
         {
-            _transaction.Commit();
-            _connection.Close();
+            DbTransaction.Commit();
+            DbConnection.Close();
         }
 
         protected override void OuterDispose()
         {
-            _transaction.Dispose();
-            _connection.Dispose();
+            DbTransaction.Dispose();
+            DbConnection.Dispose();
         }
 
         public override async Task<bool> TableExists(string table)
