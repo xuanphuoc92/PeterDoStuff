@@ -24,9 +24,10 @@ namespace PeterDoStuff.MudWasmHosted.Server.Controllers
 
         [HttpPost]
         [SimpleAuth(ENVIRONMENT_VAR_KEY, DEFAULT_ACCESS_KEY)]
-        public Task<DbOutput> Post([FromBody] string sql)
+        public Task<QueryOutput> Post([FromBody] string sql)
         {
-            return _db.ExecuteOrQueryAsync(sql);
+            var queryEditor = new QueryEditor(_db);
+            return queryEditor.ExecuteOrQueryAsync(sql);
         }
 
         private const string ENVIRONMENT_VAR_KEY = "DatabaseAccessKey";

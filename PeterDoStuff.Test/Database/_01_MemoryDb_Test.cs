@@ -10,7 +10,7 @@ namespace PeterDoStuff.Test.Database
     [TestClass]
     public class _01_MemoryDb_Test : _00_BaseDb_Test
     {
-        protected override BaseDb SetDb()
+        protected override BaseDb GetDb()
         {
             return new MemoryDb();
         }

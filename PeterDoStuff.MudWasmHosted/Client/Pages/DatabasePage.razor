@@ -113,7 +113,7 @@ else
 
     private LoadingOverlay loadingOverlay;
 
-    private DbOutput output;
+    private QueryOutput output;
     private string error;
 
     private async Task ExecuteSql()
@@ -130,7 +130,7 @@ else
         var success = response.StatusCode == System.Net.HttpStatusCode.OK;
         string resultValue = await response.Content.ReadAsStringAsync();
         error = success ? null : resultValue;
-        output = success ? await response.Content.ReadFromJsonAsync<DbOutput>() : null;
+        output = success ? await response.Content.ReadFromJsonAsync<QueryOutput>() : null;
 
         loadingOverlay.Hide();
     }

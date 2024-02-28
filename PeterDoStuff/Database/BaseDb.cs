@@ -32,47 +32,8 @@ namespace PeterDoStuff.Database
             CurrentConn.Register();
             return CurrentConn;
         }
-
-        public async Task<DbOutput> ExecuteOrQueryAsync(string sql, params object[] parameters)
-        {
-            // To acquire both outputs without causing double commits, make 2 transactions:
-            // First one is rolledback and second one is committed
-
-            IEnumerable<dynamic> queryOutput;
-            using (var conn = Open())
-            {
-                queryOutput = await conn.QueryAsync(sql, parameters);
-                //conn.Commit();
-            }
-
-            int executeOutput;
-            using (var conn = Open())
-            {
-                executeOutput = await conn.ExecuteAsync(sql, parameters);
-                conn.Commit();
-            }
-
-            return new DbOutput()
-            {
-                Query = queryOutput.Cast<IDictionary<string, object>>(),
-                Execute = executeOutput
-            };
-        }
     }
 
-    public class DbOutput
-    {
-        private IEnumerable<dynamic> _dynamicQuery = null;
-        public IEnumerable<dynamic> DynamicQuery()
-        {
-            if (_dynamicQuery == null)
-                _dynamicQuery = Query;
-            return _dynamicQuery;
-        }
-
-        public IEnumerable<IDictionary<string, object>> Query { get; set; }
-        public int Execute { get; set; }
-    }
 
     public abstract class BaseConnection : IDisposable
     {

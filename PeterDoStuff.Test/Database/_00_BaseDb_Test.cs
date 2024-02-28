@@ -11,7 +11,7 @@ namespace PeterDoStuff.Test.Database
 {
     public abstract class _00_BaseDb_Test
     {
-        protected abstract BaseDb SetDb();
+        protected abstract BaseDb GetDb();
 
         private static async Task TestCreateTable(BaseConnection conn)
         {
@@ -35,7 +35,7 @@ namespace PeterDoStuff.Test.Database
         [TestMethod]
         public async Task _01_Commit()
         {
-            using var db = SetDb();
+            using var db = GetDb();
 
             using (var conn = db.Open())
             {
@@ -55,7 +55,7 @@ namespace PeterDoStuff.Test.Database
         [TestMethod]
         public async Task _02_Rollback()
         {
-            using var db = SetDb();
+            using var db = GetDb();
 
             using (var conn = db.Open())
             {
@@ -81,7 +81,7 @@ namespace PeterDoStuff.Test.Database
         [TestMethod]
         public async Task _03_Query()
         {
-            using var db = SetDb();
+            using var db = GetDb();
 
             using var conn = db.Open();
             var result = await conn.QueryAsync("DROP TABLE IF EXISTS [_TestTable_]");
@@ -114,7 +114,7 @@ DELETE FROM [_TestTable_];");
         [TestMethod]
         public async Task _04_Execute()
         {
-            using var db = SetDb();
+            using var db = GetDb();
 
             using var conn = db.Open();
             var rowCount = await conn.ExecuteAsync("DROP TABLE IF EXISTS [_TestTable_]");
@@ -149,30 +149,41 @@ DELETE FROM [_TestTable_];");
         [TestMethod]
         public async Task _05_ExecuteOrQuery()
         {
-            using var db = SetDb();
+            using var db = GetDb();
 
-            var output = await db.ExecuteOrQueryAsync("DROP TABLE IF EXISTS [_TestTable_]");
+            var queryEditor = new QueryEditor(db);
+
+            var output = await queryEditor.ExecuteOrQueryAsync("DROP TABLE IF EXISTS [_TestTable_]");
             output.Execute.Should().Be(db is MemoryDb ? 0 : -1);
 
-            output = await db.ExecuteOrQueryAsync(SqlCommand.SAMPLE_TEST_SQL);
+            output = await queryEditor.ExecuteOrQueryAsync(SqlCommand.SAMPLE_TEST_SQL);
             output.DynamicQuery().Should().HaveCount(3);
 
-            output = await db.ExecuteOrQueryAsync("DELETE FROM [_TestTable_];");            
+            output = await queryEditor.ExecuteOrQueryAsync("DELETE FROM [_TestTable_];");            
             output.Execute.Should().Be(3);
 
-            output = await db.ExecuteOrQueryAsync("SELECT * FROM [_TestTable_];");            
+            output = await queryEditor.ExecuteOrQueryAsync("SELECT * FROM [_TestTable_];");            
             output.DynamicQuery().Should().HaveCount(0);
 
-            output = await db.ExecuteOrQueryAsync("DROP TABLE IF EXISTS [_TestTable_]");
+            output = await queryEditor.ExecuteOrQueryAsync("DROP TABLE IF EXISTS [_TestTable_]");
             output.Execute.Should().Be(db is MemoryDb ? 3 : -1);
+        }
+
+        private async Task Setup(BaseDb db, string sql)
+        {
+            using (var conn = db.Open())
+            {
+                await conn.ExecuteAsync(sql);
+                conn.Commit();
+            }
         }
 
         [TestMethod]
         public async Task _06_Nested_InRollback_OutRollback()
         {
-            using var db = SetDb();
+            using var db = GetDb();
 
-            await db.ExecuteOrQueryAsync(SqlCommand.SAMPLE_TEST_SQL);
+            await Setup(db, SqlCommand.SAMPLE_TEST_SQL);
 
             using (var outerConn = db.Open())
             {
@@ -200,9 +211,9 @@ DELETE FROM [_TestTable_];");
         [TestMethod]
         public async Task _07_Nested_InCommit_OutRollback()
         {
-            using var db = SetDb();
+            using var db = GetDb();
 
-            await db.ExecuteOrQueryAsync(SqlCommand.SAMPLE_TEST_SQL);
+            await Setup(db, SqlCommand.SAMPLE_TEST_SQL);
 
             using (var outerConn = db.Open())
             {
@@ -230,9 +241,9 @@ DELETE FROM [_TestTable_];");
         [TestMethod]
         public async Task _08_Nested_InRollback_OutCommit()
         {
-            using var db = SetDb();
+            using var db = GetDb();
 
-            await db.ExecuteOrQueryAsync(SqlCommand.SAMPLE_TEST_SQL);
+            await Setup(db, SqlCommand.SAMPLE_TEST_SQL);
 
             using (var outerConn = db.Open())
             {
@@ -257,9 +268,9 @@ DELETE FROM [_TestTable_];");
         [TestMethod]
         public async Task _09_Nested_InCommit_OutCommit()
         {
-            using var db = SetDb();
+            using var db = GetDb();
 
-            await db.ExecuteOrQueryAsync(SqlCommand.SAMPLE_TEST_SQL);
+            await Setup(db, SqlCommand.SAMPLE_TEST_SQL);
 
             using (var outerConn = db.Open())
             {
@@ -323,7 +334,7 @@ DELETE FROM [_TestTable_];");
         [TestMethod]
         public async Task _10_NestedRollback()
         {
-            using var db = SetDb();
+            using var db = GetDb();
             using (var conn = db.Open())
             {
                 await Setup_NestedTransactions(conn);
@@ -359,7 +370,7 @@ DELETE FROM [_TestTable_];");
         [TestMethod]
         public async Task _11_NestedCommits()
         {
-            using var db = SetDb();
+            using var db = GetDb();
             using (var conn = db.Open())
             {
                 await Setup_NestedTransactions(conn);
@@ -398,7 +409,7 @@ DELETE FROM [_TestTable_];");
         [TestMethod]
         public async Task _12_Nested_InnerRollback_Exist()
         {
-            using var db = SetDb();
+            using var db = GetDb();
             using (var outer = db.Open())
             {
                 await Setup_NestedTransactions(outer);
