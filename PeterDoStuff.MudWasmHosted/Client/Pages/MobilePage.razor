@@ -24,6 +24,11 @@
     }
 </MudButton>
 
+@if (cameraBlocked)
+{
+    <MudText Class="mb-8" Color="Color.Error">Camera blocked</MudText>
+}
+
 <br />
 <br />
 <video id="@videoElementId" autoplay="autoplay" style="width: 480px; height: auto;"></video>
@@ -34,6 +39,7 @@
     private const int CAMERA_STATE_CLOSE = 0;
     private const int CAMERA_STATE_OPEN = 1;
     private const int CAMERA_STATE_INPROGRESS = 2;
+    private bool cameraBlocked = false;
 
     private async Task ToggleCamera()
     {
@@ -46,9 +52,18 @@
     private async Task OpenCamera()
     {
         cameraState = CAMERA_STATE_INPROGRESS;
-        await JS.InvokeVoidAsync("openCameraStream", videoElementId);
+        bool success;
+        try
+        {
+            success = await JS.InvokeAsync<bool>("openCameraStream", videoElementId);
+        }
+        catch
+        {
+            success = false;
+        }
         await Task.Delay(200);
-        cameraState = CAMERA_STATE_OPEN;
+        cameraState = success ? CAMERA_STATE_OPEN : CAMERA_STATE_CLOSE;
+        cameraBlocked = !success;
     }
 
     private async Task CloseCamera()

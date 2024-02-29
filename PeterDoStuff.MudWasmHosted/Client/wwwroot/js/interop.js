@@ -12,15 +12,18 @@ window.downloadFileFromStream = async (fileName, contentStreamReference) => {
 }
 
 window.openCameraStream = function (videoElementId) {
-    navigator.mediaDevices.getUserMedia({ video: true })
-        .then(function (stream) {
-            // Set the video stream as the source of the video element
-            var videoElement = document.getElementById(videoElementId);
-            videoElement.srcObject = stream;
-        })
-        .catch(function (error) {
-            console.error('Error accessing the camera:', error);
-        });
+    return new Promise((resolve, reject) => {
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function (stream) {
+                var videoElement = document.getElementById(videoElementId);
+                videoElement.srcObject = stream;
+                resolve(true); // Resolve the promise with true if stream is opened successfully
+            })
+            .catch(function (error) {
+                console.error('Error accessing the camera:', error);
+                reject(false); // Reject the promise with false if an error occurs
+            });
+    });
 };
 
 window.closeCameraStream = function (videoElementId) {
