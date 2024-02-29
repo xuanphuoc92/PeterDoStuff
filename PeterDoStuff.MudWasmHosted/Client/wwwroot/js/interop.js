@@ -10,3 +10,27 @@ window.downloadFileFromStream = async (fileName, contentStreamReference) => {
     anchorElement.remove();
     URL.revokeObjectURL(url);
 }
+
+window.openCameraStream = function (videoElementId) {
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then(function (stream) {
+            // Set the video stream as the source of the video element
+            var videoElement = document.getElementById(videoElementId);
+            videoElement.srcObject = stream;
+        })
+        .catch(function (error) {
+            console.error('Error accessing the camera:', error);
+        });
+};
+
+window.closeCameraStream = function (videoElementId) {
+    // Set the video stream as the source of the video element
+    var videoElement = document.getElementById(videoElementId);
+    var stream = videoElement.srcObject;
+    var tracks = stream.getTracks();
+
+    tracks.forEach(function (track) {
+        track.stop();
+    });
+    videoElement.srcObject = null;
+};

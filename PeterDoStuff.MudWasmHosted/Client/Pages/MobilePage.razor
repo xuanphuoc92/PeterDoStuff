@@ -1,0 +1,31 @@
+﻿@page "/mobile"
+@inject IJSRuntime JS
+
+<PageTitle>Like a Mobile App</PageTitle>
+
+<MudText Typo="Typo.h3" GutterBottom="true">
+    <MudIcon Size="Size.Large" Icon="@Icons.Material.Filled.Storage" />
+    Like a Mobile App
+</MudText>
+<MudText Class="mb-8">This component demonstrates how a web page server can features like camera or GPS.</MudText>
+
+<MudButton OnClick="OpenCamera" Variant="Variant.Filled" Color="Color.Primary">Open Camera</MudButton>
+<MudButton OnClick="CloseCamera" Variant="Variant.Filled" Color="Color.Primary">Close Camera</MudButton>
+
+<br />
+<br />
+<video id="@videoElementId" autoplay="autoplay" style="width: 480px; height: auto;"></video>
+
+@code {
+    private string videoElementId = "videoElement";
+
+    private async Task OpenCamera()
+    {
+        await JS.InvokeVoidAsync("openCameraStream", videoElementId);
+    }
+
+    private async Task CloseCamera()
+    {
+        await JS.InvokeVoidAsync("closeCameraStream", videoElementId);
+    }
+}
