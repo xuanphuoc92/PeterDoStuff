@@ -37,3 +37,15 @@ window.closeCameraStream = function (videoElementId) {
     });
     videoElement.srcObject = null;
 };
+
+window.captureImage = function (videoElementId) {
+    return new Promise((resolve, reject) => {
+        var videoElement = document.getElementById(videoElementId);
+        var canvas = document.createElement('canvas');
+        canvas.width = videoElement.videoWidth;
+        canvas.height = videoElement.videoHeight;
+        canvas.getContext('2d').drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+        var imageDataUrl = canvas.toDataURL('image/png');
+        resolve(imageDataUrl);
+    });
+};

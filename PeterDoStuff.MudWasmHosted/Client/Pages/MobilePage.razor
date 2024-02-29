@@ -4,10 +4,10 @@
 <PageTitle>Like a Mobile App</PageTitle>
 
 <MudText Typo="Typo.h3" GutterBottom="true">
-    <MudIcon Size="Size.Large" Icon="@Icons.Material.Filled.Storage" />
+    <MudIcon Size="Size.Large" Icon="@Icons.Material.TwoTone.Smartphone" />
     Like a Mobile App
 </MudText>
-<MudText Class="mb-8">This component demonstrates how a web page can features like opening camera or GPS.</MudText>
+<MudText Class="mb-8">This component demonstrates how a web page can perform mobile app features like opening camera or GPS.</MudText>
 
 <MudButton OnClick="ToggleCamera" Variant="Variant.Filled" Color="Color.Primary"
     EndIcon="@(cameraState != CAMERA_STATE_INPROGRESS ? Icons.Material.Filled.CameraAlt : null)">
@@ -33,6 +33,29 @@
 <br />
 <br />
 <video id="@videoElementId" autoplay="autoplay" style="width: 480px; height: auto;"></video>
+
+<br />
+<br />
+
+@if (cameraState == CAMERA_STATE_OPEN)
+{
+    <MudButton OnClick="CaptureImage" Color="Color.Primary" Variant="Variant.Filled" EndIcon="@(captureInProgress == false ? Icons.Material.Filled.Camera : null)">
+        @if (captureInProgress)
+        {
+            <MudProgressCircular Color="Color.Default" Size="Size.Small" Indeterminate="true" />
+        }
+        else
+        {
+            <div>Capture</div>
+        }
+    </MudButton>
+    <br />
+    <br />
+    @if (imageSrc != null)
+    {
+        <img src="@imageSrc" style="width: 480px; height: auto;" />
+    }
+}
 
 @code {
     private string videoElementId = "videoElement";
@@ -73,5 +96,16 @@
         await JS.InvokeVoidAsync("closeCameraStream", videoElementId);
         await Task.Delay(200);
         cameraState = CAMERA_STATE_CLOSE;
+    }
+
+    private bool captureInProgress = false;
+    private string imageSrc = "";
+
+    private async Task CaptureImage()
+    {
+        captureInProgress = true;
+        await Task.Delay(200);
+        imageSrc = await JS.InvokeAsync<string>("captureImage", videoElementId);
+        captureInProgress = false;
     }
 }
