@@ -1,7 +1,5 @@
 ﻿<MudNavMenu>
     <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
-    <MudNavLink Href="counter" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">Counter</MudNavLink>
-    <MudNavLink Href="fetchdata" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List">Fetch data</MudNavLink>
     @foreach (var item in PlaygroundItem.Items)
     {
         <MudNavLink Href="@item.Link" Match="NavLinkMatch.Prefix" Icon="@item.Icon">@item.Title</MudNavLink>
