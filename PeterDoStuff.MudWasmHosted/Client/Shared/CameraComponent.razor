@@ -1,0 +1,106 @@
+﻿@inject IJSRuntime JS
+
+<MudButton OnClick="ToggleCamera" Variant="Variant.Filled" Color="Color.Primary"
+           EndIcon="@(cameraState != CAMERA_STATE_INPROGRESS ? Icons.Material.Filled.CameraAlt : null)">
+    @if (cameraState == CAMERA_STATE_CLOSE)
+    {
+        <div>Open</div>
+    }
+    else if (cameraState == CAMERA_STATE_OPEN)
+    {
+        <div>Close</div>
+    }
+    else // In Progress
+    {
+        <MudProgressCircular Color="Color.Default" Size="Size.Small" Indeterminate="true" />
+    }
+</MudButton>
+
+@if (cameraBlocked)
+{
+    <MudText Class="mb-8" Color="Color.Error">
+        Camera blocked. Check the Console Error for more info. @cameraBlockedError
+    </MudText>
+}
+
+<br />
+<br />
+<video id="@videoElementId" autoplay="autoplay" style="width: 360px; height: auto;"></video>
+
+<br />
+<br />
+
+@if (cameraState == CAMERA_STATE_OPEN)
+{
+    <MudButton OnClick="CaptureImage" Color="Color.Primary" Variant="Variant.Filled" EndIcon="@(captureInProgress == false ? Icons.Material.Filled.Camera : null)">
+        @if (captureInProgress)
+        {
+            <MudProgressCircular Color="Color.Default" Size="Size.Small" Indeterminate="true" />
+        }
+        else
+        {
+            <div>Capture</div>
+        }
+    </MudButton>
+    <br />
+    <br />
+    @if (imageSrc != null)
+    {
+        <img src="@imageSrc" style="width: 480px; height: auto;" />
+    }
+}
+
+@code {
+    private string videoElementId = "videoElement";
+    private int cameraState = CAMERA_STATE_CLOSE;
+    private const int CAMERA_STATE_CLOSE = 0;
+    private const int CAMERA_STATE_OPEN = 1;
+    private const int CAMERA_STATE_INPROGRESS = 2;
+    private bool cameraBlocked = false;
+    private string cameraBlockedError = "";
+
+    private async Task ToggleCamera()
+    {
+        if (cameraState == CAMERA_STATE_CLOSE)
+            await OpenCamera();
+        else if (cameraState == CAMERA_STATE_OPEN)
+            await CloseCamera();
+    }
+
+    private async Task OpenCamera()
+    {
+        cameraState = CAMERA_STATE_INPROGRESS;
+        bool success;
+        try
+        {
+            success = await JS.InvokeAsync<bool>("openCameraStream", videoElementId);
+        }
+        catch (Exception ex)
+        {
+            success = false;
+            cameraBlockedError = ex.GetType().ToString() + ": " + ex.Message;
+        }
+        await Task.Delay(200);
+        cameraState = success ? CAMERA_STATE_OPEN : CAMERA_STATE_CLOSE;
+        cameraBlocked = !success;
+    }
+
+    private async Task CloseCamera()
+    {
+        cameraState = CAMERA_STATE_INPROGRESS;
+        await JS.InvokeVoidAsync("closeCameraStream", videoElementId);
+        await Task.Delay(200);
+        cameraState = CAMERA_STATE_CLOSE;
+    }
+
+    private bool captureInProgress = false;
+    private string imageSrc = "";
+
+    private async Task CaptureImage()
+    {
+        captureInProgress = true;
+        await Task.Delay(200);
+        imageSrc = await JS.InvokeAsync<string>("captureImage", videoElementId);
+        captureInProgress = false;
+    }
+}

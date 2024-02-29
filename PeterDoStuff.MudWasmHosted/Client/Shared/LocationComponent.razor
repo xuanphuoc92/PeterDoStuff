@@ -1,0 +1,80 @@
+﻿@inject IJSRuntime JS
+
+<MudButton Variant="Variant.Filled" Color="Color.Primary"
+           EndIcon="@(locationInProgress == false ? Icons.Material.Filled.LocationOn : null)"
+           OnClick="GetLocation">
+    @if (locationInProgress)
+    {
+        <MudProgressCircular Color="Color.Default" Size="Size.Small" Indeterminate="true" />
+    }
+    else
+    {
+        <div>Get Location</div>
+    }
+</MudButton>
+
+@if (locationBlocked != "")
+{
+    <MudText Class="mb-8" Color="Color.Error">
+        Location blocked. Check the Console Error for more info. @locationBlocked
+    </MudText>
+}
+
+<MudText Class="mb-8">Longitude: @longitude</MudText>
+<MudText Class="mb-8">Latitude: @latitude</MudText>
+
+@code {
+    private double longitude, latitude;
+    private string locationBlocked = "";
+    private bool locationInProgress = false;
+
+    private async Task GetLocation()
+    {
+        locationInProgress = true;
+        await Task.Delay(200);
+        try
+        {
+            // Call JavaScript function to request location permission
+            bool permissionGranted = await JS.InvokeAsync<bool>("requestLocationPermission");
+            if (permissionGranted)
+            {
+                // Location permission granted, proceed to get location coordinates
+                await GetLocationCoordinates();
+            }
+            else
+            {
+                // Location permission denied, handle accordingly
+                Console.WriteLine("Location permission denied.");
+                locationBlocked = "Location permission denied.";
+                locationInProgress = false;
+            }
+        }
+        catch (Exception ex)
+        {
+            // Handle JavaScript interop exception
+            Console.WriteLine($"JavaScript interop exception: {ex.Message}");
+            locationBlocked = $"{ex.GetType()}: {ex.Message}";
+            locationInProgress = false;
+        }
+    }
+
+    private async Task GetLocationCoordinates()
+    {
+        try
+        {
+            // Call JavaScript function to get location coordinates
+            var location = await JS.InvokeAsync<IDictionary<string, double>>("getLocationCoordinates");
+            longitude = location["longitude"];
+            latitude = location["latitude"];
+            locationBlocked = "";
+            locationInProgress = false;
+        }
+        catch (Exception ex)
+        {
+            // Handle JavaScript interop exception
+            Console.WriteLine($"JavaScript interop exception: {ex.Message}");
+            locationBlocked = $"{ex.GetType()}: {ex.Message}";
+            locationInProgress = false;
+        }
+    }
+}
