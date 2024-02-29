@@ -9,8 +9,20 @@
 </MudText>
 <MudText Class="mb-8">This component demonstrates how a web page server can features like camera or GPS.</MudText>
 
-<MudButton OnClick="OpenCamera" Variant="Variant.Filled" Color="Color.Primary">Open Camera</MudButton>
-<MudButton OnClick="CloseCamera" Variant="Variant.Filled" Color="Color.Primary">Close Camera</MudButton>
+<MudButton OnClick="ToggleCamera" Variant="Variant.Filled" Color="Color.Primary">
+    @if (cameraState == CAMERA_STATE_CLOSE) 
+    {
+        <div>Open Camera</div>
+    }
+    else if (cameraState == CAMERA_STATE_OPEN)
+    {
+        <div>Close Camera</div>
+    }
+    else // In Progress
+    {
+        <MudProgressCircular Color="Color.Default" Size="Size.Small" Indeterminate="true" />
+    }
+</MudButton>
 
 <br />
 <br />
@@ -18,14 +30,32 @@
 
 @code {
     private string videoElementId = "videoElement";
+    private int cameraState = CAMERA_STATE_CLOSE;
+    private const int CAMERA_STATE_CLOSE = 0;
+    private const int CAMERA_STATE_OPEN = 1;
+    private const int CAMERA_STATE_INPROGRESS = 2;
+
+    private async Task ToggleCamera()
+    {
+        if (cameraState == CAMERA_STATE_CLOSE)
+            await OpenCamera();
+        else if (cameraState == CAMERA_STATE_OPEN)
+            await CloseCamera();
+    }
 
     private async Task OpenCamera()
     {
+        cameraState = CAMERA_STATE_INPROGRESS;
         await JS.InvokeVoidAsync("openCameraStream", videoElementId);
+        await Task.Delay(200);
+        cameraState = CAMERA_STATE_OPEN;
     }
 
     private async Task CloseCamera()
-    {
+    {        
+        cameraState = CAMERA_STATE_INPROGRESS;
         await JS.InvokeVoidAsync("closeCameraStream", videoElementId);
+        await Task.Delay(200);
+        cameraState = CAMERA_STATE_CLOSE;
     }
 }
