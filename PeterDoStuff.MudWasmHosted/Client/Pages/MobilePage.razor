@@ -7,16 +7,17 @@
     <MudIcon Size="Size.Large" Icon="@Icons.Material.Filled.Storage" />
     Like a Mobile App
 </MudText>
-<MudText Class="mb-8">This component demonstrates how a web page server can features like camera or GPS.</MudText>
+<MudText Class="mb-8">This component demonstrates how a web page can features like opening camera or GPS.</MudText>
 
-<MudButton OnClick="ToggleCamera" Variant="Variant.Filled" Color="Color.Primary">
+<MudButton OnClick="ToggleCamera" Variant="Variant.Filled" Color="Color.Primary"
+    EndIcon="@(cameraState != CAMERA_STATE_INPROGRESS ? Icons.Material.Filled.CameraAlt : null)">
     @if (cameraState == CAMERA_STATE_CLOSE) 
     {
-        <div>Open Camera</div>
+        <div>Open</div>
     }
     else if (cameraState == CAMERA_STATE_OPEN)
     {
-        <div>Close Camera</div>
+        <div>Close</div>
     }
     else // In Progress
     {
