@@ -11,32 +11,34 @@ window.downloadFileFromStream = async (fileName, contentStreamReference) => {
     URL.revokeObjectURL(url);
 }
 
-window.openCameraStream = function (videoElementId) {
-    return new Promise((resolve, reject) => {
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then(function (stream) {
-                var videoElement = document.getElementById(videoElementId);
-                videoElement.srcObject = stream;
-                resolve(true); // Resolve the promise with true if stream is opened successfully
-            })
-            .catch(function (error) {
-                console.error('Error accessing the camera:', error);
-                reject(false); // Reject the promise with false if an error occurs
-            });
-    });
-};
+window.getVideoDeviceIds = async function () {
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    const videoDevices = devices.filter(device => device.kind === 'videoinput');
+    return videoDevices.map(device => device.deviceId);
+}
 
-window.closeCameraStream = function (videoElementId) {
-    // Set the video stream as the source of the video element
+window.startCameraStream = async function (videoElementId, deviceId) {
+    let constraint;
+    if (deviceId === "") {
+        constraint = { video: true };
+    }
+    else {
+        constraint = { video: { deviceId: { exact: deviceId } } };
+    }
+    const stream = await navigator.mediaDevices.getUserMedia(constraint);
+    const videoElement = document.getElementById(videoElementId);
+    videoElement.srcObject = stream;
+}
+
+window.stopCameraStream = function (videoElementId) {
     var videoElement = document.getElementById(videoElementId);
     var stream = videoElement.srcObject;
     var tracks = stream.getTracks();
-
     tracks.forEach(function (track) {
         track.stop();
     });
     videoElement.srcObject = null;
-};
+}
 
 window.captureImage = function (videoElementId) {
     return new Promise((resolve, reject) => {

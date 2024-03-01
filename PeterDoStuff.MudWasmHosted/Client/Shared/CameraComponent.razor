@@ -16,10 +16,18 @@
     }
 </MudButton>
 
+@if (cameraState == CAMERA_STATE_OPEN)
+{
+    <MudButton OnClick="SwitchCamera" Variant="Variant.Filled" Color="Color.Secondary"
+        EndIcon="@Icons.Material.Filled.Cameraswitch">
+        Switch
+    </MudButton>
+}
+
 @if (cameraBlocked)
 {
     <MudText Class="mb-8" Color="Color.Error">
-        Camera blocked. Check the Console Error for more info. @cameraBlockedError
+        @cameraBlockedError
     </MudText>
 }
 
@@ -48,6 +56,8 @@
     {
         <img src="@imageSrc" style="width: 480px; height: auto;" />
     }
+    <br />
+    <br />
 }
 
 @code {
@@ -67,13 +77,19 @@
             await CloseCamera();
     }
 
+    private List<string> deviceIds = new();
+    private int deviceIdIndex = 0;
+
     private async Task OpenCamera()
     {
         cameraState = CAMERA_STATE_INPROGRESS;
         bool success;
         try
         {
-            success = await JS.InvokeAsync<bool>("openCameraStream", videoElementId);
+            deviceIds = await JS.InvokeAsync<List<string>>("getVideoDeviceIds");
+            var deviceId = deviceIds.Any() ? deviceIds[deviceIdIndex] : "";
+            await JS.InvokeVoidAsync("startCameraStream", videoElementId, deviceId);
+            success = true;
         }
         catch (Exception ex)
         {
@@ -85,10 +101,23 @@
         cameraBlocked = !success;
     }
 
+    private async Task SwitchCamera()
+    {
+        deviceIds = await JS.InvokeAsync<List<string>>("getVideoDeviceIds");
+        deviceIdIndex++;
+        if (deviceIdIndex >= deviceIds.Count())
+            deviceIdIndex = 0;
+
+        var deviceId = deviceIds.Any() ? deviceIds[deviceIdIndex] : "";
+        // Stop first, then restart:
+        await JS.InvokeVoidAsync("stopCameraStream", videoElementId);
+        await JS.InvokeVoidAsync("startCameraStream", videoElementId, deviceId);
+    }
+
     private async Task CloseCamera()
     {
         cameraState = CAMERA_STATE_INPROGRESS;
-        await JS.InvokeVoidAsync("closeCameraStream", videoElementId);
+        await JS.InvokeVoidAsync("stopCameraStream", videoElementId);
         await Task.Delay(200);
         cameraState = CAMERA_STATE_CLOSE;
     }
