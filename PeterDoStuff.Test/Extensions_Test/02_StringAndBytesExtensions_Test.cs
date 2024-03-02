@@ -12,13 +12,13 @@ namespace PeterDoStuff.Test.Extensions_Test
     public class _02_StringAndBytesExtensions_Test
     {
         [TestMethod]
-        public void _01_MD5Hash()
+        public void _01_SHA256Hash()
         {
             "Hello"
                 .ToByteArray()
-                .ToMD5Hash()
+                .ToSHA256()
                 .ToHexString()
-                .Should().Be("8b1a9953c4611296a827abf8c47804d7");
+                .Should().Be("185f8db32271fe25f561a6fc938b2e264306ec304eda518007d1764826381969");
         }
     }
 }

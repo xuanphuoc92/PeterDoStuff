@@ -12,10 +12,10 @@ namespace PeterDoStuff.Extensions
         public static byte[] ToByteArray(this string input) 
             => Encoding.UTF8.GetBytes(input);
 
-        public static byte[] ToMD5Hash(this byte[] input)
+        public static byte[] ToSHA256(this byte[] input)
         {
-            using MD5 md5 = MD5.Create();
-            return md5.ComputeHash(input);
+            using var hasher = SHA256.Create();
+            return hasher.ComputeHash(input);
         }
 
         public static string ToHexString(this byte[] input) 

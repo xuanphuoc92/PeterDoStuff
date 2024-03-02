@@ -1,0 +1,36 @@
+﻿@page "/security"
+@using PeterDoStuff.Extensions
+
+<PageTitle>Security</PageTitle>
+
+<MudText Typo="Typo.h3" GutterBottom="true">
+    <MudIcon Size="Size.Large" Icon="@Icons.Material.Filled.Security" />
+    Security
+</MudText>
+<MudText Class="mb-8">This page demonstrates the basic security functions.</MudText>
+<MudText Class="mb-8">
+    Take note that System.Security.Cryptography APIs (with a few exceptions) may not be supported on Blazor WASM and will cause Runtime Error if attempted to call on WASM (but not on Server): <br/>
+    <MudLink Href="https://learn.microsoft.com/en-us/dotnet/core/compatibility/cryptography/5.0/cryptography-apis-not-supported-on-blazor-webassembly" Target="_blank">
+        Breaking change: System.Security.Cryptography APIs not supported on Blazor WebAssembly
+    </MudLink>
+</MudText>
+
+<MudTextField T="string" Label="Input String" Variant="Variant.Outlined" 
+    @bind-Value="inputString"/>
+
+<MudTextField T="string" Label="SHA256" Variant="Variant.Outlined"
+    @bind-Value="outputSHA256" />
+<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ToMD5">Calculate</MudButton>
+
+@code {
+    private string inputString = "Hello";
+    private string outputSHA256;
+
+    private void ToMD5()
+    {
+        outputSHA256 = inputString
+            .ToByteArray()
+            .ToSHA256()
+            .ToHexString();
+    }
+}
