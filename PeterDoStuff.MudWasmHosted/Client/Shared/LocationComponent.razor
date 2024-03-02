@@ -34,34 +34,6 @@
         await Task.Delay(200);
         try
         {
-            // Call JavaScript function to request location permission
-            bool permissionGranted = await JS.InvokeAsync<bool>("requestLocationPermission");
-            if (permissionGranted)
-            {
-                // Location permission granted, proceed to get location coordinates
-                await GetLocationCoordinates();
-            }
-            else
-            {
-                // Location permission denied, handle accordingly
-                Console.WriteLine("Location permission denied.");
-                locationBlocked = "Location permission denied.";
-                locationInProgress = false;
-            }
-        }
-        catch (Exception ex)
-        {
-            // Handle JavaScript interop exception
-            Console.WriteLine($"JavaScript interop exception: {ex.Message}");
-            locationBlocked = $"{ex.GetType()}: {ex.Message}";
-            locationInProgress = false;
-        }
-    }
-
-    private async Task GetLocationCoordinates()
-    {
-        try
-        {
             // Call JavaScript function to get location coordinates
             var location = await JS.InvokeAsync<IDictionary<string, double>>("getLocationCoordinates");
             longitude = location["longitude"];

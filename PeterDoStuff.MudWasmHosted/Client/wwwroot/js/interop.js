@@ -52,50 +52,13 @@ window.captureImage = function (videoElementId) {
     });
 };
 
-window.requestLocationPermission = function () {
-    return new Promise((resolve, reject) => {
-        if ('geolocation' in navigator) {
-            navigator.permissions.query({ name: 'geolocation' })
-                .then(function (permissionStatus) {
-                    if (permissionStatus.state === 'granted') {
-                        resolve(true); // Location permission already granted
-                    } else {
-                        navigator.geolocation.getCurrentPosition(
-                            function (position) {
-                                resolve(true); // Location permission granted
-                            },
-                            function (error) {
-                                console.error('Error getting location:', error);
-                                resolve(false); // Location permission denied or error occurred
-                            }
-                        );
-                    }
-                })
-                .catch(function (error) {
-                    console.error('Error querying location permission:', error);
-                    resolve(false); // Location permission denied or error occurred
-                });
-        } else {
-            console.error('Geolocation is not supported.');
-            resolve(false); // Geolocation not supported
-        }
-    });
-};
-
 window.getLocationCoordinates = function () {
-    return new Promise((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(
-            function (position) {
-                const location = {
-                    latitude: position.coords.latitude,
-                    longitude: position.coords.longitude
-                };
-                resolve(location);
-            },
-            function (error) {
-                console.error('Error getting location:', error);
-                reject(error); // Error occurred while getting location
-            }
-        );
-    });
+    navigator.geolocation.getCurrentPosition(
+        function (position) {
+            return {
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude
+            };
+        }
+    )
 };
