@@ -18,7 +18,9 @@
 <MudTextField T="string" Label="Input String" Variant="Variant.Outlined" 
     @bind-Value="inputString"/>
 
-<MudTextField T="string" Label="SHA256" Variant="Variant.Outlined"
+<MudDivider Class="mb-8" />
+
+<MudTextField T="string" Label="SHA256 Hash" Variant="Variant.Outlined"
     @bind-Value="outputSHA256" />
 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ToMD5">Calculate</MudButton>
 
