@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace PeterDoStuff.Database
 {
     /// <summary>
-    /// Interface to an SQL Database.
+    /// Interface to an SQL Database (with support of nested/flat transactions).
     /// </summary>
     public abstract class BaseDb : IDisposable
     {
