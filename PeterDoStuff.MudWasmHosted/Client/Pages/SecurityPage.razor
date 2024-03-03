@@ -9,17 +9,24 @@
 </MudText>
 <MudText Class="mb-8">This page demonstrates the basic security functions.</MudText>
 <MudText Class="mb-8">
-    Take note that System.Security.Cryptography APIs (with a few exceptions) may not be supported on Blazor WASM and will cause Runtime Error if attempted to call on WASM (but not on Server): <br/>
+    Take note that System.Security.Cryptography APIs (with a few exceptions) may not be supported on Blazor WASM and will cause Runtime Error if attempted to call on WASM (but not on Server):
+    <br />
     <MudLink Href="https://learn.microsoft.com/en-us/dotnet/core/compatibility/cryptography/5.0/cryptography-apis-not-supported-on-blazor-webassembly" Target="_blank">
         Breaking change: System.Security.Cryptography APIs not supported on Blazor WebAssembly
     </MudLink>
+    <br />
+    <MudLink Href="https://github.com/dotnet/runtime/issues/82472">
+        .NET 7 WebAssembly - Algorithm 'Aes' is not supported on this platform.
+    </MudLink>
+    <br />
+    Therefore, some of the functions below will be wired to SubtleCrypto API as workaround.
 </MudText>
 
 <MudTextField T="string" Label="Input String" Variant="Variant.Outlined" Class="mb-8"
     @bind-Value="inputString"/>
 
 <MudText Class="mb-8" Typo="Typo.h4">
-    Hashing
+    Hashing: Secure Hash Algorithms (SHA)
 </MudText>
 
 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ToSHA256">Calculate SHA256</MudButton>
@@ -30,7 +37,24 @@
 <MudTextField T="string" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="3"
     Label="SHA512 Hash" @bind-Value="outputSHA512" />
 
-@code {
+<MudText Class="mb-8" Typo="Typo.h4">
+    Encryption: Advanced Encryption Standard (AES)
+</MudText>
+
+<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateAesKey256">Generate Random AES Key (256 bit)</MudButton>
+<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateAesKey128">Generate Random AES Key (128 bit)</MudButton>
+<MudTextField T="string" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="3"
+    Label="AES Key" @bind-Value="aesKey" />
+
+<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateAesIV">Generate Random AES IV</MudButton>
+<MudTextField T="string" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="3"
+    Label="AES IV" @bind-Value="aesIV" />
+
+<MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="EncryptAes">Encrypt to AES (will throw error now)</MudButton>
+<MudTextField T="string" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="3"
+    Label="AES Encrypted Value" @bind-Value="aesEncrypted" />
+
+ @code {
     private string inputString = "Hello";
 
     private string outputSHA256;
@@ -48,6 +72,30 @@
         outputSHA512 = inputString
             .ToByteArray()
             .ToSHA512()
+            .ToHexString();
+    }
+
+    private string aesKey;
+
+    private void GenerateAesKey256() => GenerateAesKey(256);
+    private void GenerateAesKey128() => GenerateAesKey(128);
+
+    private void GenerateAesKey(int keySize)
+    {
+        aesKey = SecurityExtensions.GenerateAesKey(keySize).ToHexString();
+    }
+
+    private string aesIV;
+    private void GenerateAesIV()
+    {
+        aesIV = SecurityExtensions.GenerateAesIV().ToHexString();
+    }
+
+    private string aesEncrypted;
+    private void EncryptAes()
+    {
+        aesEncrypted = inputString
+            .EncryptAES(aesKey.ToByteArrayAsHexString(), aesIV.ToByteArrayAsHexString())
             .ToHexString();
     }
 }
