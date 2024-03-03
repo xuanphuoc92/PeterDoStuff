@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 
 namespace PeterDoStuff.Extensions
 {
@@ -43,28 +38,6 @@ namespace PeterDoStuff.Extensions
         /// <returns></returns>
         public static string ToBase64String(this byte[] input)
             => Convert.ToBase64String(input);
-
-        /// <summary>
-        /// Compute the SHA256 Hash Value of a byte array
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        public static byte[] ToSHA256(this byte[] input)
-        {
-            using var hasher = SHA256.Create();
-            return hasher.ComputeHash(input);
-        }
-
-        /// <summary>
-        /// Compute the SHA512 Hash Value of a byte array
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        public static byte[] ToSHA512(this byte[] input)
-        {
-            using var hasher = SHA512.Create();
-            return hasher.ComputeHash(input);
-        }
 
         /// <summary>
         /// Convert hex string to byte array

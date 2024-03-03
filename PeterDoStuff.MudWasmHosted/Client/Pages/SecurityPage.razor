@@ -18,6 +18,10 @@
 <MudTextField T="string" Label="Input String" Variant="Variant.Outlined" Class="mb-8"
     @bind-Value="inputString"/>
 
+<MudText Class="mb-8" Typo="Typo.h4">
+    Hashing
+</MudText>
+
 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ToSHA256">Calculate SHA256</MudButton>
 <MudTextField T="string" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="3"
     Label="SHA256 Hash" @bind-Value="outputSHA256" />
