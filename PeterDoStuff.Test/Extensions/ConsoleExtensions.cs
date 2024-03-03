@@ -12,8 +12,8 @@ namespace PeterDoStuff.Test.Extensions
         /// Write to Console
         /// </summary>
         /// <param name="this"></param>
-        public static void WriteToConsole(this string @this)
-            => Console.WriteLine(@this);
+        public static void WriteToConsole(this string @this, string tag = "")
+            => Console.WriteLine((tag == "" ? "" : $"[{tag}] ") + @this);
 
         /// <summary>
         /// Write Exception to Console
