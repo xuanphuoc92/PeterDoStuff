@@ -1,5 +1,8 @@
 ﻿@page "/security"
+@inject HttpClient Http
 @using PeterDoStuff.Extensions
+@using PeterDoStuff.MudWasmHosted.Client.Extensions
+@using System.Dynamic
 
 <PageTitle>Security</PageTitle>
 
@@ -50,9 +53,15 @@
 <MudTextField T="string" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="3"
     Label="AES IV" @bind-Value="aesIV" />
 
-<MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="EncryptAes">Encrypt to AES (will throw error now)</MudButton>
+<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="EncryptAesServer">Encrypt at server</MudButton>
+<MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="EncryptAesClient">Encrypt at client (will throw error now)</MudButton>
 <MudTextField T="string" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="3"
     Label="AES Encrypted Value" @bind-Value="aesEncrypted" />
+
+<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="DecryptAesServer">Decrypt at server</MudButton>
+<MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="DecryptAesClient">Decrypt at client (will throw error now)</MudButton>
+<MudTextField T="string" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="3"
+    Label="AES Decrypted Value" @bind-Value="aesDecrypted" />
 
  @code {
     private string inputString = "Hello";
@@ -92,10 +101,51 @@
     }
 
     private string aesEncrypted;
-    private void EncryptAes()
+    private async Task EncryptAesServer()
+    {
+        var result = await Http
+            .Request(HttpMethod.Get, "api/security/EncryptAes")
+            .SetParam("input", inputString)
+            .SetParam("key", aesKey)
+            .SetParam("iv", aesIV)
+            .SendAsync<byte[]>();
+
+        if (result.Success)
+            aesEncrypted = result.Result.ToHexString();
+        else
+        {
+            throw new Exception(result.Error);
+        }
+
+    }
+    private void EncryptAesClient()
     {
         aesEncrypted = inputString
             .EncryptAES(aesKey.ToByteArrayAsHexString(), aesIV.ToByteArrayAsHexString())
             .ToHexString();
+    }
+
+    private string aesDecrypted;
+    private async Task DecryptAesServer()
+    {
+        var result = await Http
+            .Request(HttpMethod.Get, "api/security/DecryptAes")
+            .SetParam("input", aesEncrypted)
+            .SetParam("key", aesKey)
+            .SetParam("iv", aesIV)
+            .SendAsync();
+
+        if (result.Success)
+            aesDecrypted = result.Result;
+        else
+        {
+            throw new Exception(result.Error);
+        }
+
+    }
+    private void DecryptAesClient()
+    {
+        aesDecrypted = aesEncrypted.ToByteArrayAsHexString()
+            .DecryptAES(aesKey.ToByteArrayAsHexString(), aesIV.ToByteArrayAsHexString());
     }
 }
