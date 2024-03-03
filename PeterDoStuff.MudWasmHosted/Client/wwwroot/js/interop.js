@@ -50,12 +50,19 @@ window.captureImage = function (videoElementId) {
 };
 
 window.getLocationCoordinates = function () {
-    navigator.geolocation.getCurrentPosition(
-        function (position) {
-            return {
-                latitude: position.coords.latitude,
-                longitude: position.coords.longitude
-            };
-        }
-    )
+    return new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(
+            function (position) {
+                const location = {
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude
+                };
+                resolve(location);
+            },
+            function (error) {
+                console.error('Error getting location:', error);
+                reject(error); // Error occurred while getting location
+            }
+        );
+    });
 };
