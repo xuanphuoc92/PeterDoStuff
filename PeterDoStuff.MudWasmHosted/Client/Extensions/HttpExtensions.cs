@@ -10,9 +10,9 @@ namespace PeterDoStuff.MudWasmHosted.Client.Extensions
 {
     public static class HttpExtensions
     {
-        public static HttpRequest Request(this HttpClient http, HttpMethod method, string url)
+        public static HttpRequestBuilder Request(this HttpClient http, HttpMethod method, string url)
         {
-            return new HttpRequest()
+            return new HttpRequestBuilder()
             {
                 Http = http,
                 Method = method,
@@ -20,14 +20,27 @@ namespace PeterDoStuff.MudWasmHosted.Client.Extensions
             };
         }
 
-        private static async Task<(HttpResult<TResponse>, HttpResponseMessage?)> SendAndGetResponse<TResponse>(HttpRequest @this)
+        private static async Task<(HttpResult<TResponse>, HttpResponseMessage?)> SendAndGetResponse<TResponse>(HttpRequestBuilder @this)
         {
             try
             {
                 var url = @this.Url;
                 if (@this.Parameters.Any())
                     url += "?" + @this.Parameters.Select(kv => $"{kv.Key}={kv.Value}").Join("&");
+
                 var request = new HttpRequestMessage(@this.Method, url);
+
+                if (@this.Body != null)
+                {
+                    var jsonContent = JsonSerializer.Serialize(@this.Body);
+                    request.Content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+                }
+
+                foreach (var header in @this.Headers)
+                {
+                    request.Headers.Add(header.Key, header.Value);
+                }
+
                 var response = await @this.Http.SendAsync(request);
                 var result = new HttpResult<TResponse>();
                 result.Success = response.StatusCode == System.Net.HttpStatusCode.OK;
@@ -42,7 +55,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Extensions
             }
         }
 
-        public async static Task<HttpResult<TResponse>> SendAsync<TResponse>(this HttpRequest @this)
+        public async static Task<HttpResult<TResponse>> SendAsync<TResponse>(this HttpRequestBuilder @this)
         {
             (HttpResult<TResponse> result, HttpResponseMessage? response) = await SendAndGetResponse<TResponse>(@this);
             if (result.Success)
@@ -52,7 +65,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Extensions
             return result;
         }
 
-        public async static Task<HttpResult<string>> SendAsync(this HttpRequest @this)
+        public async static Task<HttpResult<string>> SendAsync(this HttpRequestBuilder @this)
         {
             (HttpResult<string> result, HttpResponseMessage? response) = await SendAndGetResponse<string>(@this);
             if (result.Success)
@@ -63,16 +76,30 @@ namespace PeterDoStuff.MudWasmHosted.Client.Extensions
         }
     }
 
-    public class HttpRequest : IDisposable
+    public class HttpRequestBuilder : IDisposable
     {
         public HttpClient Http { get; set; }
         public HttpMethod Method { get; set; }
         public string Url { get; set; }
         public Dictionary<string, string> Parameters { get; set; } = new Dictionary<string, string>();
+        public object? Body { get; set; } = null;
+        public Dictionary<string, string> Headers { get; set; } = new Dictionary<string, string>();
 
-        public HttpRequest SetParam(string key, string value)
+        public HttpRequestBuilder SetParam(string key, string value)
         {
             Parameters[Uri.EscapeDataString(key)] = Uri.EscapeDataString(value);
+            return this;
+        }
+
+        public HttpRequestBuilder SetBody(object body)
+        {
+            Body = body;
+            return this;
+        }
+
+        public HttpRequestBuilder SetHeader(string key, string value)
+        {
+            Headers[key] = value;
             return this;
         }
 

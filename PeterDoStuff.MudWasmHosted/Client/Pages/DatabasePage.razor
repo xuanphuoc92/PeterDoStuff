@@ -2,6 +2,7 @@
 @inject HttpClient Http
 @using PeterDoStuff.Database
 @using PeterDoStuff.Extensions
+@using PeterDoStuff.MudWasmHosted.Client.Extensions
 @using PeterDoStuff.MudWasmHosted.Shared
 @using System.Reflection;
 @using System.Text
@@ -120,17 +121,14 @@ else
     {
         await loadingOverlay.Show("Executing");
 
-        var request = new HttpRequestMessage(HttpMethod.Post, "api/Database");
-        var jsonContent = JsonSerializer.Serialize(sqlValue);
-        request.Content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-        request.Headers.Add("SimpleAuth", accessKey);
+        HttpResult<QueryOutput> result = await Http
+            .Request(HttpMethod.Post, "api/Database")
+            .SetBody(sqlValue)
+            .SetHeader("SimpleAuth", accessKey)
+            .SendAsync<QueryOutput>();
 
-        var response = await Http.SendAsync(request);
-
-        var success = response.StatusCode == System.Net.HttpStatusCode.OK;
-        string resultValue = await response.Content.ReadAsStringAsync();
-        error = success ? null : resultValue;
-        output = success ? await response.Content.ReadFromJsonAsync<QueryOutput>() : null;
+        error = result.Failure ? result.Error : null;
+        output = result.Success ? result.Result : null;
 
         loadingOverlay.Hide();
     }
