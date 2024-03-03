@@ -15,24 +15,35 @@
     </MudLink>
 </MudText>
 
-<MudTextField T="string" Label="Input String" Variant="Variant.Outlined" 
+<MudTextField T="string" Label="Input String" Variant="Variant.Outlined" Class="mb-8"
     @bind-Value="inputString"/>
 
-<MudDivider Class="mb-8" />
+<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ToSHA256">Calculate SHA256</MudButton>
+<MudTextField T="string" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="3"
+    Label="SHA256 Hash" @bind-Value="outputSHA256" />
 
-<MudTextField T="string" Label="SHA256 Hash" Variant="Variant.Outlined"
-    @bind-Value="outputSHA256" />
-<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ToMD5">Calculate</MudButton>
+<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ToSHA512">Calculate SHA512</MudButton>
+<MudTextField T="string" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="3"
+    Label="SHA512 Hash" @bind-Value="outputSHA512" />
 
 @code {
     private string inputString = "Hello";
-    private string outputSHA256;
 
-    private void ToMD5()
+    private string outputSHA256;
+    private void ToSHA256()
     {
         outputSHA256 = inputString
             .ToByteArray()
             .ToSHA256()
+            .ToHexString();
+    }
+
+    private string outputSHA512;
+    private void ToSHA512()
+    {
+        outputSHA512 = inputString
+            .ToByteArray()
+            .ToSHA512()
             .ToHexString();
     }
 }

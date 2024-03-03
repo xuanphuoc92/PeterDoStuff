@@ -56,6 +56,17 @@ namespace PeterDoStuff.Extensions
         }
 
         /// <summary>
+        /// Compute the SHA512 Hash Value of a byte array
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static byte[] ToSHA512(this byte[] input)
+        {
+            using var hasher = SHA512.Create();
+            return hasher.ComputeHash(input);
+        }
+
+        /// <summary>
         /// Convert hex string to byte array
         /// </summary>
         /// <param name="input"></param>
