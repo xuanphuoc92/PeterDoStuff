@@ -53,6 +53,11 @@
 <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="HashArgon2idClient" Disabled="true">
     Hash at Client (will throw error and freeze)
 </MudButton>
+@if (argon2idHashTime != null)
+{
+    <br/>
+    <MudText Typo="Typo.caption">@argon2idHashTime</MudText>
+}
 <MudTextField T="string" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="3"
     Label="Hash" @bind-Value="argon2idHash" />
 
@@ -100,7 +105,7 @@
             .ToHexString();
     }
 
-    private string argon2idSalt, argon2idHash;
+    private string? argon2idSalt, argon2idHash, argon2idHashTime;
     private void GenerateArgon2idSalt()
     {
         argon2idSalt = SecurityExtensions.GenerateSalt().ToHexString();
@@ -120,6 +125,9 @@
             .SetParam("salt", argon2idSalt)
             .SendAsync<byte[]>();
         argon2idHash = result.Result.ToHexString();
+        argon2idHashTime = result.ElapsedMilliseconds != null
+            ? $"{result.ElapsedMilliseconds} ms"
+            : null;
     }
     private async Task HashArgon2idQuick()
     {
@@ -129,6 +137,9 @@
             .SetParam("salt", argon2idSalt)
             .SendAsync<byte[]>();
         argon2idHash = result.Result.ToHexString();
+        argon2idHashTime = result.ElapsedMilliseconds != null
+            ? $"{result.ElapsedMilliseconds} ms"
+            : null;
     }
 
     private string aesKey;
