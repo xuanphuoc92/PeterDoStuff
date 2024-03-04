@@ -25,6 +25,17 @@
     Therefore, some of the functions below will be wired to SubtleCrypto API as workaround.
 </MudText>
 
+<MudText Class="mb-8" Typo="Typo.h4">Byte Array Format</MudText>
+<MudToolBar Class="mb-8 d-flex">
+    <MudText Color="Color.Info">Hex</MudText>
+    <MudSwitch Class="ml-8" @bind-Value="@isBase64Format" UnCheckedColor="Color.Info" Color="Color.Success" />
+    <MudText Color="Color.Success">Base64</MudText>
+</MudToolBar>
+
+<MudText Class="mb-8" Typo="Typo.h4">
+    Input
+</MudText>
+
 <MudTextField T="string" Label="Input String" Variant="Variant.Outlined" Class="mb-8"
     @bind-Value="inputString"/>
 
@@ -85,6 +96,8 @@
     Label="AES Decrypted Value" @bind-Value="aesDecrypted" />
 
 @code {
+    private bool isBase64Format = false;
+    
     private string inputString = "Hello";
 
     private string outputSHA256;
