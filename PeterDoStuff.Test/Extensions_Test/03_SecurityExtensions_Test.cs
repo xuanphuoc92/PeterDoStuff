@@ -137,6 +137,19 @@ namespace PeterDoStuff.Test.Extensions_Test
 
             decrypted1.WriteToConsole("decrypted1");
             decrypted2.WriteToConsole("decrypted2");
+
+            var hash1 = "Hello1".ToByteArray().SignRSA(privateKey);
+            var hash2 = "Hello2".ToByteArray().SignRSA(privateKey);
+            var hash1Same = "Hello1".ToByteArray().SignRSA(privateKey);
+
+            hash1.ToBase64String().Should().Be(hash1Same.ToBase64String());
+            hash2.ToBase64String().Should().NotBe(hash1Same.ToBase64String());
+
+            "Hello1".ToByteArray().VerifyRSA(hash1, publicKey).Should().BeTrue();
+            "Hello2".ToByteArray().VerifyRSA(hash2, publicKey).Should().BeTrue();
+
+            "Hello1".ToByteArray().VerifyRSA(hash2, publicKey).Should().BeFalse();
+            "Hello2".ToByteArray().VerifyRSA(hash1, publicKey).Should().BeFalse();
         }
     }
 }

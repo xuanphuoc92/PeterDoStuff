@@ -198,5 +198,19 @@ namespace PeterDoStuff.Extensions
             rsa.ImportFromPem(privateKey);
             return rsa.Decrypt(input, RSAEncryptionPadding.Pkcs1);
         }
+
+        public static byte[] SignRSA(this byte[] data, string privateKey)
+        {
+            using var rsa = RSA.Create();
+            rsa.ImportFromPem(privateKey);
+            return rsa.SignData(data, HashAlgorithmName.SHA512, RSASignaturePadding.Pkcs1);
+        }
+
+        public static bool VerifyRSA(this byte[] data, byte[] hash, string publicKey)
+        {
+            using var rsa = RSA.Create();
+            rsa.ImportFromPem(publicKey);
+            return rsa.VerifyData(data, hash, HashAlgorithmName.SHA512, RSASignaturePadding.Pkcs1);
+        }
     }
 }
