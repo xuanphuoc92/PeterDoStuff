@@ -32,7 +32,7 @@
     <MudText Color="Color.Success">Base64</MudText>
 </MudToolBar>
 
-<MudText Class="mb-8" Typo="Typo.h4">
+<MudText Class="mb-8" Typo="Typo.h4" Color="Color.Primary">
     Input
 </MudText>
 
@@ -40,60 +40,112 @@
     @bind-Value="inputString"/>
 
 <MudText Class="mb-8" Typo="Typo.h4">
-    Hashing: Secure Hash Algorithms (SHA)
+    Hashing: SHA
 </MudText>
 
-<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ToSHA256">Calculate SHA256</MudButton>
-<MudTextField T="byte[]" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="1" AdornmentColor="@AdornmentColor" AdornmentText="@AdornmentText" Adornment="Adornment.Start" Converter="@converter"
-    Label="SHA256 Hash" @bind-Value="outputSHA256" />
+<MudGrid Spacing="2" Class="align-center mb-8">
+    <MudItem xs="1" md="1">
+        <MudText Color="Color.Primary">@inputString</MudText>        
+    </MudItem>
+    <MudItem xs="1" md="1" Class="d-flex justify-end">
+        <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
+    </MudItem>
+    <MudItem xs="10" md="10">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ToSHA256">Calculate SHA256</MudButton>
+        <MudTextField T="byte[]" Variant="Variant.Outlined" AutoGrow Lines="1" AdornmentColor="@AdornmentColor" AdornmentText="@AdornmentText" Adornment="Adornment.Start" Converter="@converter"
+            Label="SHA256 Hash" @bind-Value="outputSHA256" />
+    </MudItem>
 
-<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ToSHA512">Calculate SHA512</MudButton>
-<MudTextField T="byte[]" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="1" AdornmentColor="@AdornmentColor" AdornmentText="@AdornmentText" Adornment="Adornment.Start" Converter="@converter"
-    Label="SHA512 Hash" @bind-Value="outputSHA512" />
+    <MudItem xs="1" md="1">
+        <MudText Color="Color.Primary">@inputString</MudText>        
+    </MudItem>
+    <MudItem xs="1" md="1" Class="d-flex justify-end">
+        <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
+    </MudItem>
+    <MudItem xs="10" md="10">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ToSHA512">Calculate SHA512</MudButton>
+        <MudTextField T="byte[]" Variant="Variant.Outlined" AutoGrow Lines="1" AdornmentColor="@AdornmentColor" AdornmentText="@AdornmentText" Adornment="Adornment.Start" Converter="@converter"
+            Label="SHA512 Hash" @bind-Value="outputSHA512" />
+    </MudItem>
+</MudGrid>
 
 <MudText Class="mb-8" Typo="Typo.h4">
     Hashing: Argon2id
 </MudText>
 
-<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateArgon2idSalt">Generate Random Salt</MudButton>
-<MudTextField T="byte[]" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="1" AdornmentColor="@AdornmentColor" AdornmentText="@AdornmentText" Adornment="Adornment.Start" Converter="@converter"
-    Label="Salt" @bind-Value="argon2idSalt" />
+<MudGrid Spacing="2" Class="align-center mb-8">
+    <MudItem xs="1" md="1">
+        <MudText Color="Color.Primary">@inputString</MudText>
+    </MudItem>
+    <MudItem xs="1" md="1" Class="d-flex justify-end">
+        <MudIcon Icon="@Icons.Material.Filled.AddCircle" />
+    </MudItem>
+    <MudItem xs="10" md="4">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateArgon2idSalt">Generate Random Salt</MudButton>
+        <MudTextField T="byte[]" Variant="Variant.Outlined" AutoGrow Lines="1" AdornmentColor="@AdornmentColor" AdornmentText="@AdornmentText" Adornment="Adornment.Start" Converter="@converter"
+            Label="Salt" @bind-Value="argon2idSalt" />
+    </MudItem>
+    <MudItem xs="2" md="1" Class="d-flex justify-end">
+        <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
+    </MudItem>
+    <MudItem xs="10" md="5">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="HashArgon2idServer">Hash at Server</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="HashArgon2idQuick">Hash at Server (Quick)</MudButton>
+        <br/>
+        <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="HashArgon2idClient" Disabled="true">
+            Hash at Client (will throw error and freeze)
+        </MudButton>
+        @if (argon2idHashTime != null)
+        {
+            <br />
+            <MudText Typo="Typo.caption">@argon2idHashTime</MudText>
+        }
+        <MudTextField T="byte[]" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="1" AdornmentColor="@AdornmentColor" AdornmentText="@AdornmentText" Adornment="Adornment.Start" Converter="@converter"
+            Label="Hash" @bind-Value="argon2idHash" />
+    </MudItem>
+</MudGrid>
 
-<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="HashArgon2idServer">Hash at Server</MudButton>
-<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="HashArgon2idQuick">Hash at Server (Quick)</MudButton>
-<MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="HashArgon2idClient" Disabled="true">
-    Hash at Client (will throw error and freeze)
-</MudButton>
-@if (argon2idHashTime != null)
-{
-    <br/>
-    <MudText Typo="Typo.caption">@argon2idHashTime</MudText>
-}
-<MudTextField T="byte[]" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="1" AdornmentColor="@AdornmentColor" AdornmentText="@AdornmentText" Adornment="Adornment.Start" Converter="@converter"
-    Label="Hash" @bind-Value="argon2idHash" />
 
 <MudText Class="mb-8" Typo="Typo.h4">
-    Encryption: Advanced Encryption Standard (AES)
+    Encryption: AES
 </MudText>
 
-<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateAesKey256">Generate Random AES Key (256 bit)</MudButton>
-<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateAesKey128">Generate Random AES Key (128 bit)</MudButton>
-<MudTextField T="byte[]" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="1" AdornmentColor="@AdornmentColor" AdornmentText="@AdornmentText" Adornment="Adornment.Start" Converter="@converter"
-    Label="AES Key" @bind-Value="aesKey" />
+<MudGrid Spacing="2" Class="align-center mb-8">
+    <MudItem xs="1" md="1">
+        <MudText Color="Color.Primary">@inputString</MudText>
+    </MudItem>
+    <MudItem xs="1" md="1" Class="d-flex justify-end">
+        <MudIcon Icon="@Icons.Material.Filled.AddCircle" />
+    </MudItem>
+    <MudItem xs="10" md="10">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateAesKey256">Generate Random AES Key (256 bit)</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateAesKey128">Generate Random AES Key (128 bit)</MudButton>
+        <MudTextField T="byte[]" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="1" AdornmentColor="@AdornmentColor" AdornmentText="@AdornmentText" Adornment="Adornment.Start" Converter="@converter"
+            Label="AES Key" @bind-Value="aesKey" />
 
-<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateAesIV">Generate Random AES IV</MudButton>
-<MudTextField T="byte[]" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="1" AdornmentColor="@AdornmentColor" AdornmentText="@AdornmentText" Adornment="Adornment.Start" Converter="@converter"
-    Label="AES IV" @bind-Value="aesIV" />
-
-<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="EncryptAesServer">Encrypt at server</MudButton>
-<MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="EncryptAesClient">Encrypt at client (will throw error now)</MudButton>
-<MudTextField T="byte[]" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="1" AdornmentColor="@AdornmentColor" AdornmentText="@AdornmentText" Adornment="Adornment.Start" Converter="@converter"
-    Label="AES Encrypted Value" @bind-Value="aesEncrypted" />
-
-<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="DecryptAesServer">Decrypt at server</MudButton>
-<MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="DecryptAesClient">Decrypt at client (will throw error now)</MudButton>
-<MudTextField T="string" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="1"
-    Label="AES Decrypted Value" @bind-Value="aesDecrypted" />
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateAesIV">Generate Random AES IV</MudButton>
+        <MudTextField T="byte[]" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="1" AdornmentColor="@AdornmentColor" AdornmentText="@AdornmentText" Adornment="Adornment.Start" Converter="@converter"
+            Label="AES IV" @bind-Value="aesIV" />
+    </MudItem>
+    <MudItem xs="2" md="2" Class="d-flex justify-end">
+        <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
+    </MudItem>
+    <MudItem xs="10" md="4">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="EncryptAesServer">Encrypt at server</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="EncryptAesClient">Encrypt at client (will throw error now)</MudButton>
+        <MudTextField T="byte[]" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="1" AdornmentColor="@AdornmentColor" AdornmentText="@AdornmentText" Adornment="Adornment.Start" Converter="@converter"
+            Label="AES Encrypted Value" @bind-Value="aesEncrypted" />
+    </MudItem>
+    <MudItem xs="2" md="2" Class="d-flex justify-end">
+        <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
+    </MudItem>
+    <MudItem xs="10" md="4">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="DecryptAesServer">Decrypt at server</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="DecryptAesClient">Decrypt at client (will throw error now)</MudButton>
+        <MudTextField T="string" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="1"
+            Label="AES Decrypted Value" @bind-Value="aesDecrypted" />
+    </MudItem>
+</MudGrid>
 
 @code {
     private bool isBase64Format = false;
