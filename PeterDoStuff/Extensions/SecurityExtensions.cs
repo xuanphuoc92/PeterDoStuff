@@ -31,6 +31,11 @@ namespace PeterDoStuff.Extensions
             return hasher.ComputeHash(input);
         }
 
+        /// <summary>
+        /// Generate a random AES key
+        /// </summary>
+        /// <param name="keySize">Size of keys in bits. Default 256. Valid values: 128, 192, 256.</param>
+        /// <returns></returns>
         public static byte[] GenerateAesKey(int keySize = 256)
         {
             using var aes = Aes.Create();
@@ -39,6 +44,10 @@ namespace PeterDoStuff.Extensions
             return aes.Key;
         }
 
+        /// <summary>
+        /// Generate a random IV
+        /// </summary>
+        /// <returns></returns>
         public static byte[] GenerateAesIV()
         {
             using var aes = Aes.Create();
