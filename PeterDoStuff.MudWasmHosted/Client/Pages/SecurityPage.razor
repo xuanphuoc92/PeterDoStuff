@@ -44,11 +44,11 @@
 </MudText>
 
 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ToSHA256">Calculate SHA256</MudButton>
-<MudTextField T="string" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="3"
+<MudTextField T="byte[]" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="1" Converter="@converter"
     Label="SHA256 Hash" @bind-Value="outputSHA256" />
 
 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ToSHA512">Calculate SHA512</MudButton>
-<MudTextField T="string" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="3"
+<MudTextField T="byte[]" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="1" Converter="@converter"
     Label="SHA512 Hash" @bind-Value="outputSHA512" />
 
 <MudText Class="mb-8" Typo="Typo.h4">
@@ -56,7 +56,7 @@
 </MudText>
 
 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateArgon2idSalt">Generate Random Salt</MudButton>
-<MudTextField T="string" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="3"
+<MudTextField T="byte[]" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="1" Converter="@converter"
     Label="Salt" @bind-Value="argon2idSalt" />
 
 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="HashArgon2idServer">Hash at Server</MudButton>
@@ -69,7 +69,7 @@
     <br/>
     <MudText Typo="Typo.caption">@argon2idHashTime</MudText>
 }
-<MudTextField T="string" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="3"
+<MudTextField T="byte[]" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="1" Converter="@converter"
     Label="Hash" @bind-Value="argon2idHash" />
 
 <MudText Class="mb-8" Typo="Typo.h4">
@@ -78,66 +78,76 @@
 
 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateAesKey256">Generate Random AES Key (256 bit)</MudButton>
 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateAesKey128">Generate Random AES Key (128 bit)</MudButton>
-<MudTextField T="string" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="3"
+<MudTextField T="byte[]" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="1" Converter="@converter"
     Label="AES Key" @bind-Value="aesKey" />
 
 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateAesIV">Generate Random AES IV</MudButton>
-<MudTextField T="string" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="3"
+<MudTextField T="byte[]" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="1" Converter="@converter"
     Label="AES IV" @bind-Value="aesIV" />
 
 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="EncryptAesServer">Encrypt at server</MudButton>
 <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="EncryptAesClient">Encrypt at client (will throw error now)</MudButton>
-<MudTextField T="string" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="3"
+<MudTextField T="byte[]" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="1" Converter="@converter"
     Label="AES Encrypted Value" @bind-Value="aesEncrypted" />
 
 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="DecryptAesServer">Decrypt at server</MudButton>
 <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="DecryptAesClient">Decrypt at client (will throw error now)</MudButton>
-<MudTextField T="string" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="3"
+<MudTextField T="string" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="1"
     Label="AES Decrypted Value" @bind-Value="aesDecrypted" />
 
 @code {
+
     private bool isBase64Format = false;
-    
+    private Converter<byte[]> converter => isBase64Format ? base64Conveter : hexConverter;
+    private Converter<byte[]> base64Conveter = new Converter<byte[]>()
+    {
+        SetFunc = value => value?.ToBase64String(),
+        GetFunc = text => text?.ToByteArrayAsBase64()
+    };
+    private Converter<byte[]> hexConverter = new Converter<byte[]>()
+    {
+        SetFunc = value => value?.ToHexString(),
+        GetFunc = text => text?.ToByteArrayAsHexString()
+    };
+
     private string inputString = "Hello";
 
-    private string outputSHA256;
+    private byte[]? outputSHA256;
     private void ToSHA256()
     {
         outputSHA256 = inputString
             .ToByteArray()
-            .ToSHA256()
-            .ToHexString();
+            .ToSHA256();
     }
 
-    private string outputSHA512;
+    private byte[]? outputSHA512;
     private void ToSHA512()
     {
         outputSHA512 = inputString
             .ToByteArray()
-            .ToSHA512()
-            .ToHexString();
+            .ToSHA512();
     }
 
-    private string? argon2idSalt, argon2idHash, argon2idHashTime;
+    private byte[]? argon2idSalt, argon2idHash;
+    private string? argon2idHashTime;
     private void GenerateArgon2idSalt()
     {
-        argon2idSalt = SecurityExtensions.GenerateSalt().ToHexString();
+        argon2idSalt = SecurityExtensions.GenerateSalt();
     }
     private void HashArgon2idClient() // will throw error and freeze
     {
         argon2idHash = inputString
             .ToByteArray()
-            .HashArgon2id(argon2idSalt.ToByteArrayAsHexString())
-            .ToHexString();
+            .HashArgon2id(argon2idSalt);            
     }
     private async Task HashArgon2idServer()
     {
         var result = await Http
             .Request(HttpMethod.Get, "api/security/HashArgon2id")
             .SetParam("input", inputString)
-            .SetParam("salt", argon2idSalt)
+            .SetParam("salt", argon2idSalt.ToHexString())
             .SendAsync<byte[]>();
-        argon2idHash = result.Result.ToHexString();
+        argon2idHash = result.Result;
         argon2idHashTime = result.ElapsedMilliseconds != null
             ? $"{result.ElapsedMilliseconds} ms"
             : null;
@@ -147,76 +157,62 @@
         var result = await Http
             .Request(HttpMethod.Get, "api/security/HashArgon2idQuick")
             .SetParam("input", inputString)
-            .SetParam("salt", argon2idSalt)
+            .SetParam("salt", argon2idSalt.ToHexString())
             .SendAsync<byte[]>();
-        argon2idHash = result.Result.ToHexString();
+        argon2idHash = result.Result;
         argon2idHashTime = result.ElapsedMilliseconds != null
             ? $"{result.ElapsedMilliseconds} ms"
             : null;
     }
 
-    private string aesKey;
+    private byte[]? aesKey;
 
     private void GenerateAesKey256() => GenerateAesKey(256);
     private void GenerateAesKey128() => GenerateAesKey(128);
 
     private void GenerateAesKey(int keySize)
     {
-        aesKey = SecurityExtensions.GenerateAesKey(keySize).ToHexString();
+        aesKey = SecurityExtensions.GenerateAesKey(keySize);
     }
 
-    private string aesIV;
+    private byte[]? aesIV;
     private void GenerateAesIV()
     {
-        aesIV = SecurityExtensions.GenerateAesIV().ToHexString();
+        aesIV = SecurityExtensions.GenerateAesIV();
     }
 
-    private string aesEncrypted;
+    private byte[]? aesEncrypted;
     private async Task EncryptAesServer()
     {
         var result = await Http
             .Request(HttpMethod.Get, "api/security/EncryptAes")
             .SetParam("input", inputString)
-            .SetParam("key", aesKey)
-            .SetParam("iv", aesIV)
+            .SetParam("key", aesKey.ToHexString())
+            .SetParam("iv", aesIV.ToHexString())
             .SendAsync<byte[]>();
-
-        if (result.Success)
-            aesEncrypted = result.Result.ToHexString();
-        else
-        {
-            throw new Exception(result.Error);
-        }
-
+        aesEncrypted = result.Result;
     }
     private void EncryptAesClient()
     {
         aesEncrypted = inputString
-            .EncryptAES(aesKey.ToByteArrayAsHexString(), aesIV.ToByteArrayAsHexString())
-            .ToHexString();
+            .EncryptAES(aesKey, aesIV);
     }
 
-    private string aesDecrypted;
+    private string? aesDecrypted;
     private async Task DecryptAesServer()
     {
         var result = await Http
             .Request(HttpMethod.Get, "api/security/DecryptAes")
-            .SetParam("input", aesEncrypted)
-            .SetParam("key", aesKey)
-            .SetParam("iv", aesIV)
+            .SetParam("input", aesEncrypted.ToHexString())
+            .SetParam("key", aesKey.ToHexString())
+            .SetParam("iv", aesIV.ToHexString())
             .SendAsync();
-
-        if (result.Success)
-            aesDecrypted = result.Result;
-        else
-        {
-            throw new Exception(result.Error);
-        }
+        aesDecrypted = result.Result;
 
     }
     private void DecryptAesClient()
     {
-        aesDecrypted = aesEncrypted.ToByteArrayAsHexString()
-            .DecryptAES(aesKey.ToByteArrayAsHexString(), aesIV.ToByteArrayAsHexString());
+        aesDecrypted = aesEncrypted?
+            .DecryptAES(aesKey, aesIV);
     }
 }
