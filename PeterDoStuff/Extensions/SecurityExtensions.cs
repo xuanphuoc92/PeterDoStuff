@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Runtime.CompilerServices;
+﻿using Konscious.Security.Cryptography;
+
 using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PeterDoStuff.Extensions
 {
@@ -112,6 +107,67 @@ namespace PeterDoStuff.Extensions
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Default Hash Length used in Argon2id hashing
+        /// </summary>
+        public const int DEFAULT_HASH_LENGTH = 32; // Corresponding to 44 Base64 characters length
+
+        public const int DEFAULT_SALT_LENGTH = 16; // Corresponding to 24 Base64 characters length
+        
+        // These values are tested to have computation taken around 200-300 ms on test hardware:
+        
+        /// <summary>
+        /// Default Hash Iteration used in Argon2id hashing
+        /// </summary>
+        public const int DEFAULT_ITERATIONS = 4;
+
+        /// <summary>
+        /// Default Hash Memory Size used in Argon2id hashing
+        /// </summary>
+        public const int DEFAULT_MEMORY_SIZE = 65536;
+
+        /// <summary>
+        /// Default Hash Degree of Parallelism used in Argon2id hashing
+        /// </summary>
+        public const int DEFAULT_DEGREE_OF_PARALLELISM = 8;
+
+        /// <summary>
+        /// Generate a random Salt byte array
+        /// </summary>
+        /// <param name="saltLength"></param>
+        /// <returns></returns>
+        public static byte[] GenerateSalt(int saltLength = DEFAULT_SALT_LENGTH)
+        {
+            byte[] salt = new byte[saltLength];
+            new Random().NextBytes(salt);
+            return salt;
+        }
+
+        /// <summary>
+        /// Hash using Argon2id algorithm
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="salt"></param>
+        /// <param name="hashLength"></param>
+        /// <param name="iterations"></param>
+        /// <param name="memorySize"></param>
+        /// <param name="degreeOfParallelism"></param>
+        /// <returns></returns>
+        public static byte[] HashArgon2id(this byte[] input, byte[] salt,
+            int hashLength = DEFAULT_HASH_LENGTH,
+            int iterations = DEFAULT_ITERATIONS,
+            int memorySize = DEFAULT_MEMORY_SIZE,
+            int degreeOfParallelism = DEFAULT_DEGREE_OF_PARALLELISM
+            )
+        {
+            using var hasher = new Argon2id(input);
+            hasher.Salt = salt;
+            hasher.Iterations = iterations;
+            hasher.MemorySize = memorySize;
+            hasher.DegreeOfParallelism = degreeOfParallelism;
+            return hasher.GetBytes(hashLength);
         }
     }
 }

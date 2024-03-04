@@ -3,6 +3,7 @@ using PeterDoStuff.Extensions;
 using PeterDoStuff.Test.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Intrinsics.Arm;
 using System.Text;
@@ -71,6 +72,39 @@ namespace PeterDoStuff.Test.Extensions_Test
 
             decrypted1.Should().Be(input1);
             decrypted2.Should().Be(input2);
+        }
+
+        [TestMethod]
+        public void _05_Argon2id()
+        {
+            var salt1 = SecurityExtensions.GenerateSalt();
+            var salt2 = SecurityExtensions.GenerateSalt();
+
+            salt1.ToHexString().WriteToConsole("salt1");
+            salt2.ToHexString().WriteToConsole("salt2");
+            salt1.ToHexString().Should().NotBe(salt2.ToHexString());
+
+            var hash1 = "Hello1".ToByteArray().HashArgon2id(salt1, iterations: 1, memorySize: 10, degreeOfParallelism: 1).ToHexString();
+            var hash2 = "Hello2".ToByteArray().HashArgon2id(salt2, iterations: 1, memorySize: 10, degreeOfParallelism: 1).ToHexString();
+
+            var hash1Same = "Hello1".ToByteArray().HashArgon2id(salt1, iterations: 1, memorySize: 10, degreeOfParallelism: 1).ToHexString();
+            var hashMix = "Hello1".ToByteArray().HashArgon2id(salt2, iterations: 1, memorySize: 10, degreeOfParallelism: 1).ToHexString();
+
+            hash1.WriteToConsole("hash1");
+            hash2.WriteToConsole("hash2");
+            hash2.WriteToConsole("hashMix");
+
+            hash1.Should().NotBe(hash2);
+            hash1.Should().NotBe(hashMix);
+            hash1.Should().Be(hash1Same);
+            hash2.Should().NotBe(hashMix);
+
+            Stopwatch stopwatch = Stopwatch.StartNew();
+            "Hello1".ToByteArray().HashArgon2id(salt1);
+            stopwatch.Stop();
+            stopwatch.ElapsedMilliseconds.ToString().WriteToConsole("Standard Hash Time");
+            stopwatch.ElapsedMilliseconds.Should().BeGreaterThan(200);
+            stopwatch.ElapsedMilliseconds.Should().BeLessThan(500);
         }
     }
 }
