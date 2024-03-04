@@ -41,6 +41,22 @@
     Label="SHA512 Hash" @bind-Value="outputSHA512" />
 
 <MudText Class="mb-8" Typo="Typo.h4">
+    Hashing: Argon2id
+</MudText>
+
+<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateArgon2idSalt">Generate Random Salt</MudButton>
+<MudTextField T="string" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="3"
+    Label="Salt" @bind-Value="argon2idSalt" />
+
+<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="HashArgon2idServer">Hash at Server</MudButton>
+<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="HashArgon2idQuick">Hash at Server (Quick)</MudButton>
+<MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="HashArgon2idClient" Disabled="true">
+    Hash at Client (will throw error and freeze)
+</MudButton>
+<MudTextField T="string" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="3"
+    Label="Hash" @bind-Value="argon2idHash" />
+
+<MudText Class="mb-8" Typo="Typo.h4">
     Encryption: Advanced Encryption Standard (AES)
 </MudText>
 
@@ -63,7 +79,7 @@
 <MudTextField T="string" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="3"
     Label="AES Decrypted Value" @bind-Value="aesDecrypted" />
 
- @code {
+@code {
     private string inputString = "Hello";
 
     private string outputSHA256;
@@ -82,6 +98,37 @@
             .ToByteArray()
             .ToSHA512()
             .ToHexString();
+    }
+
+    private string argon2idSalt, argon2idHash;
+    private void GenerateArgon2idSalt()
+    {
+        argon2idSalt = SecurityExtensions.GenerateSalt().ToHexString();
+    }
+    private void HashArgon2idClient() // will throw error and freeze
+    {
+        argon2idHash = inputString
+            .ToByteArray()
+            .HashArgon2id(argon2idSalt.ToByteArrayAsHexString())
+            .ToHexString();
+    }
+    private async Task HashArgon2idServer()
+    {
+        var result = await Http
+            .Request(HttpMethod.Get, "api/security/HashArgon2id")
+            .SetParam("input", inputString)
+            .SetParam("salt", argon2idSalt)
+            .SendAsync<byte[]>();
+        argon2idHash = result.Result.ToHexString();
+    }
+    private async Task HashArgon2idQuick()
+    {
+        var result = await Http
+            .Request(HttpMethod.Get, "api/security/HashArgon2idQuick")
+            .SetParam("input", inputString)
+            .SetParam("salt", argon2idSalt)
+            .SendAsync<byte[]>();
+        argon2idHash = result.Result.ToHexString();
     }
 
     private string aesKey;
