@@ -92,7 +92,7 @@ namespace PeterDoStuff.Test.Extensions_Test
 
             hash1.WriteToConsole("hash1");
             hash2.WriteToConsole("hash2");
-            hash2.WriteToConsole("hashMix");
+            hashMix.WriteToConsole("hashMix");
 
             hash1.Should().NotBe(hash2);
             hash1.Should().NotBe(hashMix);
@@ -105,6 +105,40 @@ namespace PeterDoStuff.Test.Extensions_Test
             stopwatch.ElapsedMilliseconds.ToString().WriteToConsole("Standard Hash Time");
             stopwatch.ElapsedMilliseconds.Should().BeGreaterThan(200);
             stopwatch.ElapsedMilliseconds.Should().BeLessThan(500);
+        }
+
+        [TestMethod]
+        public void _06_RSA()
+        {
+            (byte[] publicKey, byte[] privateKey) = SecurityExtensions.GenerateRSAKeys();
+            publicKey.Length.ToString().WriteToConsole("public size");
+            privateKey.Length.ToString().WriteToConsole("private size");
+            publicKey.ToBase64String().WriteToConsole("public");
+            privateKey.ToBase64String().WriteToConsole("private");
+
+            // Public Key is a subset of Private Key, so should have lower length
+            publicKey.Length.Should().BeLessThan(privateKey.Length);
+
+            var input = "Hello";
+            input.WriteToConsole("input");
+
+            var encrypted1 = input.ToByteArray().EncryptRSA(publicKey).ToBase64String();
+            var encrypted2 = input.ToByteArray().EncryptRSA(publicKey).ToBase64String();
+
+            encrypted1.WriteToConsole("encrypted1");
+            encrypted2.WriteToConsole("encrypted2");
+
+            // Encryption of RSA must be different 
+            encrypted1.Should().NotBe(encrypted2);
+
+            var decrypted1 = encrypted1.ToByteArrayAsBase64().DecryptRSA(privateKey).ToUTF8String();
+            var decrypted2 = encrypted2.ToByteArrayAsBase64().DecryptRSA(privateKey).ToUTF8String();
+
+            decrypted1.Should().Be(input);
+            decrypted2.Should().Be(input);
+
+            decrypted1.WriteToConsole("decrypted1");
+            decrypted2.WriteToConsole("decrypted2");
         }
     }
 }

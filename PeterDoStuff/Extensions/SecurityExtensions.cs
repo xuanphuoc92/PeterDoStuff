@@ -1,5 +1,4 @@
 ﻿using Konscious.Security.Cryptography;
-
 using System.Security.Cryptography;
 
 namespace PeterDoStuff.Extensions
@@ -177,6 +176,26 @@ namespace PeterDoStuff.Extensions
             hasher.MemorySize = memorySize;
             hasher.DegreeOfParallelism = degreeOfParallelism;
             return hasher.GetBytes(hashLength);
+        }
+
+        public static (byte[] Public, byte[] Private) GenerateRSAKeys(int keySizeInBits = 1024)
+        {
+            using var rsa = RSA.Create(keySizeInBits);
+            return (rsa.ExportRSAPublicKey(), rsa.ExportRSAPrivateKey());
+        }
+
+        public static byte[] EncryptRSA(this byte[] input, byte[] publicKey) 
+        {
+            using var rsa = RSA.Create();
+            rsa.ImportRSAPublicKey(publicKey, out int bytesRead);
+            return rsa.Encrypt(input, RSAEncryptionPadding.Pkcs1);
+        }
+
+        public static byte[] DecryptRSA(this byte[] input, byte[] privateKey)
+        {
+            using var rsa = RSA.Create();
+            rsa.ImportRSAPrivateKey(privateKey, out int bytesRead);
+            return rsa.Decrypt(input, RSAEncryptionPadding.Pkcs1);
         }
     }
 }
