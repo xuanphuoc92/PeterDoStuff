@@ -178,23 +178,24 @@ namespace PeterDoStuff.Extensions
             return hasher.GetBytes(hashLength);
         }
 
-        public static (byte[] Public, byte[] Private) GenerateRSAKeys(int keySizeInBits = 1024)
+        public static (string Public, string Private) GenerateRSAKeys(int keySizeInBits = 1024)
         {
             using var rsa = RSA.Create(keySizeInBits);
-            return (rsa.ExportRSAPublicKey(), rsa.ExportRSAPrivateKey());
+            var para = rsa.ExportParameters(false);
+            return (rsa.ExportRSAPublicKeyPem(), rsa.ExportRSAPrivateKeyPem());
         }
 
-        public static byte[] EncryptRSA(this byte[] input, byte[] publicKey) 
+        public static byte[] EncryptRSA(this byte[] input, string publicKey) 
         {
             using var rsa = RSA.Create();
-            rsa.ImportRSAPublicKey(publicKey, out int bytesRead);
+            rsa.ImportFromPem(publicKey);
             return rsa.Encrypt(input, RSAEncryptionPadding.Pkcs1);
         }
 
-        public static byte[] DecryptRSA(this byte[] input, byte[] privateKey)
+        public static byte[] DecryptRSA(this byte[] input, string privateKey)
         {
             using var rsa = RSA.Create();
-            rsa.ImportRSAPrivateKey(privateKey, out int bytesRead);
+            rsa.ImportFromPem(privateKey);
             return rsa.Decrypt(input, RSAEncryptionPadding.Pkcs1);
         }
     }

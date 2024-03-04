@@ -110,11 +110,9 @@ namespace PeterDoStuff.Test.Extensions_Test
         [TestMethod]
         public void _06_RSA()
         {
-            (byte[] publicKey, byte[] privateKey) = SecurityExtensions.GenerateRSAKeys();
-            publicKey.Length.ToString().WriteToConsole("public size");
-            privateKey.Length.ToString().WriteToConsole("private size");
-            publicKey.ToBase64String().WriteToConsole("public");
-            privateKey.ToBase64String().WriteToConsole("private");
+            (string publicKey, string privateKey) = SecurityExtensions.GenerateRSAKeys();
+            publicKey.WriteToConsole("public");
+            privateKey.WriteToConsole("private");
 
             // Public Key is a subset of Private Key, so should have lower length
             publicKey.Length.Should().BeLessThan(privateKey.Length);
