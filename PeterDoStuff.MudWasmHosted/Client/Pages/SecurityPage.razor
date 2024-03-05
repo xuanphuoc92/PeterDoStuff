@@ -212,7 +212,22 @@
     </MudItem>
 </MudGrid>
 
- @code {
+<MudMessageBox @ref="errorBox" YesText="Close"> 
+    <MessageContent>
+        <MudText Typo="Typo.h5" Color="Color.Error">Error</MudText>
+         <MudText Color="Color.Error">@errorMessage</MudText>
+    </MessageContent>
+</MudMessageBox>
+
+@code {
+    private MudMessageBox errorBox;
+    private string errorMessage;
+    private async Task ShowError(string errorMessage)
+    {
+        this.errorMessage = errorMessage;
+        await errorBox.Show();
+    }
+
     private bool isBase64Format = false;
 
     private string inputString = "Hello";
@@ -253,6 +268,8 @@
             .SetParam("salt", argon2idSalt.ToHexString())
             .SendAsync<byte[]>();
         argon2idHash = result.Result;
+        if (result.Failure)
+            await ShowError(result.Error);
         argon2idHashTime = result.ElapsedMilliseconds != null
             ? $"{result.ElapsedMilliseconds} ms"
             : null;
@@ -265,6 +282,8 @@
             .SetParam("salt", argon2idSalt.ToHexString())
             .SendAsync<byte[]>();
         argon2idHash = result.Result;
+        if (result.Failure)
+            await ShowError(result.Error);
         argon2idHashTime = result.ElapsedMilliseconds != null
             ? $"{result.ElapsedMilliseconds} ms"
             : null;
@@ -296,6 +315,8 @@
             .SetParam("iv", aesIV.ToHexString())
             .SendAsync<byte[]>();
         aesEncrypted = result.Result;
+        if (result.Failure)
+            await ShowError(result.Error);
     }
     private void EncryptAesClient()
     {
@@ -313,7 +334,8 @@
             .SetParam("iv", aesIV.ToHexString())
             .SendAsync();
         aesDecrypted = result.Result;
-
+        if (result.Failure)
+            await ShowError(result.Error);
     }
     private void DecryptAesClient()
     {
@@ -332,6 +354,8 @@
 
         rsaPublic = response.Result.Public;
         rsaPrivate = response.Result.Private;
+        if (response.Failure)
+            await ShowError(response.Error);
     }
 
     private void GenerateRsaKeysClient()
@@ -347,6 +371,8 @@
             .SetBody(rsaPublic)
             .SendAsync<byte[]>();
         rsaEncrypted = response.Result;
+        if (response.Failure)
+            await ShowError(response.Error);
     }
 
     private void EncryptRsaClient()
@@ -364,6 +390,8 @@
             .SetBody(rsaPrivate)
             .SendAsync();
         rsaDecrypted = response.Result;
+        if (response.Failure)
+            await ShowError(response.Error);
     }
 
     private void DecryptRsaClient()
@@ -382,6 +410,8 @@
             .SetBody(rsaPrivate)
             .SendAsync<byte[]>();
         rsaHash = response.Result;
+        if (response.Failure)
+            await ShowError(response.Error);
     }
     private void SignRsaClient()
     {
@@ -400,6 +430,8 @@
             .SetBody(rsaPublic)
             .SendAsync<bool>();
         rsaVerified = response.Result;
+        if (response.Failure)
+            await ShowError(response.Error);
     }
     private void VerifyRsaClient()
     {
