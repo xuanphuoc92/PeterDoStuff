@@ -23,7 +23,7 @@
         .NET 7 WebAssembly - Algorithm 'Aes' is not supported on this platform.
     </MudLink>
     <br />
-    Therefore, some of the functions below will be wired to SubtleCrypto API as workaround.
+    Therefore, some of the functions below will be executed on Server.
 </MudText>
 
 <MudText Class="mb-8" Typo="Typo.h4">Byte Array Format</MudText>
@@ -52,7 +52,7 @@
         <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
     </MudItem>
     <MudItem xs="10" md="10">
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ToSHA256">Calculate SHA256</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ToSHA256">Hash SHA256</MudButton>
         <ByteArrayTextField IsBase64Format="@isBase64Format" @bind-Value="outputSHA256" />
     </MudItem>
 
@@ -60,7 +60,7 @@
         <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
     </MudItem>
     <MudItem xs="10" md="10">
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ToSHA512">Calculate SHA512</MudButton>
+         <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ToSHA512">Hash SHA512</MudButton>
         <ByteArrayTextField IsBase64Format="@isBase64Format" @bind-Value="outputSHA512" />
     </MudItem>
 </MudGrid>
@@ -84,9 +84,9 @@
         <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
     </MudItem>
     <MudItem xs="10" md="6">
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="HashArgon2idServer">Hash at Server</MudButton>
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="HashArgon2idQuick">Hash at Server (Quick)</MudButton>
-        <MudButton Variant="Variant.Filled" Color="Color.Info" OnClick="HashArgon2idClient">Hash at Client (FREEZE)</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="HashArgon2idServer">Hash</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="HashArgon2idQuick">Hash (Quick)</MudButton>
+        @* <MudButton Variant="Variant.Filled" Color="Color.Info" OnClick="HashArgon2idClient">Hash at Client (FREEZE)</MudButton> *@
         @if (argon2idHashTime != null)
         {
             <br />
@@ -119,16 +119,16 @@
         <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
     </MudItem>
     <MudItem xs="10" md="5">
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="EncryptAesServer">Encrypt at server</MudButton>
-        <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="EncryptAesClient">Encrypt at client</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="EncryptAesServer">Encrypt</MudButton>
+        @* <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="EncryptAesClient">Encrypt at client</MudButton> *@
         <ByteArrayTextField IsBase64Format="@isBase64Format" @bind-Value="aesEncrypted" />
     </MudItem>
     <MudItem xs="3" md="1" Class="d-flex justify-end">
         <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
     </MudItem>
     <MudItem xs="9" md="4">
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="DecryptAesServer">Decrypt at server</MudButton>
-        <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="DecryptAesClient">Decrypt at client</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="DecryptAesServer">Decrypt</MudButton>
+        @* <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="DecryptAesClient">Decrypt at client</MudButton> *@
         <MudTextField T="string" Variant="Variant.Outlined" AutoGrow Lines="1"
             @bind-Value="aesDecrypted" />
     </MudItem>
@@ -139,11 +139,11 @@
 </MudText>
 
 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateRsaKeysServer">
-    Generate RSA Keys at Server
+    Generate Random RSA Keys
 </MudButton>
-<MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="GenerateRsaKeysClient">
+@* <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="GenerateRsaKeysClient">
     Generate RSA Keys at Client
-</MudButton>
+</MudButton> *@
 <MudGrid Spacing="1" Class="align-top mb-8">
     <MudItem xs="12" md="4">
         <MudText Color="Color.Success">Public</MudText>
@@ -167,8 +167,8 @@
         <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
     </MudItem>
     <MudItem xs="8" md="10">
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="EncryptRsaServer">Encrypt at Server</MudButton>
-        <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="EncryptRsaClient">Encrypt at Client</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="EncryptRsaServer">Encrypt</MudButton>
+        @* <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="EncryptRsaClient">Encrypt at Client</MudButton> *@
         <ByteArrayTextField IsBase64Format="@isBase64Format" @bind-Value="rsaEncrypted" />
     </MudItem>
     <MudItem xs="5" md="3" Class="d-flex justify-end">
@@ -177,8 +177,8 @@
         <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
     </MudItem>
     <MudItem xs="7" md="9">
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="DecryptRsaServer">Decrypt at Server</MudButton>
-        <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="DecryptRsaClient">Decrypt at Client</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="DecryptRsaServer">Decrypt</MudButton>
+        @* <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="DecryptRsaClient">Decrypt at Client</MudButton> *@
         <MudTextField T="string" Variant="Variant.Outlined" AutoGrow Lines="1"
             @bind-Value="rsaDecrypted" />
     </MudItem>
@@ -192,8 +192,8 @@
         <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
     </MudItem>
     <MudItem xs="8" md="10">
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SignRsaServer">Sign at Server</MudButton>
-        <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="SignRsaClient">Sign at Client</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SignRsaServer">Sign</MudButton>
+        @* <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="SignRsaClient">Sign at Client</MudButton> *@
         <ByteArrayTextField IsBase64Format="@isBase64Format" @bind-Value="rsaHash" />
     </MudItem>
 
@@ -203,16 +203,16 @@
         <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
     </MudItem>
     <MudItem xs="7" md="9">
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="VerifyRsaServer">Verify at Server</MudButton>
-        <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="VerifyRsaClient">Verify at Client</MudButton>
-        <br/>
+        <MudButton Variant="Variant.Filled" Color="@rsaVerifyColor" OnClick="VerifyRsaServer">Verify</MudButton>
+        @* <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="VerifyRsaClient">Verify at Client</MudButton> *@
+        @* <br/>
         <MudIcon 
             Icon="@(rsaVerified ? Icons.Material.Filled.CheckCircle : Icons.Material.Filled.Cancel)"
-            Color="@(rsaVerified ? Color.Success : Color.Error)" />
+            Color="@(rsaVerified ? Color.Success : Color.Error)" /> *@
     </MudItem>
 </MudGrid>
 
-@code {
+ @code {
     private bool isBase64Format = false;
 
     private string inputString = "Hello";
@@ -390,7 +390,7 @@
             .SignRSA(rsaPrivate);
     }
 
-    private bool rsaVerified;
+    private bool? rsaVerified;
     private async Task VerifyRsaServer()
     {
         var response = await Http
@@ -406,5 +406,16 @@
         rsaVerified = inputString
             .ToByteArray()
             .VerifyRSA(rsaHash, rsaPublic);
+    }
+    private Color rsaVerifyColor 
+    {
+        get
+        {
+            if (rsaVerified == true)
+                return Color.Success;
+            if (rsaVerified == false)
+                return Color.Error;
+            return Color.Default;
+        }
     }
 }
