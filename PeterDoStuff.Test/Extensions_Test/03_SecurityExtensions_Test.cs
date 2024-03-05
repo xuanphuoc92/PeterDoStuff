@@ -126,7 +126,7 @@ namespace PeterDoStuff.Test.Extensions_Test
             encrypted1.WriteToConsole("encrypted1");
             encrypted2.WriteToConsole("encrypted2");
 
-            // Encryption of RSA must be different 
+            // RSA Encryption of same message must be different due to random padding
             encrypted1.Should().NotBe(encrypted2);
 
             var decrypted1 = encrypted1.ToByteArrayAsBase64().DecryptRSA(privateKey).ToUTF8String();
@@ -150,6 +150,12 @@ namespace PeterDoStuff.Test.Extensions_Test
 
             "Hello1".ToByteArray().VerifyRSA(hash2, publicKey).Should().BeFalse();
             "Hello2".ToByteArray().VerifyRSA(hash1, publicKey).Should().BeFalse();
+
+            Action errorAction = () => "Hello1".ToByteArray().SignRSA(publicKey);
+            errorAction.Should().Throw<Exception>();
+            
+            "Hello1".ToByteArray().VerifyRSA(hash1, privateKey).Should().BeTrue();
+            "Hello1".ToByteArray().VerifyRSA(hash2, privateKey).Should().BeFalse();
         }
     }
 }
