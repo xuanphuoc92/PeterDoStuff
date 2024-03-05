@@ -47,6 +47,12 @@
     </MudItem>
 </MudGrid>
 
+<MudMessageBox @ref="inputBox" Title="Input" YesText="Close">
+    <MessageContent>
+        <MudTextField T="string" Label="Input String" Variant="Variant.Outlined" AutoGrow Lines="1" Style="width: 360px"
+                    @bind-Value="inputString" />
+    </MessageContent>
+</MudMessageBox>
 
 <MudText Typo="Typo.h4">
     Hashing: SHA
@@ -187,7 +193,7 @@
     </MudItem>
 </MudGrid>
 
-<MudGrid Spacing="1" Class="align-center mb-8">
+<MudGrid Spacing="1" Class="align-top mb-8">
     <MudItem xs="1" md="1">
         <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="OpenInput">Input</MudButton>
     </MudItem>
@@ -196,17 +202,17 @@
         <MudIcon Icon="@Icons.Material.Filled.Key" Color="Color.Success"/>
         <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
     </MudItem>
-    <MudItem xs="8" md="10">
+    <MudItem xs="8" md="5">
         <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="EncryptRsaServer">Encrypt</MudButton>
         @* <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="EncryptRsaClient">Encrypt at Client</MudButton> *@
         <ByteArrayTextField IsBase64Format="@isBase64Format" @bind-Value="rsaEncrypted" />
     </MudItem>
-    <MudItem xs="5" md="3" Class="d-flex justify-end">
+    <MudItem xs="5" md="1" Class="d-flex justify-end">
         <MudIcon Icon="@Icons.Material.Filled.AddCircle" />
         <MudIcon Icon="@Icons.Material.Filled.Key" Color="Color.Warning" />
         <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
     </MudItem>
-    <MudItem xs="7" md="9">
+    <MudItem xs="7" md="4">
         <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="DecryptRsaServer">Decrypt</MudButton>
         @* <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="DecryptRsaClient">Decrypt at Client</MudButton> *@
         <MudTextField T="string" Variant="Variant.Outlined" AutoGrow Lines="1"
@@ -221,18 +227,18 @@
         <MudIcon Icon="@Icons.Material.Filled.Key" Color="Color.Warning" />
         <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
     </MudItem>
-    <MudItem xs="8" md="10">
+    <MudItem xs="8" md="5">
         <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SignRsaServer">Sign</MudButton>
         @* <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="SignRsaClient">Sign at Client</MudButton> *@
         <ByteArrayTextField IsBase64Format="@isBase64Format" @bind-Value="rsaHash" />
     </MudItem>
 
-    <MudItem xs="5" md="3" Class="d-flex justify-end">
+    <MudItem xs="5" md="1" Class="d-flex justify-end">
         <MudIcon Icon="@Icons.Material.Filled.AddCircle" />
         <MudIcon Icon="@Icons.Material.Filled.Key" Color="Color.Success" />
         <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
     </MudItem>
-    <MudItem xs="7" md="9">
+    <MudItem xs="7" md="4">
         <MudButton Variant="Variant.Filled" Color="@rsaVerifyColor" OnClick="VerifyRsaServer">Verify</MudButton>
         @* <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="VerifyRsaClient">Verify at Client</MudButton> *@
         @* <br/>
@@ -248,13 +254,6 @@
         <MudText Color="Color.Error">@errorMessage</MudText>
     </MessageContent>
 </MudMessageBox>
-
-    <MudMessageBox @ref="inputBox" Title="Input" YesText="Close">
-        <MessageContent>
-            <MudTextField T="string" Label="Input String" Variant="Variant.Outlined" AutoGrow Lines="1" Style="width: 360px"
-                       @bind-Value="inputString" />
-     </MessageContent>
- </MudMessageBox>
 
  @code {
     private MudMessageBox errorBox;
