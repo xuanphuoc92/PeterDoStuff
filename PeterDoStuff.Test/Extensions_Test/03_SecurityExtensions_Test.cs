@@ -105,6 +105,15 @@ namespace PeterDoStuff.Test.Extensions_Test
             stopwatch.ElapsedMilliseconds.ToString().WriteToConsole("Standard Hash Time");
             stopwatch.ElapsedMilliseconds.Should().BeGreaterThan(200);
             stopwatch.ElapsedMilliseconds.Should().BeLessThan(500);
+
+            "Hello".ToByteArray()
+                .HashArgon2id(
+                    salt: "fcf07dba2e0af8e5d5e27b14c2383ee9".ToByteArrayAsHexString(),
+                    iterations: 1,
+                    memorySize: 10,
+                    degreeOfParallelism: 1)
+                .ToHexString()
+                .Should().Be("720fcae9a394be95920af6711c6477c54df6619ebf6a7839cbfee6c1913d0d09");
         }
 
         [TestMethod]
@@ -156,6 +165,62 @@ namespace PeterDoStuff.Test.Extensions_Test
             
             "Hello1".ToByteArray().VerifyRSA(hash1, privateKey).Should().BeTrue();
             "Hello1".ToByteArray().VerifyRSA(hash2, privateKey).Should().BeFalse();
+        }
+
+        [TestMethod]
+        public void _07_RSA_CrossCheck()
+        {
+            string publicKey = @"-----BEGIN RSA PUBLIC KEY-----
+MIIBCgKCAQEA9CLOYPGf7khzA8rTEqdhMYRR8GDtiXvYLPx/HrHSkCybiTRK3Hr5
+Zvmb6vv1N4g8Sm9/AdQMRplRK013IN2N2VBFDvjAuGUOK7Pqr0aq3UrfTi6Eq9SP
+3gDDqNZx4bKfyWuJV+vEqep8jqHCrxr0pjAsm6fo4zo1pQS7U4aiiCFofJItHkN/
+UrFT8KV0f5D1uArzORv4ogewcKkhryC7AU3TkaGoTGoHN5C/nLr9V2yxUTIwh1FY
+9W+mTkBi6Hfq4l1FXo913h0ZM0x5mxQQMmj2I8QHP+JQVSnVW9cYiAR8S58tIaoV
+LXa3mwtbr9rVAOk5XKDgZyPIZ0yDUMAdNQIDAQAB
+-----END RSA PUBLIC KEY-----";
+            string privateKey = @"-----BEGIN RSA PRIVATE KEY-----
+MIIEowIBAAKCAQEA9CLOYPGf7khzA8rTEqdhMYRR8GDtiXvYLPx/HrHSkCybiTRK
+3Hr5Zvmb6vv1N4g8Sm9/AdQMRplRK013IN2N2VBFDvjAuGUOK7Pqr0aq3UrfTi6E
+q9SP3gDDqNZx4bKfyWuJV+vEqep8jqHCrxr0pjAsm6fo4zo1pQS7U4aiiCFofJIt
+HkN/UrFT8KV0f5D1uArzORv4ogewcKkhryC7AU3TkaGoTGoHN5C/nLr9V2yxUTIw
+h1FY9W+mTkBi6Hfq4l1FXo913h0ZM0x5mxQQMmj2I8QHP+JQVSnVW9cYiAR8S58t
+IaoVLXa3mwtbr9rVAOk5XKDgZyPIZ0yDUMAdNQIDAQABAoIBACY3aJ0OVd3EI5T9
+ZAswfmt07iq10ZlK9K0eHXwdk/uTsAlLUUiwS2hOPJUNOfamceGpEHWlzwIiL+2a
+Y8KWTAUvpo/QasKytwQqVtt3MXoQpWIksAoB7T9wWTCN2SfegVrTZZ2Iv7Fljnf5
+ZHNqwc9eDS2UnEUtsIYTdot9sOWkHuRC9/k9fZcnyr96dQ+RFUbHGOAp3sPKl05Y
+mfbeJDNBBMjQtB7FsVC4Tay567gX+gw1uOixT4w/wheQ67AXV2vAWNAp+ipjxTET
+eIa03LUTuzwq1TKgyLr7In01kTrKWq3QyJh9XOLqJ/Fcjl2cv3GYVw05mrBxLaBH
+MvOnaGUCgYEA951rCWgC/RkuPX2Ek46E/YVqsI8BkK5rHwtRL7e84/c4L1FMe+ro
+nM/aS7p0ouIJsjLrGUS5uCIaCH/qTeSz1IoYsKOGhbF4WMQCFNPmeyA8Iv3DbJY7
+9AWuiJyogBgwK2dqwbzm8Vtg2d/iFIXKBOvoJAZTMJd7PSYfSERW05cCgYEA/Gc6
+mPbSEV4vOIE43uUQvVXgU0COKwXrMdMkYhJWXQGFG9vINiaelZb1pooGD78usKjA
+Y0igKAkggaZvWpXYHMFtty3NXY/vmSlUL3j2ph2q9TzbtqY06YEeL5E9qBLpg9FU
+BoyDuSL7976xNSS/aZaxqh822zRZkFVxhfAt/xMCgYEAl7sHnvD0e+FVO2rRtZWs
+mqmJkf1fiSfIDnLh4eqmPc78x8n6oyh0N7sKWkM8O59lL6QR+h7p6xJCf5jam7ac
+F44zyPG7eeshAsvBNsAOSL6c+xgjC0QYItTkeWP9wNiRk9dATM2Teqxy8a9GGytM
+eq2QR5r0mR8J7pOQsbjmt6sCgYBaI8+kgzlAZJ9+kX+q8qmIxJuJf9uF9+Yn9Bzh
+PWVEb9+GtHYLCL3H9JKkOFSz2PYmtw2GJ5Cy25eVVcgc1LjKhDXXnm7iRB4wV7cu
+AQgtCRld3a8lyrPI1IjgOgGH/cERh3d3o0UDoD/WGW8V6JrHbb7jX6RqooZ96lXR
+nJYAqwKBgGpSk/oNVNlQPbE5y7P7w0qXnMDEwjxV/TNmrt4XepPY2wlhbUi66KG1
+lYCoShUzCQ7CM2UdvkfARI7E5uLBJ+d4ODJQl19WghNQnnmYYg6fJzFI5F50226w
+ZyLOGR55QuJgCvj6GedbhAltgnhOzRCjSSea3e1KpAhao3Jr1lxC
+-----END RSA PRIVATE KEY-----";
+            string encryptedHex = "d76d83ff140339b267617d377140f2c37745cefb0d62a12d80fcf2dd16d5eab36fd20aae87b52cd7e29e4438b5773908573f23b99f294ba33428f5ea9cabd0ce1ef6a84fd3e5318307df25d380728da06f6b6b0aa5fc41ba9392f33fc90371264fcf11e194d5db47017aafbb758a5c2c2b2bb7214081aa9efb8578f794a4689ba72e9f1723d3bf683ad4c33dad8f019c89a05a54c1e1fbe39f1662b1a755a0fbfdf3574bb14e7ac550272c21d1ea5c04d8877782b6eb7ab943de890046732169ec90efcd9b7fc18ddd955d38168b437f26bffef836ab2b66b3ea7110a369026c68099b0672eb42940579d83f0b49eab14af84aba3b38d2eabe69882d25b0e318";
+            string signatureHex = "8846de279def06624f9bf3cf57b2916c708deea2813856ceaccf946a5cc4c48afe232407095929eca235f434fc9df6e150ea4e0ce70ec75bf623aafeb7e89a1c18d461f34ec00d300eee5720b3f9e3159e0305ee97c26552c28b0a8540feca9f2b0f5fe26614bdbecbd9cab13c13c01bd87395b56f4d68bebfa24230d36057df6a04b18e4d6b7e60684f374621c3f9366eedcb54eda6b291f3f89c971e74ebe2e6f3c93b3c5c8a94a21bf00b26fc0f2903ccd4953d26a164b91e329b04b8ee48c6b4064c0eaeee542c48d6b49b6e07ef8d6d800aff8e147c4c65883653e2d6265ef4753c8906499e4404578acf53c9f19bedb9af1abdfd331f9a3304dadccc34";
+            string input = "Hello";
+
+            string encryptedRandomHex = input.ToByteArray().EncryptRSA(publicKey).ToHexString();
+
+            encryptedHex.Should().NotBe(encryptedRandomHex);
+
+            string decrypted1 = encryptedHex.ToByteArrayAsHexString().DecryptRSA(privateKey).ToUTF8String();
+            string decrypted2 = encryptedRandomHex.ToByteArrayAsHexString().DecryptRSA(privateKey).ToUTF8String();
+
+            decrypted1.Should().Be(input);
+            decrypted2.Should().Be(input);
+
+            input.ToByteArray().SignRSA(privateKey).ToHexString().Should().Be(signatureHex);
+            input.ToByteArray().VerifyRSA(signatureHex.ToByteArrayAsHexString(), publicKey).Should().BeTrue();
         }
     }
 }

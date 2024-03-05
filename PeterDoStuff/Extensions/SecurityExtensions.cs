@@ -67,6 +67,7 @@ namespace PeterDoStuff.Extensions
             aes.Key = key;
             aes.IV = iv;
             aes.Mode = CipherMode.CBC;
+            aes.Padding = PaddingMode.PKCS7;
 
             // Create an encryptor to perform the stream transform.
             using var encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
@@ -98,6 +99,8 @@ namespace PeterDoStuff.Extensions
             using var aes = Aes.Create();
             aes.Key = key;
             aes.IV = iv;
+            aes.Mode = CipherMode.CBC;
+            aes.Padding = PaddingMode.PKCS7;
 
             // Create a decryptor to perform the stream transform.
             using var decryptor = aes.CreateDecryptor(aes.Key, aes.IV);

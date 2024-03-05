@@ -26,7 +26,7 @@
     Therefore, some of the functions below will be executed on Server.
 </MudText>
 
-<MudText Class="mb-8" Typo="Typo.h4">Byte Array Format</MudText>
+<MudText Typo="Typo.h4">Byte Array Format</MudText>
 <MudToolBar Class="mb-8 d-flex">
     <MudText Color="Color.Info">Hex</MudText>
     <MudSwitch Class="ml-8" @bind-Value="@isBase64Format" UnCheckedColor="Color.Info" Color="Color.Success" />
@@ -37,11 +37,24 @@
     Input
 </MudText>
 
-<MudTextField T="string" Label="Input String" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="1" 
-    @bind-Value="inputString"/>
+<MudGrid Spacing="1" Class="mb-8">
+    <MudItem xs="12" md="6">
+        <MudTextField T="string" Label="Input String" Variant="Variant.Outlined" AutoGrow Lines="1"
+            @bind-Value="inputString" />
+    </MudItem>
+    <MudItem xs="12" md="6">
+        <ByteArrayTextField IsBase64Format="@isBase64Format" Disabled="true" Value="@inputByteArray" Label="Byte Array form (UTF8)" />
+    </MudItem>
+</MudGrid>
 
-<MudText Class="mb-8" Typo="Typo.h4">
+
+<MudText Typo="Typo.h4">
     Hashing: SHA
+</MudText>
+<MudText Class="mb-8">
+    SHA Hashing
+    <br />
+    Externally cross-checed with: <MudLink Target="_blank" Href="https://coding.tools/sha256">Coding.tools</MudLink>
 </MudText>
 
 <MudGrid Spacing="1" Class="align-center mb-8">
@@ -65,8 +78,13 @@
     </MudItem>
 </MudGrid>
 
-<MudText Class="mb-8" Typo="Typo.h4">
+<MudText Typo="Typo.h4">
     Hashing: Argon2id
+</MudText>
+<MudText Class="mb-8">
+    Argon2id Hashing
+    <br />
+    Externally cross-checed with: <MudLink Target="_blank" Href="https://argon2.online/">Argon2.online</MudLink>
 </MudText>
 
 <MudGrid Spacing="1" Class="align-center mb-8">
@@ -96,8 +114,13 @@
     </MudItem>
 </MudGrid>
 
-<MudText Class="mb-8" Typo="Typo.h4">
+<MudText Typo="Typo.h4">
     Encryption: AES
+</MudText>
+<MudText Class="mb-8">
+    AES Encrypting and Decrypting with CBC Cipher Mode and PKCS7 Paddding.
+    <br/>
+    IMPORTANT: Since I have not found any external cross-check that returns the identical results, the implementation may have a slight difference in implementations than the cross-checked sources.
 </MudText>
 
 <MudGrid Spacing="1" Class="align-center mb-8">
@@ -134,8 +157,15 @@
     </MudItem>
 </MudGrid>
 
-<MudText Class="mb-8" Typo="Typo.h4">
-    Encryption: RSA
+<MudText Typo="Typo.h4">
+    Encryption and Signing/Hashing: RSA
+</MudText>
+<MudText Class="mb-8">
+    RSA Encrypting and Decrypting plaground with 2048 bits key and PKCS1 Padding
+    <br/>
+    Externally cross-checed with: <MudLink Target="_blank" Href="https://devtoolcafe.com/tools/rsa">DevToolCafe.com</MudLink>
+    <br/>
+    RSA Signing and Verifying with PKCS1 Padding and SHA512 Hashing
 </MudText>
 
 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateRsaKeysServer">
@@ -219,14 +249,14 @@
     </MessageContent>
 </MudMessageBox>
 
-<MudMessageBox @ref="inputBox" Title="Input" YesText="Close">
-    <MessageContent>
-        <MudTextField T="string" Label="Input String" Variant="Variant.Outlined" AutoGrow Lines="1" Style="width: 400px"
-            @bind-Value="inputString" />
-    </MessageContent>
-</MudMessageBox>
+    <MudMessageBox @ref="inputBox" Title="Input" YesText="Close">
+        <MessageContent>
+            <MudTextField T="string" Label="Input String" Variant="Variant.Outlined" AutoGrow Lines="1" Style="width: 360px"
+                       @bind-Value="inputString" />
+     </MessageContent>
+ </MudMessageBox>
 
-@code {
+ @code {
     private MudMessageBox errorBox;
     private string errorMessage;
     private async Task ShowError(string errorMessage)
@@ -244,6 +274,7 @@
     private bool isBase64Format = false;
 
     private string inputString = "Hello";
+    private byte[] inputByteArray => inputString.ToByteArray();
 
     private byte[]? outputSHA256;
     private void ToSHA256()
