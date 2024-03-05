@@ -90,7 +90,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Extensions
 
         public HttpRequestBuilder SetParam(string key, string value)
         {
-            Parameters[Uri.EscapeDataString(key)] = Uri.EscapeDataString(value);
+            Parameters[Uri.EscapeDataString(key)] = Uri.EscapeDataString(value??"");
             return this;
         }
 
