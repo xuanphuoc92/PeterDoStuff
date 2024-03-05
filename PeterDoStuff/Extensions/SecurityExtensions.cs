@@ -178,13 +178,24 @@ namespace PeterDoStuff.Extensions
             return hasher.GetBytes(hashLength);
         }
 
-        public static (string Public, string Private) GenerateRSAKeys(int keySizeInBits = 1024)
+        /// <summary>
+        /// Generate a random pair of RSA Public and Private Keys (default 2048 bits key size) in PEM format
+        /// </summary>
+        /// <param name="keySizeInBits"></param>
+        /// <returns></returns>
+        public static (string Public, string Private) GenerateRSAKeys(int keySizeInBits = 2048)
         {
             using var rsa = RSA.Create(keySizeInBits);
             var para = rsa.ExportParameters(false);
             return (rsa.ExportRSAPublicKeyPem(), rsa.ExportRSAPrivateKeyPem());
         }
 
+        /// <summary>
+        /// Encrypt using RSA Public Key with PKCS1 Padding
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="publicKey">Public Key in PEM format</param>
+        /// <returns></returns>
         public static byte[] EncryptRSA(this byte[] input, string publicKey) 
         {
             using var rsa = RSA.Create();
@@ -192,6 +203,12 @@ namespace PeterDoStuff.Extensions
             return rsa.Encrypt(input, RSAEncryptionPadding.Pkcs1);
         }
 
+        /// <summary>
+        /// Decrypt using RSA Private Key with PKCS1 Padding
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="privateKey">Private Key in PEM format</param>
+        /// <returns></returns>
         public static byte[] DecryptRSA(this byte[] input, string privateKey)
         {
             using var rsa = RSA.Create();
@@ -199,6 +216,12 @@ namespace PeterDoStuff.Extensions
             return rsa.Decrypt(input, RSAEncryptionPadding.Pkcs1);
         }
 
+        /// <summary>
+        /// Sign using RSA Private Key, with SHA512 Hashing and PKCS1 Padding
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="privateKey">Private Key in PEM format</param>
+        /// <returns></returns>
         public static byte[] SignRSA(this byte[] data, string privateKey)
         {
             using var rsa = RSA.Create();
@@ -206,6 +229,13 @@ namespace PeterDoStuff.Extensions
             return rsa.SignData(data, HashAlgorithmName.SHA512, RSASignaturePadding.Pkcs1);
         }
 
+        /// <summary>
+        /// Verify using RSA Private Key, with SHA512 Hashing and PKCS1 Padding
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="hash">Signature/Hash from RSA signing</param>
+        /// <param name="publicKey">Public Key in PEM format</param>
+        /// <returns></returns>
         public static bool VerifyRSA(this byte[] data, byte[] hash, string publicKey)
         {
             using var rsa = RSA.Create();
