@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PeterDoStuff.Extensions;
+using PeterDoStuff.MudWasmHosted.Shared;
 
 namespace PeterDoStuff.MudWasmHosted.Server.Controllers
 {
@@ -41,6 +42,33 @@ namespace PeterDoStuff.MudWasmHosted.Server.Controllers
         public string DecryptAes(string input, string key, string iv)
         {
             return input.ToByteArrayAsHexString().DecryptAES(key.ToByteArrayAsHexString(), iv.ToByteArrayAsHexString());
+        }
+
+        [HttpGet]
+        [Route("GenerateRsaKeys")]
+        public RsaKeys GenerateRsaKeys()
+        {
+            var keys = SecurityExtensions.GenerateRSAKeys();
+            return new RsaKeys(keys.Public, keys.Private);
+        }
+
+        [HttpPost]
+        [Route("EncryptRsa")]
+        public byte[] EncryptRsa(string input, [FromBody] string publicKey)
+        {
+            return input
+                .ToByteArray()
+                .EncryptRSA(publicKey);
+        }
+
+        [HttpPost]
+        [Route("DecryptRsa")]
+        public string DecryptRsa(string input, [FromBody] string privateKey)
+        {
+            return input
+                .ToByteArrayAsHexString()
+                .DecryptRSA(privateKey)
+                .ToUTF8String();
         }
     }
 }

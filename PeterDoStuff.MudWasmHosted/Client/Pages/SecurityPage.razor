@@ -3,6 +3,7 @@
 @using PeterDoStuff.Extensions
 @using PeterDoStuff.MudWasmHosted.Client.Extensions
 @using System.Dynamic
+@using PeterDoStuff.MudWasmHosted.Shared
 
 <PageTitle>Security</PageTitle>
 
@@ -131,8 +132,55 @@
     <MudItem xs="9" md="4">
         <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="DecryptAesServer">Decrypt at server</MudButton>
         <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="DecryptAesClient">Decrypt at client (will throw error now)</MudButton>
-        <MudTextField T="string" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="1"
+        <MudTextField T="string" Variant="Variant.Outlined" AutoGrow Lines="1"
             @bind-Value="aesDecrypted" />
+    </MudItem>
+</MudGrid>
+
+<MudText Class="mb-8" Typo="Typo.h4">
+    Encryption: RSA
+</MudText>
+
+<MudGrid Spacing="1" Class="align-center mb-8">
+    <MudItem xs="1" md="1">
+        <MudText Color="Color.Primary">Input</MudText>
+    </MudItem>
+    <MudItem xs="1" md="1" Class="d-flex justify-end">
+        <MudIcon Icon="@Icons.Material.Filled.AddCircle" />
+    </MudItem>
+    <MudItem xs="10" md="4">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateRsaKeysServer">
+            Generate RSA Keys at Server
+        </MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="GenerateRsaKeysClient">
+            Generate RSA Keys at Client (throw error)
+        </MudButton>
+        <MudTextField T="string" Variant="Variant.Outlined" AutoGrow Lines="1" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Key"
+            @bind-Value="rsaPublic" Label="Public Key" AdornmentColor="Color.Success" />
+    </MudItem>
+    <MudItem xs="2" md="1" Class="d-flex justify-end">
+        <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
+    </MudItem>
+    <MudItem xs="10" md="5">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="EncryptRsaServer">Encrypt at Server</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="EncryptRsaClient">Encrypt at Client</MudButton>
+        <ByteArrayTextField IsBase64Format="@isBase64Format" @bind-Value="rsaEncrypted" />
+    </MudItem>
+    <MudItem xs="3" md="2" Class="d-flex justify-end">
+        <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
+    </MudItem>
+    <MudItem xs="9" md="4">
+        <MudTextField T="string" Variant="Variant.Outlined" AutoGrow Lines="1" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Key"
+            @bind-Value="rsaPrivate" Label="Private Key" AdornmentColor="Color.Warning" />
+    </MudItem>
+    <MudItem xs="3" md="1" Class="d-flex justify-end">
+        <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
+    </MudItem>
+    <MudItem xs="9" md="5">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="DecryptRsaServer">Decrypt at Server</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="DecryptRsaClient">Decrypt at Client</MudButton>
+        <MudTextField T="string" Variant="Variant.Outlined" AutoGrow Lines="1"
+            @bind-Value="rsaDecrypted" />
     </MudItem>
 </MudGrid>
 
@@ -243,5 +291,57 @@
     {
         aesDecrypted = aesEncrypted?
             .DecryptAES(aesKey, aesIV);
+    }
+
+    private string rsaPublic, rsaPrivate, rsaDecrypted;
+    private byte[] rsaEncrypted;
+
+    private async Task GenerateRsaKeysServer()
+    {
+        var response = await Http
+            .Request(HttpMethod.Get, "api/security/GenerateRsaKeys")
+            .SendAsync<RsaKeys>();
+
+        rsaPublic = response.Result.Public;
+        rsaPrivate = response.Result.Private;
+    }
+
+    private void GenerateRsaKeysClient()
+    {
+        (rsaPublic, rsaPrivate) = SecurityExtensions.GenerateRSAKeys();
+    }
+
+    private async Task EncryptRsaServer()
+    {
+        var response = await Http
+            .Request(HttpMethod.Post, "api/security/EncryptRsa")
+            .SetParam("input", inputString)
+            .SetBody(rsaPublic)
+            .SendAsync<byte[]>();
+        rsaEncrypted = response.Result;
+    }
+
+    private void EncryptRsaClient()
+    {
+        rsaEncrypted = inputString
+            .ToByteArray()
+            .EncryptRSA(rsaPublic);
+    }
+
+    private async Task DecryptRsaServer()
+    {
+        var response = await Http
+            .Request(HttpMethod.Post, "api/security/DecryptRsa")
+            .SetParam("input", rsaEncrypted.ToHexString())
+            .SetBody(rsaPrivate)
+            .SendAsync();
+        rsaDecrypted = response.Result;
+    }
+
+    private void DecryptRsaClient()
+    {
+        rsaDecrypted = rsaEncrypted
+            .DecryptRSA(rsaPrivate)
+            .ToUTF8String();
     }
 }
