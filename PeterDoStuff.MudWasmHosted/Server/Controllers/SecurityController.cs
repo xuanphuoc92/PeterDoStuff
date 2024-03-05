@@ -70,5 +70,23 @@ namespace PeterDoStuff.MudWasmHosted.Server.Controllers
                 .DecryptRSA(privateKey)
                 .ToUTF8String();
         }
+
+        [HttpPost]
+        [Route("SignRsa")]
+        public byte[] SignRsa(string input, [FromBody] string privateKey)
+        {
+            return input
+                .ToByteArray()
+                .SignRSA(privateKey);
+        }
+
+        [HttpPost]
+        [Route("VerifyRsa")]
+        public bool VerifyRsa(string input, string hash, [FromBody] string publicKey)
+        {
+            return input
+                .ToByteArray()
+                .VerifyRSA(hash.ToByteArrayAsHexString(), publicKey);
+        }
     }
 }
