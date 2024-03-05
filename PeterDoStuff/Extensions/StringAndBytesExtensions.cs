@@ -28,7 +28,7 @@ namespace PeterDoStuff.Extensions
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public static byte[] ToByteArrayAsBase64(this string input)
+        public static byte[] ToByteArrayAsBase64String(this string input)
             => Convert.FromBase64String(input);
 
         /// <summary>

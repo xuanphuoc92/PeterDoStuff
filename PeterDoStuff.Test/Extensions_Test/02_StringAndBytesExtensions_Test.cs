@@ -31,7 +31,7 @@ namespace PeterDoStuff.Test.Extensions_Test
             base64.Should().Be("SGVsbG8=");
 
             base64
-                .ToByteArrayAsBase64()
+                .ToByteArrayAsBase64String()
                 .ToUTF8String()
                 .Should().Be("Hello");
         }

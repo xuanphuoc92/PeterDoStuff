@@ -129,8 +129,8 @@ namespace PeterDoStuff.Test.Extensions_Test
             // RSA Encryption of same message must be different due to random padding
             encrypted1.Should().NotBe(encrypted2);
 
-            var decrypted1 = encrypted1.ToByteArrayAsBase64().DecryptRSA(privateKey).ToUTF8String();
-            var decrypted2 = encrypted2.ToByteArrayAsBase64().DecryptRSA(privateKey).ToUTF8String();
+            var decrypted1 = encrypted1.ToByteArrayAsBase64String().DecryptRSA(privateKey).ToUTF8String();
+            var decrypted2 = encrypted2.ToByteArrayAsBase64String().DecryptRSA(privateKey).ToUTF8String();
 
             decrypted1.Should().Be(input);
             decrypted2.Should().Be(input);

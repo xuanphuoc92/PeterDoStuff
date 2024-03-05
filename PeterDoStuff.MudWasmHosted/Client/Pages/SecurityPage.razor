@@ -43,7 +43,7 @@
     Hashing: SHA
 </MudText>
 
-<MudGrid Spacing="2" Class="align-center mb-8">
+<MudGrid Spacing="1" Class="align-center mb-8">
     <MudItem xs="1" md="1">
         <MudText Color="Color.Primary">Input</MudText>
     </MudItem>
@@ -52,8 +52,7 @@
     </MudItem>
     <MudItem xs="10" md="10">
         <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ToSHA256">Calculate SHA256</MudButton>
-        <MudTextField T="byte[]" Variant="Variant.Outlined" AutoGrow Lines="1" AdornmentColor="@AdornmentColor" AdornmentText="@AdornmentText" Adornment="Adornment.Start" Converter="@converter"
-            Label="SHA256 Hash" @bind-Value="outputSHA256" />
+        <ByteArrayTextField IsBase64Format="@isBase64Format" @bind-Value="outputSHA256" />
     </MudItem>
 
     <MudItem xs="2" md="2" Class="d-flex justify-end">
@@ -61,8 +60,7 @@
     </MudItem>
     <MudItem xs="10" md="10">
         <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ToSHA512">Calculate SHA512</MudButton>
-        <MudTextField T="byte[]" Variant="Variant.Outlined" AutoGrow Lines="1" AdornmentColor="@AdornmentColor" AdornmentText="@AdornmentText" Adornment="Adornment.Start" Converter="@converter"
-            Label="SHA512 Hash" @bind-Value="outputSHA512" />
+        <ByteArrayTextField IsBase64Format="@isBase64Format" @bind-Value="outputSHA512" />
     </MudItem>
 </MudGrid>
 
@@ -70,7 +68,7 @@
     Hashing: Argon2id
 </MudText>
 
-<MudGrid Spacing="2" Class="align-center mb-8">
+<MudGrid Spacing="1" Class="align-center mb-8">
     <MudItem xs="1" md="1">
         <MudText Color="Color.Primary">Input</MudText>
     </MudItem>
@@ -79,8 +77,7 @@
     </MudItem>
     <MudItem xs="10" md="3">
         <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateArgon2idSalt">Generate Random Salt</MudButton>
-        <MudTextField T="byte[]" Variant="Variant.Outlined" AutoGrow Lines="1" AdornmentColor="@AdornmentColor" AdornmentText="@AdornmentText" Adornment="Adornment.Start" Converter="@converter"
-            Label="Salt" @bind-Value="argon2idSalt" />
+        <ByteArrayTextField IsBase64Format="@isBase64Format" @bind-Value="argon2idSalt" />
     </MudItem>
     <MudItem xs="2" md="1" Class="d-flex justify-end">
         <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
@@ -97,8 +94,7 @@
             <br />
             <MudText Typo="Typo.caption">@argon2idHashTime</MudText>
         }
-        <MudTextField T="byte[]" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="1" AdornmentColor="@AdornmentColor" AdornmentText="@AdornmentText" Adornment="Adornment.Start" Converter="@converter"
-            Label="Hash" @bind-Value="argon2idHash" />
+        <ByteArrayTextField IsBase64Format="@isBase64Format" @bind-Value="argon2idHash" />
     </MudItem>
 </MudGrid>
 
@@ -106,7 +102,7 @@
     Encryption: AES
 </MudText>
 
-<MudGrid Spacing="2" Class="align-center mb-8">
+<MudGrid Spacing="1" Class="align-center mb-8">
     <MudItem xs="1" md="1">
         <MudText Color="Color.Primary">Input</MudText>
     </MudItem>
@@ -116,48 +112,32 @@
     <MudItem xs="10" md="10">
         <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateAesKey256">Generate Random AES Key (256 bit)</MudButton>
         <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateAesKey128">Generate Random AES Key (128 bit)</MudButton>
-        <MudTextField T="byte[]" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="1" AdornmentColor="@AdornmentColor" AdornmentText="@AdornmentText" Adornment="Adornment.Start" Converter="@converter"
-            Label="AES Key" @bind-Value="aesKey" />
+        <ByteArrayTextField IsBase64Format="@isBase64Format" @bind-Value="aesKey" />
 
         <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateAesIV">Generate Random AES IV</MudButton>
-        <MudTextField T="byte[]" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="1" AdornmentColor="@AdornmentColor" AdornmentText="@AdornmentText" Adornment="Adornment.Start" Converter="@converter"
-            Label="AES IV" @bind-Value="aesIV" />
+        <ByteArrayTextField IsBase64Format="@isBase64Format" @bind-Value="aesIV" />
     </MudItem>
     <MudItem xs="2" md="2" Class="d-flex justify-end">
         <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
     </MudItem>
-    <MudItem xs="10" md="6">
+    <MudItem xs="10" md="5">
         <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="EncryptAesServer">Encrypt at server</MudButton>
         <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="EncryptAesClient">Encrypt at client (will throw error now)</MudButton>
-        <MudTextField T="byte[]" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="1" AdornmentColor="@AdornmentColor" AdornmentText="@AdornmentText" Adornment="Adornment.Start" Converter="@converter"
-            Label="AES Encrypted Value" @bind-Value="aesEncrypted" />
+        <ByteArrayTextField IsBase64Format="@isBase64Format" @bind-Value="aesEncrypted" />
     </MudItem>
     <MudItem xs="3" md="1" Class="d-flex justify-end">
         <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
     </MudItem>
-    <MudItem xs="9" md="3">
+    <MudItem xs="9" md="4">
         <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="DecryptAesServer">Decrypt at server</MudButton>
         <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="DecryptAesClient">Decrypt at client (will throw error now)</MudButton>
         <MudTextField T="string" Variant="Variant.Outlined" Class="mb-8" AutoGrow Lines="1"
-            Label="AES Decrypted Value" @bind-Value="aesDecrypted" />
+            @bind-Value="aesDecrypted" />
     </MudItem>
 </MudGrid>
 
 @code {
     private bool isBase64Format = false;
-    private Converter<byte[]> converter => isBase64Format ? base64Conveter : hexConverter;
-    private Converter<byte[]> base64Conveter = new Converter<byte[]>()
-    {
-        SetFunc = value => value?.ToBase64String(),
-        GetFunc = text => text?.ToByteArrayAsBase64()
-    };
-    private Converter<byte[]> hexConverter = new Converter<byte[]>()
-    {
-        SetFunc = value => value?.ToHexString(),
-        GetFunc = text => text?.ToByteArrayAsHexString()
-    };
-    private Color AdornmentColor => isBase64Format ? Color.Success : Color.Info;
-    private string AdornmentText => isBase64Format ? "B64" : "HEX";
 
     private string inputString = "Hello";
 

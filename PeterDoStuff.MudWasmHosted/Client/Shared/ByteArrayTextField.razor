@@ -1,0 +1,40 @@
+﻿@using PeterDoStuff.Extensions
+<MudTextField T="byte[]" Variant="Variant.Outlined" AutoGrow Lines="1" 
+    AdornmentColor="@AdornmentColor" AdornmentText="@AdornmentText" Adornment="Adornment.Start" 
+    Converter="@converter"
+    Value="@Value" ValueChanged="@ValueChanged" />
+
+@code {
+    /// <summary>
+    /// The value of the byte array
+    /// </summary>
+    [Parameter]
+    public byte[] Value { get; set; }
+
+    /// <summary>
+    /// Fired when byte array value changed
+    /// </summary>
+    [Parameter]
+    public EventCallback<byte[]> ValueChanged { get; set; }
+
+    /// <summary>
+    /// Present the byte array as Base64 Format. If false, present as Hex Format.
+    /// </summary>
+    [Parameter]
+    public bool IsBase64Format { get; set; }
+
+    private Color AdornmentColor => IsBase64Format ? Color.Success : Color.Info;
+    private string AdornmentText => IsBase64Format ? "B64" : "HEX";
+
+    private Converter<byte[]> converter => IsBase64Format ? base64Converter : hexConverter;
+    private Converter<byte[]> base64Converter = new Converter<byte[]>()
+    {
+        SetFunc = value => value?.ToBase64String(),
+        GetFunc = text => text?.ToByteArrayAsBase64String()
+    };
+    private Converter<byte[]> hexConverter = new Converter<byte[]>()
+    {
+        SetFunc = value => value?.ToHexString(),
+        GetFunc = text => text?.ToByteArrayAsHexString()
+    };
+}
