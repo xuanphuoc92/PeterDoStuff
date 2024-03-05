@@ -46,7 +46,7 @@
 
 <MudGrid Spacing="1" Class="align-center mb-8">
     <MudItem xs="1" md="1">
-        <MudText Color="Color.Primary">Input</MudText>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="OpenInput">Input</MudButton>
     </MudItem>
     <MudItem xs="1" md="1" Class="d-flex justify-end">
         <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
@@ -71,7 +71,7 @@
 
 <MudGrid Spacing="1" Class="align-center mb-8">
     <MudItem xs="1" md="1">
-        <MudText Color="Color.Primary">Input</MudText>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="OpenInput">Input</MudButton>
     </MudItem>
     <MudItem xs="1" md="1" Class="d-flex justify-end">
         <MudIcon Icon="@Icons.Material.Filled.AddCircle" />
@@ -102,7 +102,7 @@
 
 <MudGrid Spacing="1" Class="align-center mb-8">
     <MudItem xs="1" md="1">
-        <MudText Color="Color.Primary">Input</MudText>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="OpenInput">Input</MudButton>
     </MudItem>
     <MudItem xs="1" md="1" Class="d-flex justify-end">
         <MudIcon Icon="@Icons.Material.Filled.AddCircle" />
@@ -159,7 +159,7 @@
 
 <MudGrid Spacing="1" Class="align-center mb-8">
     <MudItem xs="1" md="1">
-        <MudText Color="Color.Primary">Input</MudText>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="OpenInput">Input</MudButton>
     </MudItem>
     <MudItem xs="3" md="1" Class="d-flex justify-end">
         <MudIcon Icon="@Icons.Material.Filled.AddCircle" />
@@ -184,7 +184,7 @@
     </MudItem>
 
     <MudItem xs="1" md="1">
-        <MudText Color="Color.Primary">Input</MudText>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="OpenInput">Input</MudButton>
     </MudItem>
     <MudItem xs="3" md="1" Class="d-flex justify-end">
         <MudIcon Icon="@Icons.Material.Filled.AddCircle" />
@@ -215,7 +215,14 @@
 <MudMessageBox @ref="errorBox" YesText="Close"> 
     <MessageContent>
         <MudText Typo="Typo.h5" Color="Color.Error">Error</MudText>
-         <MudText Color="Color.Error">@errorMessage</MudText>
+        <MudText Color="Color.Error">@errorMessage</MudText>
+    </MessageContent>
+</MudMessageBox>
+
+<MudMessageBox @ref="inputBox" Title="Input" YesText="Close">
+    <MessageContent>
+        <MudTextField T="string" Label="Input String" Variant="Variant.Outlined" AutoGrow Lines="1"
+            @bind-Value="inputString" />
     </MessageContent>
 </MudMessageBox>
 
@@ -226,6 +233,12 @@
     {
         this.errorMessage = errorMessage;
         await errorBox.Show();
+    }
+
+    private MudMessageBox inputBox;
+    private async Task OpenInput()
+    {
+        await inputBox.Show();
     }
 
     private bool isBase64Format = false;
