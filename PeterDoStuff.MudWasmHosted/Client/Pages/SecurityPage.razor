@@ -161,22 +161,22 @@
     <MudItem xs="1" md="1">
         <MudText Color="Color.Primary">Input</MudText>
     </MudItem>
-    <MudItem xs="2" md="1" Class="d-flex justify-end">
+    <MudItem xs="3" md="1" Class="d-flex justify-end">
         <MudIcon Icon="@Icons.Material.Filled.AddCircle" />
         <MudIcon Icon="@Icons.Material.Filled.Key" Color="Color.Success"/>
         <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
     </MudItem>
-    <MudItem xs="9" md="10">
+    <MudItem xs="8" md="10">
         <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="EncryptRsaServer">Encrypt at Server</MudButton>
         <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="EncryptRsaClient">Encrypt at Client</MudButton>
         <ByteArrayTextField IsBase64Format="@isBase64Format" @bind-Value="rsaEncrypted" />
     </MudItem>
-    <MudItem xs="4" md="3" Class="d-flex justify-end">
+    <MudItem xs="5" md="3" Class="d-flex justify-end">
         <MudIcon Icon="@Icons.Material.Filled.AddCircle" />
         <MudIcon Icon="@Icons.Material.Filled.Key" Color="Color.Warning" />
         <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
     </MudItem>
-    <MudItem xs="8" md="9">
+    <MudItem xs="7" md="9">
         <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="DecryptRsaServer">Decrypt at Server</MudButton>
         <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="DecryptRsaClient">Decrypt at Client</MudButton>
         <MudTextField T="string" Variant="Variant.Outlined" AutoGrow Lines="1"
@@ -186,23 +186,23 @@
     <MudItem xs="1" md="1">
         <MudText Color="Color.Primary">Input</MudText>
     </MudItem>
-    <MudItem xs="2" md="1" Class="d-flex justify-end">
+    <MudItem xs="3" md="1" Class="d-flex justify-end">
         <MudIcon Icon="@Icons.Material.Filled.AddCircle" />
         <MudIcon Icon="@Icons.Material.Filled.Key" Color="Color.Warning" />
         <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
     </MudItem>
-    <MudItem xs="9" md="10">
+    <MudItem xs="8" md="10">
         <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SignRsaServer">Sign at Server</MudButton>
         <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="SignRsaClient">Sign at Client</MudButton>
         <ByteArrayTextField IsBase64Format="@isBase64Format" @bind-Value="rsaHash" />
     </MudItem>
 
-    <MudItem xs="4" md="3" Class="d-flex justify-end">
+    <MudItem xs="5" md="3" Class="d-flex justify-end">
         <MudIcon Icon="@Icons.Material.Filled.AddCircle" />
         <MudIcon Icon="@Icons.Material.Filled.Key" Color="Color.Success" />
         <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
     </MudItem>
-    <MudItem xs="8" md="9">
+    <MudItem xs="7" md="9">
         <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="VerifyRsaServer">Verify at Server</MudButton>
         <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="VerifyRsaClient">Verify at Client</MudButton>
         <br/>
