@@ -1,19 +1,19 @@
-﻿@page "/security"
+﻿@page "/cryptography"
 @inject HttpClient Http
 @using PeterDoStuff.Extensions
 @using PeterDoStuff.MudWasmHosted.Client.Extensions
 @using System.Dynamic
 @using PeterDoStuff.MudWasmHosted.Shared
 
-<PageTitle>Security</PageTitle>
+<PageTitle>Cryptography</PageTitle>
 
 <MudText Typo="Typo.h3" GutterBottom="true">
     <MudIcon Size="Size.Large" Icon="@Icons.Material.Filled.Security" />
-    Security
+    Cryptography
 </MudText>
-<MudText Class="mb-8">This page demonstrates the basic security functions.</MudText>
+<MudText Class="mb-8">This page provides some well known Cryptography services.</MudText>
 <MudText Class="mb-8">
-    Take note that System.Security.Cryptography APIs (with a few exceptions) may not be supported on Blazor WASM and will cause Runtime Error if attempted to call on WASM (but not on Server):
+    Take note that System.Security.Cryptography APIs (with a few exceptions) may not be supported on Blazor WASM and will cause Runtime Error if attempted to call on WASM Client side (but not on Server):
     <br />
     <MudLink Href="https://learn.microsoft.com/en-us/dotnet/core/compatibility/cryptography/5.0/cryptography-apis-not-supported-on-blazor-webassembly" Target="_blank">
         Breaking change: System.Security.Cryptography APIs not supported on Blazor WebAssembly
@@ -22,8 +22,10 @@
     <MudLink Href="https://github.com/dotnet/runtime/issues/82472">
         .NET 7 WebAssembly - Algorithm 'Aes' is not supported on this platform.
     </MudLink>
-    <br />
-    Therefore, some of the functions below will be executed on Server.
+</MudText>
+<MudText Class="mb-8">
+    <MudIcon Icon="@serverIcon" Class="mr-2" />
+    Therefore, some of the functions below will be executed at Server Side.
 </MudText>
 
 <MudText Typo="Typo.h4">Byte Array Format</MudText>
@@ -88,7 +90,7 @@
     Hashing: Argon2id
 </MudText>
 <MudText Class="mb-8">
-    Argon2id Hashing
+    Argon2id Password Hashing
     <br />
     Externally cross-checed with: <MudLink Target="_blank" Href="https://argon2.online/">Argon2.online</MudLink>
 </MudText>
@@ -108,8 +110,8 @@
         <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
     </MudItem>
     <MudItem xs="8" md="6">
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="HashArgon2idServer">Hash</MudButton>
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="HashArgon2idQuick">Hash (Quick)</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="HashArgon2idServer" StartIcon="@serverIcon">Hash</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="HashArgon2idQuick" StartIcon="@serverIcon">Hash (Quick)</MudButton>
         @* <MudButton Variant="Variant.Filled" Color="Color.Info" OnClick="HashArgon2idClient">Hash at Client (FREEZE)</MudButton> *@
         @if (argon2idHashTime != null)
         {
@@ -148,7 +150,7 @@
         <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
     </MudItem>
     <MudItem xs="8" md="5">
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="EncryptAesServer">Encrypt</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="EncryptAesServer" StartIcon="@serverIcon">Encrypt</MudButton>
         @* <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="EncryptAesClient">Encrypt at client</MudButton> *@
         <ByteArrayTextField IsBase64Format="@isBase64Format" @bind-Value="aesEncrypted" />
     </MudItem>
@@ -156,7 +158,7 @@
         <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
     </MudItem>
     <MudItem xs="7" md="4">
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="DecryptAesServer">Decrypt</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="DecryptAesServer" StartIcon="@serverIcon">Decrypt</MudButton>
         @* <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="DecryptAesClient">Decrypt at client</MudButton> *@
         <MudTextField T="string" Variant="Variant.Outlined" AutoGrow Lines="1"
             @bind-Value="aesDecrypted" />
@@ -172,9 +174,11 @@
     Externally cross-checed with: <MudLink Target="_blank" Href="https://devtoolcafe.com/tools/rsa">DevToolCafe.com</MudLink>
     <br/>
     RSA Signing and Verifying with PKCS1 Padding and SHA512 Hashing
+    <br />
+    Externally cross-checed with: <MudLink Target="_blank" Href="https://8gwifi.org/rsasignverifyfunctions.jsp">8gwifi.org</MudLink>
 </MudText>
 
-<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateRsaKeysServer">
+<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateRsaKeysServer" StartIcon="@serverIcon">
     Generate Random RSA Keys
 </MudButton>
 @* <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="GenerateRsaKeysClient">
@@ -203,7 +207,7 @@
         <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
     </MudItem>
     <MudItem xs="8" md="5">
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="EncryptRsaServer">Encrypt</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="EncryptRsaServer" StartIcon="@serverIcon">Encrypt</MudButton>
         @* <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="EncryptRsaClient">Encrypt at Client</MudButton> *@
         <ByteArrayTextField IsBase64Format="@isBase64Format" @bind-Value="rsaEncrypted" />
     </MudItem>
@@ -213,7 +217,7 @@
         <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
     </MudItem>
     <MudItem xs="7" md="4">
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="DecryptRsaServer">Decrypt</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="DecryptRsaServer" StartIcon="@serverIcon">Decrypt</MudButton>
         @* <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="DecryptRsaClient">Decrypt at Client</MudButton> *@
         <MudTextField T="string" Variant="Variant.Outlined" AutoGrow Lines="1"
             @bind-Value="rsaDecrypted" />
@@ -228,7 +232,7 @@
         <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
     </MudItem>
     <MudItem xs="8" md="5">
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SignRsaServer">Sign</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SignRsaServer" StartIcon="@serverIcon">Sign</MudButton>
         @* <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="SignRsaClient">Sign at Client</MudButton> *@
         <ByteArrayTextField IsBase64Format="@isBase64Format" @bind-Value="rsaHash" />
     </MudItem>
@@ -239,7 +243,7 @@
         <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
     </MudItem>
     <MudItem xs="7" md="4">
-        <MudButton Variant="Variant.Filled" Color="@rsaVerifyColor" OnClick="VerifyRsaServer">Verify</MudButton>
+        <MudButton Variant="Variant.Filled" Color="@rsaVerifyColor" OnClick="VerifyRsaServer" StartIcon="@serverIcon">Verify</MudButton>
         @* <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="VerifyRsaClient">Verify at Client</MudButton> *@
         @* <br/>
         <MudIcon 
@@ -256,6 +260,8 @@
 </MudMessageBox>
 
  @code {
+    private string serverIcon = Icons.Material.Filled.Cloud;
+
     private MudMessageBox errorBox;
     private string errorMessage;
     private async Task ShowError(string errorMessage)
