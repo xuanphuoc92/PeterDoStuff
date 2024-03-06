@@ -74,15 +74,38 @@
     </MudItem>
     <MudItem xs="8" md="10">
         <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ToSHA256">Hash SHA256</MudButton>
-        <ByteArrayTextField IsBase64Format="@isBase64Format" @bind-Value="outputSHA256" />
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ToSHA512">Hash SHA512</MudButton>
+        <ByteArrayTextField IsBase64Format="@isBase64Format" @bind-Value="shaHash" />
     </MudItem>
+</MudGrid>
 
-    <MudItem xs="4" md="2" Class="d-flex justify-end">
+<MudText Typo="Typo.h4">
+    Hashing: HMAC-SHA
+</MudText>
+<MudText Class="mb-8">
+    HMAC-SHA Hashing
+    <br/>
+    Externally cross-checed with: <MudLink Target="_blank" Href="https://www.devglan.com/online-tools/hmac-sha256-online">devglan.com</MudLink>
+</MudText>
+
+<MudGrid Spacing="1" Class="align-center mb-8">
+    <MudItem xs="1" md="1">
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="OpenInput">Input</MudButton>
+    </MudItem>
+    <MudItem xs="3" md="1" Class="d-flex justify-end">
+        <MudIcon Icon="@Icons.Material.Filled.AddCircle" />
+    </MudItem>
+    <MudItem xs="8" md="3">
+        <MudTextField T="string" Label="Secret Key" Variant="Variant.Outlined" AutoGrow Lines="1"
+            @bind-Value="hmacKey" />
+    </MudItem>
+    <MudItem xs="4" md="1" Class="d-flex justify-end">
         <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
     </MudItem>
-    <MudItem xs="8" md="10">
-         <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ToSHA512">Hash SHA512</MudButton>
-        <ByteArrayTextField IsBase64Format="@isBase64Format" @bind-Value="outputSHA512" />
+    <MudItem xs="8" md="6">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="HashHMACSHA256">Hash HMAC-SHA256</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="HashHMACSHA512">Hash HMAC-SHA512</MudButton>
+        <ByteArrayTextField IsBase64Format="@isBase64Format" @bind-Value="hmacHash" />
     </MudItem>
 </MudGrid>
 
@@ -259,7 +282,7 @@
     </MessageContent>
 </MudMessageBox>
 
- @code {
+@code {
     private string serverIcon = Icons.Material.Filled.Cloud;
 
     private MudMessageBox errorBox;
@@ -281,20 +304,29 @@
     private string inputString = "Hello";
     private byte[] inputByteArray => inputString.ToByteArray();
 
-    private byte[]? outputSHA256;
+    private byte[]? shaHash;
     private void ToSHA256()
     {
-        outputSHA256 = inputString
+        shaHash = inputString
             .ToByteArray()
             .HashSHA256();
     }
-
-    private byte[]? outputSHA512;
     private void ToSHA512()
     {
-        outputSHA512 = inputString
+        shaHash = inputString
             .ToByteArray()
             .HashSHA512();
+    }
+
+    private string hmacKey = "MySecretKey";
+    private byte[]? hmacHash;
+    private void HashHMACSHA256()
+    {
+        hmacHash = inputString.ToByteArray().HashHMACSHA256(hmacKey.ToByteArray());
+    }
+    private void HashHMACSHA512()
+    {
+        hmacHash = inputString.ToByteArray().HashHMACSHA512(hmacKey.ToByteArray());
     }
 
     private byte[]? argon2idSalt, argon2idHash;
