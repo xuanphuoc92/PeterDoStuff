@@ -13,7 +13,7 @@ namespace PeterDoStuff.Extensions
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public static byte[] ToSHA256(this byte[] input)
+        public static byte[] HashSHA256(this byte[] input)
         {
             using var hasher = SHA256.Create();
             return hasher.ComputeHash(input);
@@ -24,7 +24,7 @@ namespace PeterDoStuff.Extensions
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public static byte[] ToSHA512(this byte[] input)
+        public static byte[] HashSHA512(this byte[] input)
         {
             using var hasher = SHA512.Create();
             return hasher.ComputeHash(input);

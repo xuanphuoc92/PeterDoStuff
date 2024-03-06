@@ -286,7 +286,7 @@
     {
         outputSHA256 = inputString
             .ToByteArray()
-            .ToSHA256();
+            .HashSHA256();
     }
 
     private byte[]? outputSHA512;
@@ -294,7 +294,7 @@
     {
         outputSHA512 = inputString
             .ToByteArray()
-            .ToSHA512();
+            .HashSHA512();
     }
 
     private byte[]? argon2idSalt, argon2idHash;
