@@ -20,7 +20,7 @@ namespace PeterDoStuff.Test.Extensions_Test
             "Hello"
                 .ToByteArray()
                 .ToSHA256()
-                .ToHexString()
+                .ToHexString().ToLower()
                 .Should().Be("185f8db32271fe25f561a6fc938b2e264306ec304eda518007d1764826381969");
         }
 
@@ -30,7 +30,7 @@ namespace PeterDoStuff.Test.Extensions_Test
             "Hello"
                 .ToByteArray()
                 .ToSHA512()
-                .ToHexString()
+                .ToHexString().ToLower()
                 .Should().Be("3615f80c9d293ed7402687f94b22d58e529b8cc7916f8fac7fddf7fbd5af4cf777d3d795a7a00a16bf7e7f3fb9561ee9baae480da9fe7a18769e71886b03f315");
         }
 
@@ -112,7 +112,7 @@ namespace PeterDoStuff.Test.Extensions_Test
                     iterations: 1,
                     memorySize: 10,
                     degreeOfParallelism: 1)
-                .ToHexString()
+                .ToHexString().ToLower()
                 .Should().Be("720fcae9a394be95920af6711c6477c54df6619ebf6a7839cbfee6c1913d0d09");
         }
 
@@ -219,7 +219,7 @@ ZyLOGR55QuJgCvj6GedbhAltgnhOzRCjSSea3e1KpAhao3Jr1lxC
             decrypted1.Should().Be(input);
             decrypted2.Should().Be(input);
 
-            input.ToByteArray().SignRSA(privateKey).ToHexString().Should().Be(signatureHex);
+            input.ToByteArray().SignRSA(privateKey).ToHexString().ToLower().Should().Be(signatureHex);
             input.ToByteArray().VerifyRSA(signatureHex.ToByteArrayAsHexString(), publicKey).Should().BeTrue();
         }
     }

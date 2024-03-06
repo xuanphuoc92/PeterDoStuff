@@ -45,27 +45,7 @@ namespace PeterDoStuff.Extensions
         /// <param name="input"></param>
         /// <returns></returns>
         public static byte[] ToByteArrayAsHexString(this string input)
-        {
-            return input
-                .ToEqualLengthSubstrings(2)
-                .Select(s => Convert.ToByte(s, 16))
-                .ToArray();
-        }
-
-        /// <summary>
-        /// Split a string to substrings of n length
-        /// </summary>
-        /// <param name="input"></param>
-        /// <param name="n"></param>
-        /// <returns></returns>
-        public static IEnumerable<string> ToEqualLengthSubstrings(this string input, int n)
-        {
-            List<string> output = new List<string>();
-            int resultSize = input.Length / n;
-            for (int i = 0; i < resultSize; i++)
-                output.Add(input.Substring(i * n, n));
-            return output;
-        }
+            => Convert.FromHexString(input);
 
         /// <summary>
         /// Convert byte array to hex string
@@ -73,9 +53,7 @@ namespace PeterDoStuff.Extensions
         /// <param name="input"></param>
         /// <returns></returns>
         public static string ToHexString(this byte[] input) 
-            => input
-                .Select(x => x.ToString("x2"))
-                .Join();
+            => Convert.ToHexString(input);
 
         /// <summary>
         /// Combine strings into one string

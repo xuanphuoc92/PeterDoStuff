@@ -43,7 +43,7 @@ namespace PeterDoStuff.Test.Extensions_Test
                 .ToByteArray()
                 .ToHexString();
 
-            hexString.Should().Be("48656c6c6f");
+            hexString.ToLower().Should().Be("48656c6c6f");
 
             hexString
                 .ToByteArrayAsHexString()
