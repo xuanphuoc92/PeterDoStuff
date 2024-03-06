@@ -50,5 +50,12 @@ namespace PeterDoStuff.Test.Extensions_Test
                 .ToUTF8String()
                 .Should().Be("Hello");
         }
+
+        [TestMethod]
+        public void _04_JoinString()
+        {
+            var input = new string[] { "Alice", "Bob" };
+            input.Join(", ").Should().Be("Alice, Bob");
+        }
     }
 }

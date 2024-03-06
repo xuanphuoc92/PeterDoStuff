@@ -222,5 +222,18 @@ ZyLOGR55QuJgCvj6GedbhAltgnhOzRCjSSea3e1KpAhao3Jr1lxC
             input.ToByteArray().SignRSA(privateKey).ToHexString().ToLower().Should().Be(signatureHex);
             input.ToByteArray().VerifyRSA(signatureHex.ToByteArrayAsHexString(), publicKey).Should().BeTrue();
         }
+
+        [TestMethod]
+        public void _08_HMACSHA()
+        {
+            var input = "Hello".ToByteArray();
+            var key = "MyKey".ToByteArray();
+
+            var hash256 = input.HashHMACSHA256(key).ToHexString().ToLower();
+            var hash512 = input.HashHMACSHA512(key).ToHexString().ToLower();
+
+            hash256.Should().Be("fd2648d5187786cfcc454d9598e62b90c3f5f3402debc0201a777a02e8fb3aa1");
+            hash512.Should().Be("887216b50d8bc0dd5ecab02bb7fe7e70a3b17e4810101a277834ba2790aea9a8a28b1894021dd94184f68e4008739d2306f645b96b78e485703a772417e0695c");
+        }
     }
 }

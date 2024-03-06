@@ -31,6 +31,30 @@ namespace PeterDoStuff.Extensions
         }
 
         /// <summary>
+        /// Compute the HMAC-SHA256 Hash Value of a byte array
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="keys"></param>
+        /// <returns></returns>
+        public static byte[] HashHMACSHA256(this byte[] input, byte[] keys)
+        {
+            using var hasher = new HMACSHA256(keys);
+            return hasher.ComputeHash(input);
+        }
+
+        /// <summary>
+        /// Compute the HMAC-SHA512 Hash Value of a byte array
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="keys"></param>
+        /// <returns></returns>
+        public static byte[] HashHMACSHA512(this byte[] input, byte[] keys)
+        {
+            using var hasher = new HMACSHA512(keys);
+            return hasher.ComputeHash(input);
+        }
+
+        /// <summary>
         /// Generate a random AES key
         /// </summary>
         /// <param name="keySize">Size of keys in bits. Default 256. Valid values: 128, 192, 256.</param>
