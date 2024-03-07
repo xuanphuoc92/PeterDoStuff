@@ -23,9 +23,16 @@
         .NET 7 WebAssembly - Algorithm 'Aes' is not supported on this platform.
     </MudLink>
 </MudText>
-<MudText Class="mb-8">
-    <MudIcon Icon="@serverIcon" Class="mr-2" />
-    Therefore, some of the functions below will be executed at Server Side.
+<MudText Class="mb-8 align-center">
+    Therefore, some of the functions (<MudIcon Icon="@serverIcon" Class="ml-2 mr-2" />) below will be executed at Server Side.
+</MudText>
+<MudText Class="mb-8 align-center">
+    We do not store your inputs/keys/hashes sent to the Server Side.
+    However, if you wish to use the Cryptography services in this App without sending your data to any external server, feel free to visit the App Source
+    <MudLink Href="https://github.com/xuanphuoc92/PeterDoStuff" Target="_blank">
+        Peter-Do-Stuff <MudIcon Icon="@Icons.Custom.Brands.GitHub" Class="ml-1 mr-1" />
+    </MudLink>
+    to Fork and run the App on your own PC/Server.
 </MudText>
 
 <MudText Typo="Typo.h4">Byte Array Format</MudText>
