@@ -96,8 +96,8 @@
         <MudIcon Icon="@Icons.Material.Filled.AddCircle" />
     </MudItem>
     <MudItem xs="8" md="3">
-        <MudTextField T="string" Label="Secret Key" Variant="Variant.Outlined" AutoGrow Lines="1"
-            @bind-Value="hmacKey" />
+        <MudText Color="Color.Primary">Secret Key</MudText>
+        <ByteArrayTextField AllowUTF8="true" IsBase64Format="@isBase64Format" @bind-Value="hmacKey" />
     </MudItem>
     <MudItem xs="4" md="1" Class="d-flex justify-end">
         <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
@@ -317,15 +317,15 @@
             .HashSHA512();
     }
 
-    private string hmacKey = "MySecretKey";
+    private byte[]? hmacKey = "MySecretKey".ToByteArray();
     private byte[]? hmacHash;
     private void HashHMACSHA256()
     {
-        hmacHash = inputByteArray.HashHMACSHA256(hmacKey.ToByteArray());
+        hmacHash = inputByteArray.HashHMACSHA256(hmacKey);
     }
     private void HashHMACSHA512()
     {
-        hmacHash = inputByteArray.HashHMACSHA512(hmacKey.ToByteArray());
+        hmacHash = inputByteArray.HashHMACSHA512(hmacKey);
     }
 
     private byte[]? argon2idSalt, argon2idHash;
