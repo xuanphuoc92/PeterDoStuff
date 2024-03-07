@@ -115,6 +115,10 @@
 <MudText Class="mb-8">
     Argon2id Password Hashing
     <br />
+    Default config: @SecurityExtensions.DEFAULT_ITERATIONS Iterations, @SecurityExtensions.DEFAULT_MEMORY_SIZE Memory Size, @SecurityExtensions.DEFAULT_DEGREE_OF_PARALLELISM Parallelism Factor, @SecurityExtensions.DEFAULT_HASH_LENGTH Hash Length
+    <br />
+    Quick config: 2 Iterations, 16 Memory Size, 1 Parallelism Factor, 16 Hash Length
+    <br />
     Externally cross-checed with: <MudLink Target="_blank" Href="https://argon2.online/">Argon2.online</MudLink>
 </MudText>
 
@@ -127,7 +131,7 @@
     </MudItem>
     <MudItem xs="8" md="3">
         <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateArgon2idSalt">Generate Random Salt</MudButton>
-        <ByteArrayTextField IsBase64Format="@isBase64Format" @bind-Value="argon2idSalt" />
+        <ByteArrayTextField AllowUTF8="true" IsBase64Format="@isBase64Format" @bind-Value="argon2idSalt" />
     </MudItem>
     <MudItem xs="4" md="1" Class="d-flex justify-end">
         <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />

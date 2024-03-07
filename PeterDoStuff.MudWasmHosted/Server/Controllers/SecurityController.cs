@@ -42,9 +42,10 @@ namespace PeterDoStuff.MudWasmHosted.Server.Controllers
             byte[] salt = body.GetByteArray("salt");
             return input
                 .HashArgon2id(salt,
-                    iterations: 1,
-                    memorySize: 10,
-                    degreeOfParallelism: 1
+                    iterations: 2,
+                    memorySize: 16,
+                    degreeOfParallelism: 1,
+                    hashLength: 16
                 );
         }
 
