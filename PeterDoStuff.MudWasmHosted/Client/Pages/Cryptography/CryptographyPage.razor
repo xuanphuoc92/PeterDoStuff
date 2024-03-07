@@ -50,9 +50,14 @@
     <ByteArrayTextField AllowUTF8="true" IsBase64Format="@isBase64Format" @bind-Value="inputByteArray" />
 </MudPaper>
 
-<MudMessageBox @ref="inputBox" Title="Input" YesText="Close">
+<MudMessageBox @ref="inputBox" YesText="">
+    <TitleContent>
+        <MudText Typo="Typo.h5" Color="Color.Primary">Input</MudText>
+    </TitleContent>
     <MessageContent>
-        <ByteArrayTextField AllowUTF8="true" IsBase64Format="@isBase64Format" @bind-Value="inputByteArray" />
+        <MudContainer Style="width: 360px">
+            <ByteArrayTextField AllowUTF8="true" IsBase64Format="@isBase64Format" @bind-Value="inputByteArray" />
+        </MudContainer>
     </MessageContent>
 </MudMessageBox>
 
