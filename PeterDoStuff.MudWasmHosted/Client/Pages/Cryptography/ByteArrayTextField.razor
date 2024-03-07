@@ -1,4 +1,13 @@
 ﻿@using PeterDoStuff.Extensions
+
+@if (AllowUTF8)
+{
+    <MudTextField T="byte[]" Variant="Variant.Outlined" AutoGrow Lines="1"
+        Label="UTF8 Format"
+        Value="@Value" ValueChanged="@ValueChanged"
+        Converter="@utf8Converter" />
+}
+
 <MudTextField T="byte[]" Variant="Variant.Outlined" AutoGrow Lines="1" 
     Disabled="Disabled"
     Label="@Label"
@@ -37,6 +46,12 @@
     [Parameter]
     public string Label { get; set; }
 
+    /// <summary>
+    /// Allow UTF8 Input and Presentation
+    /// </summary>
+    [Parameter]
+    public bool AllowUTF8 { get; set; } = false;
+
     private Color AdornmentColor => IsBase64Format ? Color.Success : Color.Info;
     private string AdornmentText => IsBase64Format ? "B64" : "HEX";
 
@@ -50,5 +65,13 @@
     {
         SetFunc = value => value?.ToHexString(),
         GetFunc = text => text?.ToByteArrayAsHexString()
+    };
+    private Converter<byte[]> utf8Converter = new Converter<byte[]>()
+    {
+        SetFunc = value => {
+            try { return value?.ToUTF8String(); }
+            catch { return "Unable to turn to UTF8String"; }
+        },
+        GetFunc = text => text?.ToByteArray()
     };
 }

@@ -46,20 +46,13 @@
     Input
 </MudText>
 
-<MudGrid Spacing="1" Class="mb-8">
-    <MudItem xs="12" md="6">
-        <MudTextField T="string" Label="Input String" Variant="Variant.Outlined" AutoGrow Lines="1"
-            @bind-Value="inputString" />
-    </MudItem>
-    <MudItem xs="12" md="6">
-        <ByteArrayTextField IsBase64Format="@isBase64Format" Disabled="true" Value="@inputByteArray" Label="Byte Array form (UTF8)" />
-    </MudItem>
-</MudGrid>
+<MudPaper Class="mb-8">
+    <ByteArrayTextField AllowUTF8="true" IsBase64Format="@isBase64Format" @bind-Value="inputByteArray" />
+</MudPaper>
 
 <MudMessageBox @ref="inputBox" Title="Input" YesText="Close">
     <MessageContent>
-        <MudTextField T="string" Label="Input String" Variant="Variant.Outlined" AutoGrow Lines="1" Style="width: 360px"
-                    @bind-Value="inputString" />
+        <ByteArrayTextField AllowUTF8="true" IsBase64Format="@isBase64Format" @bind-Value="inputByteArray" />
     </MessageContent>
 </MudMessageBox>
 
@@ -190,8 +183,7 @@
     <MudItem xs="7" md="4">
         <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="DecryptAesServer" StartIcon="@serverIcon">Decrypt</MudButton>
         @* <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="DecryptAesClient">Decrypt at client</MudButton> *@
-        <MudTextField T="string" Variant="Variant.Outlined" AutoGrow Lines="1"
-            @bind-Value="aesDecrypted" />
+        <ByteArrayTextField AllowUTF8="true" IsBase64Format="@isBase64Format" @bind-Value="aesDecrypted" />
     </MudItem>
 </MudGrid>
 
@@ -249,8 +241,7 @@
     <MudItem xs="7" md="4">
         <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="DecryptRsaServer" StartIcon="@serverIcon">Decrypt</MudButton>
         @* <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="DecryptRsaClient">Decrypt at Client</MudButton> *@
-        <MudTextField T="string" Variant="Variant.Outlined" AutoGrow Lines="1"
-            @bind-Value="rsaDecrypted" />
+         <ByteArrayTextField AllowUTF8="true" IsBase64Format="@isBase64Format" @bind-Value="rsaDecrypted" />
     </MudItem>
 
     <MudItem xs="1" md="1">
@@ -308,8 +299,7 @@
 
     private bool isBase64Format = false;
 
-    private string inputString = "Hello";
-    private byte[] inputByteArray => inputString.ToByteArray();
+    private byte[]? inputByteArray = "Hello".ToByteArray();
 
     private byte[]? shaHash;
     private void ToSHA256()
@@ -409,7 +399,7 @@
             .EncryptAES(aesKey, aesIV);
     }
 
-    private string? aesDecrypted;
+    private byte[]? aesDecrypted;
     private async Task DecryptAesServer()
     {
         var result = await Http
@@ -417,7 +407,7 @@
             .SetBodyParam("input", aesEncrypted)
             .SetBodyParam("key", aesKey)
             .SetBodyParam("iv", aesIV)
-            .SendAsync();
+            .SendAsync<byte[]>();
         aesDecrypted = result.Result;
         if (result.Failure)
             await ShowError(result.Error);
@@ -425,12 +415,11 @@
     private void DecryptAesClient()
     {
         aesDecrypted = aesEncrypted?
-            .DecryptAES(aesKey, aesIV)
-            .ToUTF8String();
+            .DecryptAES(aesKey, aesIV);
     }
 
-    private string rsaPublic, rsaPrivate, rsaDecrypted;
-    private byte[] rsaEncrypted;
+    private string rsaPublic, rsaPrivate;
+    private byte[] rsaEncrypted, rsaDecrypted;
 
     private async Task GenerateRsaKeysServer()
     {
@@ -473,7 +462,7 @@
             .Request(HttpMethod.Post, "api/security/DecryptRsa")
             .SetBodyParam("input", rsaEncrypted)
             .SetBodyParam("privateKey", rsaPrivate)
-            .SendAsync();
+            .SendAsync<byte[]>();
         rsaDecrypted = response.Result;
         if (response.Failure)
             await ShowError(response.Error);
@@ -482,8 +471,7 @@
     private void DecryptRsaClient()
     {
         rsaDecrypted = rsaEncrypted
-            .DecryptRSA(rsaPrivate)
-            .ToUTF8String();
+            .DecryptRSA(rsaPrivate);
     }
 
     private byte[] rsaHash;

@@ -60,12 +60,12 @@ namespace PeterDoStuff.MudWasmHosted.Server.Controllers
 
         [HttpPost]
         [Route("DecryptAes")]
-        public string DecryptAes([FromBody] ExpandoObject body)
+        public byte[] DecryptAes([FromBody] ExpandoObject body)
         {
             byte[] input = body.GetByteArray("input");
             byte[] key = body.GetByteArray("key");
             byte[] iv = body.GetByteArray("iv");
-            return input.DecryptAES(key, iv).ToUTF8String();
+            return input.DecryptAES(key, iv);
         }
 
         [HttpPost]
@@ -88,13 +88,12 @@ namespace PeterDoStuff.MudWasmHosted.Server.Controllers
 
         [HttpPost]
         [Route("DecryptRsa")]
-        public string DecryptRsa([FromBody] ExpandoObject body)
+        public byte[] DecryptRsa([FromBody] ExpandoObject body)
         {
             byte[] input = body.GetByteArray("input");
             string privateKey = body.GetString("privateKey");
             return input
-                .DecryptRSA(privateKey)
-                .ToUTF8String();
+                .DecryptRSA(privateKey);
         }
 
         [HttpPost]
