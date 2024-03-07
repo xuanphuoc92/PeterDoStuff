@@ -13,7 +13,7 @@ namespace PeterDoStuff.MudWasmHosted.Server.Controllers
         public byte[] HashArgon2id(string input, string salt)
         {
             return input
-                .ToByteArray()
+                .ToByteArrayAsHexString()
                 .HashArgon2id(salt.ToByteArrayAsHexString());
         }
 
@@ -22,7 +22,7 @@ namespace PeterDoStuff.MudWasmHosted.Server.Controllers
         public byte[] HashArgon2idQuick(string input, string salt)
         {
             return input
-                .ToByteArray()
+                .ToByteArrayAsHexString()
                 .HashArgon2id(salt.ToByteArrayAsHexString(),
                     iterations: 1,
                     memorySize: 10,
@@ -57,7 +57,7 @@ namespace PeterDoStuff.MudWasmHosted.Server.Controllers
         public byte[] EncryptRsa(string input, [FromBody] string publicKey)
         {
             return input
-                .ToByteArray()
+                .ToByteArrayAsHexString()
                 .EncryptRSA(publicKey);
         }
 
@@ -76,7 +76,7 @@ namespace PeterDoStuff.MudWasmHosted.Server.Controllers
         public byte[] SignRsa(string input, [FromBody] string privateKey)
         {
             return input
-                .ToByteArray()
+                .ToByteArrayAsHexString()
                 .SignRSA(privateKey);
         }
 
@@ -85,7 +85,7 @@ namespace PeterDoStuff.MudWasmHosted.Server.Controllers
         public bool VerifyRsa(string input, string hash, [FromBody] string publicKey)
         {
             return input
-                .ToByteArray()
+                .ToByteArrayAsHexString()
                 .VerifyRSA(hash.ToByteArrayAsHexString(), publicKey);
         }
     }

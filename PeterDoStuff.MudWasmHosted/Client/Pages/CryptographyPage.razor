@@ -289,7 +289,7 @@
     </MessageContent>
 </MudMessageBox>
 
-@code {
+    @code {
     private string serverIcon = Icons.Material.Filled.Cloud;
 
     private MudMessageBox errorBox;
@@ -310,6 +310,7 @@
 
     private string inputString = "Hello";
     private byte[] inputByteArray => inputString.ToByteArray();
+    private string inputByteArrayHex => inputByteArray.ToHexString();
 
     private byte[]? shaHash;
     private void ToSHA256()
@@ -349,7 +350,7 @@
     {
         var result = await Http
             .Request(HttpMethod.Get, "api/security/HashArgon2id")
-            .SetParam("input", inputString)
+            .SetParam("input", inputByteArrayHex)
             .SetParam("salt", argon2idSalt?.ToHexString())
             .SendAsync<byte[]>();
         argon2idHash = result.Result;
@@ -363,7 +364,7 @@
     {
         var result = await Http
             .Request(HttpMethod.Get, "api/security/HashArgon2idQuick")
-            .SetParam("input", inputString)
+            .SetParam("input", inputByteArrayHex)
             .SetParam("salt", argon2idSalt?.ToHexString())
             .SendAsync<byte[]>();
         argon2idHash = result.Result;
@@ -452,7 +453,7 @@
     {
         var response = await Http
             .Request(HttpMethod.Post, "api/security/EncryptRsa")
-            .SetParam("input", inputString)
+            .SetParam("input", inputByteArrayHex)
             .SetBody(rsaPublic)
             .SendAsync<byte[]>();
         rsaEncrypted = response.Result;
@@ -490,7 +491,7 @@
     {
         var response = await Http
             .Request(HttpMethod.Post, "api/security/SignRsa")
-            .SetParam("input", inputString)
+            .SetParam("input", inputByteArrayHex)
             .SetBody(rsaPrivate)
             .SendAsync<byte[]>();
         rsaHash = response.Result;
@@ -508,7 +509,7 @@
     {
         var response = await Http
             .Request(HttpMethod.Post, "api/security/VerifyRsa")
-            .SetParam("input", inputString)
+            .SetParam("input", inputByteArrayHex)
             .SetParam("hash", rsaHash?.ToHexString())
             .SetBody(rsaPublic)
             .SendAsync<bool>();
