@@ -314,14 +314,12 @@
     private byte[]? shaHash;
     private void ToSHA256()
     {
-        shaHash = inputString
-            .ToByteArray()
+        shaHash = inputByteArray
             .HashSHA256();
     }
     private void ToSHA512()
     {
-        shaHash = inputString
-            .ToByteArray()
+        shaHash = inputByteArray
             .HashSHA512();
     }
 
@@ -329,11 +327,11 @@
     private byte[]? hmacHash;
     private void HashHMACSHA256()
     {
-        hmacHash = inputString.ToByteArray().HashHMACSHA256(hmacKey.ToByteArray());
+        hmacHash = inputByteArray.HashHMACSHA256(hmacKey.ToByteArray());
     }
     private void HashHMACSHA512()
     {
-        hmacHash = inputString.ToByteArray().HashHMACSHA512(hmacKey.ToByteArray());
+        hmacHash = inputByteArray.HashHMACSHA512(hmacKey.ToByteArray());
     }
 
     private byte[]? argon2idSalt, argon2idHash;
@@ -344,8 +342,7 @@
     }
     private void HashArgon2idClient() // will throw error and freeze
     {
-        argon2idHash = inputString
-            .ToByteArray()
+        argon2idHash = inputByteArray
             .HashArgon2id(argon2idSalt);            
     }
     private async Task HashArgon2idServer()
@@ -465,8 +462,7 @@
 
     private void EncryptRsaClient()
     {
-        rsaEncrypted = inputString
-            .ToByteArray()
+        rsaEncrypted = inputByteArray
             .EncryptRSA(rsaPublic);
     }
 
@@ -503,8 +499,7 @@
     }
     private void SignRsaClient()
     {
-        rsaHash = inputString
-            .ToByteArray()
+        rsaHash = inputByteArray
             .SignRSA(rsaPrivate);
     }
 
@@ -523,8 +518,7 @@
     }
     private void VerifyRsaClient()
     {
-        rsaVerified = inputString
-            .ToByteArray()
+        rsaVerified = inputByteArray
             .VerifyRSA(rsaHash, rsaPublic);
     }
     private Color rsaVerifyColor 
