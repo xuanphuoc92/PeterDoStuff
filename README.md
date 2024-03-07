@@ -17,7 +17,7 @@ You will find 3 main projects in this project repository:
 ### PeterDoStuff
 This is the core project that stores the features/games/apps. At the moment, I add 3 apps/games into it. However, there can be more in the future.
 
-It is simply a .NET Standard 2.1 Class Library project. 
+It is simply a ~~.NET Standard 2.1~~ .NET 8 Class Library project (updated to use at least C# 9 features such as `record`). 
 
 Due to the importance of it, I maximize its quality by making it as minimal as possible. And how do I do that? That's from the 2nd project:
 
