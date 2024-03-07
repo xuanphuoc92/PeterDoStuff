@@ -6,6 +6,7 @@ using System.Security.Policy;
 using PeterDoStuff.Extensions;
 using System.CodeDom;
 using System.Diagnostics;
+using System.Dynamic;
 
 namespace PeterDoStuff.MudWasmHosted.Client.Extensions
 {
@@ -34,6 +35,11 @@ namespace PeterDoStuff.MudWasmHosted.Client.Extensions
                 if (@this.Body != null)
                 {
                     var jsonContent = JsonSerializer.Serialize(@this.Body);
+                    request.Content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+                }
+                else if (@this.DynamicBody != null)
+                {
+                    var jsonContent = JsonSerializer.Serialize(@this.DynamicBody);
                     request.Content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
                 }
 
@@ -86,6 +92,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Extensions
         public string Url { get; set; }
         public Dictionary<string, string> Parameters { get; set; } = new Dictionary<string, string>();
         public object? Body { get; set; } = null;
+        public dynamic? DynamicBody { get; set; } = null;
         public Dictionary<string, string> Headers { get; set; } = new Dictionary<string, string>();
 
         public HttpRequestBuilder SetParam(string key, string value)
@@ -97,6 +104,15 @@ namespace PeterDoStuff.MudWasmHosted.Client.Extensions
         public HttpRequestBuilder SetBody(object body)
         {
             Body = body;
+            return this;
+        }
+
+        public HttpRequestBuilder SetBodyParam(string key, object value)
+        {
+            if (DynamicBody == null)
+                DynamicBody = new ExpandoObject();
+            var kv = DynamicBody as IDictionary<string, object>;
+            kv[key] = value;
             return this;
         }
 

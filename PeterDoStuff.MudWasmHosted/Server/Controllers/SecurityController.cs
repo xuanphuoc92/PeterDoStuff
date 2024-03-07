@@ -1,50 +1,74 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MudBlazor.Extensions;
 using PeterDoStuff.Extensions;
 using PeterDoStuff.MudWasmHosted.Shared;
+using System.Dynamic;
 
 namespace PeterDoStuff.MudWasmHosted.Server.Controllers
 {
+    internal static class ApiExtensions
+    {
+        public static byte[] GetByteArray(this IDictionary<string, object> @this, string propertyName)
+            => @this
+            .GetPropertyValue(propertyName)
+            .ToString()
+            .ToByteArrayAsBase64String();
+
+        public static string GetString(this IDictionary<string, object> @this, string propertyName)
+            => @this
+            .GetPropertyValue(propertyName)
+            .ToString();
+    }
+
     [ApiController]
     [Route("api/[controller]")]
     public class SecurityController : ControllerBase
     {
-        [HttpGet]
+        [HttpPost]
         [Route("HashArgon2id")]
-        public byte[] HashArgon2id(string input, string salt)
+        public byte[] HashArgon2id([FromBody] ExpandoObject body)
         {
+            byte[] input = body.GetByteArray("input");
+            byte[] salt = body.GetByteArray("salt");
             return input
-                .ToByteArrayAsHexString()
-                .HashArgon2id(salt.ToByteArrayAsHexString());
+                .HashArgon2id(salt);
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("HashArgon2idQuick")]
-        public byte[] HashArgon2idQuick(string input, string salt)
+        public byte[] HashArgon2idQuick([FromBody] ExpandoObject body)
         {
+            byte[] input = body.GetByteArray("input");
+            byte[] salt = body.GetByteArray("salt");
             return input
-                .ToByteArrayAsHexString()
-                .HashArgon2id(salt.ToByteArrayAsHexString(),
+                .HashArgon2id(salt,
                     iterations: 1,
                     memorySize: 10,
                     degreeOfParallelism: 1
                 );
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("EncryptAes")]
-        public byte[] EncryptAes(string input, string key, string iv)
+        public byte[] EncryptAes([FromBody] ExpandoObject body)
         {
-            return input.EncryptAES(key.ToByteArrayAsHexString(), iv.ToByteArrayAsHexString());
+            string input = body.GetString("input");
+            byte[] key = body.GetByteArray("key");
+            byte[] iv = body.GetByteArray("iv");
+            return input.EncryptAES(key, iv);
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("DecryptAes")]
-        public string DecryptAes(string input, string key, string iv)
+        public string DecryptAes([FromBody] ExpandoObject body)
         {
-            return input.ToByteArrayAsHexString().DecryptAES(key.ToByteArrayAsHexString(), iv.ToByteArrayAsHexString());
+            byte[] input = body.GetByteArray("input");
+            byte[] key = body.GetByteArray("key");
+            byte[] iv = body.GetByteArray("iv");
+            return input.DecryptAES(key, iv);
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("GenerateRsaKeys")]
         public RsaKeys GenerateRsaKeys()
         {
@@ -54,39 +78,44 @@ namespace PeterDoStuff.MudWasmHosted.Server.Controllers
 
         [HttpPost]
         [Route("EncryptRsa")]
-        public byte[] EncryptRsa(string input, [FromBody] string publicKey)
+        public byte[] EncryptRsa([FromBody] ExpandoObject body)
         {
-            return input
-                .ToByteArrayAsHexString()
+            byte[] input = body.GetByteArray("input");
+            string publicKey = body.GetString("publicKey");
+            return input                
                 .EncryptRSA(publicKey);
         }
 
         [HttpPost]
         [Route("DecryptRsa")]
-        public string DecryptRsa(string input, [FromBody] string privateKey)
+        public string DecryptRsa([FromBody] ExpandoObject body)
         {
+            byte[] input = body.GetByteArray("input");
+            string privateKey = body.GetString("privateKey");
             return input
-                .ToByteArrayAsHexString()
                 .DecryptRSA(privateKey)
                 .ToUTF8String();
         }
 
         [HttpPost]
         [Route("SignRsa")]
-        public byte[] SignRsa(string input, [FromBody] string privateKey)
+        public byte[] SignRsa([FromBody] ExpandoObject body)
         {
+            var input = body.GetByteArray("input");
+            var privateKey = body.GetString("privateKey");
             return input
-                .ToByteArrayAsHexString()
                 .SignRSA(privateKey);
         }
 
         [HttpPost]
         [Route("VerifyRsa")]
-        public bool VerifyRsa(string input, string hash, [FromBody] string publicKey)
+        public bool VerifyRsa([FromBody] ExpandoObject body)
         {
-            return input
-                .ToByteArrayAsHexString()
-                .VerifyRSA(hash.ToByteArrayAsHexString(), publicKey);
+            var input = body.GetByteArray("input");
+            var hash = body.GetByteArray("hash");
+            var publicKey = body.GetString("publicKey");
+            return input                
+                .VerifyRSA(hash, publicKey);
         }
     }
 }

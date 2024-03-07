@@ -310,7 +310,6 @@
 
     private string inputString = "Hello";
     private byte[] inputByteArray => inputString.ToByteArray();
-    private string inputByteArrayHex => inputByteArray.ToHexString();
 
     private byte[]? shaHash;
     private void ToSHA256()
@@ -349,9 +348,9 @@
     private async Task HashArgon2idServer()
     {
         var result = await Http
-            .Request(HttpMethod.Get, "api/security/HashArgon2id")
-            .SetParam("input", inputByteArrayHex)
-            .SetParam("salt", argon2idSalt?.ToHexString())
+            .Request(HttpMethod.Post, "api/security/HashArgon2id")
+            .SetBodyParam("input", inputByteArray)
+            .SetBodyParam("salt", argon2idSalt)
             .SendAsync<byte[]>();
         argon2idHash = result.Result;
         if (result.Failure)
@@ -363,9 +362,9 @@
     private async Task HashArgon2idQuick()
     {
         var result = await Http
-            .Request(HttpMethod.Get, "api/security/HashArgon2idQuick")
-            .SetParam("input", inputByteArrayHex)
-            .SetParam("salt", argon2idSalt?.ToHexString())
+            .Request(HttpMethod.Post, "api/security/HashArgon2idQuick")
+            .SetBodyParam("input", inputByteArray)
+            .SetBodyParam("salt", argon2idSalt)
             .SendAsync<byte[]>();
         argon2idHash = result.Result;
         if (result.Failure)
@@ -395,10 +394,10 @@
     private async Task EncryptAesServer()
     {
         var result = await Http
-            .Request(HttpMethod.Get, "api/security/EncryptAes")
-            .SetParam("input", inputString)
-            .SetParam("key", aesKey?.ToHexString())
-            .SetParam("iv", aesIV?.ToHexString())
+            .Request(HttpMethod.Post, "api/security/EncryptAes")
+            .SetBodyParam("input", inputString)
+            .SetBodyParam("key", aesKey)
+            .SetBodyParam("iv", aesIV)
             .SendAsync<byte[]>();
         aesEncrypted = result.Result;
         if (result.Failure)
@@ -414,10 +413,10 @@
     private async Task DecryptAesServer()
     {
         var result = await Http
-            .Request(HttpMethod.Get, "api/security/DecryptAes")
-            .SetParam("input", aesEncrypted?.ToHexString())
-            .SetParam("key", aesKey?.ToHexString())
-            .SetParam("iv", aesIV?.ToHexString())
+            .Request(HttpMethod.Post, "api/security/DecryptAes")
+            .SetBodyParam("input", aesEncrypted)
+            .SetBodyParam("key", aesKey)
+            .SetBodyParam("iv", aesIV)
             .SendAsync();
         aesDecrypted = result.Result;
         if (result.Failure)
@@ -435,7 +434,7 @@
     private async Task GenerateRsaKeysServer()
     {
         var response = await Http
-            .Request(HttpMethod.Get, "api/security/GenerateRsaKeys")
+            .Request(HttpMethod.Post, "api/security/GenerateRsaKeys")
             .SendAsync<RsaKeys>();
 
         rsaPublic = response.Result.Public;
@@ -453,8 +452,8 @@
     {
         var response = await Http
             .Request(HttpMethod.Post, "api/security/EncryptRsa")
-            .SetParam("input", inputByteArrayHex)
-            .SetBody(rsaPublic)
+            .SetBodyParam("input", inputByteArray)
+            .SetBodyParam("publicKey", rsaPublic)
             .SendAsync<byte[]>();
         rsaEncrypted = response.Result;
         if (response.Failure)
@@ -471,8 +470,8 @@
     {
         var response = await Http
             .Request(HttpMethod.Post, "api/security/DecryptRsa")
-            .SetParam("input", rsaEncrypted?.ToHexString())
-            .SetBody(rsaPrivate)
+            .SetBodyParam("input", rsaEncrypted)
+            .SetBodyParam("privateKey", rsaPrivate)
             .SendAsync();
         rsaDecrypted = response.Result;
         if (response.Failure)
@@ -491,8 +490,8 @@
     {
         var response = await Http
             .Request(HttpMethod.Post, "api/security/SignRsa")
-            .SetParam("input", inputByteArrayHex)
-            .SetBody(rsaPrivate)
+            .SetBodyParam("input", inputByteArray)
+            .SetBodyParam("privateKey", rsaPrivate)
             .SendAsync<byte[]>();
         rsaHash = response.Result;
         if (response.Failure)
@@ -509,9 +508,9 @@
     {
         var response = await Http
             .Request(HttpMethod.Post, "api/security/VerifyRsa")
-            .SetParam("input", inputByteArrayHex)
-            .SetParam("hash", rsaHash?.ToHexString())
-            .SetBody(rsaPublic)
+            .SetBodyParam("input", inputByteArray)
+            .SetBodyParam("hash", rsaHash)
+            .SetBodyParam("publicKey", rsaPublic)
             .SendAsync<bool>();
         rsaVerified = response.Result;
         if (response.Failure)
