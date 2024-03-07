@@ -52,7 +52,7 @@ namespace PeterDoStuff.MudWasmHosted.Server.Controllers
         [Route("EncryptAes")]
         public byte[] EncryptAes([FromBody] ExpandoObject body)
         {
-            string input = body.GetString("input");
+            byte[] input = body.GetByteArray("input");
             byte[] key = body.GetByteArray("key");
             byte[] iv = body.GetByteArray("iv");
             return input.EncryptAES(key, iv);
@@ -65,7 +65,7 @@ namespace PeterDoStuff.MudWasmHosted.Server.Controllers
             byte[] input = body.GetByteArray("input");
             byte[] key = body.GetByteArray("key");
             byte[] iv = body.GetByteArray("iv");
-            return input.DecryptAES(key, iv);
+            return input.DecryptAES(key, iv).ToUTF8String();
         }
 
         [HttpPost]

@@ -395,7 +395,7 @@
     {
         var result = await Http
             .Request(HttpMethod.Post, "api/security/EncryptAes")
-            .SetBodyParam("input", inputString)
+            .SetBodyParam("input", inputByteArray)
             .SetBodyParam("key", aesKey)
             .SetBodyParam("iv", aesIV)
             .SendAsync<byte[]>();
@@ -405,7 +405,7 @@
     }
     private void EncryptAesClient()
     {
-        aesEncrypted = inputString
+        aesEncrypted = inputByteArray
             .EncryptAES(aesKey, aesIV);
     }
 
@@ -425,7 +425,8 @@
     private void DecryptAesClient()
     {
         aesDecrypted = aesEncrypted?
-            .DecryptAES(aesKey, aesIV);
+            .DecryptAES(aesKey, aesIV)
+            .ToUTF8String();
     }
 
     private string rsaPublic, rsaPrivate, rsaDecrypted;

@@ -58,8 +58,8 @@ namespace PeterDoStuff.Test.Extensions_Test
             var input1 = "Hello1";
             var input2 = "Hello2";
 
-            var encrypted1 = input1.EncryptAES(key, iv);
-            var encrypted2 = input2.EncryptAES(key, iv);
+            var encrypted1 = input1.ToByteArray().EncryptAES(key, iv);
+            var encrypted2 = input2.ToByteArray().EncryptAES(key, iv);
 
             encrypted1.ToHexString().WriteToConsole("encrypted1");
             encrypted2.ToHexString().WriteToConsole("encrypted2");
@@ -67,15 +67,27 @@ namespace PeterDoStuff.Test.Extensions_Test
             var decrypted1 = encrypted1.DecryptAES(key, iv);
             var decrypted2 = encrypted2.DecryptAES(key, iv);
             
-            decrypted1.WriteToConsole("decrypted1");
-            decrypted2.WriteToConsole("decrypted2");
+            decrypted1.ToUTF8String().WriteToConsole("decrypted1");
+            decrypted2.ToUTF8String().WriteToConsole("decrypted2");
 
-            decrypted1.Should().Be(input1);
-            decrypted2.Should().Be(input2);
+            decrypted1.ToUTF8String().Should().Be(input1);
+            decrypted2.ToUTF8String().Should().Be(input2);
         }
 
         [TestMethod]
-        public void _05_Argon2id()
+        public void _05_AES_CrossCheck()
+        {
+            var key = "2767FE49F82C0524B6E25070EFFD2898DBA24E086BB109D87CA92BB8D48D97FD".ToByteArrayAsHexString();
+            var iv = "AB0F82F30AC3720C4CA23422BC551F82".ToByteArrayAsHexString();
+            "Hello"
+                .ToByteArray()
+                .EncryptAES(key, iv)
+                .ToHexString()
+                .Should().Be("8DEC8F99BCE15F426455112CB3584FB7");
+        }
+
+        [TestMethod]
+        public void _06_Argon2id()
         {
             var salt1 = SecurityExtensions.GenerateSalt();
             var salt2 = SecurityExtensions.GenerateSalt();
@@ -117,7 +129,7 @@ namespace PeterDoStuff.Test.Extensions_Test
         }
 
         [TestMethod]
-        public void _06_RSA()
+        public void _07_RSA()
         {
             (string publicKey, string privateKey) = SecurityExtensions.GenerateRSAKeys();
             publicKey.WriteToConsole("public");
@@ -168,7 +180,7 @@ namespace PeterDoStuff.Test.Extensions_Test
         }
 
         [TestMethod]
-        public void _07_RSA_CrossCheck()
+        public void _08_RSA_CrossCheck()
         {
             string publicKey = @"-----BEGIN RSA PUBLIC KEY-----
 MIIBCgKCAQEA9CLOYPGf7khzA8rTEqdhMYRR8GDtiXvYLPx/HrHSkCybiTRK3Hr5
@@ -224,7 +236,7 @@ ZyLOGR55QuJgCvj6GedbhAltgnhOzRCjSSea3e1KpAhao3Jr1lxC
         }
 
         [TestMethod]
-        public void _08_HMACSHA()
+        public void _09_HMACSHA()
         {
             var input = "Hello".ToByteArray();
             var key = "MyKey".ToByteArray();
