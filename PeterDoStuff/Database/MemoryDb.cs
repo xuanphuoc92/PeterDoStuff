@@ -46,16 +46,18 @@ namespace PeterDoStuff.Database
         /// <summary>
         /// Commit the transaction
         /// </summary>
-        public override void OuterCommit()
+        public override void Commit()
         {
+            base.Commit();
             DbTransaction.Commit();
         }
 
         /// <summary>
         /// Dispose the transaction (if not committed, the transaction will be rolled back)
         /// </summary>
-        public override void OuterDispose()
+        public override void Dispose()
         {
+            base.Dispose();
             DbTransaction.Dispose();
         }
 

@@ -48,10 +48,6 @@ namespace PeterDoStuff.Database
         protected DbConnection DbConnection;
         protected DbTransaction DbTransaction;
 
-        public abstract void OuterCommit();
-
-        public abstract void OuterDispose();
-
         internal BaseDb Db { get; set; }
 
         private bool IsCommitted { get; set; } = false;
@@ -60,20 +56,18 @@ namespace PeterDoStuff.Database
         /// <summary>
         /// Commit the connection/transaction
         /// </summary>
-        public void Commit()
+        public virtual void Commit()
         {
             if (ContainsRollback)
                 throw new Exception("Contains Rollback in Nested Connections");
-            OuterCommit();
             IsCommitted = true;
         }
 
         /// <summary>
         /// Dispose the connection/transaction (if not committed, the connection/transaction will be rolled back)
         /// </summary>
-        public void Dispose()
+        public virtual void Dispose()
         {
-            OuterDispose();
             if (IsCommitted == false)
                 Db.MasterConnection.ContainsRollback = true;
             if (this is NestedConnection == false)
@@ -157,16 +151,6 @@ namespace PeterDoStuff.Database
         public NestedConnection(BaseConnection masterConnection)
         {
             MasterConnection = masterConnection;
-        }
-
-        public override void OuterCommit()
-        {
-            //MasterConnection.OuterCommit();
-        }
-
-        public override void OuterDispose()
-        {
-            //MasterConnection.OuterDispose();
         }
 
         public override Task<bool> TableExists(string table)
