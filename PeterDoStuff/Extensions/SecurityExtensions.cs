@@ -97,15 +97,11 @@ namespace PeterDoStuff.Extensions
             using var encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
 
             // Create the streams used for encryption.
-            using (MemoryStream msEncrypt = new MemoryStream())
-            {
-                using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
-                {
-                    csEncrypt.Write(input, 0, input.Length);
-                    csEncrypt.FlushFinalBlock();
-                    return msEncrypt.ToArray();
-                }
-            }
+            using MemoryStream msEncrypt = new MemoryStream();
+            using CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write);
+            csEncrypt.Write(input, 0, input.Length);
+            csEncrypt.FlushFinalBlock();
+            return msEncrypt.ToArray();
         }
 
         /// <summary>
@@ -127,17 +123,11 @@ namespace PeterDoStuff.Extensions
             using var decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
 
             // Create the streams used for decryption.
-            using (MemoryStream msDecrypt = new MemoryStream(input))
-            {
-                using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
-                {
-                    using (System.IO.MemoryStream msPlain = new System.IO.MemoryStream())
-                    {
-                        csDecrypt.CopyTo(msPlain);
-                        return msPlain.ToArray();
-                    }
-                }
-            }
+            using MemoryStream msDecrypt = new MemoryStream(input);
+            using CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read);
+            using System.IO.MemoryStream msPlain = new System.IO.MemoryStream();
+            csDecrypt.CopyTo(msPlain);
+            return msPlain.ToArray();
         }
 
         /// <summary>
