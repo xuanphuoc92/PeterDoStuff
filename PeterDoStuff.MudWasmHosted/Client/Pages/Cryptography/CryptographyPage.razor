@@ -70,19 +70,6 @@
 <Cryptography_RSA InputByteArray="inputByteArray" OpenInput="OpenInput" IsBase64Format="@isBase64Format"
     ShowError="ShowError" ServerIcon="@serverIcon" />
 
-<MudText Typo="Typo.h4">
-    Encryption and Signing/Hashing: RSA
-</MudText>
-<MudText Class="mb-8">
-    RSA Encrypting and Decrypting plaground with 2048 bits key and PKCS1 Padding
-    <br/>
-    Externally cross-checed with: <MudLink Target="_blank" Href="https://devtoolcafe.com/tools/rsa">DevToolCafe.com</MudLink>
-    <br/>
-    RSA Signing and Verifying with PKCS1 Padding and SHA512 Hashing
-    <br />
-    Externally cross-checed with: <MudLink Target="_blank" Href="https://8gwifi.org/rsasignverifyfunctions.jsp">8gwifi.org</MudLink>
-</MudText>
-
 <MudMessageBox @ref="errorBox" YesText="Close"> 
     <MessageContent>
         <MudText Typo="Typo.h5" Color="Color.Error">Error</MudText>
