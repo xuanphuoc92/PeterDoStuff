@@ -18,27 +18,25 @@ namespace PeterDoStuff.Database
 
         protected abstract BaseConnection NewConnection();
 
-        private int Scope { get; set; } = -1;
-        internal bool IsOutermostScope() => Scope == 0;
-        private void MoveDownScope() => Scope++;
-        internal void MoveUpScope() => Scope--;
+        internal BaseConnection? MasterConnection { get; set; }
+        internal void DisposeMasterConnection() => MasterConnection = null;
 
-        internal BaseConnection? CurrentConn { get; set; }
-        
         /// <summary>
         /// Open a new connection/transaction with the database
         /// </summary>
         /// <returns></returns>
         public BaseConnection Open()
         {
-            MoveDownScope();
-            if (IsOutermostScope()) // Create a new Connection for the Outermost Scope
+            if (MasterConnection == null)
             {
-                CurrentConn = NewConnection();
-                CurrentConn.Db = this;
+                MasterConnection = NewConnection();
+                MasterConnection.Db = this;
+                return MasterConnection;
             }
-            CurrentConn.Register();
-            return CurrentConn;
+
+            var nestedConnection = new NestedConnection(MasterConnection);
+            nestedConnection.Db = this;
+            return nestedConnection;
         }
     }
 
@@ -56,54 +54,30 @@ namespace PeterDoStuff.Database
 
         internal BaseDb Db { get; set; }
 
-        private List<bool> ConnCommits { get; set; } = new List<bool>();
-        private Stack<int> ConnStack { get; set; } = new Stack<int>();
-        private int CurrentConnIndex { get; set; }
-
-        /// <summary>
-        /// Register the connection, to track any inner rollback.
-        /// </summary>
-        internal void Register()
-        {
-            CurrentConnIndex = ConnCommits.Count;
-            ConnCommits.Add(false);
-            ConnStack.Push(CurrentConnIndex);
-        }
+        private bool IsCommitted { get; set; } = false;
+        internal bool ContainsRollback { get; set; } = false;
 
         /// <summary>
         /// Commit the connection/transaction
         /// </summary>
         public void Commit()
         {
-            // Flag that the connection has been commited
-            ConnCommits[CurrentConnIndex] = true;
-
-            if (Db.IsOutermostScope())
-            {
-                if (ConnCommits.Contains(false))
-                    throw new Exception("Cannot commit connection with non-committed inner connection(s)");
-                OuterCommit();
-            }
+            if (ContainsRollback)
+                throw new Exception("Contains Rollback in Nested Connections");
+            OuterCommit();
+            IsCommitted = true;
         }
 
         /// <summary>
-        /// Dispose the connection/ transaction (if not committed, the connection/transaction will be rolled back)
+        /// Dispose the connection/transaction (if not committed, the connection/transaction will be rolled back)
         /// </summary>
         public void Dispose()
         {
-            // Pop the Current Connection
-            // Get the last connection from the top of the stack and set it as the Current Connection
-            ConnStack.Pop();
-            CurrentConnIndex = ConnStack.Any() ? ConnStack.Peek() : -1;
-
-            if (Db.IsOutermostScope())
-            {
-                OuterDispose();
-                Db.CurrentConn = null;
-                ConnCommits.Clear();
-                ConnStack.Clear();
-            }
-            Db.MoveUpScope();
+            OuterDispose();
+            if (IsCommitted == false)
+                Db.MasterConnection.ContainsRollback = true;
+            if (this is NestedConnection == false)
+                Db.DisposeMasterConnection();
         }
 
         /// <summary>
@@ -176,7 +150,7 @@ namespace PeterDoStuff.Database
         public abstract Task<bool> TableExists(string table);
     }
 
-    public class NestedConnection : BaseConnection
+    internal class NestedConnection : BaseConnection
     {
         private BaseConnection MasterConnection { get; set; }
 
@@ -187,12 +161,12 @@ namespace PeterDoStuff.Database
 
         public override void OuterCommit()
         {
-            MasterConnection.OuterCommit();
+            //MasterConnection.OuterCommit();
         }
 
         public override void OuterDispose()
         {
-            MasterConnection.OuterDispose();
+            //MasterConnection.OuterDispose();
         }
 
         public override Task<bool> TableExists(string table)
