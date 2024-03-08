@@ -1,0 +1,199 @@
+﻿@using PeterDoStuff.Extensions
+@using PeterDoStuff.MudWasmHosted.Client.Extensions
+@using PeterDoStuff.MudWasmHosted.Shared
+@inject HttpClient Http
+
+
+<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateRsaKeysServer" StartIcon="@ServerIcon">
+    Generate Random RSA Keys
+</MudButton>
+@* <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="GenerateRsaKeysClient">
+    Generate RSA Keys at Client
+</MudButton> *@
+<MudGrid Spacing="1" Class="align-top mb-8">
+    <MudItem xs="12" md="4">
+        <MudText Color="Color.Success">Public</MudText>
+        <MudTextField T="string" Variant="Variant.Outlined" AutoGrow Lines="1" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Key"
+                      @bind-Value="rsaPublic" Label="Public Key" AdornmentColor="Color.Success" />
+    </MudItem>
+    <MudItem xs="12" md="8">
+        <MudText Color="Color.Warning">Private</MudText>
+        <MudTextField T="string" Variant="Variant.Outlined" AutoGrow Lines="1" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Key"
+                      @bind-Value="rsaPrivate" Label="Private Key" AdornmentColor="Color.Warning" />
+    </MudItem>
+</MudGrid>
+
+<MudGrid Spacing="1" Class="align-top mb-8">
+    <MudItem xs="1" md="1">
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="OpenInput">Input</MudButton>
+    </MudItem>
+    <MudItem xs="3" md="1" Class="d-flex justify-end">
+        <MudIcon Icon="@Icons.Material.Filled.AddCircle" />
+        <MudIcon Icon="@Icons.Material.Filled.Key" Color="Color.Success" />
+        <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
+    </MudItem>
+    <MudItem xs="8" md="5">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="EncryptRsaServer" StartIcon="@ServerIcon">Encrypt</MudButton>
+        @* <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="EncryptRsaClient">Encrypt at Client</MudButton> *@
+        <ByteArrayTextField IsBase64Format="@IsBase64Format" @bind-Value="rsaEncrypted" />
+    </MudItem>
+    <MudItem xs="5" md="1" Class="d-flex justify-end">
+        <MudIcon Icon="@Icons.Material.Filled.AddCircle" />
+        <MudIcon Icon="@Icons.Material.Filled.Key" Color="Color.Warning" />
+        <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
+    </MudItem>
+    <MudItem xs="7" md="4">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="DecryptRsaServer" StartIcon="@ServerIcon">Decrypt</MudButton>
+        @* <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="DecryptRsaClient">Decrypt at Client</MudButton> *@
+        <ByteArrayTextField AllowUTF8="true" IsBase64Format="@IsBase64Format" @bind-Value="rsaDecrypted" />
+    </MudItem>
+
+    <MudItem xs="1" md="1">
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="OpenInput">Input</MudButton>
+    </MudItem>
+    <MudItem xs="3" md="1" Class="d-flex justify-end">
+        <MudIcon Icon="@Icons.Material.Filled.AddCircle" />
+        <MudIcon Icon="@Icons.Material.Filled.Key" Color="Color.Warning" />
+        <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
+    </MudItem>
+    <MudItem xs="8" md="5">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SignRsaServer" StartIcon="@ServerIcon">Sign</MudButton>
+        @* <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="SignRsaClient">Sign at Client</MudButton> *@
+        <ByteArrayTextField IsBase64Format="@IsBase64Format" @bind-Value="rsaHash" />
+    </MudItem>
+
+    <MudItem xs="5" md="1" Class="d-flex justify-end">
+        <MudIcon Icon="@Icons.Material.Filled.AddCircle" />
+        <MudIcon Icon="@Icons.Material.Filled.Key" Color="Color.Success" />
+        <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
+    </MudItem>
+    <MudItem xs="7" md="4">
+        <MudButton Variant="Variant.Filled" Color="@rsaVerifyColor" OnClick="VerifyRsaServer" StartIcon="@ServerIcon">Verify</MudButton>
+        @* <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="VerifyRsaClient">Verify at Client</MudButton> *@
+        @* <br/>
+        <MudIcon
+        Icon="@(rsaVerified ? Icons.Material.Filled.CheckCircle : Icons.Material.Filled.Cancel)"
+        Color="@(rsaVerified ? Color.Success : Color.Error)" /> *@
+    </MudItem>
+</MudGrid>
+
+@code {
+    [Parameter]
+    public EventCallback<MouseEventArgs> OpenInput { get; set; }
+
+    [Parameter]
+    public bool IsBase64Format { get; set; }
+
+    [Parameter]
+    public byte[] InputByteArray { get; set; }
+
+    [Parameter]
+    public string ServerIcon { get; set; }
+
+    [Parameter]
+    public Func<string, Task> ShowError { get; set; }
+    
+    private string rsaPublic, rsaPrivate;
+    private byte[] rsaEncrypted, rsaDecrypted;
+
+    private async Task GenerateRsaKeysServer()
+    {
+        var response = await Http
+            .Request(HttpMethod.Post, "api/security/GenerateRsaKeys")
+            .SendAsync<RsaKeys>();
+
+        rsaPublic = response.Result.Public;
+        rsaPrivate = response.Result.Private;
+        if (response.Failure)
+            await ShowError(response.Error);
+    }
+
+    private void GenerateRsaKeysClient()
+    {
+        (rsaPublic, rsaPrivate) = SecurityExtensions.GenerateRSAKeys();
+    }
+
+    private async Task EncryptRsaServer()
+    {
+        var response = await Http
+            .Request(HttpMethod.Post, "api/security/EncryptRsa")
+            .SetBodyParam("input", InputByteArray)
+            .SetBodyParam("publicKey", rsaPublic)
+            .SendAsync<byte[]>();
+        rsaEncrypted = response.Result;
+        if (response.Failure)
+            await ShowError(response.Error);
+    }
+
+    private void EncryptRsaClient()
+    {
+        rsaEncrypted = InputByteArray
+            .EncryptRSA(rsaPublic);
+    }
+
+    private async Task DecryptRsaServer()
+    {
+        var response = await Http
+            .Request(HttpMethod.Post, "api/security/DecryptRsa")
+            .SetBodyParam("input", rsaEncrypted)
+            .SetBodyParam("privateKey", rsaPrivate)
+            .SendAsync<byte[]>();
+        rsaDecrypted = response.Result;
+        if (response.Failure)
+            await ShowError(response.Error);
+    }
+
+    private void DecryptRsaClient()
+    {
+        rsaDecrypted = rsaEncrypted
+            .DecryptRSA(rsaPrivate);
+    }
+
+    private byte[] rsaHash;
+    private async Task SignRsaServer()
+    {
+        var response = await Http
+            .Request(HttpMethod.Post, "api/security/SignRsa")
+            .SetBodyParam("input", InputByteArray)
+            .SetBodyParam("privateKey", rsaPrivate)
+            .SendAsync<byte[]>();
+        rsaHash = response.Result;
+        if (response.Failure)
+            await ShowError(response.Error);
+    }
+    private void SignRsaClient()
+    {
+        rsaHash = InputByteArray
+            .SignRSA(rsaPrivate);
+    }
+
+    private bool? rsaVerified;
+    private async Task VerifyRsaServer()
+    {
+        var response = await Http
+            .Request(HttpMethod.Post, "api/security/VerifyRsa")
+            .SetBodyParam("input", InputByteArray)
+            .SetBodyParam("hash", rsaHash)
+            .SetBodyParam("publicKey", rsaPublic)
+            .SendAsync<bool>();
+        rsaVerified = response.Result;
+        if (response.Failure)
+            await ShowError(response.Error);
+    }
+    private void VerifyRsaClient()
+    {
+        rsaVerified = InputByteArray
+            .VerifyRSA(rsaHash, rsaPublic);
+    }
+    private Color rsaVerifyColor
+    {
+        get
+        {
+            if (rsaVerified == true)
+                return Color.Success;
+            if (rsaVerified == false)
+                return Color.Error;
+            return Color.Default;
+        }
+    }
+}
