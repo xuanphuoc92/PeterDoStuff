@@ -67,7 +67,7 @@ window.getLocationCoordinates = function () {
     });
 };
 
-function initializeMap(mapDivId, latitude, longitude) {
+function loadMapWithMarker(mapDivId, latitude, longitude) {
     const mapOptions = {
         center: { lat: latitude, lng: longitude },
         zoom: 16

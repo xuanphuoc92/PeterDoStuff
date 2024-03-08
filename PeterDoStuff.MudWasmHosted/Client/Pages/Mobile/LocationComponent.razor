@@ -23,8 +23,8 @@
 <MudText Class="mb-8">Longitude: @longitude</MudText>
 <MudText Class="mb-8">Latitude: @latitude</MudText>
 
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDt-GrgNsRkgZdSJ5jmZO5x1PS20E4H_CU&callback=initializeMap" defer></script>
-<div id="map" style="height: 400px;"></div>
+<script src="@googleMapApi" defer></script>
+<div id="@mapDivId" style="@mapDivStyle"></div>
 
 @code {
     private double longitude, latitude;
@@ -54,8 +54,22 @@
         }
     }
 
+    private string mapDivId = "map";
+    private string mapDivStyle = "display: none";
+    private string mapInteropMethod = "loadMapWithMarker";
+    private string googleMapApiKey = "AIzaSyDt-GrgNsRkgZdSJ5jmZO5x1PS20E4H_CU";
+
+    private string googleMapApi
+    {
+        get
+        {
+            return $"https://maps.googleapis.com/maps/api/js?key={googleMapApiKey}&callback={mapInteropMethod}";
+        }
+    }
+
     private async Task ShowMap(double longitude, double latitude)
     {
-        await JS.InvokeVoidAsync("initializeMap", "map", latitude, longitude); // Initialize map with initial latitude and longitude
+        mapDivStyle = "height: 400px;";
+        await JS.InvokeVoidAsync(mapInteropMethod, mapDivId, latitude, longitude);
     }
 }
