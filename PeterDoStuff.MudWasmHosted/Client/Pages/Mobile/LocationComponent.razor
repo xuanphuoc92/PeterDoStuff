@@ -23,6 +23,9 @@
 <MudText Class="mb-8">Longitude: @longitude</MudText>
 <MudText Class="mb-8">Latitude: @latitude</MudText>
 
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDt-GrgNsRkgZdSJ5jmZO5x1PS20E4H_CU&callback=initializeMap" defer></script>
+<div id="map" style="height: 400px;"></div>
+
 @code {
     private double longitude, latitude;
     private string locationBlocked = "";
@@ -40,6 +43,7 @@
             latitude = location["latitude"];
             locationBlocked = "";
             locationInProgress = false;
+            await ShowMap(longitude, latitude);
         }
         catch (Exception ex)
         {
@@ -48,5 +52,10 @@
             locationBlocked = $"{ex.GetType()}: {ex.Message}";
             locationInProgress = false;
         }
+    }
+
+    private async Task ShowMap(double longitude, double latitude)
+    {
+        await JS.InvokeVoidAsync("initializeMap", "map", latitude, longitude); // Initialize map with initial latitude and longitude
     }
 }

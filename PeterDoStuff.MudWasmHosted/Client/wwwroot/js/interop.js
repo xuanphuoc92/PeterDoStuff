@@ -66,3 +66,19 @@ window.getLocationCoordinates = function () {
         );
     });
 };
+
+function initializeMap(mapDivId, latitude, longitude) {
+    const mapOptions = {
+        center: { lat: latitude, lng: longitude },
+        zoom: 16
+    };
+
+    const mapDiv = document.getElementById(mapDivId);
+    const map = new google.maps.Map(mapDiv, mapOptions);
+
+    const marker = new google.maps.Marker({
+        position: { lat: latitude, lng: longitude },
+        map: map,
+        title: 'Marker'
+    });
+}
