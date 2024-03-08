@@ -72,9 +72,12 @@ namespace PeterDoStuff.Test.Database
 
             using (var conn = db.Open())
             {
-                // Outside and in another transaction, table not exist
-                bool tableExists = await conn.TableExists("_TestTable_");
-                tableExists.Should().BeFalse();
+                using (var nestedConn = db.Open())
+                {
+                    // Outside and in another transaction, table not exist
+                    bool tableExists = await nestedConn.TableExists("_TestTable_");
+                    tableExists.Should().BeFalse();
+                }
             }
         }
 
