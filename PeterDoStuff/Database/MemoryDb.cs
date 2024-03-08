@@ -46,7 +46,7 @@ namespace PeterDoStuff.Database
         /// <summary>
         /// Commit the transaction
         /// </summary>
-        protected override void OuterCommit()
+        public override void OuterCommit()
         {
             DbTransaction.Commit();
         }
@@ -54,7 +54,7 @@ namespace PeterDoStuff.Database
         /// <summary>
         /// Dispose the transaction (if not committed, the transaction will be rolled back)
         /// </summary>
-        protected override void OuterDispose()
+        public override void OuterDispose()
         {
             DbTransaction.Dispose();
         }

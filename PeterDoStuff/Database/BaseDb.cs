@@ -50,9 +50,9 @@ namespace PeterDoStuff.Database
         protected DbConnection DbConnection;
         protected DbTransaction DbTransaction;
 
-        protected abstract void OuterCommit();
+        public abstract void OuterCommit();
 
-        protected abstract void OuterDispose();
+        public abstract void OuterDispose();
 
         internal BaseDb Db { get; set; }
 
@@ -125,7 +125,7 @@ namespace PeterDoStuff.Database
         /// <typeparam name="T"></typeparam>
         /// <param name="command">SqlCommand.New("SELECT * FROM [_TestTable] where ID = {0} and CreatedTime > {1};", "1001a", DateTime.Today)</param>
         /// <returns></returns>
-        public Task<IEnumerable<T>> QueryAsync<T>(SqlCommand command)
+        public virtual Task<IEnumerable<T>> QueryAsync<T>(SqlCommand command)
         {
             object param = new DynamicParameters(command.Parameters);
             return DbConnection.QueryAsync<T>(command.Sql, param, DbTransaction);
@@ -159,7 +159,7 @@ namespace PeterDoStuff.Database
         /// </summary>
         /// <param name="command">SqlCommand.New("Update [_TestTable] Set Amount = 0 where ID = {0} and CreatedTime > {1};", "1001a", DateTime.Today)</param>
         /// <returns></returns>
-        public async Task<int> ExecuteAsync(SqlCommand command)
+        public virtual async Task<int> ExecuteAsync(SqlCommand command)
         {
             object param = new DynamicParameters(command.Parameters);
             int executed = await DbConnection.ExecuteAsync(command.Sql, param, DbTransaction);
@@ -174,5 +174,40 @@ namespace PeterDoStuff.Database
         /// <param name="table">Name of the table</param>
         /// <returns></returns>
         public abstract Task<bool> TableExists(string table);
+    }
+
+    public class NestedConnection : BaseConnection
+    {
+        private BaseConnection MasterConnection { get; set; }
+
+        public NestedConnection(BaseConnection masterConnection)
+        {
+            MasterConnection = masterConnection;
+        }
+
+        public override void OuterCommit()
+        {
+            MasterConnection.OuterCommit();
+        }
+
+        public override void OuterDispose()
+        {
+            MasterConnection.OuterDispose();
+        }
+
+        public override Task<bool> TableExists(string table)
+        {
+            return MasterConnection.TableExists(table);
+        }
+
+        public override Task<IEnumerable<T>> QueryAsync<T>(SqlCommand command)
+        {
+            return MasterConnection.QueryAsync<T>(command);
+        }
+
+        public override Task<int> ExecuteAsync(SqlCommand command)
+        {
+            return MasterConnection.ExecuteAsync(command);
+        }
     }
 }
