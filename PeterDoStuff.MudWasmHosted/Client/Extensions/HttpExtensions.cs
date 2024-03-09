@@ -64,6 +64,12 @@ namespace PeterDoStuff.MudWasmHosted.Client.Extensions
             }
         }
 
+        /// <summary>
+        /// Send the Http Request and parse the response as type TResponse
+        /// </summary>
+        /// <typeparam name="TResponse"></typeparam>
+        /// <param name="this"></param>
+        /// <returns></returns>
         public async static Task<HttpResult<TResponse>> SendAsync<TResponse>(this HttpRequestBuilder @this)
         {
             (HttpResult<TResponse> result, HttpResponseMessage? response) = await SendAndGetResponse<TResponse>(@this);
@@ -74,6 +80,11 @@ namespace PeterDoStuff.MudWasmHosted.Client.Extensions
             return result;
         }
 
+        /// <summary>
+        /// Send the Http Request and parse the response as string
+        /// </summary>
+        /// <param name="this"></param>
+        /// <returns></returns>
         public async static Task<HttpResult<string>> SendAsync(this HttpRequestBuilder @this)
         {
             (HttpResult<string> result, HttpResponseMessage? response) = await SendAndGetResponse<string>(@this);

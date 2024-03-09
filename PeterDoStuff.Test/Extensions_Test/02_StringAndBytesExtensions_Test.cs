@@ -57,5 +57,18 @@ namespace PeterDoStuff.Test.Extensions_Test
             var input = new string[] { "Alice", "Bob" };
             input.Join(", ").Should().Be("Alice, Bob");
         }
+
+        [TestMethod]
+        public void _05_IsNullOrEmpty()
+        {
+            string input = "Hello";
+            input.IsNullOrEmpty().Should().BeFalse();
+
+            input = "";
+            input.IsNullOrEmpty().Should().BeTrue();
+
+            input = null;
+            input.IsNullOrEmpty().Should().BeTrue();
+        }
     }
 }

@@ -7,6 +7,9 @@ namespace PeterDoStuff.Extensions
     /// </summary>
     public static class StringAndBytesExtensions
     {
+        public static bool IsNullOrEmpty(this string input)
+            => string.IsNullOrEmpty(input);
+
         /// <summary>
         /// Convert (UTF8) string to byte array
         /// </summary>

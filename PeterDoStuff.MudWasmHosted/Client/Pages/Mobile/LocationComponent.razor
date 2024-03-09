@@ -1,4 +1,7 @@
-﻿@inject IJSRuntime JS
+﻿@using PeterDoStuff.MudWasmHosted.Client.Extensions
+@using PeterDoStuff.Extensions
+@inject IJSRuntime JS
+@inject HttpClient Http
 
 <MudButton Variant="Variant.Filled" Color="Color.Primary"
            EndIcon="@(locationInProgress == false ? Icons.Material.Filled.LocationOn : null)"
@@ -23,8 +26,15 @@
 <MudText Class="mb-8">Longitude: @longitude</MudText>
 <MudText Class="mb-8">Latitude: @latitude</MudText>
 
-<script src="@googleMapApi" defer></script>
-<div id="@mapDivId" style="@mapDivStyle"></div>
+@if (mapAvailable)
+{
+    <script src="@googleMapApi" defer></script>
+    <div id="@mapDivId" style="@mapDivStyle"></div>
+}
+else
+{
+    <MudText Color="Color.Error">Map is not available. Please set the Environment Variable GoogleMapApi in your Azure portal.</MudText>
+}
 
 @code {
     private double longitude, latitude;
@@ -57,18 +67,30 @@
     private string mapDivId = "map";
     private string mapDivStyle = "display: none";
     private string mapInteropMethod = "loadMapWithMarker";
-    private string googleMapApiKey = "AIzaSyDt-GrgNsRkgZdSJ5jmZO5x1PS20E4H_CU";
+    private string googleMapApi;
+    private bool mapAvailable = false;
 
-    private string googleMapApi
+    protected override async Task OnInitializedAsync()
     {
-        get
+        await base.OnInitializedAsync();
+        var response = await Http
+            .Request(HttpMethod.Get, "api/environment")
+            .SetParam("key", "GoogleMapApi")
+            .SendAsync();
+
+        if (response.Success && response.Result.IsNullOrEmpty() == false)
         {
-            return $"https://maps.googleapis.com/maps/api/js?key={googleMapApiKey}&callback={mapInteropMethod}";
+            var googleMapApiKey = response.Result;
+            googleMapApi = $"https://maps.googleapis.com/maps/api/js?key={googleMapApiKey}&callback={mapInteropMethod}";
+            mapAvailable = true;
         }
     }
 
     private async Task ShowMap(double longitude, double latitude)
     {
+        if (mapAvailable == false)
+            return;
+
         mapDivStyle = "height: 400px;";
         await JS.InvokeVoidAsync(mapInteropMethod, mapDivId, latitude, longitude);
     }
