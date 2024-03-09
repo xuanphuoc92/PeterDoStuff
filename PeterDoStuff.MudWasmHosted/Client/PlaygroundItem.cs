@@ -19,9 +19,10 @@ namespace PeterDoStuff.MudWasmHosted.Client
 
         public static readonly List<PlaygroundItem> Items = new List<PlaygroundItem>()
         {
+            new("dashboard", Icons.Material.Filled.InsertChartOutlined, "Dashboard", "This page showcases presenting data into different presentations."),
             new("cryptography", Icons.Material.Filled.Security, "Cryptography", "This page provides some well known Cryptography services."),
-            new("mobile", Icons.Material.Filled.Smartphone, "As if a Mobile App", "This component demonstrates how a web page can perform mobile app features like opening Camera or GPS."),
-            new("database", Icons.Material.Filled.Storage, "Database", "This component demonstrates memory database of the server."),
+            new("mobile", Icons.Material.Filled.Smartphone, "As if a Mobile App", "This page demonstrates how a web page can perform mobile app features like opening Camera or GPS."),
+            new("database", Icons.Material.Filled.Storage, "Database", "This page demonstrates memory database of the server."),
             new("gameOfLife", Icons.Material.Filled.CrueltyFree, "Conway's Game of Life", "This is playground for Conway's Game of Life. Limitted size: 30x30."),
             new("mineSweeper", Icons.Material.Filled.BrightnessHigh, "Minesweeper", "Just a basic minesweeper game."),
             new("matchFinder", Icons.Material.Filled.Search, "Match Finder", "Just a basic match finder game."),
