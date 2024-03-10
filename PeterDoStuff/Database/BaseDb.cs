@@ -19,7 +19,7 @@ namespace PeterDoStuff.Database
         protected abstract BaseConnection NewConnection();
 
         internal BaseConnection? MasterConnection { get; set; }
-        internal void DisposeMasterConnection() => MasterConnection = null;
+        internal void RemoveMasterConnection() => MasterConnection = null;
 
         /// <summary>
         /// Open a new connection/transaction with the database
@@ -53,25 +53,30 @@ namespace PeterDoStuff.Database
         private bool IsCommitted { get; set; } = false;
         internal bool ContainsRollback { get; set; } = false;
 
+        protected abstract void CommitImplemenation();
+        protected abstract void DisposeImplemenation();
+
         /// <summary>
         /// Commit the connection/transaction
         /// </summary>
-        public virtual void Commit()
+        public void Commit()
         {
             if (ContainsRollback)
                 throw new Exception("Contains Rollback in Nested Connections");
+            CommitImplemenation();
             IsCommitted = true;
         }
 
         /// <summary>
         /// Dispose the connection/transaction (if not committed, the connection/transaction will be rolled back)
         /// </summary>
-        public virtual void Dispose()
+        public void Dispose()
         {
             if (IsCommitted == false)
                 Db.MasterConnection.ContainsRollback = true;
+            DisposeImplemenation();
             if (this is NestedConnection == false)
-                Db.DisposeMasterConnection();
+                Db.RemoveMasterConnection();
         }
 
         /// <summary>
@@ -166,6 +171,16 @@ namespace PeterDoStuff.Database
         public override Task<int> ExecuteAsync(SqlCommand command)
         {
             return MasterConnection.ExecuteAsync(command);
+        }
+
+        protected override void CommitImplemenation()
+        {
+            // Do nothing for commit of nested transaction
+        }
+
+        protected override void DisposeImplemenation()
+        {
+            // Do nothing for dispose of nested transaction
         }
     }
 }

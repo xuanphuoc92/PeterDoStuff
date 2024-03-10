@@ -57,16 +57,14 @@ namespace PeterDoStuff.Database
             }
         }
 
-        public override void Commit()
+        protected override void CommitImplemenation()
         {
-            base.Commit();
             DbTransaction.Commit();
             DbConnection.Close();
         }
 
-        public override void Dispose()
+        protected override void DisposeImplemenation()
         {
-            base.Dispose();
             DbTransaction.Dispose();
             DbConnection.Dispose();
         }

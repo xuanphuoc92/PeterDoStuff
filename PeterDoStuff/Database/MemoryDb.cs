@@ -43,21 +43,13 @@ namespace PeterDoStuff.Database
             DbTransaction = DbConnection.BeginTransaction();
         }
 
-        /// <summary>
-        /// Commit the transaction
-        /// </summary>
-        public override void Commit()
+        protected override void CommitImplemenation()
         {
-            base.Commit();
             DbTransaction.Commit();
         }
 
-        /// <summary>
-        /// Dispose the transaction (if not committed, the transaction will be rolled back)
-        /// </summary>
-        public override void Dispose()
+        protected override void DisposeImplemenation()
         {
-            base.Dispose();
             DbTransaction.Dispose();
         }
 
