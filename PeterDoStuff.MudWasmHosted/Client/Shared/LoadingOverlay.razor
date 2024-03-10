@@ -1,10 +1,11 @@
 ﻿<MudOverlay @bind-Visible="isVisible" DarkBackground="true">
-    <div style="position: absolute; left: 50%; top: 30%;">
-        <div style="position: relative; left: -50%;">
-            <div class="pds_loading_ring">
-                @LoadingText
-                <span class="pds_loading_span"></span>
-            </div>
+    <div class="loader-text-container">
+        <div class="loader">
+        </div>
+    </div>
+    <div class="loader-text-container">
+        <div class="loader-text">
+            @LoadingText
         </div>
     </div>
 </MudOverlay>
@@ -14,7 +15,7 @@
     public string LoadingText { get; set; }
     private bool isVisible { get; set; } = false;
 
-    public async Task Show(string loadingText = "Loading")
+    public async Task Show(string loadingText = "LOADING")
     {
         LoadingText = loadingText;
         isVisible = true;
