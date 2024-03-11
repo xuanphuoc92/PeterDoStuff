@@ -14,19 +14,29 @@
 <MudText Color="Color.Primary" Typo="Typo.h4" Class="mt-8 mb-8">Speed</MudText>
 <MudGrid>
     <MudItem xs="1">
-        <MudIcon Icon="@Icons.Material.Filled.Remove" />
+        <MudIconButton Icon="@Icons.Material.Filled.Remove" OnClick="DecreaseSpeed" />
     </MudItem>
     <MudItem xs="10" sm="5">
-        <MudSlider @bind-Value="speedIndicator" Min="1" Max="10" />
+        <MudSlider @bind-Value="speedIndicator" Min="1" Max="10" Size="Size.Large" />
     </MudItem>
     <MudItem xs="1">
-        <MudIcon Icon="@Icons.Material.Filled.Add" />
+        <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="IncreaseSpeed" />
     </MudItem>
 </MudGrid>
 
 @code {
     private double speed => (double)(11 - speedIndicator) / 2;
     private int speedIndicator = 8;
+    private void DecreaseSpeed()
+    {
+        speedIndicator--;
+        if (speedIndicator < 1) speedIndicator = 1;
+    }
+    private void IncreaseSpeed()
+    {
+        speedIndicator++;
+        if (speedIndicator > 10) speedIndicator = 10;
+    }
 }
 
 <MudText Class="mt-8 mb-8" Typo="Typo.h4">Spinner Loader</MudText>
