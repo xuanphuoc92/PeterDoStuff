@@ -19,6 +19,7 @@ namespace PeterDoStuff.MudWasmHosted.Client
 
         public static readonly List<PlaygroundItem> Items = new List<PlaygroundItem>()
         {
+            new("workflow", Icons.Material.Filled.AccountTree, "Workflow", "This page demonstrates the workflow presentation in waterfall model."),
             new("animationGallery", Icons.Material.Filled.AutoFixHigh, "Animation Gallery", "This page demonstrates the web animations."),
             new("dashboard", Icons.Material.Filled.InsertChartOutlined, "Dashboard", "This page showcases presenting data into different presentations."),
             new("cryptography", Icons.Material.Filled.Security, "Cryptography", "This page provides some well known Cryptography services."),
