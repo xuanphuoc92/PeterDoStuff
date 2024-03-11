@@ -13,11 +13,13 @@
         position: relative;
     }
 </style>
-<MudContainer Class="workflowContainer">
+<MudContainer Class="workflowContainer mt-8">
     @foreach (var state in SampleWorkflow.States)
     {
-        string style = $"position: absolute; left: {stateCursorX}px; top: {stateCursorY}px;";
-        <MudPaper Width="@($"{itemWidth}px")" Class="mt-8" Style="@style">
+        state.X = stateCursorX; 
+        state.Y = stateCursorY;
+        string style = $"position: absolute; left: {state.X}px; top: {state.Y}px;";
+        <MudPaper Width="@($"{itemWidth}px")" Style="@style">
             <MudList Clickable="true">
                 <MudListSubheader Style="@($"height: {itemHeight}px")">
                     <MudText Color="Color.Primary" Typo="Typo.h6">@state.Name</MudText>
@@ -35,22 +37,46 @@
         stateCursorX += itemWidth + padding;
         stateCursorY += itemHeight * (1 + state.Events.Count) + padding;
     }
+    <svg viewBox="0 0 @stateCursorX @stateCursorY" style="position: absolute; left: 0; top: 0; width: @(stateCursorX)px; height: @(stateCursorY)px;">
+        @foreach (var state in SampleWorkflow.States)
+        {
+            int startX = state.X + itemWidth;
+            foreach (var evt in state.Events)
+            {
+                int startY = state.Y + itemHeight * (1 + state.Events.IndexOf(evt)) + itemHeight / 2;
+                foreach (var toStateIdx in evt.ToStates)
+                {
+                    var toState = SampleWorkflow.States[toStateIdx];
+                    int endX = toState.X + itemWidth / 2;
+                    int endY = toState.Y;
+                    string d = (endX > startX)
+                        ? $"M {startX} {startY} l {endX - startX} 0 l 0 {endY - startY}"
+                        : $"M {startX} {startY} l {backwardSpace} 0 l 0 {endY - startY - backwardSpace} l {endX - startX - backwardSpace} 0 l 0 {backwardSpace}";
+                    <path d="@d" fill="none" stroke="#756bc5" stroke-width="0.2rem"></path>
+                }
+            }
+        }
+    </svg>
 </MudContainer>
 
 @code {
-    private int itemWidth = 400;
-    private int itemHeight = 50;
+    private const int itemWidth = 400;
+    private const int itemHeight = 50;
+    private const int padding = 50;
+
+    private const int backwardSpace = 30;
+
     private int stateCursorX = 0;
     private int stateCursorY = 0;
-    private int padding = 50;
 
     private Workflow SampleWorkflow = Workflow
             .New("Sample Workflow")
             .StateEvent("Start", "Save as Draft", "Draft")
             .StateEvent("Start", "Submit for Approval", "Pending Approval")
             .StateEvent("Draft", "Submit for Approval", "Pending Approval")
-            .StateEvent("Pending Approval", "Approve", "Approved")
-            .StateEvent("Pending Approval", "Reject", "Rejected");
+            .StateEvent("Pending Approval", "Approve", "Pending Approval", "Approved")
+            .StateEvent("Pending Approval", "Reject", "Rejected")
+            .StateEvent("Pending Approval", "Query", "Draft");
 
     private class Workflow
     {
@@ -102,6 +128,8 @@
     {
         public string Name { get; set; }
         public List<Event> Events { get; set; } = new List<Event>();
+        public int X { get; set; }
+        public int Y { get; set; }
     }
 
     private class Event
