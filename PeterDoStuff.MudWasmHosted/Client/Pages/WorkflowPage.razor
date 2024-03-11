@@ -74,24 +74,25 @@
 
     private const int backwardSpace = 30;
 
-    private int stateCursorX = 0;
-    private int stateCursorY = 0;
+    private int stateCursorX = padding;
+    private int stateCursorY = padding;
 
     private void ClickOnEvent(Event evt)
     {
-        stateCursorX = 0;
-        stateCursorY = 0;
+        stateCursorX = padding;
+        stateCursorY = padding;
         evt.On = !evt.On;
     }
 
     private Workflow SampleWorkflow = Workflow
             .New("Sample Workflow")
-            .StateEvent("Start", "Save as Draft", "Draft")
-            .StateEvent("Start", "Submit for Approval", "Pending Approval")
-            .StateEvent("Draft", "Submit for Approval", "Pending Approval")
-            .StateEvent("Pending Approval", "Approve", "Pending Approval", "Approved")
-            .StateEvent("Pending Approval", "Reject", "Rejected")
-            .StateEvent("Pending Approval", "Query", "Draft");
+            .StateEvent("Draft", "Submit", "Under Review")
+            .StateEvent("Under Review", "Approve", "Executing")
+            .StateEvent("Under Review", "Reject", "Draft")
+            .StateEvent("Executing", "Complete", "Completed")
+            .StateEvent("Executing", "Return", "Draft", "Under Review")
+            .StateEvent("Executing", "Discard", "Discarded")
+            .StateEvent("Draft", "Discard", "Discarded");
 
     private class Workflow
     {
