@@ -14,13 +14,13 @@
 <MudText Color="Color.Primary" Typo="Typo.h4" Class="mt-8 mb-8">Speed</MudText>
 <MudGrid>
     <MudItem xs="1">
-        <MudText>Fast</MudText>
+        <MudIcon Icon="@Icons.Material.Filled.Remove" />
     </MudItem>
     <MudItem xs="10" sm="5">
         <MudSlider @bind-Value="speedIndicator" Min="1" Max="10" />
     </MudItem>
     <MudItem xs="1">
-        <MudText>Slow</MudText>
+        <MudIcon Icon="@Icons.Material.Filled.Add" />
     </MudItem>
 </MudGrid>
 
@@ -110,8 +110,8 @@
     Label="Loader Text"></MudTextField>
 
 @code {
-    private double speed => ((double)speedIndicator) / 2;
-    private int speedIndicator = 3;
+    private double speed => (double)(11 - speedIndicator) / 2;
+    private int speedIndicator = 8;
 
     private string loaderText = "Graphix";
 }
