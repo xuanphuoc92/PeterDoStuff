@@ -5,13 +5,26 @@
     Animation Gallery
 </MudText>
 
-<MudText>This page demonstrates the web animations in the tutorial:</MudText>
+<MudText>This page demonstrates the web animations in the course:</MudText>
 <MudLink Href="https://youtu.be/vqXLGX0szIQ?si=SIGmPZo-KbaLe3R6" Target="_blank">
     <MudIcon Icon="@Icons.Custom.Brands.YouTube" Size="Size.Medium"></MudIcon>
     Motion Design for the Web | FREE COURSE
 </MudLink>
 
-<MudText Class="mt-8 mb-8" Typo="Typo.h4">Loading Icon</MudText>
+<MudText Color="Color.Primary" Typo="Typo.h4" Class="mt-8 mb-8">Speed</MudText>
+<MudGrid>
+    <MudItem xs="1">
+        <MudText>Fast</MudText>
+    </MudItem>
+    <MudItem xs="10" sm="5">
+        <MudSlider @bind-Value="speedIndicator" Min="1" Max="10" />
+    </MudItem>
+    <MudItem xs="1">
+        <MudText>Slow</MudText>
+    </MudItem>
+</MudGrid>
+
+<MudText Class="mt-8 mb-8" Typo="Typo.h4">Spinner Loader</MudText>
 <style>
     .sample-loader-container {
         width: 20rem;
@@ -27,7 +40,7 @@
         border-left-color: transparent;
         border-right-color: transparent;
         border-radius: 50%;
-        animation: 1.5s ease-in-out infinite sample-spinner;
+        animation: @(speed)s ease-in-out infinite sample-spinner;
     }
 
     @@keyframes sample-spinner {
@@ -44,7 +57,7 @@
     <div class="sample-loader"></div>
 </div>
 
-<MudText Class="mt-8 mb-8" Typo="Typo.h4">Loading Text</MudText>
+<MudText Class="mt-8 mb-8" Typo="Typo.h4">SVG Loader</MudText>
 <style>
     svg {
         width: 20rem;
@@ -58,7 +71,7 @@
 
     svg text.sample-text-body {
         stroke: white;
-        animation: 4s infinite alternate animate-stroke;
+        animation: @(speed)s infinite alternate animate-stroke;
     }
 
     @@keyframes animate-stroke {
@@ -88,10 +101,17 @@
 </style>
 <svg viewBox="0 0 400 200">
     <text x="50%" y="50%" dy="0.32rem" text-anchor="middle" class="sample-text-body">
-        Graphix
+        @loaderText
     </text>
 </svg>
+<MudTextField T="string"
+    @bind-Value="loaderText" 
+    Variant="Variant.Outlined" 
+    Label="Loader Text"></MudTextField>
 
 @code {
+    private double speed => ((double)speedIndicator) / 2;
+    private int speedIndicator = 3;
 
+    private string loaderText = "Graphix";
 }

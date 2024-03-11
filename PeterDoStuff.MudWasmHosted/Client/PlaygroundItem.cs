@@ -19,6 +19,7 @@ namespace PeterDoStuff.MudWasmHosted.Client
 
         public static readonly List<PlaygroundItem> Items = new List<PlaygroundItem>()
         {
+            new("animationGallery", Icons.Material.Filled.AutoFixHigh, "Animation Gallery", "This page demonstrates the web animations."),
             new("dashboard", Icons.Material.Filled.InsertChartOutlined, "Dashboard", "This page showcases presenting data into different presentations."),
             new("cryptography", Icons.Material.Filled.Security, "Cryptography", "This page provides some well known Cryptography services."),
             new("mobile", Icons.Material.Filled.Smartphone, "As if a Mobile App", "This page demonstrates how a web page can perform mobile app features like opening Camera or GPS."),
