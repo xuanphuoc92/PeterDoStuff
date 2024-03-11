@@ -70,14 +70,14 @@
     }
 
     svg text.sample-text-body {
-        stroke: white;
+        stroke: #756bc5;
         animation: @(speed)s infinite alternate animate-stroke;
     }
 
     @@keyframes animate-stroke {
         0% {
             fill: transparent;
-            stroke: white;
+            stroke: #756bc5;
             stroke: 3;
             stroke-dashoffset: 25%; /* 25% starting point of the dash */
             stroke-dasharray: 0 32%; /* 0 dash length, 32% of gap width */
@@ -85,13 +85,13 @@
 
         50% {
             fill: transparent;
-            stroke: white;
+            stroke: #756bc5;
             stroke: 3;
         }
 
         80%,
         100% {
-            fill: white;
+            fill: #756bc5;
             stroke: transparent;
             stroke: 3;
             stroke-dashoffset: -25%;
