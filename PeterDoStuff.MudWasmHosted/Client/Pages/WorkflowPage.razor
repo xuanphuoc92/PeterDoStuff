@@ -2,15 +2,21 @@
 @using PeterDoStuff.Extensions
 
 <MudText Typo="Typo.h3" GutterBottom="true">
-    <MudIcon Size="Size.Large" Icon="@Icons.Material.Filled.Lightbulb" />
+    <MudIcon Size="Size.Large" Icon="@Icons.Material.Filled.AccountTree" />
     Workflow
 </MudText>
 
-<MudText>This page demonstrates the workflow presentation in waterflow model.</MudText>
+<MudText>This page demonstrates the workflow presentation in waterfall model.</MudText>
 
 <style>
     .workflowContainer {
         position: relative;
+    }
+    .workflowLineSvg {
+        position: absolute;
+        left: 0;
+        top: 0;
+        z-index: -1;
     }
 </style>
 <MudContainer Class="workflowContainer mt-8">
@@ -26,7 +32,7 @@
                 </MudListSubheader>
                 @foreach (var evt in state.Events)
                 {
-                    <MudListItem Style="@($"height: {itemHeight}px")">
+                    <MudListItem Style="@($"height: {itemHeight}px")" OnClick="() => ClickOnEvent(evt)">
                         @evt.Name
                         <MudIcon Icon="@Icons.Material.Filled.ArrowForward"></MudIcon>
                         @evt.ToStates.Select(s => SampleWorkflow.States[s].Name).Join(", ")
@@ -37,13 +43,15 @@
         stateCursorX += itemWidth + padding;
         stateCursorY += itemHeight * (1 + state.Events.Count) + padding;
     }
-    <svg viewBox="0 0 @stateCursorX @stateCursorY" style="position: absolute; left: 0; top: 0; width: @(stateCursorX)px; height: @(stateCursorY)px;">
+    <svg class="workflowLineSvg" viewBox="0 0 @stateCursorX @stateCursorY" style="width: @(stateCursorX)px; height: @(stateCursorY)px;">
         @foreach (var state in SampleWorkflow.States)
         {
             int startX = state.X + itemWidth;
             foreach (var evt in state.Events)
             {
                 int startY = state.Y + itemHeight * (1 + state.Events.IndexOf(evt)) + itemHeight / 2;
+                string color = evt.On ? Colors.DeepPurple.Accent3 : Colors.Grey.Lighten5;
+                double opacity = evt.On ? 1 : 0.1;
                 foreach (var toStateIdx in evt.ToStates)
                 {
                     var toState = SampleWorkflow.States[toStateIdx];
@@ -52,7 +60,7 @@
                     string d = (endX > startX)
                         ? $"M {startX} {startY} l {endX - startX} 0 l 0 {endY - startY}"
                         : $"M {startX} {startY} l {backwardSpace} 0 l 0 {endY - startY - backwardSpace} l {endX - startX - backwardSpace} 0 l 0 {backwardSpace}";
-                    <path d="@d" fill="none" stroke="#756bc5" stroke-width="0.2rem"></path>
+                    <path d="@d" fill="none" stroke="@color" stroke-width="0.2rem" stroke-opacity="@opacity"></path>
                 }
             }
         }
@@ -68,6 +76,13 @@
 
     private int stateCursorX = 0;
     private int stateCursorY = 0;
+
+    private void ClickOnEvent(Event evt)
+    {
+        stateCursorX = 0;
+        stateCursorY = 0;
+        evt.On = !evt.On;
+    }
 
     private Workflow SampleWorkflow = Workflow
             .New("Sample Workflow")
@@ -136,5 +151,6 @@
     {
         public string Name { get; set; }
         public List<int> ToStates { get; set; } = new List<int>();
+        public bool On { get; set; }
     }
 }
