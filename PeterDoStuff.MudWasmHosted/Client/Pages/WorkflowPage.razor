@@ -6,28 +6,44 @@
     Workflow
 </MudText>
 
-<MudText>This page demonstrates the workflow presentation.</MudText>
+<MudText>This page demonstrates the workflow presentation in waterflow model.</MudText>
 
-@foreach (var state in SampleWorkflow.States)
-{
-    <MudPaper Width="400px" Class="mt-8">
-        <MudList Clickable="true">
-            <MudListSubheader>
-                <MudText Color="Color.Primary" Typo="Typo.h6">@state.Name</MudText>
-            </MudListSubheader>
-            @foreach (var evt in state.Events)
-            {
-                <MudListItem>
-                    @evt.Name
-                    <MudIcon Icon="@Icons.Material.Filled.ArrowForward"></MudIcon>
-                    @evt.ToStates.Select(s => SampleWorkflow.States[s].Name).Join(", ")
-                </MudListItem>
-            }
-        </MudList>
-    </MudPaper>    
-}
+<style>
+    .workflowContainer {
+        position: relative;
+    }
+</style>
+<MudContainer Class="workflowContainer">
+    @foreach (var state in SampleWorkflow.States)
+    {
+        string style = $"position: absolute; left: {stateCursorX}px; top: {stateCursorY}px;";
+        <MudPaper Width="@($"{itemWidth}px")" Class="mt-8" Style="@style">
+            <MudList Clickable="true">
+                <MudListSubheader Style="@($"height: {itemHeight}px")">
+                    <MudText Color="Color.Primary" Typo="Typo.h6">@state.Name</MudText>
+                </MudListSubheader>
+                @foreach (var evt in state.Events)
+                {
+                    <MudListItem Style="@($"height: {itemHeight}px")">
+                        @evt.Name
+                        <MudIcon Icon="@Icons.Material.Filled.ArrowForward"></MudIcon>
+                        @evt.ToStates.Select(s => SampleWorkflow.States[s].Name).Join(", ")
+                    </MudListItem>
+                }
+            </MudList>
+        </MudPaper>
+        stateCursorX += itemWidth + padding;
+        stateCursorY += itemHeight * (1 + state.Events.Count) + padding;
+    }
+</MudContainer>
 
 @code {
+    private int itemWidth = 400;
+    private int itemHeight = 50;
+    private int stateCursorX = 0;
+    private int stateCursorY = 0;
+    private int padding = 50;
+
     private Workflow SampleWorkflow = Workflow
             .New("Sample Workflow")
             .StateEvent("Start", "Save as Draft", "Draft")
