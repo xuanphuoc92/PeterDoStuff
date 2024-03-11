@@ -1,0 +1,96 @@
+﻿@page "/workflow"
+@using PeterDoStuff.Extensions
+
+<MudText Typo="Typo.h3" GutterBottom="true">
+    <MudIcon Size="Size.Large" Icon="@Icons.Material.Filled.Lightbulb" />
+    Workflow
+</MudText>
+
+<MudText>This page demonstrates the workflow presentation.</MudText>
+
+@foreach (var state in SampleWorkflow.States)
+{
+    <MudPaper Width="400px" Class="mt-8">
+        <MudList Clickable="true">
+            <MudListSubheader>
+                <MudText Color="Color.Primary" Typo="Typo.h6">@state.Name</MudText>
+            </MudListSubheader>
+            @foreach (var evt in state.Events)
+            {
+                <MudListItem>
+                    @evt.Name
+                    <MudIcon Icon="@Icons.Material.Filled.ArrowForward"></MudIcon>
+                    @evt.ToStates.Select(s => SampleWorkflow.States[s].Name).Join(", ")
+                </MudListItem>
+            }
+        </MudList>
+    </MudPaper>    
+}
+
+@code {
+    private Workflow SampleWorkflow = Workflow
+            .New("Sample Workflow")
+            .StateEvent("Start", "Save as Draft", "Draft")
+            .StateEvent("Start", "Submit for Approval", "Pending Approval")
+            .StateEvent("Draft", "Submit for Approval", "Pending Approval")
+            .StateEvent("Pending Approval", "Approve", "Approved")
+            .StateEvent("Pending Approval", "Reject", "Rejected");
+
+    private class Workflow
+    {
+        public string Name { get; set; }
+        public List<State> States { get; set; } = new List<State>();
+
+        public static Workflow New(string name)
+        {
+            Workflow workflow = new();
+            workflow.Name = name;
+            return workflow;
+        }
+
+        private State GetOrCreate(string stateName)
+        {
+            State? state = States.SingleOrDefault(s => s.Name == stateName);
+            if (state == null)
+            {
+                state = new();
+                state.Name = stateName;
+                States.Add(state);
+            }
+            return state;
+        }
+
+        public Workflow StateEvent(string stateName, string eventName, params string[] toStateNames)
+        {
+            State? state = GetOrCreate(stateName);
+
+            Event? evt = state.Events.SingleOrDefault(e => e.Name == eventName);
+            if (evt == null)
+            {
+                evt = new();
+                evt.Name = eventName;
+                state.Events.Add(evt);
+            }
+
+            foreach (var toStateName in toStateNames)
+            {
+                var toState = GetOrCreate(toStateName);
+                evt.ToStates.Add(States.IndexOf(toState));
+            }
+
+            return this;
+        }
+    }
+
+    private class State
+    {
+        public string Name { get; set; }
+        public List<Event> Events { get; set; } = new List<Event>();
+    }
+
+    private class Event
+    {
+        public string Name { get; set; }
+        public List<int> ToStates { get; set; } = new List<int>();
+    }
+}
