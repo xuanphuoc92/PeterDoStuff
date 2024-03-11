@@ -24,6 +24,11 @@
     </MudItem>
 </MudGrid>
 
+@code {
+    private double speed => (double)(11 - speedIndicator) / 2;
+    private int speedIndicator = 8;
+}
+
 <MudText Class="mt-8 mb-8" Typo="Typo.h4">Spinner Loader</MudText>
 <style>
     .sample-loader-container {
@@ -110,8 +115,5 @@
     Label="Loader Text"></MudTextField>
 
 @code {
-    private double speed => (double)(11 - speedIndicator) / 2;
-    private int speedIndicator = 8;
-
     private string loaderText = "Graphix";
 }
