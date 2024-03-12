@@ -6,7 +6,25 @@
     Workflow
 </MudText>
 
-<MudText>This page demonstrates the workflow presentation in waterfall model.</MudText>
+<MudText Class="mb-8">This page demonstrates the workflow presentation in waterfall model. Try click on an event.</MudText>
+
+<MudText Typo="Typo.h5">@SampleWorkflow.Name</MudText>
+<MudButton StartIcon="@Icons.Material.Filled.Brightness1" IconColor="@allButtonColor" OnClick="AllButtonClick">@allButtonText</MudButton>
+@code {
+    private bool isOnAll => SampleWorkflow.States.SelectMany(s => s.Events).Any(e => e.On == false);
+    private string allButtonText => isOnAll
+        ? "On All"
+        : "Off All";
+    private Color allButtonColor => isOnAll
+        ? Color.Primary
+        : Color.Default;
+    private void AllButtonClick()
+    {
+        bool input = isOnAll;
+        SampleWorkflow.States.ForEach(s => s.Events.ForEach(e => e.On = input));
+        Redraw();
+    }
+}
 
 <style>
     .workflowContainer {
@@ -22,7 +40,6 @@
         stroke: @Colors.Grey.Lighten5;
         stroke-opacity: 0.1
     }
-
     .workflowActivePath {
         stroke: @Colors.DeepPurple.Accent3;
         stroke-opacity: 0.8
@@ -42,8 +59,8 @@
 <MudContainer Class="workflowContainer mt-8">
     @foreach (var state in SampleWorkflow.States)
     {
-        state.X = stateCursorX; 
-        state.Y = stateCursorY;
+        state.X = cursorX; 
+        state.Y = cursorY;
         string style = $"position: absolute; left: {state.X}px; top: {state.Y}px;";
         <MudPaper Width="@($"{itemWidth}px")" Style="@style">
             <MudList Clickable="true">
@@ -52,7 +69,8 @@
                 </MudListSubheader>
                 @foreach (var evt in state.Events)
                 {
-                    <MudListItem Style="@($"height: {itemHeight}px")" OnClick="() => ClickOnEvent(evt)">
+                    var iconColor = evt.On ? Color.Primary : Color.Default;
+                    <MudListItem Style="@($"height: {itemHeight}px")" OnClick="() => ClickOnEvent(evt)" IconColor="@iconColor" Icon="@Icons.Material.Filled.Brightness1">
                         @evt.Name
                         <MudIcon Icon="@Icons.Material.Filled.ArrowForward"></MudIcon>
                         @evt.ToStates.Select(s => SampleWorkflow.States[s].Name).Join(", ")
@@ -60,10 +78,10 @@
                 }
             </MudList>
         </MudPaper>
-        stateCursorX += itemWidth + padding;
-        stateCursorY += itemHeight * (1 + state.Events.Count) + padding;
+        cursorX += itemWidth + padding;
+        cursorY += itemHeight * (1 + state.Events.Count) + padding;
     }
-    <svg class="workflowLineSvg" viewBox="0 0 @stateCursorX @stateCursorY" style="width: @(stateCursorX)px; height: @(stateCursorY)px;">
+    <svg class="workflowLineSvg" viewBox="0 0 @cursorX @cursorY" style="width: @(cursorX)px; height: @(cursorY)px;">
         @foreach (var state in SampleWorkflow.States)
         {
             int startX = state.X + itemWidth;
@@ -76,12 +94,17 @@
                     var toState = SampleWorkflow.States[toStateIdx];
                     int endX = toState.X + itemWidth / 2;
                     int endY = toState.Y;
+                    
                     string d = (endX > startX)
                         // Flow down the waterfall:
                         ? $"M {startX} {startY} l {endX - startX} 0 l 0 {endY - startY}"
                         // Flow backward the waterfall:
                         : $"M {startX} {startY} l {backwardSpace} 0 l 0 {endY - startY - backwardSpace} l {endX - startX - backwardSpace} 0 l 0 {backwardSpace}";
+
+                    // Draw the lines:
                     <path d="@d" fill="none" stroke-width="0.2rem" class="@pathClass"></path>
+                    
+                    // Draw the highlight when event is on:
                     if (evt.On)
                     {
                         <path d="@d" fill="none" stroke-width="0.2rem" class="workflowHighlightPath"></path>
@@ -99,14 +122,18 @@
 
     private const int backwardSpace = 30;
 
-    private int stateCursorX = padding;
-    private int stateCursorY = padding;
+    private int cursorX = padding;
+    private int cursorY = padding;
+    private void Redraw()
+    {
+        cursorX = padding;
+        cursorY = padding;
+    }
 
     private void ClickOnEvent(Event evt)
     {
-        stateCursorX = padding;
-        stateCursorY = padding;
         evt.On = !evt.On;
+        Redraw();
     }
 
     private Workflow SampleWorkflow = Workflow
