@@ -8,11 +8,15 @@
     <MudAppBar Elevation="0">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
         <MudTooltip Text="Home" Color="Color.Primary" Placement="Placement.Bottom">
-            <MudIconButton Icon="@Icons.Material.Filled.Home" Href="/"/>
+            <MudLink Href="/" Class="ml-4">
+                <MudImage Width="35" Height="35"
+                    Src="images/logo.png"
+                    Class="border-solid rounded-circle border-2 mt-1"></MudImage>
+            </MudLink>
         </MudTooltip>
         <MudSpacer />
         <MudTooltip Text="Repository" Color="Color.Primary" Placement="Placement.Bottom">
-            <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Link="https://github.com/xuanphuoc92/PeterDoStuff" Target="_blank" />
+            <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Href="https://github.com/xuanphuoc92/PeterDoStuff" Target="_blank" />
         </MudTooltip>
     </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen" Elevation="1">
