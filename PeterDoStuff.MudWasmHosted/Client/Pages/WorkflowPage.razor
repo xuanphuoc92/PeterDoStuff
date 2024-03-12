@@ -18,6 +18,26 @@
         top: 0;
         z-index: -1;
     }
+    .workflowPassivePath {
+        stroke: @Colors.Grey.Lighten5;
+        stroke-opacity: 0.1
+    }
+
+    .workflowActivePath {
+        stroke: @Colors.DeepPurple.Accent3;
+        stroke-opacity: 0.8
+    }
+    .workflowHighlightPath {
+        stroke: @Colors.Grey.Lighten5;
+        stroke-dasharray: 5% 95%;
+        stroke-dashoffset: 100%;
+        animation: 1s linear infinite animateLine;
+    }
+    @@keyframes animateLine {
+        to {
+            stroke-dashoffset: 0;
+        }
+    }
 </style>
 <MudContainer Class="workflowContainer mt-8">
     @foreach (var state in SampleWorkflow.States)
@@ -50,17 +70,22 @@
             foreach (var evt in state.Events)
             {
                 int startY = state.Y + itemHeight * (1 + state.Events.IndexOf(evt)) + itemHeight / 2;
-                string color = evt.On ? Colors.DeepPurple.Accent3 : Colors.Grey.Lighten5;
-                double opacity = evt.On ? 1 : 0.1;
+                string pathClass = evt.On ? "workflowActivePath" : "workflowPassivePath";
                 foreach (var toStateIdx in evt.ToStates)
                 {
                     var toState = SampleWorkflow.States[toStateIdx];
                     int endX = toState.X + itemWidth / 2;
                     int endY = toState.Y;
                     string d = (endX > startX)
+                        // Flow down the waterfall:
                         ? $"M {startX} {startY} l {endX - startX} 0 l 0 {endY - startY}"
+                        // Flow backward the waterfall:
                         : $"M {startX} {startY} l {backwardSpace} 0 l 0 {endY - startY - backwardSpace} l {endX - startX - backwardSpace} 0 l 0 {backwardSpace}";
-                    <path d="@d" fill="none" stroke="@color" stroke-width="0.2rem" stroke-opacity="@opacity"></path>
+                    <path d="@d" fill="none" stroke-width="0.2rem" class="@pathClass"></path>
+                    if (evt.On)
+                    {
+                        <path d="@d" fill="none" stroke-width="0.2rem" class="workflowHighlightPath"></path>
+                    }
                 }
             }
         }
