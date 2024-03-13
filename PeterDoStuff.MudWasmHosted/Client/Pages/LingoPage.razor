@@ -1,0 +1,176 @@
+﻿@page "/lingo"
+
+<MudText Typo="Typo.h3" GutterBottom="true">
+    <MudIcon Size="Size.Large" Icon="@Icons.Material.Filled.FontDownload" />
+    Lingo (not Wordle)
+</MudText>
+
+<MudText Class="mb-8">This page demonstrates the game Lingo (not Wordle).</MudText>
+
+<style>
+    .lingoGuessText,
+    .lingoAlphabetText {
+        text-transform: uppercase;
+    }
+
+    .lingoGuessPaper {
+        width: 3.5rem;
+        height: 3.5rem;
+    }
+
+    .lingoAlphabetButton {
+        min-width: 2.5rem;
+        width: 2.5rem;
+        height: 3.5rem;
+    }
+</style>
+
+@if (game.IsOver())
+{
+    <MudText Class="lingoGuessText">@game.GuessWord</MudText>
+}
+
+@for (int i = 0; i < 6; i++)
+{
+    var guess = game.Guesses.Count > i ? game.Guesses[i] : null;
+    int guessindex = i;
+    <MudContainer Class="d-flex">
+        @if (guess != null)
+        {
+            for (int charIndex = 0; charIndex < 5; charIndex++)
+            {
+                var guessChar = guess[charIndex].Char;
+                var color = guess[charIndex].Guess switch
+                {
+                    LingoGame.Match => MatchColor,
+                    LingoGame.Misplace => MisplaceColor,
+                    _ => MissColor
+                };
+                var style = $"background-color: {color}";
+                <MudPaper Class="ma-1 d-flex justify-center align-center lingoGuessPaper" Style="@style">
+                    <MudText Typo="Typo.h5" Class="lingoGuessText">@guessChar</MudText>
+                </MudPaper>
+            }
+        }
+        else if (game.Guesses.Count < guessindex)
+        {
+            for (int charIndex = 0; charIndex < 5; charIndex++)
+            {
+                int index = charIndex;
+                <MudPaper Class="ma-1 d-flex justify-center align-center lingoGuessPaper">
+                </MudPaper>
+            }
+        }
+        else
+        {
+            for (int charIndex = 0; charIndex < 5; charIndex++)
+            {
+                int index = charIndex;
+                <MudPaper Class="ma-1 d-flex justify-center align-center lingoGuessPaper">
+                    <MudText Typo="Typo.h5" Class="lingoGuessText">@GetCurrentGuess(index)</MudText>
+                </MudPaper>
+            }
+        }
+    </MudContainer>
+}
+
+<MudDivider Class="mt-8 mb-8" />
+
+<MudContainer Class="d-flex mt-3">
+    @foreach (char c in row1)
+    {
+        var style = $"background-color: {GetAlphabetColor(c)}";
+        <MudButton Class="lingoAlphabetButton rounded d-flex justify-center align-center ml-2" Style="@style" OnClick="() => Guess(c)">
+            <MudText Typo="Typo.h6" Class="lingoAlphabetText">@c</MudText>
+        </MudButton>
+    }
+</MudContainer>
+
+<MudContainer Class="d-flex mt-3">
+    @foreach (char c in row2)
+    {
+        var style = $"background-color: {GetAlphabetColor(c)}";
+        <MudButton Class="lingoAlphabetButton rounded d-flex justify-center align-center ml-2" Style="@style" OnClick="() => Guess(c)">
+            <MudText Typo="Typo.h6" Class="lingoAlphabetText">@c</MudText>
+        </MudButton>
+    }
+</MudContainer>
+
+<MudContainer Class="d-flex mt-3">
+    <MudButton Class="rounded d-flex justify-center align-center ml-2" Style="@defaultStyle" OnClick="EnterGuess">
+        <MudText Typo="Typo.caption" Class="lingoAlphabetText">ENTER</MudText>
+    </MudButton>
+    @foreach (char c in row3)
+    {
+        var style = $"background-color: {GetAlphabetColor(c)}";
+        <MudButton Class="lingoAlphabetButton rounded d-flex justify-center align-center ml-2" Style="@style" OnClick="() => Guess(c)">
+            <MudText Typo="Typo.h6" Class="lingoAlphabetText">@c</MudText>
+        </MudButton>
+    }
+    <MudButton Class="rounded d-flex justify-center align-center ml-2" Style="@defaultStyle" OnClick="BackspaceGuess">
+        <MudIcon Icon="@Icons.Material.TwoTone.Backspace" />
+    </MudButton>
+</MudContainer>
+
+@code {
+    private LingoGame game = new LingoGame();
+
+    private string row1 = "qwertyuiop";
+    private string row2 = "asdfghjkl";
+    private string row3 = "zxcvbnm";
+
+    private string DefaultAlphabetColor = Colors.Grey.Default;
+
+    private string MatchColor = Colors.Green.Default;
+    private string MisplaceColor = Colors.Yellow.Darken4;
+    private string MissColor = Colors.Grey.Darken4;
+
+    private string defaultStyle => $"background-color: {DefaultAlphabetColor}";
+
+    private string GetAlphabetColor(char c)
+    {
+        if (game.AlphabetState.ContainsKey(c) == false)
+            return DefaultAlphabetColor;
+        if (game.AlphabetState[c] == LingoGame.Match)
+            return MatchColor;
+        if (game.AlphabetState[c] == LingoGame.Misplace)
+            return MisplaceColor;
+        return MissColor;
+    }
+
+    private List<char> currentGuess = new List<char>();
+
+    private void Guess(char c)
+    {
+        if (currentGuess.Count == 5 || game.IsOver())
+            return;
+        currentGuess.Add(c);
+    }
+
+    private void BackspaceGuess()
+    {
+        if (currentGuess.Any())
+            currentGuess.RemoveAt(currentGuess.Count - 1);
+    }
+
+    private void EnterGuess()
+    {
+        if (currentGuess.Count < 5)
+            return;
+
+        string guess = string.Join("", currentGuess);
+        var result = game.Guess(guess);
+        if (result == LingoGame.Invalid)
+        {
+            return;
+        }
+        currentGuess.Clear();
+    }
+
+    private string GetCurrentGuess(int charIndex)
+    {
+        if (currentGuess.Count > charIndex)
+            return currentGuess[charIndex].ToString();
+        return "";
+    }
+}
