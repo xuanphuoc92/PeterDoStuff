@@ -39,17 +39,20 @@
     .workflowPassivePath {
         stroke: @Colors.Grey.Lighten5;
         stroke-opacity: 0.1;
+        stroke-width: 0.2rem;
     }
     .workflowActivePath {
         stroke: @Colors.DeepPurple.Accent3;
         stroke-opacity: 0.8;
+        stroke-width: 0.5rem;
     }
     .workflowHighlightPath {
         stroke: @Colors.Grey.Lighten5;
-        stroke-opacity: 0.3;
+        stroke-opacity: 0.5;
         stroke-dasharray: 5% 95%;
         stroke-dashoffset: 100%;
         animation: 1s linear infinite animateLine;
+        stroke-width: 0.5rem;
     }
     @@keyframes animateLine {
         to {
@@ -58,6 +61,7 @@
     }
 </style>
 
+@* Waterflow mode *@
 <MudHidden Invert="true" Breakpoint="Breakpoint.MdAndUp">
     <MudContainer Class="workflowContainer mt-8">
         @foreach (var state in SampleWorkflow.States)
@@ -101,12 +105,12 @@
                         : $"M {startX} {startY} l {backwardSpace} 0 l 0 {endY - startY - backwardSpace} l {endX - startX - backwardSpace} 0 l 0 {backwardSpace}";
 
                         // Draw the lines:
-                        <path d="@d" fill="none" stroke-width="0.2rem" class="@pathClass"></path>
+                        <path d="@d" fill="none" class="@pathClass"></path>
 
                         // Draw the highlight when event is on:
                         if (evt.On)
                         {
-                            <path d="@d" fill="none" stroke-width="0.2rem" class="workflowHighlightPath"></path>
+                            <path d="@d" fill="none" class="workflowHighlightPath"></path>
                         }
                     }
                 }
@@ -115,6 +119,7 @@
     </MudContainer>
 </MudHidden>
 
+@* Linear mobile mode *@
 <MudHidden Invert="true" Breakpoint="Breakpoint.SmAndDown">
     <MudContainer Class="workflowContainer mt-8">
         @foreach (var state in SampleWorkflow.States)
@@ -153,12 +158,12 @@
 
                         string d = $"M {startX} {startY} l {backwardSpace} 0 l 0 {endY - startY - backwardSpace} l {0 - backwardSpace - itemWidth / 2} 0 l 0 {backwardSpace}";
                         // Draw the lines:
-                        <path d="@d" fill="none" stroke-width="0.2rem" class="@pathClass"></path>
+                        <path d="@d" fill="none" class="@pathClass"></path>
 
                         // Draw the highlight when event is on:
                         if (evt.On)
                         {
-                            <path d="@d" fill="none" stroke-width="0.2rem" class="workflowHighlightPath"></path>
+                            <path d="@d" fill="none" class="workflowHighlightPath"></path>
                         }
                     }
                 }
