@@ -23,6 +23,8 @@
     {
         bool input = isOnAll;
         SampleWorkflow.States.ForEach(s => s.Events.ForEach(e => e.On = input));
+        if (input == false)
+            SampleWorkflow.States.ForEach(s => s.Events.ForEach(e => e.Hover = input));
     }
 }
 
@@ -70,8 +72,12 @@
                     </MudListSubheader>
                     @foreach (var evt in state.Events)
                     {
-                        var iconColor = evt.On ? Color.Primary : Color.Default;
-                        <MudListItem Style="@($"height: {itemHeight}px")" OnClick="() => ClickOnEvent(evt)" IconColor="@iconColor" Icon="@Icons.Material.Filled.Brightness1">
+                        var iconColor = (evt.On || evt.Hover) ? Color.Primary : Color.Default;
+                        <MudListItem Style="@($"height: {itemHeight}px")" 
+                            OnClick="() => ClickOnEvent(evt)" 
+                            @onmouseenter="() => MouseEnterEvent(evt)"
+                            @onmouseleave="() => MouseLeaveEvent(evt)"
+                            IconColor="@iconColor" Icon="@Icons.Material.Filled.Brightness1">
                             @evt.Name
                             <MudIcon Icon="@Icons.Material.Filled.ArrowForward"></MudIcon>
                             @evt.ToStates.Select(s => SampleWorkflow.States[s].Name).Join(", ")
@@ -87,7 +93,7 @@
                 foreach (var evt in state.Events)
                 {
                     int startY = state.Y + itemHeight * (1 + state.Events.IndexOf(evt)) + itemHeight / 2;
-                    string pathClass = evt.On ? "workflowActivePath" : "workflowPassivePath";
+                    string pathClass = (evt.On || evt.Hover) ? "workflowActivePath" : "workflowPassivePath";
                     foreach (var toStateIdx in evt.ToStates)
                     {
                         var toState = SampleWorkflow.States[toStateIdx];
@@ -104,7 +110,7 @@
                         <path d="@d" fill="none" class="@pathClass"></path>
 
                         // Draw the highlight when event is on:
-                        if (evt.On)
+                        if (evt.On || evt.Hover)
                         {
                             <path d="@d" fill="none" class="workflowHighlightPath"></path>
                         }
@@ -185,7 +191,7 @@
     private int itemHeight => SampleWorkflow.ItemHeight;
     private int padding => SampleWorkflow.Padding;
     private int backwardSpace => SampleWorkflow.BackwardSpace;
-    
+
     private int totalWidth => SampleWorkflow.TotalWidth;
     private int totalHeight => SampleWorkflow.TotalHeight;
 
@@ -194,6 +200,18 @@
     private void ClickOnEvent(Event evt)
     {
         evt.On = !evt.On;
+        if (evt.On == false)
+            evt.Hover = false;
+    }
+
+    private void MouseEnterEvent (Event evt)
+    {
+        evt.Hover = true;
+    }
+
+    private void MouseLeaveEvent(Event evt)
+    {
+        evt.Hover = false;
     }
 
     private class Workflow
@@ -281,7 +299,7 @@
     {
         public string Name { get; set; }
         public List<Event> Events { get; set; } = new List<Event>();
-        
+
         /// <summary>
         /// X-Coord of the top left corner
         /// </summary>
@@ -298,5 +316,6 @@
         public string Name { get; set; }
         public List<int> ToStates { get; set; } = new List<int>();
         public bool On { get; set; }
+        public bool Hover { get; set; }
     }
 }
