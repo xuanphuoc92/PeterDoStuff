@@ -281,7 +281,7 @@
                 state.X = cursorX;
                 state.Y = cursorY;
 
-                // To next state in the waterfall: Move the cursor left with padding
+                // To next state in the waterfall: Move the cursor right with the State x width + padding
                 cursorX += 1 * width + padding; 
                 // To next state in the waterfall: Move the cursor down with (the State Title + Events) x height + padding
                 cursorY += (1 + state.Events.Count) * height + padding;
