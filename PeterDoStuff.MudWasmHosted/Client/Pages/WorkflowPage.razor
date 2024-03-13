@@ -27,14 +27,10 @@
 }
 
 <style>
-    .workflowContainer {
-        position: relative;
-    }
     .workflowLineSvg {
         position: absolute;
         left: 0;
         top: 0;
-        z-index: -1;
     }
     .workflowPassivePath {
         stroke: @Colors.Grey.Lighten5;
@@ -63,11 +59,11 @@
 
 @* Waterflow mode *@
 <MudHidden Invert="true" Breakpoint="Breakpoint.MdAndUp">
-    <MudContainer Class="workflowContainer mt-8">
+    <MudContainer Class="relative mt-8">
         @foreach (var state in SampleWorkflow.States)
         {
-            string style = $"position: absolute; left: {state.X}px; top: {state.Y}px;";
-            <MudPaper Width="@($"{itemWidth}px")" Style="@style">
+            string style = $"left: {state.X}px; top: {state.Y}px;";
+            <MudPaper Width="@($"{itemWidth}px")" Class="absolute z-10" Style="@style">
                 <MudList Clickable="true">
                     <MudListSubheader Style="@($"height: {itemHeight}px")">
                         <MudText Color="Color.Primary" Typo="Typo.h6">@state.Name</MudText>
@@ -121,11 +117,11 @@
 
 @* Linear mobile mode *@
 <MudHidden Invert="true" Breakpoint="Breakpoint.SmAndDown">
-    <MudContainer Class="workflowContainer mt-8">
+    <MudContainer Class="relative mt-8">
         @foreach (var state in SampleWorkflow.States)
         {
-            string style = $"position: absolute; left: 0px; top: {state.Y}px;";
-            <MudPaper Width="@($"{itemWidth}px")" Style="@style">
+            string style = $"left: 0px; top: {state.Y}px;";
+            <MudPaper Width="@($"{itemWidth}px")" Class="absolute z-10" Style="@style">
                 <MudList Clickable="true">
                     <MudListSubheader Style="@($"height: {itemHeight}px")">
                         <MudText Color="Color.Primary" Typo="Typo.h6">@state.Name</MudText>
