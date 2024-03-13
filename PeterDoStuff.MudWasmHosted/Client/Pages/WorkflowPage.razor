@@ -58,7 +58,7 @@
     }
 </style>
 
-<MudHidden Breakpoint="Breakpoint.MdAndUp" Invert="true">
+<MudHidden Invert="true" Breakpoint="Breakpoint.MdAndUp">
     <MudContainer Class="workflowContainer mt-8">
         @foreach (var state in SampleWorkflow.States)
         {
@@ -115,21 +115,60 @@
     </MudContainer>
 </MudHidden>
 
+<MudHidden Invert="true" Breakpoint="Breakpoint.SmAndDown">
+    <MudContainer Class="workflowContainer mt-8">
+        @foreach (var state in SampleWorkflow.States)
+        {
+            string style = $"position: absolute; left: 0px; top: {state.Y}px;";
+            <MudPaper Width="@($"{itemWidth}px")" Style="@style">
+                <MudList Clickable="true">
+                    <MudListSubheader Style="@($"height: {itemHeight}px")">
+                        <MudText Color="Color.Primary" Typo="Typo.h6">@state.Name</MudText>
+                    </MudListSubheader>
+                    @foreach (var evt in state.Events)
+                    {
+                        var iconColor = evt.On ? Color.Primary : Color.Default;
+                        <MudListItem Style="@($"height: {itemHeight}px")" OnClick="() => ClickOnEvent(evt)" IconColor="@iconColor" Icon="@Icons.Material.Filled.Brightness1">
+                            @evt.Name
+                            <MudIcon Icon="@Icons.Material.Filled.ArrowForward"></MudIcon>
+                            @evt.ToStates.Select(s => SampleWorkflow.States[s].Name).Join(", ")
+                        </MudListItem>
+                    }
+                </MudList>
+            </MudPaper>
+        }
+        <svg class="workflowLineSvg" viewBox="0 0 @narrowWidth @totalHeight" style="width: @(narrowWidth)px; height: @(totalHeight)px;">
+            @foreach (var state in SampleWorkflow.States)
+            {
+                int startX = itemWidth;
+                foreach (var evt in state.Events)
+                {
+                    int startY = state.Y + itemHeight * (1 + state.Events.IndexOf(evt)) + itemHeight / 2;
+                    string pathClass = evt.On ? "workflowActivePath" : "workflowPassivePath";
+                    foreach (var toStateIdx in evt.ToStates)
+                    {
+                        var toState = SampleWorkflow.States[toStateIdx];
+                        int endX = itemWidth / 2;
+                        int endY = toState.Y;
+
+                        string d = $"M {startX} {startY} l {backwardSpace} 0 l 0 {endY - startY - backwardSpace} l {0 - backwardSpace - itemWidth / 2} 0 l 0 {backwardSpace}";
+                        // Draw the lines:
+                        <path d="@d" fill="none" stroke-width="0.2rem" class="@pathClass"></path>
+
+                        // Draw the highlight when event is on:
+                        if (evt.On)
+                        {
+                            <path d="@d" fill="none" stroke-width="0.2rem" class="workflowHighlightPath"></path>
+                        }
+                    }
+                }
+            }
+        </svg>
+    </MudContainer>
+</MudHidden>
+
 
 @code {
-    private int itemWidth => SampleWorkflow.ItemWidth;
-    private int itemHeight => SampleWorkflow.ItemHeight;
-    private int padding => SampleWorkflow.Padding;
-    private int backwardSpace => SampleWorkflow.BackwardSpace;
-    
-    private int totalWidth => SampleWorkflow.TotalWidth;
-    private int totalHeight => SampleWorkflow.TotalHeight;
-
-    private void ClickOnEvent(Event evt)
-    {
-        evt.On = !evt.On;
-    }
-
     private Workflow SampleWorkflow = Workflow
             .New("Sample Workflow")
             .StateEvent("Draft", "Submit", "Under Review")
@@ -139,7 +178,22 @@
             .StateEvent("Executing", "Return", "Draft", "Under Review")
             .StateEvent("Executing", "Discard", "Discarded")
             .StateEvent("Draft", "Discard", "Discarded")
-            .EstablishPositions(width: 400, height: 50, padding: 50, backwardSpace: 30);
+            .EstablishPositions(width: 360, height: 50, padding: 50, backwardSpace: 20);
+
+    private int itemWidth => SampleWorkflow.ItemWidth;
+    private int itemHeight => SampleWorkflow.ItemHeight;
+    private int padding => SampleWorkflow.Padding;
+    private int backwardSpace => SampleWorkflow.BackwardSpace;
+    
+    private int totalWidth => SampleWorkflow.TotalWidth;
+    private int totalHeight => SampleWorkflow.TotalHeight;
+
+    private int narrowWidth => itemWidth + padding;
+
+    private void ClickOnEvent(Event evt)
+    {
+        evt.On = !evt.On;
+    }
 
     private class Workflow
     {
