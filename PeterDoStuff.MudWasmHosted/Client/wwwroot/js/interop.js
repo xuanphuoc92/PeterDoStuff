@@ -82,3 +82,9 @@ function loadMapWithMarker(mapDivId, latitude, longitude) {
         title: 'Marker'
     });
 }
+
+window.keyDownFunction = (dotnetHelper, methodName) => {
+    document.addEventListener('keydown', function (event) {
+        dotnetHelper.invokeMethodAsync(methodName, event.key);
+    });
+};

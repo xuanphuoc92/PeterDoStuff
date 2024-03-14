@@ -1,13 +1,17 @@
 ﻿@page "/lingo"
 @using PeterDoStuff.Lingo
 @inject ISnackbar Snackbar
+@inject IJSRuntime JS
 
 <MudText Typo="Typo.h3" GutterBottom="true">
     <MudIcon Size="Size.Large" Icon="@Icons.Material.Filled.FontDownload" />
     Lingo (not Wordle)
 </MudText>
 
-<MudText Class="mb-8">This page demonstrates the game Lingo (not Wordle). It picks random valid words, not word pool of common words. So it is harder, I suppose.</MudText>
+<MudText Class="mb-8">
+    <p>This page demonstrates the game Lingo (not Wordle).</p>
+    <p>It picks random valid words, not word pool of common words. So it is harder, I suppose.</p>
+</MudText>
 
 <MudButton Class="mb-8" Color="Color.Primary" Variant="Variant.Filled" OnClick="() => game = new Game()">New Game</MudButton>
 
@@ -165,5 +169,24 @@
             Snackbar.Add("Invalid word!", Severity.Error);
         if (result == GuessResult.Correct)
             Snackbar.Add("You guess right!", Severity.Success);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+            await JS.InvokeVoidAsync("keyDownFunction", DotNetObjectReference.Create(this), "KeyboardEventHandler");
+    }
+
+    [JSInvokable]
+    public void KeyboardEventHandler(string key) 
+    {
+        //string key = e.Key;
+        if (key == "Enter")
+            EnterGuess();
+        if (key == "Backspace")
+            game.Backspace();
+        if (key.Length == 1 && char.IsLetter(key[0]))
+            game.Input(key[0]);
+        StateHasChanged();
     }
 }
