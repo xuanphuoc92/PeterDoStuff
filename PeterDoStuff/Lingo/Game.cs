@@ -12,6 +12,7 @@ namespace PeterDoStuff.Lingo
         public List<Guess> Guesses { get; private set; }
         public string CurrentGuess { get; private set; }
         public bool IsGameOver { get; private set; }
+        public Dictionary<char, GuessState> AlphabetStates { get; private set; }
 
         public const int MAX_GUESS = 6;
         public const int WORD_LENGTH = 5;
@@ -21,6 +22,7 @@ namespace PeterDoStuff.Lingo
             Guesses = new List<Guess>();
             CurrentGuess = "";
             IsGameOver = false;
+            AlphabetStates = new Dictionary<char, GuessState>();
             SecretWord = secretWord;
         }
 
@@ -68,6 +70,7 @@ namespace PeterDoStuff.Lingo
                     guessState = GuessState.Misplace;
                 else
                     guessState = GuessState.Miss;
+                AlphabetStates[guessChar] = guessState;
                 guess.States.Add(guessState);
             }
             

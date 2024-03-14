@@ -77,7 +77,15 @@ namespace PeterDoStuff.Test
             var game = new Game("rebus");
 
             game.Input("arise").EnterGuess().Should().Be(GuessResult.Incorrect);
+            
+            game.AlphabetStates['a'].Should().Be(GuessState.Miss);
+            game.AlphabetStates['r'].Should().Be(GuessState.Misplace);
+            game.AlphabetStates.ContainsKey('b').Should().BeFalse();
+            
             game.Input("route").EnterGuess().Should().Be(GuessResult.Incorrect);
+
+            game.AlphabetStates['r'].Should().Be(GuessState.Match);
+
             game.Input("rules").EnterGuess().Should().Be(GuessResult.Incorrect);
             game.Input("rebus").EnterGuess().Should().Be(GuessResult.Correct);
 
