@@ -66,5 +66,14 @@ namespace PeterDoStuff.Extensions
         /// <returns></returns>
         public static string Join(this IEnumerable<string> input, string separator = "")
             => string.Join(separator, input);
+
+        /// <summary>
+        /// Combine strings into one string separated with new lins
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="separator"></param>
+        /// <returns></returns>
+        public static string JoinLines(this IEnumerable<string> input)
+            => input.Join(Environment.NewLine);
     }
 }

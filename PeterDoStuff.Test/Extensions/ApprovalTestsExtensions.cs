@@ -8,9 +8,9 @@ namespace PeterDoStuff.Test.Extensions
         /// Verify via Approval Tests
         /// </summary>
         /// <param name="this"></param>
-        public static void Verify(this string @this)
+        public static void Verify(this string @this, string tag = "")
         {
-            @this.WriteToConsole();
+            @this.WriteToConsole(tag);
             Approvals.Verify(@this);
         }
     }
