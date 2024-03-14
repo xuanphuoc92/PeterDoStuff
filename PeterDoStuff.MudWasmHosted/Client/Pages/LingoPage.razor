@@ -13,7 +13,7 @@
     <p>It picks random valid words, not word pool of common words. So it is harder, I suppose.</p>
 </MudText>
 
-<MudButton Class="mb-8" Color="Color.Primary" Variant="Variant.Filled" OnClick="() => game = new Game()">New Game</MudButton>
+<MudButton Class="mb-8" Variant="Variant.Filled" OnClick="() => game = new Game()">New Game</MudButton>
 
 <style>
     .lingoGuessText,
@@ -117,7 +117,7 @@
 </MudContainer>
 
 <MudContainer Class="d-flex mt-3">
-    <MudButton Class="@buttonClasss" Style="@buttonStyle" OnClick="EnterGuess">
+    <MudButton Class="@buttonClasss" Color="Color.Primary" Variant="Variant.Filled" OnClick="EnterGuess">
         <MudText Typo="Typo.caption" Class="lingoAlphabetText">ENTER</MudText>
     </MudButton>
     @foreach (char c in row3)
@@ -127,7 +127,7 @@
             <MudText Typo="Typo.h6" Class="lingoAlphabetText">@c</MudText>
         </MudButton>
     }
-    <MudButton Class="@buttonClasss" Style="@buttonStyle" OnClick="() => game.Backspace()">
+    <MudButton Class="@buttonClasss" Color="Color.Secondary" Variant="Variant.Filled" OnClick="() => game.Backspace()">
         <MudIcon Icon="@Icons.Material.TwoTone.Backspace" />
     </MudButton>
 </MudContainer>
@@ -144,7 +144,6 @@
     private readonly string alphabetPaperClass = "lingoAlphabetButton rounded d-flex justify-center align-center ml-2";
 
     private readonly string buttonClasss = "rounded d-flex justify-center align-center ml-2";
-    private string buttonStyle => $"background-color: {DefaultColor}";
 
     private string row1 = "qwertyuiop";
     private string row2 = "asdfghjkl";
