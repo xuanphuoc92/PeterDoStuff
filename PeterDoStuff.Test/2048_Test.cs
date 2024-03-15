@@ -104,5 +104,30 @@ namespace PeterDoStuff.Test
             game.Score.Should().Be(0);
             game.Blocks.Should().HaveCount(2);
         }
+
+        [TestMethod]
+        public void _05_Right()
+        {
+            // [2][2][ ][ ]
+            // [2][ ][ ][ ]
+            // [ ][ ][ ][ ]
+            // [ ][ ][ ][ ]
+            var game = new Game(0, 1, 4);
+            game.Score.Should().Be(0);
+            game.Blocks.Should().HaveCount(3);
+
+            game.Right();
+
+            // [ ][ ][ ][4]
+            // [ ][ ][ ][2]
+            // [ ][ ][ ][ ]
+            // [ ][ ][ ][ ]
+
+            ContainBlock(game, 3, 4);
+            ContainBlock(game, 7, 2);
+
+            game.Score.Should().Be(4);
+            game.Blocks.Should().HaveCount(3);
+        }
     }
 }

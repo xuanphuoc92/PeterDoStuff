@@ -82,6 +82,17 @@ namespace PeterDoStuff._2048
             PopNewBlock();
             return this;
         }
+
+        public Game Right()
+        {
+            AnyMovement = false;
+            Blocks
+                .OrderByDescending(b => b.X) // Ordered blocks from right to left
+                .ToList()
+                .ForEach(b => b.Right()); // Tell the blocks to move right
+            PopNewBlock();
+            return this;
+        }
     }
 
     public class Block
@@ -124,6 +135,16 @@ namespace PeterDoStuff._2048
                 .MaxBy(b => b.Y); // First that it can hit
             int destX = X;
             int destY = destBlock != null ? (destBlock.Y + 1) : 0;
+            MoveAndMerge(destBlock, destX, destY);
+        }
+
+        internal void Right()
+        {
+            Block? destBlock = Game.Blocks
+                .Where(b => b.Y == this.Y && b.X > this.X) // Same Row, any other block on its right
+                .MinBy(b => b.X); // First that it can hit
+            int destX = destBlock != null ? (destBlock.X - 1) : (Game.Width - 1);
+            int destY = Y;
             MoveAndMerge(destBlock, destX, destY);
         }
 
