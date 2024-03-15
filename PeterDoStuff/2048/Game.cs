@@ -93,6 +93,17 @@ namespace PeterDoStuff._2048
             PopNewBlock();
             return this;
         }
+
+        public Game Left()
+        {
+            AnyMovement = false;
+            Blocks
+                .OrderBy(b => b.X) // Ordered blocks from left to right
+                .ToList()
+                .ForEach(b => b.Left()); // Tell the blocks to move left
+            PopNewBlock();
+            return this;
+        }
     }
 
     public class Block
@@ -144,6 +155,16 @@ namespace PeterDoStuff._2048
                 .Where(b => b.Y == this.Y && b.X > this.X) // Same Row, any other block on its right
                 .MinBy(b => b.X); // First that it can hit
             int destX = destBlock != null ? (destBlock.X - 1) : (Game.Width - 1);
+            int destY = Y;
+            MoveAndMerge(destBlock, destX, destY);
+        }
+
+        internal void Left()
+        {
+            Block? destBlock = Game.Blocks
+                .Where(b => b.Y == this.Y && b.X < this.X) // Same Row, any other block on its left
+                .MaxBy(b => b.X); // First that it can hit
+            int destX = destBlock != null ? (destBlock.X + 1) : 0;
             int destY = Y;
             MoveAndMerge(destBlock, destX, destY);
         }
