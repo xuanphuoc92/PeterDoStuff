@@ -12,7 +12,7 @@ namespace PeterDoStuff.Test
     public class _2048_Test
     {
         [TestMethod]
-        public void _01_StartBlocks()
+        public void _01_Start()
         {
             var game = new Game(0, 2);
             game.Blocks.Should().HaveCount(2);
@@ -153,6 +153,19 @@ namespace PeterDoStuff.Test
 
             game.Score.Should().Be(4);
             game.Blocks.Should().HaveCount(3);
+        }
+
+        [TestMethod]
+        public void _07_GameOver()
+        {
+            var game = Game.GameOverTest();
+            game.Score.Should().Be(0);
+            game.Blocks.Should().HaveCount(16);
+            game.IsGameOver.Should().BeFalse();
+
+            game.Left();
+
+            game.IsGameOver.Should().BeTrue();
         }
     }
 }

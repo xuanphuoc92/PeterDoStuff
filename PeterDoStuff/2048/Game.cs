@@ -8,18 +8,22 @@ namespace PeterDoStuff._2048
 {
     public class Game
     {
-        public List<Block> Blocks { get; private set; }
-        
+        public List<Block> Blocks { get; private set; } = new List<Block>();
+
         public int Width { get; private set; } = 4;
         public int Height { get; private set; } = 4;
+
+        public int Size => Width * Height;
         
         public const int START_BLOCKS = 2;
 
         public int Score { get; internal set; } = 0;
 
+        public bool IsGameOver { get; private set; } = false;
+
         public Game()
         {
-            var allLocs = Enumerable.Range(0, Width * Height);
+            var allLocs = Enumerable.Range(0, Size);
             var random = new Random();
             allLocs.OrderBy(loc => random.Next());
             var startBlockLocations = allLocs
@@ -34,9 +38,17 @@ namespace PeterDoStuff._2048
             SetupStartBlocks(startBlockLocations);
         }
 
-        private void SetupStartBlocks(IEnumerable<int> startBlockLocations)
+        public static Game GameOverTest()
         {
-            Blocks = new List<Block>();
+            var game = new Game();
+            game.Blocks.Clear();
+            for (int i = 0; i < game.Size; i++)
+                game.Blocks.Add(new Block(i, game, i));
+            return game;
+        }
+
+        private void SetupStartBlocks(IEnumerable<int> startBlockLocations)
+        {            
             foreach (var location in startBlockLocations)
                 Blocks.Add(new Block(location, this));
         }
@@ -51,12 +63,16 @@ namespace PeterDoStuff._2048
         private void PostMovement()
         {
             if (AnyMovement == false)
+            {
+                if (Blocks.Count == Size)
+                    IsGameOver = true;
                 return;
+            }
 
             var occupied = Blocks.Select(b => b.LocationIndex);
 
             var random = new Random();
-            var randomEmpty = Enumerable.Range(0, Width * Height)
+            var randomEmpty = Enumerable.Range(0, Size)
                 .Where(loc => occupied.Contains(loc) == false)
                 .OrderBy(loc => random.Next())
                 .First();
@@ -118,9 +134,9 @@ namespace PeterDoStuff._2048
         public int LocationIndex { get; private set; }
         public Game Game { get; private set; }
 
-        public Block(int locationIndex, Game game)
+        public Block(int locationIndex, Game game, int number = 2)
         {
-            Number = 2; // Every block created must be 2
+            Number = number;
             LocationIndex = locationIndex;
             Game = game;
         }
