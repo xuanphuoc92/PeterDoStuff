@@ -39,6 +39,7 @@ namespace PeterDoStuff.Test
             // [ ][ ][ ][ ]
             // [ ][ ][ ][ ]
             var game = new Game(0, 1, 4);
+            game.Score.Should().Be(0);
 
             game.Down();
 
@@ -51,6 +52,8 @@ namespace PeterDoStuff.Test
 
             game.Blocks[1].LocationIndex.Should().Be(13);
             game.Blocks[1].Number.Should().Be(2);
+
+            game.Score.Should().Be(4);
         }
     }
 }

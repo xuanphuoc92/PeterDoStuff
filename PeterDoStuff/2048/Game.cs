@@ -15,6 +15,8 @@ namespace PeterDoStuff._2048
         
         public const int START_BLOCKS = 2;
 
+        public int Score { get; internal set; } = 0;
+
         public Game()
         {
             var allBlocks = Enumerable.Range(0, Width * Height);
@@ -90,6 +92,7 @@ namespace PeterDoStuff._2048
                 this.LocationIndex = destBlock.LocationIndex;
                 Game.Blocks.Remove(destBlock);
                 Number *= 2;
+                Game.Score += Number;
             }
             else // Not Merge
             {
