@@ -30,5 +30,27 @@ namespace PeterDoStuff.Test
             game = new Game();
             game.Blocks.Should().HaveCount(Game.START_BLOCKS);            
         }
+
+        [TestMethod]
+        public void _02_Down()
+        {
+            // [2][2][ ][ ]
+            // [2][ ][ ][ ]
+            // [ ][ ][ ][ ]
+            // [ ][ ][ ][ ]
+            var game = new Game(0, 1, 4);
+
+            game.Down();
+
+            // [ ][ ][ ][ ]
+            // [ ][ ][ ][ ]
+            // [ ][ ][ ][ ]
+            // [4][2][ ][ ]
+            game.Blocks[0].LocationIndex.Should().Be(12);
+            game.Blocks[0].Number.Should().Be(4);
+
+            game.Blocks[1].LocationIndex.Should().Be(13);
+            game.Blocks[1].Number.Should().Be(2);
+        }
     }
 }

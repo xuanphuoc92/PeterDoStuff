@@ -38,6 +38,15 @@ namespace PeterDoStuff._2048
             foreach (var location in startBlockLocations)
                 Blocks.Add(new Block(location, this));
         }
+
+        public Game Down()
+        {
+            // Ordered blocks from bottom to top:
+            var ordered = Blocks.OrderByDescending(b => b.Y).ToList();
+            // Tell the blocks to move down:
+            ordered.ForEach(b => b.Down());
+            return this;
+        }
     }
 
     public class Block
@@ -61,6 +70,31 @@ namespace PeterDoStuff._2048
         public int Y
         {
             get => LocationIndex / Game.Height;
+        }
+
+        internal Block Down()
+        {
+            Block? destBlock = Game.Blocks
+                .Where(b => b.X == this.X && b.Y > this.Y) // Same Column, any other block
+                .MaxBy(b => b.Y); // First that it can hit
+            int destX = X;
+            int destY = destBlock != null ? (destBlock.Y - 1) : (Game.Height - 1);
+            MoveAndMerge(destBlock, destX, destY);
+            return this;
+        }
+
+        private void MoveAndMerge(Block? destBlock, int destX, int destY)
+        {
+            if (destBlock != null && destBlock.Number == Number) // Merge
+            {
+                this.LocationIndex = destBlock.LocationIndex;
+                Game.Blocks.Remove(destBlock);
+                Number *= 2;
+            }
+            else // Not Merge
+            {
+                this.LocationIndex = Game.Width * destY + destX;
+            }
         }
     }
 }
