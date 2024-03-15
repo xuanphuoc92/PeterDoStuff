@@ -30,7 +30,10 @@
     }
     @foreach (var block in game.Blocks)
     {
-        var style = $"left: 0; top: 0; transition: transform .4s ease-in-out; transform: translate3d({block.X * blockWidth}px, {block.Y * blockHeight}px, 0); background-color: {BackgroundColor(block.Number)};";
+        var colors = GetColor(block.Number);
+        var backgroundColor = colors.Background;
+        var textColor = colors.Text;
+        var style = $"left: 0; top: 0; transition: transform .4s ease-in-out; transform: translate3d({block.X * blockWidth}px, {block.Y * blockHeight}px, 0); background-color: {backgroundColor}; color: {textColor}";
         Typo typo = 
               block.Number < 100 ? Typo.h4 
             : block.Number < 1000 ? Typo.h5 
@@ -44,6 +47,28 @@
         </MudPaper>
     }
 </div>
+
+@if (ShowSample)
+{
+    <div class="d-flex">
+        @foreach (var block in SampleBlocks)
+        {
+            var colors = GetColor(block.Number);
+            var backgroundColor = colors.Background;
+            var textColor = colors.Text;
+            var style = $"background-color: {backgroundColor}; color: {textColor}";
+            Typo typo =block.Number < 100 ? Typo.h4
+                : block.Number < 1000 ? Typo.h5
+                : Typo.h6;
+            <MudPaper Class="border-solid border-2 d-flex align-center justify-center"
+                      Width="@($"{blockWidth}px")"
+                      Height="@($"{blockHeight}px")"
+                      Style="@style">
+                <MudText Typo="@typo">@block.Number</MudText>
+            </MudPaper>
+        }
+    </div>
+}
 
 @code {
     private Game game = new Game();
@@ -67,21 +92,37 @@
         StateHasChanged();
     }
 
-    private string BackgroundColor(int number)
+    private bool ShowSample = false;
+    private List<_2048.Block> SampleBlocks => new List<_2048.Block>()
+    {
+        new _2048.Block(0, new Game(), 2),
+        new _2048.Block(0, new Game(), 4),
+        new _2048.Block(0, new Game(), 8),
+        new _2048.Block(0, new Game(), 16),
+        new _2048.Block(0, new Game(), 32),
+        new _2048.Block(0, new Game(), 64),
+        new _2048.Block(0, new Game(), 128),
+        new _2048.Block(0, new Game(), 256),
+        new _2048.Block(0, new Game(), 512),
+        new _2048.Block(0, new Game(), 1024),
+        new _2048.Block(0, new Game(), 2048),
+    };
+
+    private (string Background, string Text) GetColor(int number)
     {
         return number switch
         {
-            2 => Colors.LightBlue.Lighten1,
-            4 => Colors.LightBlue.Darken2,
-            8 => Colors.Blue.Darken2,
-            16 => Colors.Indigo.Darken2,
-            32 => Colors.Indigo.Darken4,
-            64 => Colors.DeepPurple.Darken4,
-            128 => Colors.Purple.Accent3,
-            256 => Colors.Pink.Accent3,
-            512 => Colors.Red.Accent4,
-            1024 => Colors.Orange.Darken4,
-            _ => Colors.Amber.Darken1
+            2 => (Colors.DeepPurple.Lighten5, Colors.Green.Darken4),
+            4 => (Colors.DeepPurple.Lighten4, Colors.LightGreen.Darken4),
+            8 => (Colors.DeepPurple.Lighten3, Colors.Green.Lighten5),
+            16 => (Colors.DeepPurple.Lighten2, Colors.Green.Lighten5),
+            32 => (Colors.DeepPurple.Lighten1, Colors.LightGreen.Lighten5),
+            64 => (Colors.DeepPurple.Darken1, Colors.Lime.Lighten5),
+            128 => (Colors.DeepPurple.Darken2, Colors.Yellow.Lighten5),
+            256 => (Colors.DeepPurple.Darken3, Colors.Amber.Lighten5),
+            512 => (Colors.DeepPurple.Darken4, Colors.Orange.Lighten5),
+            1024 => (Colors.Purple.Darken4, Colors.LightGreen.Accent1),
+            _ => (Colors.Pink.Darken4, Colors.Lime.Accent1)
         };
     }
 }
