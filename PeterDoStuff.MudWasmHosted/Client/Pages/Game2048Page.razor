@@ -27,13 +27,17 @@
     }
     @foreach (var block in game.Blocks)
     {
-        var style = $"left: {block.X * blockWidth}px; top: {block.Y * blockHeight}px;";
+        var style = $"left: {block.X * blockWidth}px; top: {block.Y * blockHeight}px; background-color: {BackgroundColor(block.Number)};";
+        Typo typo = 
+              block.Number < 100 ? Typo.h4 
+            : block.Number < 1000 ? Typo.h5 
+            : Typo.h6;
         <MudPaper 
             Class="border-solid border-2 absolute d-flex align-center justify-center" 
             Width="@($"{blockWidth}px")" 
             Height="@($"{blockHeight}px")" 
             Style="@style">
-            <MudText Typo="Typo.h4">@block.Number</MudText>
+            <MudText Typo="@typo">@block.Number</MudText>
         </MudPaper>
     }
 </div>
@@ -42,7 +46,7 @@
     private Game game = new Game();
 
     private int blockWidth = 80;
-    private int blockHeight = 80;
+    private int blockHeight = 80;    
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -58,5 +62,23 @@
         if (key == "ArrowRight") game.Right();
         if (key == "ArrowLeft") game.Left();
         StateHasChanged();
+    }
+
+    private string BackgroundColor(int number)
+    {
+        return number switch
+        {
+            2 => Colors.LightBlue.Lighten1,
+            4 => Colors.LightBlue.Darken2,
+            8 => Colors.Blue.Darken2,
+            16 => Colors.Indigo.Darken2,
+            32 => Colors.Indigo.Darken4,
+            64 => Colors.DeepPurple.Darken4,
+            128 => Colors.Purple.Accent3,
+            256 => Colors.Pink.Accent3,
+            512 => Colors.Red.Accent4,
+            1024 => Colors.Orange.Darken4,
+            _ => Colors.Amber.Darken1
+        };
     }
 }
