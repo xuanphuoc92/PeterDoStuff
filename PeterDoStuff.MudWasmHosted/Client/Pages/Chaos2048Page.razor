@@ -16,7 +16,7 @@
     .chaos-2048-block {
         left: 0;
         top: 0;
-        transition: transform .4s ease-in-out;
+        transition: transform .1s ease-in-out; scale .1s ease-in-out .2s;
     }
 </style>
 
@@ -34,12 +34,13 @@
             }
         </div>
     }
-    @foreach (var block in game.Blocks)
+    @foreach (var block in game.AllBlocks)
     {
         var colors = GetColor(block.Number);
         var backgroundColor = colors.Background;
         var textColor = colors.Text;
-        var style = $"transform: translate3d({block.X * blockWidth}px, {block.Y * blockHeight}px, 0); background-color: {backgroundColor}; color: {textColor}";
+        var scale = block.Deleted ? 0 : 1;
+        var style = $"transform: translate3d({block.X * blockWidth}px, {block.Y * blockHeight}px, 0); opacity: {scale}; background-color: {backgroundColor}; color: {textColor}";
         Typo typo = 
               block.Number < 100 ? Typo.h4 
             : block.Number < 1000 ? Typo.h5 
