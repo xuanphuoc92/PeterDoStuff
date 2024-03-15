@@ -19,11 +19,11 @@ namespace PeterDoStuff._2048
 
         public Game()
         {
-            var allBlocks = Enumerable.Range(0, Width * Height);
+            var allLocs = Enumerable.Range(0, Width * Height);
             var random = new Random();
-            allBlocks.OrderBy(b => random.Next());
-            var startBlockLocations = allBlocks
-                .OrderBy(b => random.Next()) // Shuffle
+            allLocs.OrderBy(loc => random.Next());
+            var startBlockLocations = allLocs
+                .OrderBy(loc => random.Next()) // Shuffle
                 .Take(START_BLOCKS); // Take the first 2
 
             SetupStartBlocks(startBlockLocations);
@@ -41,12 +41,26 @@ namespace PeterDoStuff._2048
                 Blocks.Add(new Block(location, this));
         }
 
+        private void PopNewBlock()
+        {
+            var occupied = Blocks.Select(b => b.LocationIndex);
+
+            var random = new Random();
+            var randomEmpty = Enumerable.Range(0, Width * Height)
+                .Where(loc => occupied.Contains(loc) == false)
+                .OrderBy(loc => random.Next())
+                .First();
+
+            Blocks.Add(new Block(randomEmpty, this));
+        }
+
         public Game Down()
         {
             Blocks
                 .OrderByDescending(b => b.Y) // Ordered blocks from bottom to top
                 .ToList()
                 .ForEach(b => b.Down()); // Tell the blocks to move down
+            PopNewBlock();
             return this;
         }
     }
