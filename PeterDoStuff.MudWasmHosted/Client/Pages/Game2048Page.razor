@@ -11,6 +11,9 @@
     This page demonstrates the game 2048.
 </MudText>
 
+<style>
+</style>
+
 <div class="relative">
     @for (int y = 0; y < game.Height; y++)
     {
@@ -27,7 +30,7 @@
     }
     @foreach (var block in game.Blocks)
     {
-        var style = $"left: {block.X * blockWidth}px; top: {block.Y * blockHeight}px; background-color: {BackgroundColor(block.Number)};";
+        var style = $"left: 0; top: 0; transition: transform .4s ease-in-out; transform: translate3d({block.X * blockWidth}px, {block.Y * blockHeight}px, 0); background-color: {BackgroundColor(block.Number)};";
         Typo typo = 
               block.Number < 100 ? Typo.h4 
             : block.Number < 1000 ? Typo.h5 
