@@ -57,5 +57,52 @@ namespace PeterDoStuff.Test
             game.Score.Should().Be(4);
             game.Blocks.Should().HaveCount(3);
         }
+
+        [TestMethod]
+        public void _03_Up()
+        {
+            // [ ][2][ ][ ]
+            // [2][2][ ][ ]
+            // [ ][ ][ ][ ]
+            // [ ][ ][ ][ ]
+            var game = new Game(1, 4, 5);
+            game.Score.Should().Be(0);
+            game.Blocks.Should().HaveCount(3);
+
+            game.Up();
+
+            // [2][4][ ][ ]
+            // [ ][ ][ ][ ]
+            // [ ][ ][ ][ ]
+            // [ ][ ][ ][ ]
+            game.Blocks[0].LocationIndex.Should().Be(0);
+            game.Blocks[0].Number.Should().Be(2);
+
+            game.Blocks[1].LocationIndex.Should().Be(1);
+            game.Blocks[1].Number.Should().Be(4);
+
+            game.Score.Should().Be(4);
+            game.Blocks.Should().HaveCount(3);
+        }
+
+        //[TestMethod]
+        //public void _03_NothinChange()
+        //{
+        //    // [2][2][ ][ ]
+        //    // [2][ ][ ][ ]
+        //    // [ ][ ][ ][ ]
+        //    // [ ][ ][ ][ ]
+        //    var game = new Game(0, 1, 4);
+        //    game.Score.Should().Be(0);
+        //    game.Blocks.Should().HaveCount(3);
+
+        //    game.Up(); // Nothing should change
+
+        //    game.Blocks[0].LocationIndex.Should().Be(0);
+        //    game.Blocks[1].LocationIndex.Should().Be(0);
+        //    game.Blocks[2].LocationIndex.Should().Be(0);
+        //    game.Score.Should().Be(0);
+        //    game.Blocks.Should().HaveCount(3);
+        //}
     }
 }

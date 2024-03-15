@@ -63,6 +63,16 @@ namespace PeterDoStuff._2048
             PopNewBlock();
             return this;
         }
+
+        public Game Up()
+        {
+            Blocks
+                .OrderBy(b => b.Y) // Ordered blocks from top to bottom
+                .ToList()
+                .ForEach(b => b.Up()); // Tell the blocks to move down
+            PopNewBlock();
+            return this;
+        }
     }
 
     public class Block
@@ -88,15 +98,24 @@ namespace PeterDoStuff._2048
             get => LocationIndex / Game.Height;
         }
 
-        internal Block Down()
+        internal void Down()
         {
             Block? destBlock = Game.Blocks
-                .Where(b => b.X == this.X && b.Y > this.Y) // Same Column, any other block
-                .MaxBy(b => b.Y); // First that it can hit
+                .Where(b => b.X == this.X && b.Y > this.Y) // Same Column, any other block below it
+                .MinBy(b => b.Y); // First that it can hit
             int destX = X;
             int destY = destBlock != null ? (destBlock.Y - 1) : (Game.Height - 1);
             MoveAndMerge(destBlock, destX, destY);
-            return this;
+        }
+
+        internal void Up()
+        {
+            Block? destBlock = Game.Blocks
+                .Where(b => b.X == this.X && b.Y < this.Y) // Same Column, any other block above it
+                .MaxBy(b => b.Y); // First that it can hit
+            int destX = X;
+            int destY = destBlock != null ? (destBlock.Y + 1) : 0;
+            MoveAndMerge(destBlock, destX, destY);
         }
 
         private void MoveAndMerge(Block? destBlock, int destX, int destY)
