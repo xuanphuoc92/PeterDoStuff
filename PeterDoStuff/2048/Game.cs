@@ -43,6 +43,9 @@ namespace PeterDoStuff._2048
 
         private void PopNewBlock()
         {
+            if (AnyMovement == false)
+                return;
+
             var occupied = Blocks.Select(b => b.LocationIndex);
 
             var random = new Random();
@@ -52,10 +55,15 @@ namespace PeterDoStuff._2048
                 .First();
 
             Blocks.Add(new Block(randomEmpty, this));
+            
+            AnyMovement = false;
         }
+
+        internal bool AnyMovement { get; set; } = false;
 
         public Game Down()
         {
+            AnyMovement = false;
             Blocks
                 .OrderByDescending(b => b.Y) // Ordered blocks from bottom to top
                 .ToList()
@@ -66,6 +74,7 @@ namespace PeterDoStuff._2048
 
         public Game Up()
         {
+            AnyMovement = false;
             Blocks
                 .OrderBy(b => b.Y) // Ordered blocks from top to bottom
                 .ToList()
@@ -126,10 +135,16 @@ namespace PeterDoStuff._2048
                 Game.Blocks.Remove(destBlock);
                 Number *= 2;
                 Game.Score += Number;
+                Game.AnyMovement = true;
             }
             else // Not Merge
             {
-                this.LocationIndex = Game.Width * destY + destX;
+                int newLocation = Game.Width * destY + destX;
+                if (LocationIndex != newLocation)
+                {
+                    LocationIndex = newLocation;
+                    Game.AnyMovement = true;
+                }
             }
         }
     }
