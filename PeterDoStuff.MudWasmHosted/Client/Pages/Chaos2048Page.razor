@@ -1,18 +1,19 @@
-﻿@page "/2048"
+﻿@page "/chaos2048"
 @using PeterDoStuff._2048
 @inject IJSRuntime JS
 
 <MudText Typo="Typo.h3" GutterBottom="true">
-    <MudIcon Size="Size.Large" Icon="@Icons.Material.Filled.Filter2" />
-    2048
+    <MudIcon Size="Size.Large" Icon="@Icons.Material.Outlined._2k" />
+    Chaos 2048
 </MudText>
 
 <MudText Class="mb-8">
-    This page demonstrates the game 2048.
+    <p>This page demonstrates the game 2048 (chaos).</p>
+    <p>Due to the buggy animation, I have decided to turn it into chaos version.</p>
 </MudText>
 
 <style>
-    .game-block {
+    .chaos-2048-block {
         left: 0;
         top: 0;
         transition: transform .4s ease-in-out;
@@ -44,7 +45,7 @@
             : block.Number < 1000 ? Typo.h5 
             : Typo.h6;
         <MudPaper 
-            Class="border-solid border-2 absolute d-flex align-center justify-center game-block" 
+            Class="border-solid border-2 absolute d-flex align-center justify-center chaos-2048-block"
             Width="@($"{blockWidth}px")" 
             Height="@($"{blockHeight}px")" 
             Style="@style">

@@ -19,7 +19,7 @@ namespace PeterDoStuff.MudWasmHosted.Client
 
         public static readonly List<PlaygroundItem> Items = new List<PlaygroundItem>()
         {
-            new("2048", Icons.Material.Filled.Filter2, "2048", "This page demonstrates the game 2048."),
+            new("chaos2048", Icons.Material.Outlined._2k, "Chaos 2048", "This page demonstrates the game 2048 (chaos)."),
             new("lingo", Icons.Material.Filled.FontDownload, "Lingo (not Wordle)", "This page demonstrates the game Lingo (not Wordle)."),
             new("workflow", Icons.Material.Filled.AccountTree, "Workflow", "This page demonstrates the workflow presentation in waterfall model."),
             new("animationGallery", Icons.Material.Filled.AutoFixHigh, "Animation Gallery", "This page demonstrates the web animations."),
