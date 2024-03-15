@@ -96,10 +96,9 @@ window.swipeDetection = (dotnetHelper, methodName) => {
     window.addEventListener('touchstart', (event) => {
         initialX = event.touches[0].clientX;
         initialY = event.touches[0].clientY;
-    });
+    }, { passive: false });
 
     window.addEventListener('touchmove', (event) => {
-        event.preventDefault(); // Prevent default behavior
         if (!initialX || !initialY) {
             return;
         }
@@ -125,6 +124,6 @@ window.swipeDetection = (dotnetHelper, methodName) => {
 
         initialX = null;
         initialY = null;
-    });
+    }, { passive: false });
 };
 
