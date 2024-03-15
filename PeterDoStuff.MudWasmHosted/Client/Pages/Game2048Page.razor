@@ -1,0 +1,62 @@
+﻿@page "/2048"
+@using PeterDoStuff._2048
+@inject IJSRuntime JS
+
+<MudText Typo="Typo.h3" GutterBottom="true">
+    <MudIcon Size="Size.Large" Icon="@Icons.Material.Filled.FontDownload" />
+    2048
+</MudText>
+
+<MudText Class="mb-8">
+    This page demonstrates the game 2048.
+</MudText>
+
+<div class="relative">
+    @for (int y = 0; y < game.Height; y++)
+    {
+        <div class="d-flex">
+            @for (int x = 0; x < game.Width; x++)
+            {
+                <MudPaper 
+                    Class="border-solid border-2" 
+                    Width="@($"{blockWidth}px")" 
+                    Height="@($"{blockHeight}px")">
+                </MudPaper>
+            }
+        </div>
+    }
+    @foreach (var block in game.Blocks)
+    {
+        var style = $"left: {block.X * blockWidth}px; top: {block.Y * blockHeight}px;";
+        <MudPaper 
+            Class="border-solid border-2 absolute d-flex align-center justify-center" 
+            Width="@($"{blockWidth}px")" 
+            Height="@($"{blockHeight}px")" 
+            Style="@style">
+            <MudText Typo="Typo.h4">@block.Number</MudText>
+        </MudPaper>
+    }
+</div>
+
+@code {
+    private Game game = new Game();
+
+    private int blockWidth = 80;
+    private int blockHeight = 80;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+            await JS.InvokeVoidAsync("keyDownFunction", DotNetObjectReference.Create(this), "KeyboardEventHandler");
+    }
+
+    [JSInvokable]
+    public void KeyboardEventHandler(string key)
+    {
+        if (key == "ArrowDown") game.Down();
+        if (key == "ArrowUp") game.Up();
+        if (key == "ArrowRight") game.Right();
+        if (key == "ArrowLeft") game.Left();
+        StateHasChanged();
+    }
+}
