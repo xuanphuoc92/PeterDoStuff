@@ -12,6 +12,11 @@
 </MudText>
 
 <style>
+    .game-block {
+        left: 0;
+        top: 0;
+        transition: transform .4s ease-in-out;
+    }
 </style>
 
 <div class="relative">
@@ -33,13 +38,13 @@
         var colors = GetColor(block.Number);
         var backgroundColor = colors.Background;
         var textColor = colors.Text;
-        var style = $"left: 0; top: 0; transition: transform .4s ease-in-out; transform: translate3d({block.X * blockWidth}px, {block.Y * blockHeight}px, 0); background-color: {backgroundColor}; color: {textColor}";
+        var style = $"transform: translate3d({block.X * blockWidth}px, {block.Y * blockHeight}px, 0); background-color: {backgroundColor}; color: {textColor}";
         Typo typo = 
               block.Number < 100 ? Typo.h4 
             : block.Number < 1000 ? Typo.h5 
             : Typo.h6;
         <MudPaper 
-            Class="border-solid border-2 absolute d-flex align-center justify-center" 
+            Class="border-solid border-2 absolute d-flex align-center justify-center game-block" 
             Width="@($"{blockWidth}px")" 
             Height="@($"{blockHeight}px")" 
             Style="@style">
