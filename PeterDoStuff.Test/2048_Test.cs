@@ -31,6 +31,11 @@ namespace PeterDoStuff.Test
             game.Blocks.Should().HaveCount(Game.START_BLOCKS);            
         }
 
+        private static void ContainBlock(Game game, int locationIndex, int number)
+        {
+            game.Blocks.Any(b => b.LocationIndex == locationIndex && b.Number == number).Should().BeTrue();
+        }
+
         [TestMethod]
         public void _02_Down()
         {
@@ -48,11 +53,8 @@ namespace PeterDoStuff.Test
             // [ ][ ][ ][ ]
             // [ ][ ][ ][ ]
             // [4][2][ ][ ]
-            game.Blocks[0].LocationIndex.Should().Be(12);
-            game.Blocks[0].Number.Should().Be(4);
-
-            game.Blocks[1].LocationIndex.Should().Be(13);
-            game.Blocks[1].Number.Should().Be(2);
+            ContainBlock(game, 12, 4);
+            ContainBlock(game, 13, 2);            
 
             game.Score.Should().Be(4);
             game.Blocks.Should().HaveCount(3);
@@ -61,25 +63,23 @@ namespace PeterDoStuff.Test
         [TestMethod]
         public void _03_Up()
         {
-            // [ ][2][ ][ ]
             // [2][2][ ][ ]
+            // [2][ ][ ][ ]
             // [ ][ ][ ][ ]
             // [ ][ ][ ][ ]
-            var game = new Game(1, 4, 5);
+            var game = new Game(0, 1, 4);
             game.Score.Should().Be(0);
             game.Blocks.Should().HaveCount(3);
 
             game.Up();
 
-            // [2][4][ ][ ]
+            // [4][2][ ][ ]
             // [ ][ ][ ][ ]
             // [ ][ ][ ][ ]
             // [ ][ ][ ][ ]
-            game.Blocks[0].LocationIndex.Should().Be(0);
-            game.Blocks[0].Number.Should().Be(2);
 
-            game.Blocks[1].LocationIndex.Should().Be(1);
-            game.Blocks[1].Number.Should().Be(4);
+            ContainBlock(game, 0, 4);
+            ContainBlock(game, 1, 2);
 
             game.Score.Should().Be(4);
             game.Blocks.Should().HaveCount(3);
@@ -98,8 +98,9 @@ namespace PeterDoStuff.Test
 
             game.Up(); // Nothing should change
 
-            game.Blocks[0].LocationIndex.Should().Be(0);
-            game.Blocks[1].LocationIndex.Should().Be(1);
+            ContainBlock(game, 0, 2);
+            ContainBlock(game, 1, 2);
+
             game.Score.Should().Be(0);
             game.Blocks.Should().HaveCount(2);
         }
