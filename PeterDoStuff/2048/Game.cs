@@ -43,10 +43,10 @@ namespace PeterDoStuff._2048
 
         public Game Down()
         {
-            // Ordered blocks from bottom to top:
-            var ordered = Blocks.OrderByDescending(b => b.Y).ToList();
-            // Tell the blocks to move down:
-            ordered.ForEach(b => b.Down());
+            Blocks
+                .OrderByDescending(b => b.Y) // Ordered blocks from bottom to top
+                .ToList()
+                .ForEach(b => b.Down()); // Tell the blocks to move down
             return this;
         }
     }
