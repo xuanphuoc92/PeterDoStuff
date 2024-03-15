@@ -99,6 +99,7 @@ window.swipeDetection = (dotnetHelper, methodName) => {
     });
 
     window.addEventListener('touchmove', (event) => {
+        event.preventDefault(); // Prevent default behavior
         if (!initialX || !initialY) {
             return;
         }
