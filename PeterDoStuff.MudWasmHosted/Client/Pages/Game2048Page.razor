@@ -84,7 +84,10 @@
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
+        {
             await JS.InvokeVoidAsync("keyDownFunction", DotNetObjectReference.Create(this), "KeyboardEventHandler");
+            await JS.InvokeVoidAsync("swipeDetection", DotNetObjectReference.Create(this), "SwipeEventHandler");
+        }
     }
 
     [JSInvokable]
@@ -94,6 +97,16 @@
         if (key == "ArrowUp") game.Up();
         if (key == "ArrowRight") game.Right();
         if (key == "ArrowLeft") game.Left();
+        StateHasChanged();
+    }
+
+    [JSInvokable]
+    public void SwipeEventHandler(string swipe)
+    {
+        if (swipe == "down") game.Down();
+        if (swipe == "up") game.Up();
+        if (swipe == "right") game.Right();
+        if (swipe == "left") game.Left();
         StateHasChanged();
     }
 

@@ -88,3 +88,42 @@ window.keyDownFunction = (dotnetHelper, methodName) => {
         dotnetHelper.invokeMethodAsync(methodName, event.key);
     });
 };
+
+window.swipeDetection = (dotnetHelper, methodName) => {
+    let initialX = null;
+    let initialY = null;
+
+    window.addEventListener('touchstart', (event) => {
+        initialX = event.touches[0].clientX;
+        initialY = event.touches[0].clientY;
+    });
+
+    window.addEventListener('touchmove', (event) => {
+        if (!initialX || !initialY) {
+            return;
+        }
+
+        const currentX = event.touches[0].clientX;
+        const currentY = event.touches[0].clientY;
+        const diffX = initialX - currentX;
+        const diffY = initialY - currentY;
+
+        if (Math.abs(diffX) > Math.abs(diffY)) {
+            if (diffX > 0) {
+                dotnetHelper.invokeMethodAsync(methodName, 'left');
+            } else {
+                dotnetHelper.invokeMethodAsync(methodName, 'right');
+            }
+        } else {
+            if (diffY > 0) {
+                dotnetHelper.invokeMethodAsync(methodName, 'up');
+            } else {
+                dotnetHelper.invokeMethodAsync(methodName, 'down');
+            }
+        }
+
+        initialX = null;
+        initialY = null;
+    });
+};
+
