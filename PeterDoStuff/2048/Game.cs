@@ -41,7 +41,14 @@ namespace PeterDoStuff._2048
                 Blocks.Add(new Block(location, this));
         }
 
-        private void PopNewBlock()
+        internal bool AnyMovement { get; set; } = false;
+
+        private void PreMovement()
+        {
+            AnyMovement = false;
+        }
+
+        private void PostMovement()
         {
             if (AnyMovement == false)
                 return;
@@ -59,49 +66,48 @@ namespace PeterDoStuff._2048
             AnyMovement = false;
         }
 
-        internal bool AnyMovement { get; set; } = false;
-
         public Game Down()
         {
-            AnyMovement = false;
+            PreMovement();
             Blocks
                 .OrderByDescending(b => b.Y) // Ordered blocks from bottom to top
                 .ToList()
                 .ForEach(b => b.Down()); // Tell the blocks to move down
-            PopNewBlock();
+            PostMovement();
             return this;
         }
 
+
         public Game Up()
         {
-            AnyMovement = false;
+            PreMovement();
             Blocks
                 .OrderBy(b => b.Y) // Ordered blocks from top to bottom
                 .ToList()
                 .ForEach(b => b.Up()); // Tell the blocks to move down
-            PopNewBlock();
+            PostMovement();
             return this;
         }
 
         public Game Right()
         {
-            AnyMovement = false;
+            PreMovement();
             Blocks
                 .OrderByDescending(b => b.X) // Ordered blocks from right to left
                 .ToList()
                 .ForEach(b => b.Right()); // Tell the blocks to move right
-            PopNewBlock();
+            PostMovement();
             return this;
         }
 
         public Game Left()
         {
-            AnyMovement = false;
+            PreMovement();
             Blocks
                 .OrderBy(b => b.X) // Ordered blocks from left to right
                 .ToList()
                 .ForEach(b => b.Left()); // Tell the blocks to move left
-            PopNewBlock();
+            PostMovement();
             return this;
         }
     }
