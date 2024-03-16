@@ -7,10 +7,17 @@
     Chaos 2048
 </MudText>
 
-<MudText Class="mb-8">
+<MudText Class="mb-4">
     <p>This page demonstrates the game 2048 (chaos).</p>
     <p>Due to the buggy animation, I have decided to turn it into chaos version.</p>
 </MudText>
+
+<div class="d-flex mb-4 align-center">
+    <MudButton Class="mr-4" Color="Color.Primary" Variant="Variant.Filled" OnClick="NewGame">New Game</MudButton>
+    <MudText Class="mr-8" Color="Color.Primary">Chaos</MudText>
+    <MudSwitch @bind-Value="@isNormal" UnCheckedColor="Color.Primary" Color="Color.Success" />
+    <MudText Color="Color.Success">Normal</MudText>
+</div>
 
 <style>
     .chaos-2048-block {
@@ -76,12 +83,11 @@
     </div>
 }
 
-<div class="d-flex  mt-4">
-    <MudButton Class="mr-2" Color="Color.Primary" Variant="Variant.Filled" OnClick="NewGame">New Game</MudButton>
-    <MudText Class="mr-2" Typo="Typo.h5">Score: @game.Score</MudText>
-</div>
+<MudText Class="mt-4" Typo="Typo.h5">Score: @game.Score</MudText>
 
 @code {
+    private bool isNormal;
+
     private Game game = new Game();
 
     private void NewGame()
