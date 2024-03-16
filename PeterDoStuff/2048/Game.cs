@@ -54,6 +54,12 @@ namespace PeterDoStuff._2048
                 AllBlocks.Add(new Block(location, this));
         }
 
+        public Game(params (int Loc, int Number)[] blocks)
+        {
+            foreach (var block in blocks)
+                AllBlocks.Add(new Block(block.Loc, this, block.Number));
+        }
+
         internal bool AnyMovement { get; set; } = false;
 
         private void PreMovement()
@@ -81,6 +87,8 @@ namespace PeterDoStuff._2048
             AllBlocks.Add(new Block(randomEmpty, this));
             
             AnyMovement = false;
+
+            Blocks.Where(b => b.Merged == true).ToList().ForEach(b => b.Merged = false);
         }
 
         public Game Down()
@@ -136,6 +144,7 @@ namespace PeterDoStuff._2048
         public int LocationIndex { get; private set; }
         public Game Game { get; private set; }
         public bool Deleted { get; private set; }
+        public bool Merged { get; set; }
 
         public Block(int locationIndex, Game game, int number = 2)
         {
@@ -199,7 +208,7 @@ namespace PeterDoStuff._2048
 
         private void MoveAndMerge(Block? destBlock, int destX, int destY)
         {
-            if (destBlock != null && destBlock.Number == Number) // Merge
+            if (destBlock != null && destBlock.Number == Number && destBlock.Merged == false) // Merge
             {
                 this.LocationIndex = destBlock.LocationIndex;
                 //Game.Blocks.Remove(destBlock);
@@ -207,6 +216,7 @@ namespace PeterDoStuff._2048
                 Number *= 2;
                 Game.Score += Number;
                 Game.AnyMovement = true;
+                Merged = true;
             }
             else // Not Merge
             {

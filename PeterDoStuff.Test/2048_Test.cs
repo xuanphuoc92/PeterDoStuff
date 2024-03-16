@@ -171,5 +171,30 @@ namespace PeterDoStuff.Test
 
             game.IsGameOver.Should().BeTrue();
         }
+
+        [TestMethod]
+        public void _08_ChainMerging()
+        {
+            // [4][2][2][ ]
+            // [ ][ ][ ][ ]
+            // [ ][ ][ ][ ]
+            // [ ][ ][ ][ ]
+            var game = new Game((0, 4), (1, 2), (2, 2));
+            game.Score.Should().Be(0);
+            game.Blocks.Should().HaveCount(3);
+
+            game.Right();
+
+            // [ ][ ][4][4]
+            // [ ][ ][ ][ ]
+            // [ ][ ][ ][ ]
+            // [ ][ ][ ][ ]
+
+            ContainBlock(game, 2, 4);
+            ContainBlock(game, 3, 4);
+
+            game.Score.Should().Be(4);
+            game.Blocks.Should().HaveCount(3);
+        }
     }
 }
