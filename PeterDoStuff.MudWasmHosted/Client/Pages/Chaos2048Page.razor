@@ -38,9 +38,17 @@
             transform: scale(1);
         }
     }
+
+    .gameOver {
+        left: 0; top: 0;
+        opacity: 0.85;
+        background-color: @Colors.Red.Default;
+        z-index: 2;
+    }
 </style>
 
 <div class="relative">
+    @* Grid *@
     @for (int y = 0; y < game.Height; y++)
     {
         <div class="d-flex">
@@ -55,6 +63,7 @@
         </div>
     }
     
+    @* Normal Mode *@
     @foreach (var block in game.AllBlocks)
     {
         var colors = GetNormalColors(block.Number);
@@ -80,6 +89,7 @@
         </MudPaper>
     }
     
+    @* Chaos Mode *@
     @foreach (var block in game.Blocks)
     {
         var colors = GetChaosColors(block.Number);
@@ -93,6 +103,17 @@
                   Height="@($"{blockHeight}px")"
                   Style="@style">
             <MudText Typo="@typo"><b>@block.Number</b></MudText>
+        </MudPaper>
+    }
+
+    @* Game Over *@
+    @if (game.IsGameOver)
+    {
+        <MudPaper 
+            Class="gameOver absolute d-flex align-center justify-center"
+            Width="@($"{blockWidth * game.Width}px")"
+            Height="@($"{blockHeight * game.Height}px")">
+            <MudText Typo="Typo.h3"><b>Game Over</b></MudText>
         </MudPaper>
     }
 </div>
