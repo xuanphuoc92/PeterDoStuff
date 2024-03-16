@@ -23,7 +23,22 @@
     .chaos-2048-block {
         left: 0;
         top: 0;
-        transition: transform .4s ease-in-out;
+        transition: transform .2s ease-in-out, opacity .2s ease-in-out .2s;
+    }
+
+    .normal-2048-block {        
+        transition: transform .2s ease-in-out, opacity .2s ease-in-out .2s;
+        transform: scale(0);
+        animation: .2s ease-in-out appear-animation;
+    }
+
+    @@keyFrames appear-animation {
+        from {
+            transform: scale(0);
+        }
+        to {
+            transform: scale(1);
+        }
     }
 </style>
 
@@ -41,21 +56,44 @@
             }
         </div>
     }
+    
+    @foreach (var block in game.AllBlocks)
+    {
+        var colors = GetNormalColors(block.Number);
+        var backgroundColor = colors.Background;
+        var textColor = colors.Text;
+
+        var startLoc = block.StartLocation;
+        var left = startLoc.X * blockWidth;
+        var top = startLoc.Y * blockHeight;
+
+        var dx = block.X * blockWidth - left;
+        var dy = block.Y * blockHeight - top;
+
+        var opacity = (block.Deleted || isNormal == false) ? 0 : 1;
+
+        var style = $"left: {left}px; top: {top}px; transform: translate3d({dx}px, {dy}px, 0); opacity: {opacity}; background-color: {backgroundColor}; color: {textColor}";
+        Typo typo = GetTypo(block.Number);
+        <MudPaper Class="border-solid border-2 absolute d-flex align-center justify-center normal-2048-block"
+                    Width="@($"{blockWidth}px")"
+                    Height="@($"{blockHeight}px")"
+                    Style="@style">
+            <MudText Typo="@typo">@block.Number</MudText>
+        </MudPaper>
+    }
+    
     @foreach (var block in game.Blocks)
     {
         var colors = GetChaosColors(block.Number);
         var backgroundColor = colors.Background;
         var textColor = colors.Text;
-        var style = $"transform: translate3d({block.X * blockWidth}px, {block.Y * blockHeight}px, 0); background-color: {backgroundColor}; color: {textColor}";
-        Typo typo = 
-              block.Number < 100 ? Typo.h4 
-            : block.Number < 1000 ? Typo.h5 
-            : Typo.h6;
-        <MudPaper 
-            Class="border-solid border-2 absolute d-flex align-center justify-center chaos-2048-block"
-            Width="@($"{blockWidth}px")" 
-            Height="@($"{blockHeight}px")" 
-            Style="@style">
+        var opacity = isNormal == true ? 0 : 1;
+        var style = $"transform: translate3d({block.X * blockWidth}px, {block.Y * blockHeight}px, 0); opacity: {opacity}; background-color: {backgroundColor}; color: {textColor}";
+        Typo typo = GetTypo(block.Number);
+        <MudPaper Class="border-solid border-2 absolute d-flex align-center justify-center chaos-2048-block"
+                  Width="@($"{blockWidth}px")"
+                  Height="@($"{blockHeight}px")"
+                  Style="@style">
             <MudText Typo="@typo">@block.Number</MudText>
         </MudPaper>
     }
@@ -70,9 +108,7 @@
             var backgroundColor = colors.Background;
             var textColor = colors.Text;
             var style = $"background-color: {backgroundColor}; color: {textColor}";
-            Typo typo = block.Number < 100 ? Typo.h4
-                : block.Number < 1000 ? Typo.h5
-                : Typo.h6;
+            Typo typo = GetTypo(block.Number);
             <MudPaper Class="border-solid border-2 d-flex align-center justify-center"
                       Width="@($"{blockWidth}px")"
                       Height="@($"{blockHeight}px")"
@@ -125,7 +161,7 @@
         if (swipe == "right") game.Right();
         if (swipe == "left") game.Left();
         StateHasChanged();
-    }
+    }    
 
     private bool ShowSample = false;
     private List<_2048.Block> SampleBlocks => new List<_2048.Block>()
@@ -142,6 +178,13 @@
         new _2048.Block(0, new Game(), 1024),
         new _2048.Block(0, new Game(), 2048),
     };
+
+    private Typo GetTypo(int number)
+    {
+        return number < 100 ? Typo.h4
+            : number < 1000 ? Typo.h5
+            : Typo.h6;
+    }
 
     private (string Background, string Text) GetChaosColors(int number)
     {
@@ -165,17 +208,17 @@
     {
         return number switch
         {
-            2 => (Colors.LightGreen.Lighten3, Colors.Pink.Lighten5),
-            4 => (Colors.LightGreen.Lighten2, Colors.Pink.Lighten5),
-            8 => (Colors.LightGreen.Lighten1, Colors.Pink.Lighten5),
-            16 => (Colors.LightGreen.Darken1, Colors.Purple.Lighten5),
-            32 => (Colors.LightGreen.Darken2, Colors.Purple.Lighten5),
-            64 => (Colors.LightGreen.Darken3, Colors.Purple.Lighten5),
-            128 => (Colors.LightGreen.Darken4, Colors.DeepPurple.Lighten5),
-            256 => (Colors.Lime.Darken4, Colors.DeepPurple.Lighten5),
-            512 => (Colors.Yellow.Darken4, Colors.DeepPurple.Lighten5),
-            1024 => (Colors.Amber.Darken4, Colors.Indigo.Lighten5),
-            _ => (Colors.Orange.Darken4, Colors.Indigo.Lighten5)
+            2 => (Colors.Green.Lighten3, Colors.Pink.Lighten5),
+            4 => (Colors.Green.Lighten2, Colors.Pink.Lighten5),
+            8 => (Colors.Green.Lighten1, Colors.Pink.Lighten5),
+            16 => (Colors.Green.Darken1, Colors.Purple.Lighten5),
+            32 => (Colors.Green.Darken2, Colors.Purple.Lighten5),
+            64 => (Colors.Green.Darken3, Colors.Purple.Lighten5),
+            128 => (Colors.Green.Darken4, Colors.DeepPurple.Lighten5),
+            256 => (Colors.LightGreen.Darken4, Colors.DeepPurple.Lighten5),
+            512 => (Colors.Lime.Darken4, Colors.DeepPurple.Lighten5),
+            1024 => (Colors.Yellow.Darken4, Colors.Indigo.Lighten5),
+            _ => (Colors.Amber.Darken4, Colors.Indigo.Lighten5)
         };
     }
 }
