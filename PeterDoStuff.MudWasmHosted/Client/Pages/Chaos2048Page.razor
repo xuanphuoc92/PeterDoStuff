@@ -70,13 +70,13 @@
 
         var opacity = (block.Deleted || isNormal == false) ? 0 : 1;
 
-        var style = $"left: {left}px; top: {top}px; transform: translate3d({dx}px, {dy}px, 0); opacity: {opacity}; z-index: {opacity}; background-color: {backgroundColor}; color: {textColor}";
+        var style = $"left: {left}px; top: {top}px; transform: translate3d({dx}px, {dy}px, 0); opacity: {opacity}; z-index: {opacity}; background-color: {backgroundColor}; color: {textColor}; border: white;";
         Typo typo = GetTypo(block.Number);
         <MudPaper Class="border-solid border-2 absolute d-flex align-center justify-center normal-2048-block"
                     Width="@($"{blockWidth}px")"
                     Height="@($"{blockHeight}px")"
                     Style="@style">
-            <MudText Typo="@typo">@block.Number</MudText>
+            <MudText Typo="@typo"><b>@block.Number</b></MudText>
         </MudPaper>
     }
     
@@ -86,13 +86,13 @@
         var backgroundColor = colors.Background;
         var textColor = colors.Text;
         var opacity = isNormal == true ? 0 : 1;
-        var style = $"transform: translate3d({block.X * blockWidth}px, {block.Y * blockHeight}px, 0); opacity: {opacity}; background-color: {backgroundColor}; color: {textColor}";
+        var style = $"transform: translate3d({block.X * blockWidth}px, {block.Y * blockHeight}px, 0); opacity: {opacity}; background-color: {backgroundColor}; color: {textColor}; border: white;";
         Typo typo = GetTypo(block.Number);
         <MudPaper Class="border-solid border-2 absolute d-flex align-center justify-center chaos-2048-block"
                   Width="@($"{blockWidth}px")"
                   Height="@($"{blockHeight}px")"
                   Style="@style">
-            <MudText Typo="@typo">@block.Number</MudText>
+            <MudText Typo="@typo"><b>@block.Number</b></MudText>
         </MudPaper>
     }
 </div>
@@ -105,13 +105,13 @@
             var colors = GetNormalColors(block.Number);
             var backgroundColor = colors.Background;
             var textColor = colors.Text;
-            var style = $"background-color: {backgroundColor}; color: {textColor}";
+            var style = $"background-color: {backgroundColor}; color: {textColor}; border: white;";
             Typo typo = GetTypo(block.Number);
             <MudPaper Class="border-solid border-2 d-flex align-center justify-center"
                       Width="@($"{blockWidth}px")"
                       Height="@($"{blockHeight}px")"
                       Style="@style">
-                <MudText Typo="@typo">@block.Number</MudText>
+                <MudText Typo="@typo"><b>@block.Number</b></MudText>
             </MudPaper>
         }
     </div>
@@ -160,7 +160,7 @@
         if (swipe == "right") game.Right();
         if (swipe == "left") game.Left();
         StateHasChanged();
-    }    
+    }
 
     private bool ShowSample = false;
     private List<_2048.Block> SampleBlocks => new List<_2048.Block>()
@@ -189,8 +189,8 @@
     {
         return number switch
         {
-            2 => (Colors.DeepPurple.Lighten3, Colors.Green.Lighten5),
-            4 => (Colors.DeepPurple.Lighten2, Colors.Green.Lighten5),
+            2 => (Colors.DeepPurple.Lighten3, Colors.Grey.Darken4),
+            4 => (Colors.DeepPurple.Lighten2, Colors.Grey.Darken3),
             8 => (Colors.DeepPurple.Lighten1, Colors.Green.Lighten5),
             16 => (Colors.DeepPurple.Darken1, Colors.LightGreen.Lighten5),
             32 => (Colors.DeepPurple.Darken2, Colors.LightGreen.Lighten5),
@@ -207,8 +207,8 @@
     {
         return number switch
         {
-            2 => (Colors.Green.Lighten3, Colors.Pink.Lighten5),
-            4 => (Colors.Green.Lighten2, Colors.Pink.Lighten5),
+            2 => (Colors.Green.Lighten3, Colors.Grey.Darken4),
+            4 => (Colors.Green.Lighten2, Colors.Grey.Darken3),
             8 => (Colors.Green.Lighten1, Colors.Pink.Lighten5),
             16 => (Colors.Green.Darken1, Colors.Purple.Lighten5),
             32 => (Colors.Green.Darken2, Colors.Purple.Lighten5),
