@@ -21,11 +21,15 @@ namespace PeterDoStuff.Test
             game.AllBlocks[0].LocationIndex.Should().Be(0);
             game.AllBlocks[0].X.Should().Be(0);
             game.AllBlocks[0].Y.Should().Be(0);
+            game.AllBlocks[0].StartLocation.X.Should().Be(0);
+            game.AllBlocks[0].StartLocation.Y.Should().Be(0);
 
             game.AllBlocks[1].Number.Should().Be(2);
             game.AllBlocks[1].LocationIndex.Should().Be(2);
             game.AllBlocks[1].X.Should().Be(2);
             game.AllBlocks[1].Y.Should().Be(0);
+            game.AllBlocks[1].StartLocation.X.Should().Be(2);
+            game.AllBlocks[1].StartLocation.Y.Should().Be(0);
 
             game = new Game();
             game.Blocks.Should().HaveCount(Game.START_BLOCKS);            
