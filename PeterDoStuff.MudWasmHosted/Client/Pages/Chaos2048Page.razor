@@ -36,7 +36,7 @@
     }
     @foreach (var block in game.Blocks)
     {
-        var colors = GetColor(block.Number);
+        var colors = GetChaosColors(block.Number);
         var backgroundColor = colors.Background;
         var textColor = colors.Text;
         var style = $"transform: translate3d({block.X * blockWidth}px, {block.Y * blockHeight}px, 0); background-color: {backgroundColor}; color: {textColor}";
@@ -59,11 +59,11 @@
     <div class="d-flex">
         @foreach (var block in SampleBlocks)
         {
-            var colors = GetColor(block.Number);
+            var colors = GetNormalColors(block.Number);
             var backgroundColor = colors.Background;
             var textColor = colors.Text;
             var style = $"background-color: {backgroundColor}; color: {textColor}";
-            Typo typo =block.Number < 100 ? Typo.h4
+            Typo typo = block.Number < 100 ? Typo.h4
                 : block.Number < 1000 ? Typo.h5
                 : Typo.h6;
             <MudPaper Class="border-solid border-2 d-flex align-center justify-center"
@@ -137,7 +137,7 @@
         new _2048.Block(0, new Game(), 2048),
     };
 
-    private (string Background, string Text) GetColor(int number)
+    private (string Background, string Text) GetChaosColors(int number)
     {
         return number switch
         {
@@ -152,6 +152,24 @@
             512 => (Colors.Pink.Darken4, Colors.Lime.Lighten5),
             1024 => (Colors.Red.Darken4, Colors.Yellow.Lighten5),
             _ => (Colors.DeepOrange.Darken4, Colors.Yellow.Lighten5)
+        };
+    }
+
+    private (string Background, string Text) GetNormalColors(int number)
+    {
+        return number switch
+        {
+            2 => (Colors.LightGreen.Lighten3, Colors.Pink.Lighten5),
+            4 => (Colors.LightGreen.Lighten2, Colors.Pink.Lighten5),
+            8 => (Colors.LightGreen.Lighten1, Colors.Pink.Lighten5),
+            16 => (Colors.LightGreen.Darken1, Colors.Purple.Lighten5),
+            32 => (Colors.LightGreen.Darken2, Colors.Purple.Lighten5),
+            64 => (Colors.LightGreen.Darken3, Colors.Purple.Lighten5),
+            128 => (Colors.LightGreen.Darken4, Colors.DeepPurple.Lighten5),
+            256 => (Colors.Lime.Darken4, Colors.DeepPurple.Lighten5),
+            512 => (Colors.Yellow.Darken4, Colors.DeepPurple.Lighten5),
+            1024 => (Colors.Amber.Darken4, Colors.Indigo.Lighten5),
+            _ => (Colors.Orange.Darken4, Colors.Indigo.Lighten5)
         };
     }
 }
