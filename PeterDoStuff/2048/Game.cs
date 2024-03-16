@@ -133,12 +133,14 @@ namespace PeterDoStuff._2048
     {
         public int Number { get; private set; }
         public int LocationIndex { get; private set; }
+        public int StartLocationIndex { get; private set; }
         public Game Game { get; private set; }
         public bool Deleted { get; private set; }
 
         public Block(int locationIndex, Game game, int number = 2)
         {
             Number = number;
+            StartLocationIndex = locationIndex;
             LocationIndex = locationIndex;
             Game = game;
         }
@@ -152,6 +154,8 @@ namespace PeterDoStuff._2048
         {
             get => LocationIndex / Game.Height;
         }
+
+        public (int X, int Y) Start => (StartLocationIndex % Game.Width, StartLocationIndex / Game.Height);
 
         internal void Down()
         {
