@@ -8,15 +8,13 @@
 </MudText>
 
 <MudText Class="mb-4">
-    <p>This page demonstrates the game 2048 (chaos).</p>
-    <p>Due to the buggy animation, I have decided to turn it into chaos version.</p>
+    <p>This page demonstrates the game 2048 (with chaos animation mode).</p>
 </MudText>
 
 <div class="d-flex mb-4 align-center">
-    <MudButton Class="mr-4" Color="Color.Primary" Variant="Variant.Filled" OnClick="NewGame">New Game</MudButton>
-    <MudText Class="mr-8" Color="Color.Primary">Chaos</MudText>
-    <MudSwitch @bind-Value="@isNormal" UnCheckedColor="Color.Primary" Color="Color.Success" />
-    <MudText Color="Color.Success">Normal</MudText>
+    <MudButton Class="mr-4" Color="Color.Warning" Variant="Variant.Outlined" OnClick="NewGame">New Game</MudButton>
+    <MudButton Class="mr-4" Color="Color.Primary" Variant="@(isNormal ? Variant.Outlined : Variant.Filled)" OnClick="ToggleMode">Chaos</MudButton>
+    <MudButton Color="Color.Success" Variant="@(isNormal ? Variant.Filled: Variant.Outlined)" OnClick="ToggleMode">Normal</MudButton>
 </div>
 
 <style>
@@ -72,7 +70,7 @@
 
         var opacity = (block.Deleted || isNormal == false) ? 0 : 1;
 
-        var style = $"left: {left}px; top: {top}px; transform: translate3d({dx}px, {dy}px, 0); opacity: {opacity}; background-color: {backgroundColor}; color: {textColor}";
+        var style = $"left: {left}px; top: {top}px; transform: translate3d({dx}px, {dy}px, 0); opacity: {opacity}; z-index: {opacity}; background-color: {backgroundColor}; color: {textColor}";
         Typo typo = GetTypo(block.Number);
         <MudPaper Class="border-solid border-2 absolute d-flex align-center justify-center normal-2048-block"
                     Width="@($"{blockWidth}px")"
@@ -123,6 +121,7 @@
 
 @code {
     private bool isNormal;
+    private void ToggleMode() => isNormal = !isNormal;
 
     private Game game = new Game();
 
