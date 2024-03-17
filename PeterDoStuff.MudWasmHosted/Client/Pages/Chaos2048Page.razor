@@ -40,12 +40,30 @@
     }
 
     .normal-empty {
-        opacity: 0;
+        transform: scale(0);
     }
 
-    .normal-appear {
-        opacity: 1;
-        transition: opacity .4s ease-in-out;
+    .normal-appear-0 {
+        animation: .4s ease-in-out animation-appear-0;
+    }
+    .normal-appear-1 {
+        animation: .4s ease-in-out animation-appear-1;
+    }
+    @@keyFrames animation-appear-0 {
+        from {
+            transform: scale(0);
+        }
+        to {
+            transform: scale(1);
+        }
+    }
+    @@keyFrames animation-appear-1 {
+        from {
+            transform: scale(0);
+        }
+        to {
+            transform: scale(1);
+        }
     }
 
     .normal-stay {
@@ -96,7 +114,7 @@
 
                 var cellClass = cell.State switch
                 {
-                    CellState.Appear => "normal-appear",
+                    CellState.Appear => $"normal-appear-{(appearCounter ? 0 : 1)}",
                     CellState.Stay => "normal-stay",
                     CellState.MoveIn => $"normal-movein-{cell.MoveInX}-{cell.MoveInY}",
                     _ => "normal-empty"
@@ -213,6 +231,8 @@
 <MudText Class="mt-4" Typo="Typo.h5">Score: @game.Score</MudText>
 
 @code {
+    private bool appearCounter = false;
+
     private bool isNormal;
     private void ToggleMode() => isNormal = !isNormal;
 
@@ -238,6 +258,7 @@
     [JSInvokable]
     public void KeyboardEventHandler(string key)
     {
+        appearCounter = !appearCounter;
         if (key == "ArrowDown") game.Down();
         if (key == "ArrowUp") game.Up();
         if (key == "ArrowRight") game.Right();
@@ -248,6 +269,7 @@
     [JSInvokable]
     public void SwipeEventHandler(string swipe)
     {
+        appearCounter = !appearCounter;
         if (swipe == "down") game.Down();
         if (swipe == "up") game.Up();
         if (swipe == "right") game.Right();
