@@ -27,6 +27,13 @@ namespace PeterDoStuff._2048
             cell.Block = block;
             cell.State = CellState.Appear;
         }
+
+        internal void TurnAllAppearToStay()
+        {
+            Cells.Values
+                .Where(c => c.State == CellState.Appear)
+                .ToList().ForEach(c => c.State = CellState.Stay);
+        }
     }
 
     public class Cell

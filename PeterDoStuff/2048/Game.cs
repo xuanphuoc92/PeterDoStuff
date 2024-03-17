@@ -86,6 +86,8 @@ namespace PeterDoStuff._2048
                 return;
             }
 
+            Grid.TurnAllAppearToStay();
+
             var occupied = Blocks.Select(b => b.LocationIndex);
 
             var random = new Random();

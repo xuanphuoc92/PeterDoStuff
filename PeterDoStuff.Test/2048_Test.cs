@@ -208,6 +208,13 @@ namespace PeterDoStuff.Test
             grid.Cells[(1, 0)].State.Should().Be(CellState.Appear);
             grid.Cells[(2, 0)].State.Should().Be(CellState.Appear);
             grid.Cells[(3, 0)].State.Should().Be(CellState.Empty);
+
+            game.Left();
+
+            grid.Cells[(0, 0)].State.Should().Be(CellState.Stay);
+            grid.Cells[(1, 0)].State.Should().Be(CellState.Stay);
+            grid.Cells[(2, 0)].State.Should().Be(CellState.Stay);
+            grid.Cells[(3, 0)].State.Should().Be(CellState.Empty);
         }
     }
 }
