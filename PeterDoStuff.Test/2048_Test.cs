@@ -233,6 +233,14 @@ namespace PeterDoStuff.Test
 
             grid.Cells.Values.Where(c => c.State == CellState.Appear).Should().HaveCount(1);
             grid.Cells.Values.Where(c => c.State == CellState.MoveIn).Should().HaveCount(2);
+
+            game.Up();
+
+            grid.Cells[(2, 0)].State.Should().Be(CellState.Stay);
+            grid.Cells[(3, 0)].State.Should().Be(CellState.Stay);
+
+            grid.Cells.Values.Where(c => c.State == CellState.Stay).Should().HaveCount(2);
+            grid.Cells.Values.Where(c => c.State == CellState.MoveIn).Should().HaveCount(1);
         }
     }
 }

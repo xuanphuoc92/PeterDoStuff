@@ -28,10 +28,10 @@ namespace PeterDoStuff._2048
             cell.State = CellState.Appear;
         }
 
-        internal void TurnAllAppearToStay()
+        internal void TurnAllAppearAndMoveInToStay()
         {
             Cells.Values
-                .Where(c => c.State == CellState.Appear)
+                .Where(c => c.State == CellState.Appear || c.State == CellState.MoveIn)
                 .ToList().ForEach(c => c.State = CellState.Stay);
         }
 

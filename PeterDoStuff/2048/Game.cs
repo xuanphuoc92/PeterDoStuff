@@ -75,12 +75,11 @@ namespace PeterDoStuff._2048
         private void PreMovement()
         {
             AnyMovement = false;
+            Grid.TurnAllAppearAndMoveInToStay();
         }
 
         private void PostMovement()
         {
-            Grid.TurnAllAppearToStay();
-
             if (AnyMovement == false)
             {
                 if (Blocks.Count() == Size)
