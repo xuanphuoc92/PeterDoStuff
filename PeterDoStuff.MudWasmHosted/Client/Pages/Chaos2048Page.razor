@@ -156,34 +156,7 @@ else
                 }
             </div>
         }
-    
-        @* Normal Mode *@
-        @* @foreach (var block in game.AllBlocks)
-        {
-            var colors = GetNormalColors(block.Number);
-            var backgroundColor = colors.Background;
-            var textColor = colors.Text;
 
-            var startLoc = block.StartLocation;
-            var left = startLoc.X * blockWidth;
-            var top = startLoc.Y * blockHeight;
-
-            var dx = block.X * blockWidth - left;
-            var dy = block.Y * blockHeight - top;
-
-            var opacity = (block.Deleted || isNormal == false) ? 0 : 1;
-
-            var style = $"left: {left}px; top: {top}px; transform: translate3d({dx}px, {dy}px, 0); opacity: {opacity}; z-index: {opacity}; background-color: {backgroundColor}; color: {textColor}; border: white;";
-            Typo typo = GetTypo(block.Number);
-            <MudPaper Class="border-solid border-2 absolute d-flex align-center justify-center normal-2048-block"
-                        Width="@($"{blockWidth}px")"
-                        Height="@($"{blockHeight}px")"
-                        Style="@style">
-                <MudText Typo="@typo"><b>@block.Number</b></MudText>
-            </MudPaper>
-        } *@
-    
-        @* Chaos Mode *@
         @foreach (var block in game.Blocks)
         {
             var colors = GetChaosColors(block.Number);
@@ -199,17 +172,6 @@ else
                 <MudText Typo="@typo"><b>@block.Number</b></MudText>
             </MudPaper>
         }
-
-        @* Game Over *@
-        @* @if (game.IsGameOver)
-        {
-            <MudPaper 
-                Class="gameOver absolute d-flex align-center justify-center"
-                Width="@($"{blockWidth * game.Width}px")"
-                Height="@($"{blockHeight * game.Height}px")">
-                <MudText Typo="Typo.h3"><b>Game Over</b></MudText>
-            </MudPaper>
-        } *@
     </div>
 }
 
