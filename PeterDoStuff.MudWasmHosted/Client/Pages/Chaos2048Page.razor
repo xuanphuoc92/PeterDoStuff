@@ -13,8 +13,8 @@
 
 <div class="d-flex mb-4 align-center">
     <MudButton Class="mr-4" Color="Color.Warning" Variant="Variant.Outlined" OnClick="NewGame">New Game</MudButton>
-    @* <MudButton Class="mr-4" Color="Color.Primary" Variant="@(isNormal ? Variant.Outlined : Variant.Filled)" OnClick="ToggleMode">Chaos</MudButton>
-    <MudButton Color="Color.Success" Variant="@(isNormal ? Variant.Filled: Variant.Outlined)" OnClick="ToggleMode">Normal</MudButton> *@
+    <MudButton Class="mr-4" Color="Color.Primary" Variant="@(isNormal ? Variant.Outlined : Variant.Filled)" OnClick="ToggleMode">Chaos</MudButton>
+    <MudButton Color="Color.Success" Variant="@(isNormal ? Variant.Filled: Variant.Outlined)" OnClick="ToggleMode">Normal</MudButton>
 </div>
 
 <style>
@@ -99,114 +99,119 @@
     }
 }
 
-<div>
-    @for (int y = 0; y < game.Height; y++)
-    {
-        <div class="d-flex">
-            @for (int x = 0; x < game.Width; x++)
-            {
-                var cell = game.Grid.Cells[(x, y)];
-                var colors = GetNormalColors(cell.Number);
-                var backgroundColor = colors.Background;
-                var textColor = colors.Text;
-                var typo = GetTypo(cell.Number);
-                var style = $"background-color: {backgroundColor}; color: {textColor};";
-
-                var cellClass = cell.State switch
+@if (isNormal)
+{
+    <div>
+        @for (int y = 0; y < game.Height; y++)
+        {
+            <div class="d-flex">
+                @for (int x = 0; x < game.Width; x++)
                 {
-                    CellState.Appear => $"normal-appear-{(appearCounter ? 0 : 1)}",
-                    CellState.Stay => "normal-stay",
-                    CellState.MoveIn => $"normal-movein-{cell.MoveInX}-{cell.MoveInY}",
-                    _ => "normal-empty"
-                };
+                    var cell = game.Grid.Cells[(x, y)];
+                    var colors = GetNormalColors(cell.Number);
+                    var backgroundColor = colors.Background;
+                    var textColor = colors.Text;
+                    var typo = GetTypo(cell.Number);
+                    var style = $"background-color: {backgroundColor}; color: {textColor};";
 
-                var normalClass = $"d-flex align-center justify-center {cellClass}";
+                    var cellClass = cell.State switch
+                    {
+                        CellState.Appear => $"normal-appear-{(appearCounter ? 0 : 1)}",
+                        CellState.Stay => "normal-stay",
+                        CellState.MoveIn => $"normal-movein-{cell.MoveInX}-{cell.MoveInY}",
+                        _ => "normal-empty"
+                    };
 
-                <MudPaper Class="border-solid border-2"
-                          Width="@($"{blockWidth}px")"
-                          Height="@($"{blockHeight}px")">
-                    <MudPaper Class="@normalClass"
+                    var normalClass = $"d-flex align-center justify-center {cellClass}";
+
+                    <MudPaper Class="border-solid border-2"
+                    Width="@($"{blockWidth}px")"
+                    Height="@($"{blockHeight}px")">
+                        <MudPaper Class="@normalClass"
                         Width="@($"{blockWidth}px")"
                         Height="@($"{blockHeight}px")"
                         Style="@style">
-                        <MudText Typo="@typo"><b>@(cell.Number > 0 ? cell.Number : "")</b></MudText>
+                            <MudText Typo="@typo"><b>@(cell.Number > 0 ? cell.Number : "")</b></MudText>
+                        </MudPaper>
                     </MudPaper>
-                </MudPaper>
-            }
-        </div>
-    }
-</div>
-
-<div class="relative">
-    @* Grid *@
-    @for (int y = 0; y < game.Height; y++)
-    {
-        <div class="d-flex">
-            @for (int x = 0; x < game.Width; x++)
-            {
-                <MudPaper 
-                    Class="border-solid border-2"
-                    Width="@($"{blockWidth}px")"
-                    Height="@($"{blockHeight}px")">
-                </MudPaper>
-            }
-        </div>
-    }
+                }
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="relative">
+        @* Grid *@
+        @for (int y = 0; y < game.Height; y++)
+        {
+            <div class="d-flex">
+                @for (int x = 0; x < game.Width; x++)
+                {
+                    <MudPaper 
+                        Class="border-solid border-2"
+                        Width="@($"{blockWidth}px")"
+                        Height="@($"{blockHeight}px")">
+                    </MudPaper>
+                }
+            </div>
+        }
     
-    @* Normal Mode *@
-    @* @foreach (var block in game.AllBlocks)
-    {
-        var colors = GetNormalColors(block.Number);
-        var backgroundColor = colors.Background;
-        var textColor = colors.Text;
+        @* Normal Mode *@
+        @* @foreach (var block in game.AllBlocks)
+        {
+            var colors = GetNormalColors(block.Number);
+            var backgroundColor = colors.Background;
+            var textColor = colors.Text;
 
-        var startLoc = block.StartLocation;
-        var left = startLoc.X * blockWidth;
-        var top = startLoc.Y * blockHeight;
+            var startLoc = block.StartLocation;
+            var left = startLoc.X * blockWidth;
+            var top = startLoc.Y * blockHeight;
 
-        var dx = block.X * blockWidth - left;
-        var dy = block.Y * blockHeight - top;
+            var dx = block.X * blockWidth - left;
+            var dy = block.Y * blockHeight - top;
 
-        var opacity = (block.Deleted || isNormal == false) ? 0 : 1;
+            var opacity = (block.Deleted || isNormal == false) ? 0 : 1;
 
-        var style = $"left: {left}px; top: {top}px; transform: translate3d({dx}px, {dy}px, 0); opacity: {opacity}; z-index: {opacity}; background-color: {backgroundColor}; color: {textColor}; border: white;";
-        Typo typo = GetTypo(block.Number);
-        <MudPaper Class="border-solid border-2 absolute d-flex align-center justify-center normal-2048-block"
-                    Width="@($"{blockWidth}px")"
-                    Height="@($"{blockHeight}px")"
-                    Style="@style">
-            <MudText Typo="@typo"><b>@block.Number</b></MudText>
-        </MudPaper>
-    } *@
+            var style = $"left: {left}px; top: {top}px; transform: translate3d({dx}px, {dy}px, 0); opacity: {opacity}; z-index: {opacity}; background-color: {backgroundColor}; color: {textColor}; border: white;";
+            Typo typo = GetTypo(block.Number);
+            <MudPaper Class="border-solid border-2 absolute d-flex align-center justify-center normal-2048-block"
+                        Width="@($"{blockWidth}px")"
+                        Height="@($"{blockHeight}px")"
+                        Style="@style">
+                <MudText Typo="@typo"><b>@block.Number</b></MudText>
+            </MudPaper>
+        } *@
     
-    @* Chaos Mode *@
-    @foreach (var block in game.Blocks)
-    {
-        var colors = GetChaosColors(block.Number);
-        var backgroundColor = colors.Background;
-        var textColor = colors.Text;
-        var opacity = isNormal == true ? 0 : 1;
-        var style = $"transform: translate3d({block.X * blockWidth}px, {block.Y * blockHeight}px, 0); opacity: {opacity}; background-color: {backgroundColor}; color: {textColor}; border: white;";
-        Typo typo = GetTypo(block.Number);
-        <MudPaper Class="border-solid border-2 absolute d-flex align-center justify-center chaos-2048-block"
-                  Width="@($"{blockWidth}px")"
-                  Height="@($"{blockHeight}px")"
-                  Style="@style">
-            <MudText Typo="@typo"><b>@block.Number</b></MudText>
-        </MudPaper>
-    }
+        @* Chaos Mode *@
+        @foreach (var block in game.Blocks)
+        {
+            var colors = GetChaosColors(block.Number);
+            var backgroundColor = colors.Background;
+            var textColor = colors.Text;
+            var opacity = isNormal == true ? 0 : 1;
+            var style = $"transform: translate3d({block.X * blockWidth}px, {block.Y * blockHeight}px, 0); opacity: {opacity}; background-color: {backgroundColor}; color: {textColor}; border: white;";
+            Typo typo = GetTypo(block.Number);
+            <MudPaper Class="border-solid border-2 absolute d-flex align-center justify-center chaos-2048-block"
+                      Width="@($"{blockWidth}px")"
+                      Height="@($"{blockHeight}px")"
+                      Style="@style">
+                <MudText Typo="@typo"><b>@block.Number</b></MudText>
+            </MudPaper>
+        }
 
-    @* Game Over *@
-    @if (game.IsGameOver)
-    {
-        <MudPaper 
-            Class="gameOver absolute d-flex align-center justify-center"
-            Width="@($"{blockWidth * game.Width}px")"
-            Height="@($"{blockHeight * game.Height}px")">
-            <MudText Typo="Typo.h3"><b>Game Over</b></MudText>
-        </MudPaper>
-    }
-</div>
+        @* Game Over *@
+        @* @if (game.IsGameOver)
+        {
+            <MudPaper 
+                Class="gameOver absolute d-flex align-center justify-center"
+                Width="@($"{blockWidth * game.Width}px")"
+                Height="@($"{blockHeight * game.Height}px")">
+                <MudText Typo="Typo.h3"><b>Game Over</b></MudText>
+            </MudPaper>
+        } *@
+    </div>
+}
 
 @if (ShowSample)
 {
