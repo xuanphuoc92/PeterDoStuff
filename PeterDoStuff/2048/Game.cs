@@ -8,8 +8,7 @@ namespace PeterDoStuff._2048
 {
     public class Game
     {
-        public IEnumerable<Block> Blocks => AllBlocks.Where(b => b.Deleted == false);
-        public List<Block> AllBlocks { get; private set; } = new List<Block>();
+        public List<Block> Blocks { get; private set; } = new List<Block>();
 
         public int Width { get; private set; } = 4;
         public int Height { get; private set; } = 4;
@@ -42,22 +41,22 @@ namespace PeterDoStuff._2048
         public static Game GameOverTest()
         {
             var game = new Game();
-            game.AllBlocks.Clear();
+            game.Blocks.Clear();
             for (int i = 0; i < game.Size; i++)
-                game.AllBlocks.Add(new Block(i, game, i));
+                game.Blocks.Add(new Block(i, game, i));
             return game;
         }
 
         private void SetupStartBlocks(IEnumerable<int> startBlockLocations)
         {            
             foreach (var location in startBlockLocations)
-                AllBlocks.Add(new Block(location, this));
+                Blocks.Add(new Block(location, this));
         }
 
         public Game(params (int Loc, int Number)[] blocks)
         {
             foreach (var block in blocks)
-                AllBlocks.Add(new Block(block.Loc, this, block.Number));
+                Blocks.Add(new Block(block.Loc, this, block.Number));
         }
 
         internal bool AnyMovement { get; set; } = false;
@@ -84,7 +83,7 @@ namespace PeterDoStuff._2048
                 .OrderBy(loc => random.Next())
                 .First();
 
-            AllBlocks.Add(new Block(randomEmpty, this));
+            Blocks.Add(new Block(randomEmpty, this));
             
             AnyMovement = false;
 
@@ -140,16 +139,13 @@ namespace PeterDoStuff._2048
     public class Block
     {
         public int Number { get; private set; }
-        public int StartLocationIndex { get; private set; }
         public int LocationIndex { get; private set; }
         public Game Game { get; private set; }
-        public bool Deleted { get; private set; }
         public bool Merged { get; set; }
 
         public Block(int locationIndex, Game game, int number = 2)
         {
             Number = number;
-            StartLocationIndex = locationIndex;
             LocationIndex = locationIndex;
             Game = game;
         }
@@ -163,8 +159,6 @@ namespace PeterDoStuff._2048
         {
             get => LocationIndex / Game.Height;
         }
-
-        public (int X, int Y) StartLocation => (StartLocationIndex % Game.Width, StartLocationIndex / Game.Height);
 
         internal void Down()
         {
@@ -211,8 +205,7 @@ namespace PeterDoStuff._2048
             if (destBlock != null && destBlock.Number == Number && destBlock.Merged == false) // Merge
             {
                 this.LocationIndex = destBlock.LocationIndex;
-                //Game.Blocks.Remove(destBlock);
-                destBlock.Deleted = true;
+                Game.Blocks.Remove(destBlock);
                 Number *= 2;
                 Game.Score += Number;
                 Game.AnyMovement = true;

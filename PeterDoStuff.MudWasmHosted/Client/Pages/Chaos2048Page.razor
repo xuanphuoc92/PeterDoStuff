@@ -13,8 +13,8 @@
 
 <div class="d-flex mb-4 align-center">
     <MudButton Class="mr-4" Color="Color.Warning" Variant="Variant.Outlined" OnClick="NewGame">New Game</MudButton>
-    <MudButton Class="mr-4" Color="Color.Primary" Variant="@(isNormal ? Variant.Outlined : Variant.Filled)" OnClick="ToggleMode">Chaos</MudButton>
-    <MudButton Color="Color.Success" Variant="@(isNormal ? Variant.Filled: Variant.Outlined)" OnClick="ToggleMode">Normal</MudButton>
+    @* <MudButton Class="mr-4" Color="Color.Primary" Variant="@(isNormal ? Variant.Outlined : Variant.Filled)" OnClick="ToggleMode">Chaos</MudButton>
+    <MudButton Color="Color.Success" Variant="@(isNormal ? Variant.Filled: Variant.Outlined)" OnClick="ToggleMode">Normal</MudButton> *@
 </div>
 
 <style>
@@ -64,7 +64,7 @@
     }
     
     @* Normal Mode *@
-    @foreach (var block in game.AllBlocks)
+    @* @foreach (var block in game.AllBlocks)
     {
         var colors = GetNormalColors(block.Number);
         var backgroundColor = colors.Background;
@@ -87,7 +87,7 @@
                     Style="@style">
             <MudText Typo="@typo"><b>@block.Number</b></MudText>
         </MudPaper>
-    }
+    } *@
     
     @* Chaos Mode *@
     @foreach (var block in game.Blocks)
