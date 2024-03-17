@@ -192,5 +192,22 @@ namespace PeterDoStuff.Test
             game.Score.Should().Be(4);
             game.Blocks.Should().HaveCount(3);
         }
+
+        [TestMethod]
+        public void _09_Grid()
+        {
+            // [4][2][2][ ]
+            // [ ][ ][ ][ ]
+            // [ ][ ][ ][ ]
+            // [ ][ ][ ][ ]
+            var game = new Game((0, 4), (1, 2), (2, 2));
+            Grid grid = game.Grid;
+
+            grid.Cells.Should().HaveCount(16);
+            grid.Cells[(0, 0)].State.Should().Be(CellState.Appear);
+            grid.Cells[(1, 0)].State.Should().Be(CellState.Appear);
+            grid.Cells[(2, 0)].State.Should().Be(CellState.Appear);
+            grid.Cells[(3, 0)].State.Should().Be(CellState.Empty);
+        }
     }
 }

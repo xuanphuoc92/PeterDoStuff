@@ -8,6 +8,9 @@ namespace PeterDoStuff._2048
 {
     public class Game
     {
+        private Grid? _grid;
+        public Grid Grid => _grid ??= new Grid(this);
+
         public List<Block> Blocks { get; private set; } = new List<Block>();
 
         public int Width { get; private set; } = 4;
@@ -48,15 +51,23 @@ namespace PeterDoStuff._2048
         }
 
         private void SetupStartBlocks(IEnumerable<int> startBlockLocations)
-        {            
+        {
             foreach (var location in startBlockLocations)
-                Blocks.Add(new Block(location, this));
+            {
+                Block block = new Block(location, this);
+                Blocks.Add(block);
+                Grid.BlockAppear(block);
+            }
         }
 
         public Game(params (int Loc, int Number)[] blocks)
         {
-            foreach (var block in blocks)
-                Blocks.Add(new Block(block.Loc, this, block.Number));
+            foreach (var blockInfo in blocks)
+            {
+                Block block = new Block(blockInfo.Loc, this, blockInfo.Number);
+                Blocks.Add(block);
+                Grid.BlockAppear(block);
+            }
         }
 
         internal bool AnyMovement { get; set; } = false;
