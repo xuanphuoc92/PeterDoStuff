@@ -209,12 +209,30 @@ namespace PeterDoStuff.Test
             grid.Cells[(2, 0)].State.Should().Be(CellState.Appear);
             grid.Cells[(3, 0)].State.Should().Be(CellState.Empty);
 
-            game.Left();
+            game.Up();
 
             grid.Cells[(0, 0)].State.Should().Be(CellState.Stay);
             grid.Cells[(1, 0)].State.Should().Be(CellState.Stay);
             grid.Cells[(2, 0)].State.Should().Be(CellState.Stay);
             grid.Cells[(3, 0)].State.Should().Be(CellState.Empty);
+
+            game.Right();
+
+            // [ ][ ][4][4]
+            // [ ][ ][ ][ ]
+            // [ ][ ][ ][ ]
+            // [ ][ ][ ][ ]
+
+            grid.Cells[(2, 0)].State.Should().Be(CellState.MoveIn);
+            grid.Cells[(2, 0)].MoveInX.Should().Be(2);
+            grid.Cells[(2, 0)].MoveInY.Should().Be(0);
+
+            grid.Cells[(3, 0)].State.Should().Be(CellState.MoveIn);
+            grid.Cells[(3, 0)].MoveInX.Should().Be(2);
+            grid.Cells[(3, 0)].MoveInY.Should().Be(0);
+
+            grid.Cells.Values.Where(c => c.State == CellState.Appear).Should().HaveCount(1);
+            grid.Cells.Values.Where(c => c.State == CellState.MoveIn).Should().HaveCount(2);
         }
     }
 }

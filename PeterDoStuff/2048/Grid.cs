@@ -21,10 +21,10 @@ namespace PeterDoStuff._2048
             }
         }
 
-        internal void BlockAppear(Block block)
+        internal void BlockAppear(int x, int y, int number)
         {
-            Cell cell = Cells[(block.X, block.Y)];
-            cell.Block = block;
+            Cell cell = Cells[(x, y)];
+            cell.Number = number;
             cell.State = CellState.Appear;
         }
 
@@ -34,12 +34,27 @@ namespace PeterDoStuff._2048
                 .Where(c => c.State == CellState.Appear)
                 .ToList().ForEach(c => c.State = CellState.Stay);
         }
+
+        internal void BlockMove(int prevX, int prevY, int x, int y, int number)
+        {
+            Cell prevCell = Cells[(prevX, prevY)];
+            prevCell.Number = 0;
+            prevCell.State = CellState.Empty;
+            
+            Cell cell = Cells[(x, y)];
+            cell.Number = number;
+            cell.State = CellState.MoveIn;
+            cell.MoveInX = x - prevX;
+            cell.MoveInY = y - prevY;
+        }
     }
 
     public class Cell
     {
-        public Block? Block { get; internal set; }
+        public int Number { get; internal set; }
         public CellState State { get; internal set; } = CellState.Empty;
+        public int MoveInX { get; internal set; }
+        public int MoveInY { get; internal set; }
     }
 
     public enum CellState

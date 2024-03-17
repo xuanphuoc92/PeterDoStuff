@@ -56,7 +56,7 @@ namespace PeterDoStuff._2048
             {
                 Block block = new Block(location, this);
                 Blocks.Add(block);
-                Grid.BlockAppear(block);
+                Grid.BlockAppear(block.X, block.Y, block.Number);
             }
         }
 
@@ -66,7 +66,7 @@ namespace PeterDoStuff._2048
             {
                 Block block = new Block(blockInfo.Loc, this, blockInfo.Number);
                 Blocks.Add(block);
-                Grid.BlockAppear(block);
+                Grid.BlockAppear(block.X, block.Y, block.Number);
             }
         }
 
@@ -79,14 +79,14 @@ namespace PeterDoStuff._2048
 
         private void PostMovement()
         {
+            Grid.TurnAllAppearToStay();
+
             if (AnyMovement == false)
             {
                 if (Blocks.Count() == Size)
                     IsGameOver = true;
                 return;
             }
-
-            Grid.TurnAllAppearToStay();
 
             var occupied = Blocks.Select(b => b.LocationIndex);
 
@@ -96,7 +96,9 @@ namespace PeterDoStuff._2048
                 .OrderBy(loc => random.Next())
                 .First();
 
-            Blocks.Add(new Block(randomEmpty, this));
+            Block newRandomBlock = new Block(randomEmpty, this);
+            Blocks.Add(newRandomBlock);
+            Grid.BlockAppear(newRandomBlock.X, newRandomBlock.Y, newRandomBlock.Number);
             
             AnyMovement = false;
 
@@ -217,19 +219,25 @@ namespace PeterDoStuff._2048
         {
             if (destBlock != null && destBlock.Number == Number && destBlock.Merged == false) // Merge
             {
+                int prevX = X, prevY = Y;
+
                 this.LocationIndex = destBlock.LocationIndex;
                 Game.Blocks.Remove(destBlock);
                 Number *= 2;
                 Game.Score += Number;
                 Game.AnyMovement = true;
                 Merged = true;
+
+                Game.Grid.BlockMove(prevX, prevY, X, Y, Number);
             }
             else // Not Merge
             {
                 int newLocation = Game.Width * destY + destX;
                 if (LocationIndex != newLocation)
                 {
+                    int prevX = X, prevY = Y;
                     LocationIndex = newLocation;
+                    Game.Grid.BlockMove(prevX, prevY, X, Y, Number);
                     Game.AnyMovement = true;
                 }
             }
