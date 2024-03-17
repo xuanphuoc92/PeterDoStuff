@@ -39,6 +39,18 @@
         }
     }
 
+    .normal-empty {
+        opacity: 0;
+    }
+
+    .normal-appear {
+        opacity: 1;
+        transition: opacity .4s ease-in-out;
+    }
+
+    .normal-stay {
+    }
+
     .gameOver {
         left: 0; top: 0;
         opacity: 0.85;
@@ -46,6 +58,66 @@
         z-index: 2;
     }
 </style>
+
+@for (int x = -game.Width; x < game.Width; x++)
+{
+    for (int y = -game.Height; y < game.Height; y++)
+    {
+        var moveInClass = $".normal-movein-{x}-{y}";
+        var animation = $"animation-movein-{x}-{y}";
+        <style>
+            @moveInClass {
+                animation: .2s ease-in-out 1 @animation;
+            }
+            @@keyFrames @animation {
+                from {
+                    transform: translate3d(@(x*-blockWidth)px, @(y*-blockHeight)px, 0);
+                }
+                to {
+                    transform: translate3d(0,0,0);
+                }
+            }
+        </style>
+    }
+}
+
+<div>
+    @for (int y = 0; y < game.Height; y++)
+    {
+        <div class="d-flex">
+            @for (int x = 0; x < game.Width; x++)
+            {
+                var cell = game.Grid.Cells[(x, y)];
+                var colors = GetNormalColors(cell.Number);
+                var backgroundColor = colors.Background;
+                var textColor = colors.Text;
+                var typo = GetTypo(cell.Number);
+                var style = $"background-color: {backgroundColor}; color: {textColor};";
+
+                var cellClass = cell.State switch
+                {
+                    CellState.Appear => "normal-appear",
+                    CellState.Stay => "normal-stay",
+                    CellState.MoveIn => $"normal-movein-{cell.MoveInX}-{cell.MoveInY}",
+                    _ => "normal-empty"
+                };
+
+                var normalClass = $"d-flex align-center justify-center {cellClass}";
+
+                <MudPaper Class="border-solid border-2"
+                          Width="@($"{blockWidth}px")"
+                          Height="@($"{blockHeight}px")">
+                    <MudPaper Class="@normalClass"
+                        Width="@($"{blockWidth}px")"
+                        Height="@($"{blockHeight}px")"
+                        Style="@style">
+                        <MudText Typo="@typo"><b>@(cell.Number > 0 ? cell.Number : "")</b></MudText>
+                    </MudPaper>
+                </MudPaper>
+            }
+        </div>
+    }
+</div>
 
 <div class="relative">
     @* Grid *@
@@ -55,8 +127,8 @@
             @for (int x = 0; x < game.Width; x++)
             {
                 <MudPaper 
-                    Class="border-solid border-2" 
-                    Width="@($"{blockWidth}px")" 
+                    Class="border-solid border-2"
+                    Width="@($"{blockWidth}px")"
                     Height="@($"{blockHeight}px")">
                 </MudPaper>
             }
