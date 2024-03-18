@@ -1,0 +1,79 @@
+﻿@page "/snake"
+@using PeterDoStuff.Snake
+@inject IJSRuntime JS
+
+<MudText Typo="Typo.h3" GutterBottom="true">
+    <MudIcon Size="Size.Large" Icon="@Icons.Material.Filled.Earbuds" />
+    Snake
+</MudText>
+
+<MudText Class="mb-4">
+    <p>This page demonstrates the game Snake.</p>
+</MudText>
+
+<style>
+    .emptyCell,
+    .occupiedCell {
+        width: 5px;
+        height: 5px;
+    }
+
+    .emptyCell {
+        background-color: @Colors.Grey.Darken4;
+        transition: background-color .1s ease-in-out;
+    }
+    .occupiedCell {
+        background-color: @Colors.Lime.Default;
+        transition: background-color .1s ease-in-out;
+    }
+</style>
+
+@for (int y = 0; y < Game.Height; y++)
+{
+    <div class="d-flex">
+        @for (int x = 0; x < Game.Width; x++)
+        {
+            var cell = Game.Cells[(x, y)];
+            var cellClass = cell.State == CellState.Empty ? "emptyCell"  : "occupiedCell";
+            <div class="@cellClass"></div>
+        }
+    </div>    
+}
+
+@code {
+    private Game Game = new Game(40, 30);
+
+    private bool isStart = true;
+    private Timer Timer;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Timer = new Timer(Tick, null, 0, 100);
+    }
+
+    private void Tick(object? _ = null)
+    {
+        if (isStart == false) return;
+        Game.Step();
+        InvokeAsync(StateHasChanged);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("keyDownFunction", DotNetObjectReference.Create(this), "KeyboardEventHandler");
+        }
+    }
+
+    [JSInvokable]
+    public void KeyboardEventHandler(string key)
+    {
+        if (key == "ArrowDown") Game.Down();
+        if (key == "ArrowUp") Game.Up();
+        if (key == "ArrowRight") Game.Right();
+        if (key == "ArrowLeft") Game.Left();
+        StateHasChanged();
+    }
+}
