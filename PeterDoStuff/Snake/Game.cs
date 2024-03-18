@@ -17,7 +17,7 @@ namespace PeterDoStuff.Snake
 
         public Cell Bait { get; private set; }
 
-        public GameState State { get; private set; } = GameState.Playing;
+        public GameState State { get; internal set; } = GameState.Playing;
 
         public Game(int width, int height, int snakeStartLength = 2)
         {
@@ -83,6 +83,30 @@ namespace PeterDoStuff.Snake
         {
             Snake.Step();
         }
+
+        public void Up()
+        {
+            if (Snake.Direction != Direction.Down)
+                Snake.Direction = Direction.Up;
+        }
+
+        public void Down()
+        {
+            if (Snake.Direction != Direction.Up)
+                Snake.Direction = Direction.Down;
+        }
+
+        public void Left()
+        {
+            if (Snake.Direction != Direction.Right)
+                Snake.Direction = Direction.Left;
+        }
+
+        public void Right()
+        {
+            if (Snake.Direction != Direction.Left)
+                Snake.Direction = Direction.Right;
+        }
     }
 
     public enum GameState
@@ -94,8 +118,9 @@ namespace PeterDoStuff.Snake
     {
         public Game Game { get; private set; }
         public Queue<Cell> Cells { get; private set; } = new Queue<Cell>();
-        public Direction Direction { get; private set; } = Direction.Right;
-        public Cell Head { get; private set; }
+        public Direction Direction { get; internal set; } = Direction.Right;
+        public Cell Head => Cells.Last();
+        public Cell Tail => Cells.First();
 
         public Snake(Game game)
         {
@@ -112,29 +137,43 @@ namespace PeterDoStuff.Snake
         {
             cell.State = CellState.Snake;
             Cells.Enqueue(cell);
-            Head = cell;
         }
 
         public int Length => Cells.Count;
 
         internal void Step()
         {
+            var head = Head;
+            
             var nextX = Direction switch
             { 
-                Direction.Right => Head.X + 1,
-                Direction.Left => Head.X - 1,
-                _ => Head.X
+                Direction.Right => head.X + 1,
+                Direction.Left => head.X - 1,
+                _ => head.X
             };
 
             var nextY = Direction switch
             {
-                Direction.Down => Head.Y + 1,
-                Direction.Up => Head.Y - 1,
-                _ => Head.Y
+                Direction.Down => head.Y + 1,
+                Direction.Up => head.Y - 1,
+                _ => head.Y
             };
 
-            var nextCell = Game.Cells[(nextX, nextY)];
-            if (nextCell.State == CellState.Bait)
+            // Eat Wall
+            if (Game.Cells.ContainsKey((nextX, nextY)) == false)
+            {
+                Game.State = GameState.Over;
+                return;
+            }
+
+            Cell nextCell = Game.Cells[(nextX, nextY)];
+
+            if (nextCell.State == CellState.Snake && nextCell != Tail)
+            {
+                Game.State = GameState.Over;
+                return;
+            }
+            else if (nextCell.State == CellState.Bait)
             {
                 Add(nextCell);
                 Game.AddRandomBait();

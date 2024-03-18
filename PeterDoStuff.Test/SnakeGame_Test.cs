@@ -45,6 +45,8 @@ namespace PeterDoStuff.Test
             game.Cells[(1, 1)].State.Should().Be(CellState.Snake);
             game.Cells[(2, 1)].State.Should().Be(CellState.Snake);
             game.Snake.Length.Should().Be(2);
+
+            game.State.Should().Be(GameState.Playing);
         }
 
         [TestMethod]
@@ -67,6 +69,54 @@ namespace PeterDoStuff.Test
 
             game.Cells.Values.Where(c => c.State == CellState.Snake).Should().HaveCount(3);
             game.Cells.Values.Where(c => c.State == CellState.Bait).Should().HaveCount(1);
+
+            game.State.Should().Be(GameState.Playing);
+        }
+
+        [TestMethod]
+        public void _04_EatWall()
+        {
+            // [ ][ ][ ]
+            // [X][X][ ]
+            // [ ][ ][ ]
+            var game = new Game(3, 3);
+
+            game.Step();
+            game.Step();
+           
+            game.State.Should().Be(GameState.Over);
+        }
+
+        [TestMethod]
+        public void _05_EatSnake()
+        {
+            var game = new Game(11, 11, 5);
+            
+            game.Up();
+            game.Step();
+            game.Left();
+            game.Step();
+            game.Down();
+            game.Step();
+
+            game.State.Should().Be(GameState.Over);
+        }
+
+        [TestMethod]
+        public void _06_AlmostEatTail()
+        {
+            var game = new Game(11, 11, 4);
+            
+            game.SwitchBait(0, 0);
+            
+            game.Up();
+            game.Step();
+            game.Left();
+            game.Step();            
+            game.Down();
+            game.Step();
+
+            game.State.Should().Be(GameState.Playing);
         }
     }
 }
