@@ -108,10 +108,10 @@
                 @for (int x = 0; x < game.Width; x++)
                 {
                     var cell = game.Grid.Cells[(x, y)];
-                    var colors = GetNormalColors(cell.Number);
+                    var colors = GetNormalColors(cell.Number??2);
                     var backgroundColor = colors.Background;
                     var textColor = colors.Text;
-                    var typo = GetTypo(cell.Number);
+                    var typo = GetTypo(cell.Number??2);
                     var style = $"background-color: {backgroundColor}; color: {textColor};";
 
                     var cellClass = cell.State switch
@@ -131,7 +131,7 @@
                         Width="@($"{blockWidth}px")"
                         Height="@($"{blockHeight}px")"
                         Style="@style">
-                            <MudText Typo="@typo"><b>@(cell.Number > 0 ? cell.Number : "")</b></MudText>
+                            <MudText Typo="@typo"><b>@cell.Number</b></MudText>
                         </MudPaper>
                     </MudPaper>
                 }

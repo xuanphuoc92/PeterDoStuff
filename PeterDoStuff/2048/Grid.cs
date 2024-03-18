@@ -38,7 +38,6 @@ namespace PeterDoStuff._2048
         internal void BlockMove(int prevX, int prevY, int x, int y, int number)
         {
             Cell prevCell = Cells[(prevX, prevY)];
-            prevCell.Number = 0;
             prevCell.State = CellState.Empty;
             
             Cell cell = Cells[(x, y)];
@@ -51,7 +50,7 @@ namespace PeterDoStuff._2048
 
     public class Cell
     {
-        public int Number { get; internal set; }
+        public int? Number { get; internal set; }
         public CellState State { get; internal set; } = CellState.Empty;
         public int MoveInX { get; internal set; }
         public int MoveInY { get; internal set; }
