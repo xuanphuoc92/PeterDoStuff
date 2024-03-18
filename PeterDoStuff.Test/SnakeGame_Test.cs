@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using PeterDoStuff.Snake;
+using PeterDoStuff.Test.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -117,6 +118,32 @@ namespace PeterDoStuff.Test
             game.Step();
 
             game.State.Should().Be(GameState.Playing);
+
+            game.Right();
+            game.Step();
+
+            game.State.Should().Be(GameState.Playing);
+        }
+
+        [TestMethod]
+        public void _07_InvalidNewGame()
+        {
+            var action = () => new Game(3, 3, 3);
+            var ex = action.Should().Throw<Exception>().Subject.Single();
+            ex.Message.WriteToConsole();
+        }
+
+        [TestMethod]
+        public void _08_WinGame()
+        {
+            // [X][X][*]
+            var game = new Game(3, 1);
+
+            game.State.Should().Be(GameState.Playing);
+
+            game.Step();
+
+            game.State.Should().Be(GameState.Win);
         }
     }
 }
