@@ -94,11 +94,8 @@ namespace PeterDoStuff.Test
             var game = new Game(11, 11, 5);
             
             game.Up();
-            game.Step();
-            game.Left();
-            game.Step();
-            game.Down();
-            game.Step();
+            game.Left();            
+            game.Down();            
 
             game.State.Should().Be(GameState.Over);
         }
@@ -111,16 +108,12 @@ namespace PeterDoStuff.Test
             game.SwitchBait(0, 0);
             
             game.Up();
-            game.Step();
             game.Left();
-            game.Step();            
-            game.Down();
-            game.Step();
+            game.Down();            
 
             game.State.Should().Be(GameState.Playing);
 
             game.Right();
-            game.Step();
 
             game.State.Should().Be(GameState.Playing);
         }

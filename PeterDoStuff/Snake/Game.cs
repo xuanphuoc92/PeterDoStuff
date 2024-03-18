@@ -81,31 +81,44 @@ namespace PeterDoStuff.Snake
 
         public void Step()
         {
+            if (State != GameState.Playing) return;
             Snake.Step();
         }
 
         public void Up()
         {
             if (Snake.Direction != Direction.Down)
+            {
                 Snake.Direction = Direction.Up;
+                Step();
+            }
         }
 
         public void Down()
         {
             if (Snake.Direction != Direction.Up)
+            {
                 Snake.Direction = Direction.Down;
+                Step();
+            }
         }
 
         public void Left()
         {
             if (Snake.Direction != Direction.Right)
+            {
                 Snake.Direction = Direction.Left;
+                Step();
+            }
         }
 
         public void Right()
         {
             if (Snake.Direction != Direction.Left)
+            {
                 Snake.Direction = Direction.Right;
+                Step();
+            }
         }
     }
 
