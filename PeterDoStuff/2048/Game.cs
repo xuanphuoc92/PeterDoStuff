@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,6 +26,18 @@ namespace PeterDoStuff._2048
         public bool IsGameOver { get; private set; } = false;
 
         public Game()
+        {
+            Clear();
+            RandomSetup();
+        }
+
+        protected void Clear()
+        {
+            Blocks.Clear();
+            _grid = null;
+        }
+
+        protected void RandomSetup()
         {
             var allLocs = Enumerable.Range(0, Size);
             var random = new Random();

@@ -242,5 +242,14 @@ namespace PeterDoStuff.Test
             grid.Cells.Values.Where(c => c.State == CellState.Stay).Should().HaveCount(2);
             grid.Cells.Values.Where(c => c.State == CellState.MoveIn).Should().HaveCount(1);
         }
+
+        [TestMethod]
+        public void _10_VariantGame()
+        {
+            var game = new VariantGame(6, 6, 3, 2);
+            game.Width.Should().Be(6);
+            game.Height.Should().Be(6);
+            game.Blocks.Should().HaveCount(3);
+        }
     }
 }
