@@ -266,8 +266,8 @@ else
         game = variants[selectedVariantIndex].Game();
     }
 
-    private int blockWidth = 80;
-    private int blockHeight = 80;    
+    private int blockWidth => selectedVariantIndex == 0 ? 80 : 70;
+    private int blockHeight => selectedVariantIndex == 0 ? 80 : 70;    
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
