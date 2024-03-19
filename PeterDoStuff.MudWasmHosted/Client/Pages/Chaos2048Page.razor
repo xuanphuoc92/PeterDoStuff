@@ -12,10 +12,28 @@
 </MudText>
 
 <div class="d-flex mb-4 align-center">
-    <MudButton Class="mr-4" Color="Color.Warning" Variant="Variant.Outlined" OnClick="NewGame">New Game</MudButton>
-    <MudButton Class="mr-4" Color="Color.Primary" Variant="@(isNormal ? Variant.Outlined : Variant.Filled)" OnClick="ToggleMode">Chaos</MudButton>
-    <MudButton Color="Color.Success" Variant="@(isNormal ? Variant.Filled: Variant.Outlined)" OnClick="ToggleMode">Normal</MudButton>
+    <MudButton Class="mr-4" Color="Color.Warning" Variant="MudBlazor.Variant.Outlined" OnClick="NewGame">New Game</MudButton>
+    <MudButton Variant="MudBlazor.Variant.Outlined" OnClick="ShowVariants">Variants</MudButton>
 </div>
+
+<MudMessageBox @ref="variantBox" YesText="">
+    <TitleContent>
+        <MudText Typo="Typo.h5">Variants</MudText>
+    </TitleContent>
+    <MessageContent>
+        <MudList Clickable="true">
+            @for (int i = 0; i < variants.Count; i++)
+            {
+                var variant = variants[i];
+                var color = (selectedVariantIndex == i) ? Color.Primary : Color.Default;
+                <MudListItem 
+                    IconColor="color"
+                    OnClick="() => SelectVariant(variant)" 
+                    Icon="@Icons.Material.Filled.Brightness1">@variant.Name</MudListItem>
+            }
+        </MudList>
+    </MessageContent>
+</MudMessageBox>
 
 <style>
     .chaos-2048-block {
@@ -195,9 +213,47 @@ else
     </div>
 }
 
-<MudText Class="mt-4" Typo="Typo.h5">Score: @game.Score</MudText>
+<div class="d-flex mt-4 align-center">
+    <MudText Class="mr-4" Typo="Typo.h5">Score: @game.Score</MudText>
+    <MudButton Class="mr-4" Color="Color.Primary" Variant="@(isNormal ? MudBlazor.Variant.Outlined : MudBlazor.Variant.Filled)" OnClick="ToggleMode">Chaos</MudButton>
+    <MudButton Color="Color.Success" Variant="@(isNormal ? MudBlazor.Variant.Filled: MudBlazor.Variant.Outlined)" OnClick="ToggleMode">Normal</MudButton>
+</div>
+
 
 @code {
+    private MudMessageBox variantBox;
+
+    private void ShowVariants()
+    {
+        variantBox.Show();
+    }
+
+    private class Variant
+    {
+        public string Name;
+        public Func<Game> Game;
+    }
+
+    private List<Variant> variants = new List<Variant>()
+    {
+        new Variant() { Name = "4x4 - 1 spawn (Default)", Game = () => new Game() },
+        new Variant() { Name = "5x4 - 2 spawns", Game = () => new VariantGame(5, 4, 3, 2) },
+        new Variant() { Name = "5x5 - 3 spawns", Game = () => new VariantGame(5, 5, 3, 3) },
+    };
+
+    private int selectedVariantIndex = 0;
+
+    private void SelectVariant(Variant variant)
+    {
+        var newSelectedIndex = variants.IndexOf(variant);
+        if (selectedVariantIndex != newSelectedIndex)
+        {
+            selectedVariantIndex = newSelectedIndex;
+            NewGame();
+        }
+        variantBox.Close();
+    }
+
     private bool appearCounter = false;
 
     private bool isNormal;
@@ -207,7 +263,7 @@ else
 
     private void NewGame()
     {
-        game = new Game();
+        game = variants[selectedVariantIndex].Game();
     }
 
     private int blockWidth = 80;
