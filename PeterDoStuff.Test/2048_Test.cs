@@ -28,7 +28,7 @@ namespace PeterDoStuff.Test
             game.Blocks[1].Y.Should().Be(0);
 
             game = new Game();
-            game.Blocks.Should().HaveCount(Game.START_BLOCKS);            
+            game.Blocks.Should().HaveCount(game.StartBlocks);            
         }
 
         private static void ContainBlock(Game game, int locationIndex, int number)

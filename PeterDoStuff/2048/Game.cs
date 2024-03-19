@@ -13,12 +13,12 @@ namespace PeterDoStuff._2048
 
         public List<Block> Blocks { get; private set; } = new List<Block>();
 
-        public int Width { get; private set; } = 4;
-        public int Height { get; private set; } = 4;
+        public int Width { get; protected set; } = 4;
+        public int Height { get; protected set; } = 4;
 
         public int Size => Width * Height;
         
-        public const int START_BLOCKS = 2;
+        public int StartBlocks { get; protected set; } = 2;
 
         public int Score { get; internal set; } = 0;
 
@@ -31,7 +31,7 @@ namespace PeterDoStuff._2048
             allLocs.OrderBy(loc => random.Next());
             var startBlockLocations = allLocs
                 .OrderBy(loc => random.Next()) // Shuffle
-                .Take(START_BLOCKS); // Take the first 2
+                .Take(StartBlocks); // Take the first 2
 
             SetupStartBlocks(startBlockLocations);
         }
@@ -87,21 +87,31 @@ namespace PeterDoStuff._2048
                 return;
             }
 
-            var occupied = Blocks.Select(b => b.LocationIndex);
+            AddRandomBlocks();
 
-            var random = new Random();
-            var randomEmpty = Enumerable.Range(0, Size)
-                .Where(loc => occupied.Contains(loc) == false)
-                .OrderBy(loc => random.Next())
-                .First();
-
-            Block newRandomBlock = new Block(randomEmpty, this);
-            Blocks.Add(newRandomBlock);
-            Grid.BlockAppear(newRandomBlock.X, newRandomBlock.Y, newRandomBlock.Number);
-            
             AnyMovement = false;
 
             Blocks.Where(b => b.Merged == true).ToList().ForEach(b => b.Merged = false);
+        }
+
+        public int SpawnBlocks { get; protected set; } = 1;
+
+        private void AddRandomBlocks()
+        {
+            var occupied = Blocks.Select(b => b.LocationIndex);
+
+            var random = new Random();
+            var randomEmpties = Enumerable.Range(0, Size)
+                .Where(loc => occupied.Contains(loc) == false)
+                .OrderBy(loc => random.Next())
+                .Take(SpawnBlocks);
+
+            foreach (var randomEmpty in randomEmpties)
+            {
+                Block newRandomBlock = new Block(randomEmpty, this);
+                Blocks.Add(newRandomBlock);
+                Grid.BlockAppear(newRandomBlock.X, newRandomBlock.Y, newRandomBlock.Number);
+            }
         }
 
         public Game Down()
