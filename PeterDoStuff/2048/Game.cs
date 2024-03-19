@@ -194,7 +194,7 @@ namespace PeterDoStuff._2048
 
         public int Y
         {
-            get => LocationIndex / Game.Height;
+            get => LocationIndex / Game.Width;
         }
 
         internal void Down()
