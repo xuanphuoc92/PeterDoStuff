@@ -62,7 +62,7 @@
     private List<string> deviceIds = new();
     private int deviceIdIndex = 0;
 
-    private async Task OpenCamera()
+    public async Task OpenCamera()
     {
         State = CameraState.InProgress;
         StateHasChanged();
@@ -84,7 +84,7 @@
         cameraBlocked = !success;
     }
 
-    private async Task SwitchCamera()
+    public async Task SwitchCamera()
     {
         deviceIds = await JS.InvokeAsync<List<string>>("getVideoDeviceIds");
         deviceIdIndex++;
@@ -97,7 +97,7 @@
         await JS.InvokeVoidAsync("startCameraStream", VideoElementId, deviceId);
     }
 
-    private async Task CloseCamera()
+    public async Task CloseCamera()
     {
         State = CameraState.InProgress;
         StateHasChanged();

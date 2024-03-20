@@ -73,6 +73,11 @@
         await file.OpenReadStream(file.Size).CopyToAsync(inputFileStream);
         qrImageSrc = $"data:image/png;base64,{inputFileStream.ToArray().ToBase64String()}";
 
+        await DecodeQR();
+    }
+
+    private async Task DecodeQR()
+    {
         // Re-rendered, allow 200ms for the image to render before the decodeQRCode kick in
         StateHasChanged();
         await Task.Delay(200);
@@ -82,4 +87,36 @@
     }
 
     private CameraStreamer cameraStreamer;
+
+    private Timer Timer;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Timer = new Timer(Tick, null, 0, 1000);
+    }
+
+    private void Tick(object? _ = null)
+    {
+        InvokeAsync(TryScan);
+    }
+
+    private async Task TryScan()
+    {
+        if (cameraStreamer == null)
+            return;
+
+        if (cameraStreamer.State != CameraStreamer.CameraState.Open)
+            return;
+
+        qrImageSrc = await JS.InvokeAsync<string>("captureImage", videoElementId);
+        StateHasChanged();
+        await Task.Delay(200);
+        var result = await JS.InvokeAsync<string>("decodeQRCode", qrImageId);
+        if (result != null)
+        {
+            output = result;
+            await cameraStreamer.CloseCamera();
+        }
+    }
 }
