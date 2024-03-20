@@ -11,13 +11,34 @@
     QR Code
 </MudText>
 
+<MudText Typo="Typo.h4" GutterBottom="true">Generate QR</MudText>
 <MudTextField T="string" @bind-Value="input" Label="String Input"></MudTextField>
 
-<MudButton Class="my-4" Variant="Variant.Filled" Color="Color.Primary" OnClick="GetQR">Get QR from String Input</MudButton>
+<MudButton Class="my-4" Variant="Variant.Filled" Color="Color.Primary" OnClick="GetQR">Get QR of String Input</MudButton>
 
 <MudDivider Class="my-4"></MudDivider>
 
 <img src="@imgSrc" />
+
+<MudDivider Class="my-4"></MudDivider>
+
+<MudText Typo="Typo.h4" GutterBottom="true">Scan QR</MudText>
+
+@if (output != null)
+{
+    <MudGrid>
+        <MudItem xs="12" sm="2">
+            <MudText Color="Color.Primary">String Output</MudText>
+        </MudItem>
+        <MudItem xs="12" sm="10">
+            <MudText>@output</MudText>
+        </MudItem>
+    </MudGrid>
+}
+else
+{
+    <MudText Color="Color.Secondary">No output. Scan or select an image of QR code.</MudText>
+}
 
 <MudDivider Class="my-4"></MudDivider>
 
@@ -42,9 +63,6 @@
 </video>
 
 <MudDivider Class="my-6"></MudDivider>
-
-<MudText Color="Color.Primary">QR String Output:</MudText>
-<MudText>@output</MudText>
 
 @if (qrImageSrc != null)
 {

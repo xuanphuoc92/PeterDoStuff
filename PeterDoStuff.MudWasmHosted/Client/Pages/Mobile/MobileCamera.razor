@@ -5,7 +5,7 @@
 <br />
 @if (cameraStreamer?.State == CameraStreamer.CameraState.Open)
 {
-    <MudButton OnClick="CaptureImage" Color="Color.Primary" Variant="Variant.Filled" EndIcon="@(captureInProgress == false ? Icons.Material.Filled.Camera : null)">
+    <MudButton OnClick="CaptureImage" Color="Color.Primary" Variant="Variant.Filled" StartIcon="@(captureInProgress == false ? Icons.Material.Filled.Camera : null)">
         @if (captureInProgress)
         {
             <MudProgressCircular Color="Color.Default" Size="Size.Small" Indeterminate="true" />
@@ -19,7 +19,7 @@
     <br />
     @if (imageSrc != null)
     {
-        <img src="@imageSrc" style="width: 480px; height: auto;" />
+        <img src="@imageSrc" style="width: 360px; height: auto;" />
     }
     <br />
     <br />

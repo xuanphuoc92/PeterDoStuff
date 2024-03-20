@@ -4,7 +4,7 @@
 @inject HttpClient Http
 
 <MudButton Variant="Variant.Filled" Color="Color.Primary"
-           EndIcon="@(locationInProgress == false ? Icons.Material.Filled.LocationOn : null)"
+           StartIcon="@(locationInProgress == false ? Icons.Material.Filled.LocationOn : null)"
            OnClick="GetLocation">
     @if (locationInProgress)
     {

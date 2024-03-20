@@ -1,7 +1,7 @@
 ﻿@inject IJSRuntime JS
 
 <MudButton OnClick="ToggleCamera" Variant="Variant.Filled" Color="Color.Primary"
-           EndIcon="@(State != CameraState.InProgress ? Icons.Material.Filled.CameraAlt : null)">
+           StartIcon="@(State != CameraState.InProgress ? Icons.Material.Filled.CameraAlt : null)">
     @if (State == CameraState.Close)
     {
         <div>@OpenText</div>
@@ -19,7 +19,7 @@
 @if (State == CameraState.Open)
 {
     <MudButton OnClick="SwitchCamera" Variant="Variant.Filled" Color="Color.Secondary"
-               EndIcon="@Icons.Material.Filled.Cameraswitch">
+               StartIcon="@Icons.Material.Filled.Cameraswitch">
         Switch
     </MudButton>
 }
