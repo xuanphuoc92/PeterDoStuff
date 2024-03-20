@@ -1,31 +1,20 @@
 ﻿@inject IJSRuntime JS
 
-<CameraStreamer @ref="cameraStreamer" VideoElementId="@videoElementId" />
+<CameraStreamer @ref="cameraStreamer" VideoElementId="@videoElementId" OnCaptureImage="CaptureImage" />
+
 <br />
 <br />
-@if (cameraStreamer?.State == CameraStreamer.CameraState.Open)
-{
-    <MudButton OnClick="CaptureImage" Color="Color.Primary" Variant="Variant.Filled" StartIcon="@(captureInProgress == false ? Icons.Material.Filled.Camera : null)">
-        @if (captureInProgress)
-        {
-            <MudProgressCircular Color="Color.Default" Size="Size.Small" Indeterminate="true" />
-        }
-        else
-        {
-            <div>Capture</div>
-        }
-    </MudButton>
-    <br />
-    <br />
-    @if (imageSrc != null)
-    {
-        <img src="@imageSrc" style="width: 360px; height: auto;" />
-    }
-    <br />
-    <br />
-}
 
 <video id="@videoElementId" autoplay="autoplay" style="width: 360px; height: auto;"></video>
+
+<br />
+<br />
+
+
+@if (imgSrc != null)
+{
+    <img src="@imgSrc" style="width: 360px; height: auto;" />
+}
 
 <br />
 <br />
@@ -35,14 +24,10 @@
 
     private string videoElementId = "videoElement";
 
-    private bool captureInProgress = false;
-    private string imageSrc = "";
+    private string imgSrc = null;
 
-    private async Task CaptureImage()
+    private void CaptureImage(string capturedImageSrc)
     {
-        captureInProgress = true;
-        await Task.Delay(200);
-        imageSrc = await JS.InvokeAsync<string>("captureImage", videoElementId);
-        captureInProgress = false;
+        imgSrc = capturedImageSrc;
     }
 }
