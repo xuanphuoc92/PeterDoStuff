@@ -150,3 +150,18 @@ window.decodeQRCode = function (imageId) {
     // Return the decoded QR code result
     return code ? code.data : null;
 };
+
+window.copyToClipboard = function (text) {
+    // Create a temporary textarea element
+    var textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.style.position = "fixed";  // Ensure it's not visible
+    document.body.appendChild(textarea);
+
+    // Select and copy the text
+    textarea.select();
+    document.execCommand("copy");
+
+    // Clean up
+    document.body.removeChild(textarea);
+};

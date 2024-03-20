@@ -11,7 +11,7 @@
     QR Code
 </MudText>
 
-<MudText Typo="Typo.h4" GutterBottom="true">Generate QR</MudText>
+<MudText Typo="Typo.h4" GutterBottom="true">Generate QR Code</MudText>
 <MudTextField T="string" @bind-Value="input" Label="String Input"></MudTextField>
 
 <MudButton Class="my-4" Variant="Variant.Filled" Color="Color.Primary" OnClick="GetQR">Get QR of String Input</MudButton>
@@ -22,16 +22,23 @@
 
 <MudDivider Class="my-4"></MudDivider>
 
-<MudText Typo="Typo.h4" GutterBottom="true">Scan QR</MudText>
+<MudText Typo="Typo.h4" GutterBottom="true">Scan QR Code</MudText>
 
 @if (output != null)
 {
-    <MudGrid>
+    <MudGrid Class="d-flex align-start">
         <MudItem xs="12" sm="2">
             <MudText Color="Color.Primary">String Output</MudText>
         </MudItem>
-        <MudItem xs="12" sm="10">
-            <MudText>@output</MudText>
+        <MudItem xs="12" sm="10" Class="d-flex justify-end align-start flex-grow-1 gap-4">
+            <MudText Class="flex-grow-1">@output</MudText>
+            @if (output.ToLower().StartsWith("http://") || output.ToLower().StartsWith("https://"))
+            {
+                <MudIconButton Color="Color.Primary" Variant="Variant.Filled" Href="@output" Target="_blank" Icon="@Icons.Material.Filled.Language">                
+                </MudIconButton>
+            }
+            <MudIconButton OnClick="CopyOutput" Color="Color.Primary" Variant="Variant.Filled" Icon="@Icons.Material.Filled.ContentCopy">
+            </MudIconButton>
         </MudItem>
     </MudGrid>
 }
@@ -142,5 +149,10 @@ else
         }
         StateHasChanged();
         scanning = false;
+    }
+
+    private async Task CopyOutput()
+    {
+        await JS.InvokeVoidAsync("copyToClipboard", output);
     }
 }
