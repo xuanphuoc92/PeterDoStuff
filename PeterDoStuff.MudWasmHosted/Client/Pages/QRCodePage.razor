@@ -23,15 +23,8 @@
 
 <MudFileUpload Class="my-4" T="IBrowserFile" FilesChanged="SelectFile">
     <ButtonTemplate>
-        <MudButton Class="mr-4"
-                   Variant="Variant.Filled"
-                   Color="Color.Primary"
-                   OnClick="ToggleCamera"
-                   StartIcon="@(cameraOn ? Icons.Material.Filled.Cancel : Icons.Material.Filled.CameraAlt)">
-            Scan QR
-        </MudButton>
-        <MudButton Class="mr-4"
-                   HtmlTag="label"
+        <CameraStreamer OpenText="Scan QR" CloseText="Cancel Scan" VideoElementId="@videoElementId" @ref="cameraStreamer" />
+        <MudButton HtmlTag="label"
                    Variant="Variant.Filled"
                    Color="Color.Primary"
                    StartIcon="@Icons.Material.Filled.Image"
@@ -48,7 +41,7 @@
     <img id="@qrImageId" src="@qrImageSrc" style="width: auto; height: auto;" />
 }
 
-@if (cameraOn == true)
+@if (cameraStreamer?.State != CameraStreamer.CameraState.Close)
 {
     <video id="@videoElementId" autoplay="autoplay" style="width: 360px; height: auto;"></video>
 }
@@ -88,10 +81,5 @@
         output = result;
     }
 
-    private bool cameraOn = false;
-
-    private void ToggleCamera ()
-    {
-        cameraOn = !cameraOn;
-    }
+    private CameraStreamer cameraStreamer;
 }
