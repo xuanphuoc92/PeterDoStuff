@@ -4,11 +4,11 @@
            EndIcon="@(State != CameraState.InProgress ? Icons.Material.Filled.CameraAlt : null)">
     @if (State == CameraState.Close)
     {
-        <div>Open</div>
+        <div>@OpenText</div>
     }
     else if (State == CameraState.Open)
     {
-        <div>Close</div>
+        <div>@CloseText</div>
     }
     else // In Progress
     {
@@ -42,6 +42,12 @@
     [Parameter]
     public string? VideoElementId { get; set; }
 
+    [Parameter]
+    public string OpenText { get; set; } = "Open";
+
+    [Parameter]
+    public string CloseText { get; set; } = "Close";
+
     private bool cameraBlocked = false;
     private string cameraBlockedError = "";
 
@@ -59,6 +65,8 @@
     private async Task OpenCamera()
     {
         State = CameraState.InProgress;
+        StateHasChanged();
+        await Task.Delay(200);
         bool success;
         try
         {
@@ -72,7 +80,6 @@
             success = false;
             cameraBlockedError = ex.GetType().ToString() + ": " + ex.Message;
         }
-        await Task.Delay(200);
         State = success ? CameraState.Open : CameraState.Close;
         cameraBlocked = !success;
     }
@@ -93,8 +100,9 @@
     private async Task CloseCamera()
     {
         State = CameraState.InProgress;
-        await JS.InvokeVoidAsync("stopCameraStream", VideoElementId);
+        StateHasChanged();
         await Task.Delay(200);
+        await JS.InvokeVoidAsync("stopCameraStream", VideoElementId);        
         State = CameraState.Close;
     }
 }
