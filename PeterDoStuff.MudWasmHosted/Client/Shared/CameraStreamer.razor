@@ -1,0 +1,100 @@
+﻿@inject IJSRuntime JS
+
+<MudButton OnClick="ToggleCamera" Variant="Variant.Filled" Color="Color.Primary"
+           EndIcon="@(State != CameraState.InProgress ? Icons.Material.Filled.CameraAlt : null)">
+    @if (State == CameraState.Close)
+    {
+        <div>Open</div>
+    }
+    else if (State == CameraState.Open)
+    {
+        <div>Close</div>
+    }
+    else // In Progress
+    {
+        <MudProgressCircular Color="Color.Default" Size="Size.Small" Indeterminate="true" />
+    }
+</MudButton>
+
+@if (State == CameraState.Open)
+{
+    <MudButton OnClick="SwitchCamera" Variant="Variant.Filled" Color="Color.Secondary"
+               EndIcon="@Icons.Material.Filled.Cameraswitch">
+        Switch
+    </MudButton>
+}
+
+@if (cameraBlocked)
+{
+    <MudText Class="mb-8" Color="Color.Error">
+        @cameraBlockedError
+    </MudText>
+}
+
+@code {
+    public enum CameraState
+    {
+        Close, Open, InProgress
+    }
+
+    public CameraState State { get; private set; } = CameraState.Close;
+
+    [Parameter]
+    public string? VideoElementId { get; set; }
+
+    private bool cameraBlocked = false;
+    private string cameraBlockedError = "";
+
+    private async Task ToggleCamera()
+    {
+        if (State == CameraState.Close)
+            await OpenCamera();
+        else if (State == CameraState.Open)
+            await CloseCamera();
+    }
+
+    private List<string> deviceIds = new();
+    private int deviceIdIndex = 0;
+
+    private async Task OpenCamera()
+    {
+        State = CameraState.InProgress;
+        bool success;
+        try
+        {
+            deviceIds = await JS.InvokeAsync<List<string>>("getVideoDeviceIds");
+            var deviceId = deviceIds.Any() ? deviceIds[deviceIdIndex] : "";
+            await JS.InvokeVoidAsync("startCameraStream", VideoElementId, deviceId);
+            success = true;
+        }
+        catch (Exception ex)
+        {
+            success = false;
+            cameraBlockedError = ex.GetType().ToString() + ": " + ex.Message;
+        }
+        await Task.Delay(200);
+        State = success ? CameraState.Open : CameraState.Close;
+        cameraBlocked = !success;
+    }
+
+    private async Task SwitchCamera()
+    {
+        deviceIds = await JS.InvokeAsync<List<string>>("getVideoDeviceIds");
+        deviceIdIndex++;
+        if (deviceIdIndex >= deviceIds.Count())
+            deviceIdIndex = 0;
+
+        var deviceId = deviceIds.Any() ? deviceIds[deviceIdIndex] : "";
+        // Stop first, then restart:
+        await JS.InvokeVoidAsync("stopCameraStream", VideoElementId);
+        await JS.InvokeVoidAsync("startCameraStream", VideoElementId, deviceId);
+    }
+
+    private async Task CloseCamera()
+    {
+        State = CameraState.InProgress;
+        await JS.InvokeVoidAsync("stopCameraStream", VideoElementId);
+        await Task.Delay(200);
+        State = CameraState.Close;
+    }
+}
