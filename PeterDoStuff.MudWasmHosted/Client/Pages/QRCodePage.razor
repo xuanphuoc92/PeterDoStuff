@@ -13,7 +13,7 @@
 
 <MudTextField T="string" @bind-Value="input" Label="String Input"></MudTextField>
 
-<MudButton Class="ma-4" Variant="Variant.Filled" Color="Color.Primary" OnClick="GetQR">Get QR from String Input</MudButton>
+<MudButton Class="my-4" Variant="Variant.Filled" Color="Color.Primary" OnClick="GetQR">Get QR from String Input</MudButton>
 
 <MudDivider Class="my-4"></MudDivider>
 
@@ -21,9 +21,16 @@
 
 <MudDivider Class="my-4"></MudDivider>
 
-<MudFileUpload T="IBrowserFile" FilesChanged="SelectFile">
+<MudFileUpload Class="my-4" T="IBrowserFile" FilesChanged="SelectFile">
     <ButtonTemplate>
-        <MudButton Class="ma-4"
+        <MudButton Class="mr-4"
+                   Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   OnClick="ToggleCamera"
+                   StartIcon="@(cameraOn ? Icons.Material.Filled.Cancel : Icons.Material.Filled.CameraAlt)">
+            Scan QR
+        </MudButton>
+        <MudButton Class="mr-4"
                    HtmlTag="label"
                    Variant="Variant.Filled"
                    Color="Color.Primary"
@@ -34,19 +41,22 @@
     </ButtonTemplate>
 </MudFileUpload>
 
-<MudButton Class="ma-4" Variant="Variant.Filled" Color="Color.Primary">Scan QR Image</MudButton>
-
-<MudText Color="Color.Primary">QR String Output:</MudText>
-<MudText>@output</MudText>
-
-<MudDivider Class="my-4"></MudDivider>
+<MudDivider Class="my-6"></MudDivider>
 
 @if (qrImageSrc != null)
 {
     <img id="@qrImageId" src="@qrImageSrc" style="width: auto; height: auto;" />
 }
 
-<video id="@videoElementId" autoplay="autoplay" style="width: 360px; height: auto;"></video>
+@if (cameraOn == true)
+{
+    <video id="@videoElementId" autoplay="autoplay" style="width: 360px; height: auto;"></video>
+}
+
+<MudDivider Class="my-6"></MudDivider>
+
+<MudText Color="Color.Primary">QR String Output:</MudText>
+<MudText>@output</MudText>
 
 @code {
     private string input = "https://peter-do-stuff.azurewebsites.net/";
@@ -76,5 +86,12 @@
 
         var result = await JS.InvokeAsync<string>("decodeQRCode", qrImageId);
         output = result;
+    }
+
+    private bool cameraOn = false;
+
+    private void ToggleCamera ()
+    {
+        cameraOn = !cameraOn;
     }
 }
