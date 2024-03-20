@@ -11,6 +11,8 @@
     QR Code
 </MudText>
 
+<MudText Class="mb-8">"This page demonstrates the QR code generating and scanning tools."</MudText>
+
 <MudText Typo="Typo.h4" GutterBottom="true">Generate QR Code</MudText>
 <MudTextField T="string" @bind-Value="input" Label="String Input"></MudTextField>
 
@@ -73,7 +75,7 @@ else
 
 @if (qrImageSrc != null)
 {
-    <img id="@qrImageId" src="@qrImageSrc" style="width: auto; height: auto; visibility: hidden;" />
+    <img id="@qrImageId" src="@qrImageSrc" style="width: auto; height: auto; visibility: hidden; position: fixed; z-index: -100;" />
 }
 
 @code {

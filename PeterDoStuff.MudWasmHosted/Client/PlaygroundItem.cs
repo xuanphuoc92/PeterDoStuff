@@ -19,6 +19,7 @@ namespace PeterDoStuff.MudWasmHosted.Client
 
         public static readonly List<PlaygroundItem> Items = new List<PlaygroundItem>()
         {
+            new("qrCode", Icons.Material.Filled.QrCode, "QR Code", "This page demonstrates the QR code generating and scanning tools."),
             new("chaos2048", Icons.Material.Outlined._2k, "Chaos 2048", "This page demonstrates the game 2048 (with chaos animation mode)"),
             new("snake", Icons.Material.Outlined.Earbuds, "Snake", "This page demonstrates the game Snake."),
             new("lingo", Icons.Material.Filled.FontDownload, "Lingo (not Wordle)", "This page demonstrates the game Lingo (not Wordle)."),
