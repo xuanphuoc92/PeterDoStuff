@@ -100,9 +100,10 @@
     public async Task CloseCamera()
     {
         State = CameraState.InProgress;
-        StateHasChanged();
-        await Task.Delay(200);
+        await Task.Delay(100);
         await JS.InvokeVoidAsync("stopCameraStream", VideoElementId);        
         State = CameraState.Close;
+        StateHasChanged();
+        await Task.Delay(100);
     }
 }

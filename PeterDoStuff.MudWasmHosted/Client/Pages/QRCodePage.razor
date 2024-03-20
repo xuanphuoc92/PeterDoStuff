@@ -36,20 +36,20 @@
 
 <MudDivider Class="my-6"></MudDivider>
 
-@if (qrImageSrc != null)
-{
-    <img id="@qrImageId" src="@qrImageSrc" style="width: auto; height: auto;" />
-}
-
-@if (cameraStreamer?.State != CameraStreamer.CameraState.Close)
-{
-    <video id="@videoElementId" autoplay="autoplay" style="width: 360px; height: auto;"></video>
-}
+<video id="@videoElementId" 
+    autoplay="autoplay" 
+    style="width: 360px; height: auto; @(cameraStreamer?.State != CameraStreamer.CameraState.Close ? "" : "visibility: hidden;" )">
+</video>
 
 <MudDivider Class="my-6"></MudDivider>
 
 <MudText Color="Color.Primary">QR String Output:</MudText>
 <MudText>@output</MudText>
+
+@if (qrImageSrc != null)
+{
+    <img id="@qrImageId" src="@qrImageSrc" style="width: auto; height: auto; visibility: hidden;" />
+}
 
 @code {
     private string input = "https://peter-do-stuff.azurewebsites.net/";
@@ -73,17 +73,18 @@
         await file.OpenReadStream(file.Size).CopyToAsync(inputFileStream);
         qrImageSrc = $"data:image/png;base64,{inputFileStream.ToArray().ToBase64String()}";
 
-        await DecodeQR();
+        output = await DecodeQR();
     }
 
-    private async Task DecodeQR()
+    private async Task<string> DecodeQR()
     {
         // Re-rendered, allow 200ms for the image to render before the decodeQRCode kick in
         StateHasChanged();
         await Task.Delay(200);
 
         var result = await JS.InvokeAsync<string>("decodeQRCode", qrImageId);
-        output = result;
+        qrImageSrc = null;
+        return result;
     }
 
     private CameraStreamer cameraStreamer;
@@ -101,22 +102,27 @@
         InvokeAsync(TryScan);
     }
 
+    private bool scanning = false;
     private async Task TryScan()
     {
+        if (scanning)
+            return;
+
         if (cameraStreamer == null)
             return;
 
         if (cameraStreamer.State != CameraStreamer.CameraState.Open)
             return;
 
+        scanning = true;
         qrImageSrc = await JS.InvokeAsync<string>("captureImage", videoElementId);
-        StateHasChanged();
-        await Task.Delay(200);
-        var result = await JS.InvokeAsync<string>("decodeQRCode", qrImageId);
+        var result = await DecodeQR();
         if (result != null)
         {
             output = result;
             await cameraStreamer.CloseCamera();
         }
+        StateHasChanged();
+        scanning = false;
     }
 }
