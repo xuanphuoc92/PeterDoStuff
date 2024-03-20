@@ -1,0 +1,80 @@
+﻿@page "/qrCode"
+@using System.Text
+@using PeterDoStuff.Extensions
+
+@inject IJSRuntime JS
+
+<PageTitle>QR Code</PageTitle>
+
+<MudText Typo="Typo.h3" GutterBottom="true">
+    <MudIcon Size="Size.Large" Icon="@Icons.Material.Filled.QrCode" />
+    QR Code
+</MudText>
+
+<MudTextField T="string" @bind-Value="input" Label="String Input"></MudTextField>
+
+<MudButton Class="ma-4" Variant="Variant.Filled" Color="Color.Primary" OnClick="GetQR">Get QR from String Input</MudButton>
+
+<MudDivider Class="my-4"></MudDivider>
+
+<img src="@imgSrc" />
+
+<MudDivider Class="my-4"></MudDivider>
+
+<MudFileUpload T="IBrowserFile" FilesChanged="SelectFile">
+    <ButtonTemplate>
+        <MudButton Class="ma-4"
+                   HtmlTag="label"
+                   Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.Image"
+                   for="@context.Id">
+            Select QR Image
+        </MudButton>
+    </ButtonTemplate>
+</MudFileUpload>
+
+<MudButton Class="ma-4" Variant="Variant.Filled" Color="Color.Primary">Scan QR Image</MudButton>
+
+<MudText Color="Color.Primary">QR String Output:</MudText>
+<MudText>@output</MudText>
+
+<MudDivider Class="my-4"></MudDivider>
+
+@if (qrImageSrc != null)
+{
+    <img id="@qrImageId" src="@qrImageSrc" style="width: auto; height: auto;" />
+}
+
+<video id="@videoElementId" autoplay="autoplay" style="width: 360px; height: auto;"></video>
+
+@code {
+    private string input = "https://peter-do-stuff.azurewebsites.net/";
+    private string imgSrc;
+
+    private void GetQR()
+    {
+        imgSrc = $"data:image/png;base64,{input.ToQRCode().ToBase64String()}";
+    }
+
+    private string videoElementId = "qrScanVideo";
+
+    private string output;
+
+    private string qrImageSrc;
+    private string qrImageId = "qrImageId";
+
+    private async Task SelectFile(IBrowserFile file)
+    {
+        using MemoryStream inputFileStream = new MemoryStream();
+        await file.OpenReadStream(file.Size).CopyToAsync(inputFileStream);
+        qrImageSrc = $"data:image/png;base64,{inputFileStream.ToArray().ToBase64String()}";
+
+        // Re-rendered, allow 200ms for the image to render before the decodeQRCode kick in
+        StateHasChanged();
+        await Task.Delay(200);
+
+        var result = await JS.InvokeAsync<string>("decodeQRCode", qrImageId);
+        output = result;
+    }
+}
