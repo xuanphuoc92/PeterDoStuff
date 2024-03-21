@@ -124,13 +124,14 @@
     private bool captureInProgress = false;
     private string capturedImageSrc = "";
 
-    private async Task CaptureImage()
+    public async Task<string> CaptureImage()
     {
         captureInProgress = true;
         await Task.Delay(200);
         capturedImageSrc = await JS.InvokeAsync<string>("captureImage", VideoElementId);
         captureInProgress = false;
         await OnCaptureImage.InvokeAsync(capturedImageSrc);
+        return capturedImageSrc;
     }
 
     [Parameter]

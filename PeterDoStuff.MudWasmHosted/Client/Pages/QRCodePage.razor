@@ -142,7 +142,7 @@ else
             return;
 
         scanning = true;
-        qrImageSrc = await JS.InvokeAsync<string>("captureImage", videoElementId);
+        qrImageSrc = await cameraStreamer.CaptureImage();
         var result = await DecodeQR();
         if (result != null)
         {
