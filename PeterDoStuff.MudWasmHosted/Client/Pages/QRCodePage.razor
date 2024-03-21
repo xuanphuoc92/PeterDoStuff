@@ -129,19 +129,14 @@ else
         InvokeAsync(TryScan);
     }
 
-    private bool scanning = false;
     private async Task TryScan()
     {
-        if (scanning)
-            return;
-
         if (cameraStreamer == null)
             return;
 
         if (cameraStreamer.State != CameraStreamer.CameraState.Open)
             return;
 
-        scanning = true;
         qrImageSrc = await cameraStreamer.CaptureImage();
         var result = await DecodeQR();
         if (result != null)
@@ -149,8 +144,7 @@ else
             output = result;
             await cameraStreamer.CloseCamera();
         }
-        StateHasChanged();
-        scanning = false;
+        StateHasChanged();        
     }
 
     private async Task CopyOutput()
