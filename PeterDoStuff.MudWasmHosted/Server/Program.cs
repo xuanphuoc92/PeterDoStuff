@@ -38,8 +38,7 @@ app.UseStaticFiles();
 // Make the APIs to only accept the API requests from its Web Assembly
 var baseAddress = app.Configuration["URLS"]
     ?.Split(";")
-    .FirstOrDefault(url => url.ToLower().StartsWith("https://"))
-    ?.FirstOrDefault();
+    .FirstOrDefault(url => url.ToLower().StartsWith("https://"));    
 
 if (baseAddress != null)
     app.UseMiddleware<ReferrerValidationMiddleware>(baseAddress);
