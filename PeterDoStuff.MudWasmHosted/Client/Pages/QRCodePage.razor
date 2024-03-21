@@ -14,7 +14,7 @@
 <MudText Class="mb-8">This page demonstrates the QR code generating and scanning tools.</MudText>
 
 <MudText Typo="Typo.h4" GutterBottom="true">Generate QR Code</MudText>
-<MudTextField T="string" @bind-Value="input" Label="String Input"></MudTextField>
+<MudTextField T="string" @bind-Value="input" Label="String Input" Variant="Variant.Outlined" AutoGrow Lines="1"></MudTextField>
 
 <MudButton Class="my-4" Variant="Variant.Filled" Color="Color.Primary" OnClick="GetQR">Get QR of String Input</MudButton>
 
