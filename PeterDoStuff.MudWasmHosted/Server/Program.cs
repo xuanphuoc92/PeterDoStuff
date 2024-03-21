@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting.StaticWebAssets;
 using Microsoft.AspNetCore.ResponseCompression;
 using PeterDoStuff.Database;
+using PeterDoStuff.MudWasmHosted.Server.Auth;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +34,15 @@ app.UseHttpsRedirection();
 
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
+
+// Make the APIs to only accept the API requests from its Web Assembly
+var baseAddress = app.Configuration["URLS"]
+    ?.Split(";")
+    .FirstOrDefault(url => url.ToLower().StartsWith("https://"))
+    ?.FirstOrDefault();
+
+if (baseAddress != null)
+    app.UseMiddleware<ReferrerValidationMiddleware>(baseAddress);
 
 app.UseRouting();
 
