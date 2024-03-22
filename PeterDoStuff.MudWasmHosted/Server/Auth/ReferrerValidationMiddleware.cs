@@ -15,7 +15,10 @@ namespace PeterDoStuff.MudWasmHosted.Server.Auth
 
         public async Task Invoke(HttpContext context)
         {
-            var isApiRequest = context.Request.Path.Value?.StartsWith("/api/") ?? false;
+            var isApiRequest = false;
+            isApiRequest |= context.Request.Path.Value?.StartsWith("/api/") ?? false;
+            isApiRequest |= context.Request.Path.Value?.StartsWith("/_smartcomponents/") ?? false;
+
             var referrer = context.Request.Headers["Referer"].ToString();
             if (isApiRequest && referrer.StartsWith(_allowedReferrer) == false)
             {
