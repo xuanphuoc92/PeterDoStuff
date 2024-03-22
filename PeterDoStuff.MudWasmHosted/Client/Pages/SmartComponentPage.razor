@@ -1,0 +1,86 @@
+﻿@page "/smartComponent"
+@using System.ComponentModel.DataAnnotations
+
+<PageTitle>Smart Components</PageTitle>
+
+<MudText Typo="Typo.h3" GutterBottom="true">
+    <MudIcon Size="Size.Large" Icon="@Icons.Material.Filled.Assistant" />
+    Smart Components
+</MudText>
+
+<MudText>This page demonstrates of smart components from Microsoft:</MudText>
+<MudLink Href="https://devblogs.microsoft.com/dotnet/introducing-dotnet-smart-components/" Target="_blank">
+    Introducing .NET Smart Components – AI-powered UI controls
+</MudLink>
+
+<MudText Class="mt-8" Typo="Typo.h5">SmartPaste</MudText>
+
+<EditForm Model="@Address" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+    <div Class="mb-8">
+        <MudButton Variant="Variant.Filled" ButtonType="ButtonType.Submit" Color="Color.Primary">Submit</MudButton>
+    </div>
+    <MudGrid>
+        <MudItem xs="12" md="6">
+            <MudText Color="Color.Primary">Recipient</MudText>
+            <MudTextField T="string" Label="First name" @bind-Value="Address.FirstName" For="@(() => Address.FirstName)"></MudTextField>
+            <MudTextField T="string" Label="Last name" @bind-Value="Address.LastName" For="@(() => Address.LastName)"></MudTextField>
+            <MudTextField T="string" Label="Phone Number" @bind-Value="Address.Phone" For="@(() => Address.Phone)"></MudTextField>
+        </MudItem>
+        <MudItem xs="12" md="6">
+            <MudText Color="Color.Primary">Address</MudText>
+            <MudTextField T="string" Label="Line 1" @bind-Value="Address.Line1" For="@(() => Address.Line1)"></MudTextField>
+            <MudTextField T="string" Label="Line 2" @bind-Value="Address.Line2" For="@(() => Address.Line2)"></MudTextField>            
+            <MudGrid>
+                <MudItem xs="6">
+                    <MudTextField T="string" Label="City" @bind-Value="Address.City" For="@(() => Address.City)"></MudTextField>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudTextField T="string" Label="State" @bind-Value="Address.State" For="@(() => Address.State)"></MudTextField>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudTextField T="string" Label="Zip" @bind-Value="Address.Zip" For="@(() => Address.Zip)"></MudTextField>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudTextField T="string" Label="Country" @bind-Value="Address.Country" For="@(() => Address.Country)"></MudTextField>
+                </MudItem>
+            </MudGrid>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+
+@code {
+    public AddressData Address { get; set; } = new();
+
+    public class AddressData
+    {
+        [Required]
+        public string? FirstName { get; set; }
+
+        [Required]
+        public string? LastName { get; set; }
+
+        public string? Phone { get; set; }
+
+        [Required]
+        public string? Line1 { get; set; }
+
+        public string? Line2 { get; set; }
+
+        [Required]
+        public string? City { get; set; }
+
+        [Required]
+        public string? State { get; set; }
+
+        public string? Country { get; set; }
+
+        [Required]
+        public string? Zip { get; set; }
+    }
+
+    private void OnValidSubmit(EditContext context)
+    {
+        StateHasChanged();
+    }
+}
