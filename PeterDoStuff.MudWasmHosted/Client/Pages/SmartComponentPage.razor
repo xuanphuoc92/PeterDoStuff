@@ -1,5 +1,6 @@
 ﻿@page "/smartComponent"
 @using System.ComponentModel.DataAnnotations
+@using SmartComponents
 
 <PageTitle>Smart Components</PageTitle>
 
@@ -19,6 +20,10 @@
     <DataAnnotationsValidator />
     <div Class="mb-8">
         <MudButton Variant="Variant.Filled" ButtonType="ButtonType.Submit" Color="Color.Primary">Submit</MudButton>
+        <SmartPasteButton class="mud-button-root mud-button mud-button-outlined mud-button-outlined-warning mud-button-outlined-size-medium mud-ripple">
+            <MudIcon Icon="@Icons.Material.Filled.Lightbulb" Class="mr-4"></MudIcon>
+            Smart Paste
+        </SmartPasteButton>
     </div>
     <MudGrid>
         <MudItem xs="12" md="6">
