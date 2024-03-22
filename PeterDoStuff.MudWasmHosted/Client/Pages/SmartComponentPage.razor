@@ -1,25 +1,43 @@
 ﻿@page "/smartComponent"
 @using System.ComponentModel.DataAnnotations
 @using SmartComponents
+@inject IJSRuntime JS
 
 <PageTitle>Smart Components</PageTitle>
 
 <MudText Typo="Typo.h3" GutterBottom="true">
-    <MudIcon Size="Size.Large" Icon="@Icons.Material.Filled.Assistant" />
+    <MudIcon Size="Size.Large" Icon="@Icons.Material.Filled.Lightbulb" />
     Smart Components
 </MudText>
 
-<MudText>This page demonstrates of smart components from Microsoft:</MudText>
+<MudText>This page demonstrates of smart components:</MudText>
 <MudLink Href="https://devblogs.microsoft.com/dotnet/introducing-dotnet-smart-components/" Target="_blank">
     Introducing .NET Smart Components – AI-powered UI controls
 </MudLink>
 
-<MudText Class="mt-8" Typo="Typo.h5">SmartPaste</MudText>
+<MudText Class="mt-8" Typo="Typo.h5" GutterBottom="true">SmartPaste</MudText>
 
-<EditForm Model="@Address" OnValidSubmit="OnValidSubmit">
+<MudText Typo="Typo.h6">Step 1:</MudText>
+<MudText Class="mb-4">Copy text, for example in the sample below.</MudText>
+
+<MudButton Color="Color.Primary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.ContentCopy" OnClick="CopySample">Copy</MudButton>
+@for (int i = 0; i < samples.Count(); i++)
+{
+    var num = i + 1;
+    <MudButton Variant="Variant.Outlined" Color="Color.Secondary" OnClick="() => SetSample(num)">Sample @num</MudButton>
+}
+<MudTextField Class="mt-4" Label="Sample Text" T="string" @bind-Value="sampleText" Variant="Variant.Outlined" AutoGrow Lines="3"></MudTextField>
+
+<MudDivider Class="my-4"></MudDivider>
+
+<MudText Typo="Typo.h6">Step 2:</MudText>
+<MudText Class="mb-4">Try Smart Paste for the form below.</MudText>
+
+<EditForm Model="@Address" OnValidSubmit="OnValidSubmit" @onreset="Reset">
     <DataAnnotationsValidator />
-    <div Class="mb-8">
+    <div Class="mb-4">
         <MudButton Variant="Variant.Filled" ButtonType="ButtonType.Submit" Color="Color.Primary">Submit</MudButton>
+        <MudButton Variant="Variant.Outlined" ButtonType="ButtonType.Reset" Color="Color.Primary">Reset</MudButton>
         <SmartPasteButton class="mud-button-root mud-button mud-button-outlined mud-button-outlined-warning mud-button-outlined-size-medium mud-ripple">
             <MudIcon Icon="@Icons.Material.Filled.Lightbulb" Class="mr-4"></MudIcon>
             Smart Paste
@@ -88,4 +106,52 @@
     {
         StateHasChanged();
     }
+
+    private void Reset()
+    {
+        Address = new();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        sampleText = samples[0];
+    }
+
+    private void SetSample(int sampleNo)
+    {
+        sampleText = samples[sampleNo - 1];
+    }
+
+    private async Task CopySample()
+    {
+        await JS.InvokeVoidAsync("copyToClipboard", sampleText);
+    }
+
+    private string sampleText = "";
+    private List<string> samples = new List<string>()
+    {
+        @"Verónica Ortíz
+PROLONGACION 3A NO109
+EJIDO 20 DE NOVIEMBRE
+Tamaulipas
+Matamoros
+87394
+México
+
+Phone 768.312-5495",
+
+        @"Write to us at:
+        Kidwelly Town Council
+        Council Offices
+        Hillfield Villas
+        Kidwelly
+        Carmarthenshire
+        SA17 4UL
+
+        Telephone: 01554 890203
+        E-mail: towncouncil@kidwelly.gov.uk",
+
+        @"Dr. Akio Yamamoto works for Microsoft at Building 92, which is located at 15010 NE 36th St, Redmond, WA 98052."
+    };
 }
