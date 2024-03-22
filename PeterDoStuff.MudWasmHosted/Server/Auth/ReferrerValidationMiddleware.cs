@@ -15,8 +15,9 @@ namespace PeterDoStuff.MudWasmHosted.Server.Auth
 
         public async Task Invoke(HttpContext context)
         {
+            var isApiRequest = context.Request.Path.Value?.StartsWith("/api") ?? false;
             var referrer = context.Request.Headers["Referer"].ToString();
-            if (referrer.StartsWith(_allowedReferrer) == false)
+            if (isApiRequest && referrer.StartsWith(_allowedReferrer) == false)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                 return;
