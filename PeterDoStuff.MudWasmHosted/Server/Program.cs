@@ -9,6 +9,8 @@ StaticWebAssetsLoader.UseStaticWebAssets(builder.Environment, builder.Configurat
 
 // Add services to the container.
 
+builder.Services.AddSmartComponents();
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
