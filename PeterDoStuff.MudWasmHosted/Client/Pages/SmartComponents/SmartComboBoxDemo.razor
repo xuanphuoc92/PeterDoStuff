@@ -6,47 +6,6 @@
     uses
     <MudLink Href="https://github.com/dotnet-smartcomponents/smartcomponents/blob/main/docs/local-embeddings.md" Target="_blank">Local Embedding</MudLink>
     to make suggestions based on semantic matching.<br/>
-    Note: This is just a demo. The combo boxes below may need to be refined to match with the style and behaviour of MudBlazor framework.
 </MudText>
 
-<MudDivider Class="my-4"></MudDivider>
-
-<MudText Class="mb-4">Try type "Plane" for Expense Category, and "Phone" for Issue Label.</MudText>
-
-<MudGrid>
-    <MudItem xs=12 sm=6>
-        <MudText>Expense Category</MudText>
-        <div class="mud-input-control mud-input-input-control">
-            <div class="mud-input-control-input-container">
-                <div class="mud-input mud-input-outlined">
-                    <SmartComboBox class="mud-input-slot mud-input-root mud-input-root-outlined"
-                                   Url="api/suggestions/expense-category"
-                                   id="expense-category"
-                                   @bind-Value="expenseCategory" />
-                    <div class="mud-input-outlined-border"></div>
-                </div>
-            </div>
-        </div>
-    </MudItem>
-    <MudItem xs=12 sm=6>
-        <MudText>Issue Label</MudText>
-        <div class="mud-input-control mud-input-input-control">
-            <div class="mud-input-control-input-container">
-                <div class="mud-input mud-input-outlined">
-                    <SmartComboBox class="mud-input-slot mud-input-root mud-input-root-outlined"
-                                   Url="api/suggestions/issue-label"
-                                   id="issue-label"
-                                   @bind-Value="issueLabel" />
-                    <div class="mud-input-outlined-border"></div>
-                </div>
-            </div>
-        </div>
-    </MudItem>
-</MudGrid>
-
-
-
-@code {
-    private string? expenseCategory;
-    private string? issueLabel;
-}
+<MudText Color="Color.Secondary">This demo is removed, as the Local Embedding is heavy for the free tier of Azure Web Service.</MudText>
