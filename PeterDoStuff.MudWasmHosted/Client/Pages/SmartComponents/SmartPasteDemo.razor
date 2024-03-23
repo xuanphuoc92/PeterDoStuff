@@ -20,17 +20,39 @@
 <MudText Typo="Typo.h6">Step 2:</MudText>
 <MudText Class="mb-4">Try Smart Paste for the form below.</MudText>
 
+<style>
+    .smart-form-default {
+        border-color: #FFA80000;
+    }
+
+    .smart-form-highlight {
+        animation: .5s ease-in-out infinite alternate smart-form-highlight-animation;
+    }
+
+    @@keyFrames smart-form-highlight-animation {
+        from {
+            border-color: #FFA80000;
+        }
+        to {
+            border-color: #FFA800FF;
+        }
+    }
+
+</style>
+
 <EditForm Model="@Address" OnValidSubmit="OnValidSubmit" @onreset="Reset">
     <DataAnnotationsValidator />
     <div Class="mb-4">
         <MudButton Variant="Variant.Filled" ButtonType="ButtonType.Submit" Color="Color.Primary">Submit</MudButton>
         <MudButton Variant="Variant.Outlined" ButtonType="ButtonType.Reset" Color="Color.Primary">Reset</MudButton>
-        <SmartPasteButton class="mud-button-root mud-button mud-button-outlined mud-button-outlined-warning mud-button-outlined-size-medium mud-ripple">
+        <SmartPasteButton 
+            @onmouseover="MouseOver" @onmouseout="MouseOut"
+            class="mud-button-root mud-button mud-button-outlined mud-button-outlined-warning mud-button-outlined-size-medium mud-ripple">
             <MudIcon Icon="@Icons.Material.Filled.Lightbulb" Class="mr-4"></MudIcon>
             Smart Paste
         </SmartPasteButton>
     </div>
-    <MudGrid>
+    <MudGrid Class="@formClass">
         <MudItem xs="12" md="6">
             <MudText Color="Color.Primary">Recipient</MudText>
             <MudTextField T="string" Label="First name" @bind-Value="Address.FirstName" For="@(() => Address.FirstName)"></MudTextField>
@@ -141,4 +163,18 @@ Phone 768.312-5495",
 
         @"Dr. Akio Yamamoto works for Microsoft at Building 92, which is located at 15010 NE 36th St, Redmond, WA 98052."
     };
+
+    private bool smartButtonHover = false;
+    private void MouseOver()
+    {
+        smartButtonHover = true;
+        StateHasChanged();
+    }
+    private void MouseOut()
+    {
+        smartButtonHover = false;
+        StateHasChanged();
+    }
+
+    private string formClass => $"pa-4 rounded border-solid border-2 {(smartButtonHover ? "smart-form-highlight" : "smart-form-default")}";
 }
