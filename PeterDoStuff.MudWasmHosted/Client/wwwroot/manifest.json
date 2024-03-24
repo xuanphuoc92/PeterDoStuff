@@ -3,8 +3,8 @@
   "short_name": "Peter Do Stuff",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#03173d",
+  "background_color": "#33333d",
+  "theme_color": "#756bc5",
   "prefer_related_applications": false,
   "icons": [
     {
