@@ -1,7 +1,9 @@
 ﻿@using System.ComponentModel.DataAnnotations
 @using PeterDoStuff.Extensions
+@using PeterDoStuff.MudWasmHosted.Client.Extensions
 @using SmartComponents
 @inject IJSRuntime JS
+@inject HttpClient Http
 
 <MudText Class="mt-8" Typo="Typo.h5">SmartTextArea</MudText>
 <MudText>
@@ -31,30 +33,37 @@
 <MudText Typo="Typo.h6">Step 2:</MudText>
 <MudText Class="mb-4">Draft the response in the Smart Text Box below.</MudText>
 
-<form>
-    @* <MudTextField T="string" Variant="Variant.Outlined"
+@if (textAreaEnabled)
+{
+    <form>
+        @* <MudTextField T="string" Variant="Variant.Outlined"
         @bind-Value="comment" 
         Label="Response" Placeholder="Type your response here..."        
         AutoGrow Lines="3"></MudTextField> *@
-    
-    <div class="mud-input-control mud-input-input-control">
-        <div class="mud-input-control-input-container">
-            <div class="mud-input mud-input-outlined mud-shrink">
-                <SmartTextArea 
+
+        <div class="mud-input-control mud-input-input-control">
+            <div class="mud-input-control-input-container">
+                <div class="mud-input mud-input-outlined mud-shrink">
+                    <SmartTextArea 
                     style="height: 150px;"
                     class="mud-input-slot mud-input-root mud-input-root-outlined"
                     UserRole="@userRole"
                     UserPhrases="@userPhrases.Split(Environment.NewLine)" @bind-Value="@comment"
                     placeholder="Type your response here..." />
-                <div class="mud-input-outlined-border"></div>
-            </div>
-            <label 
+                    <div class="mud-input-outlined-border"></div>
+                </div>
+                <label 
                 class="mud-input-label mud-input-label-animated mud-input-label-outlined mud-input-label-inputcontrol" 
                 >Response</label>
+            </div>
         </div>
-    </div>
 
-</form>
+    </form>
+}
+else
+{
+    <MudText Color="Color.Secondary">SmartTextArea is currently disabled. Remove or set the value to false for the Environment Variable with key <b>DisableSmartTextArea</b> from Azure Portal.</MudText>
+}
 
 @code {
     private string? comment;
@@ -72,7 +81,14 @@
     {
         await base.OnInitializedAsync();
         SetSample(1);
+        var response = await Http
+            .Request(HttpMethod.Get, "api/environment")
+            .SetParam("key", "DisableSmartTextArea")
+            .SendAsync();
+        textAreaEnabled = response.Success && response.Result == "true" ? false : true;
     }
+
+    private bool textAreaEnabled = false;
 
     private class SampleTemplate
     {
