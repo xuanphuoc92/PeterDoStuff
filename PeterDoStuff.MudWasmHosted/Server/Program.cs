@@ -1,13 +1,18 @@
-﻿using Microsoft.AspNetCore.Hosting.StaticWebAssets;
+﻿using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using Microsoft.AspNetCore.Hosting.StaticWebAssets;
 using Microsoft.AspNetCore.ResponseCompression;
 using PeterDoStuff.Database;
 using PeterDoStuff.MudWasmHosted.Server.Auth;
+using SmartComponents.Inference.OpenAI;
 
 var builder = WebApplication.CreateBuilder(args);
 
 StaticWebAssetsLoader.UseStaticWebAssets(builder.Environment, builder.Configuration);
 
 // Add services to the container.
+
+builder.Services.AddSmartComponents()    
+    .WithInferenceBackend<OpenAIInferenceBackend>();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
