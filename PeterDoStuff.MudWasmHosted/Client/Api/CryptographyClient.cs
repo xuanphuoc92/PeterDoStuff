@@ -7,7 +7,10 @@ namespace PeterDoStuff.MudWasmHosted.Client.Api
     {
         protected override string Route => "api/Cryptography";
 
-        public Task<byte[]> HashArgon2idQuick(CryptographyApi.Argon2idBody body) 
+        public Task<byte[]> HashArgon2id(Argon2idBody body)
+            => SendToApi<byte[]>("HashArgon2id", body);
+
+        public Task<byte[]> HashArgon2idQuick(Argon2idBody body) 
             => SendToApi<byte[]>("HashArgon2idQuick", body);
     }
 }

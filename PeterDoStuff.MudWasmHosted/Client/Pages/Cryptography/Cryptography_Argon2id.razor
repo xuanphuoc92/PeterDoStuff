@@ -73,17 +73,28 @@
     }
     private async Task HashArgon2idServer()
     {
-        var result = await Http
-            .Request(HttpMethod.Post, "api/security/HashArgon2id")
-            .SetBodyParam("input", InputByteArray)
-            .SetBodyParam("salt", argon2idSalt)
-            .SendAsync<byte[]>();
-        argon2idHash = result.Result;
-        if (result.Failure)
-            await ShowError(result.Error);
-        argon2idHashTime = result.ElapsedMilliseconds != null
-            ? $"{result.ElapsedMilliseconds} ms"
-            : null;
+        // var result = await Http
+        //     .Request(HttpMethod.Post, "api/security/HashArgon2id")
+        //     .SetBodyParam("input", InputByteArray)
+        //     .SetBodyParam("salt", argon2idSalt)
+        //     .SendAsync<byte[]>();
+        // argon2idHash = result.Result;
+        // if (result.Failure)
+        //     await ShowError(result.Error);
+        // argon2idHashTime = result.ElapsedMilliseconds != null
+        //     ? $"{result.ElapsedMilliseconds} ms"
+        //     : null;
+
+        try
+        {
+            argon2idHash = await ApiClient
+                .As<CryptographyClient>(Http)
+                .HashArgon2id(new Argon2idBody(InputByteArray, argon2idSalt));
+        }
+        catch (ApiException ex)
+        {
+            await ShowError(ex.Message);
+        }
     }
     private async Task HashArgon2idQuick()
     {
@@ -103,7 +114,7 @@
         {
             argon2idHash = await ApiClient
                 .As<CryptographyClient>(Http)
-                .HashArgon2idQuick(new CryptographyApi.Argon2idBody(InputByteArray, argon2idSalt));
+                .HashArgon2idQuick(new Argon2idBody(InputByteArray, argon2idSalt));
         } 
         catch (ApiException ex)
         {

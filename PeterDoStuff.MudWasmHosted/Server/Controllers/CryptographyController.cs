@@ -9,8 +9,16 @@ namespace PeterDoStuff.MudWasmHosted.Server.Controllers
     public class CryptographyController : ControllerBase, CryptographyApi
     {
         [HttpPost]
+        [Route("HashArgon2id")]
+        public async Task<byte[]> HashArgon2id(Argon2idBody body)
+        {
+            return body.Input
+                .HashArgon2id(body.Salt);
+        }
+
+        [HttpPost]
         [Route("HashArgon2idQuick")]
-        public async Task<byte[]> HashArgon2idQuick([FromBody] CryptographyApi.Argon2idBody body)
+        public async Task<byte[]> HashArgon2idQuick([FromBody] Argon2idBody body)
         {
             return body.Input
                 .HashArgon2id(body.Salt,
