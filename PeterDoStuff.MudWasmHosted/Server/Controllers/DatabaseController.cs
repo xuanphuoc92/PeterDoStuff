@@ -7,7 +7,7 @@ namespace PeterDoStuff.MudWasmHosted.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class DatabaseController : ControllerBase
+    public class DatabaseController : ControllerBase, DatabaseApi
     {
         //private readonly ILogger<DatabaseController> _logger;
 
@@ -34,23 +34,18 @@ namespace PeterDoStuff.MudWasmHosted.Server.Controllers
         private const string DEFAULT_ACCESS_KEY = "access";
 
         [HttpPost]
-        [Route("access")]
-        public DbAccess Access([FromBody] string accessKey)
+        [Route("Access")]
+        public async Task<DbAccess> Access([FromBody] string accessKey)
         {
-            var dbAccess = new DbAccess();
-            
-            var databaseAccessKey = Environment.GetEnvironmentVariable(ENVIRONMENT_VAR_KEY) 
+            var databaseAccessKey = Environment.GetEnvironmentVariable(ENVIRONMENT_VAR_KEY)
                 ?? DEFAULT_ACCESS_KEY;
 
+            string warning = "";
             if (databaseAccessKey == DEFAULT_ACCESS_KEY)
-                dbAccess.Warning = "You are using the default access key. Please set Environment Variable [DatabaseAccessKey] to stop using the default access key.";
+                warning = "You are using the default access key. Please set Environment Variable [DatabaseAccessKey] to stop using the default access key.";
 
-            if (accessKey == databaseAccessKey)
-            {
-                dbAccess.IsSuccess = true;
-                dbAccess.Token = dbAccess.IsSuccess ? databaseAccessKey : "";
-            }
-            return dbAccess;
+            bool isSuccess = accessKey == databaseAccessKey;
+            return new DbAccess(isSuccess, warning, isSuccess ? databaseAccessKey : "");
         }
     }
 }

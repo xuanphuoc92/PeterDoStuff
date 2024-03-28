@@ -28,7 +28,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Api
 
         protected virtual string Route { get; } = string.Empty;
 
-        protected async Task<TReturn> SendToApi<TReturn>(string url, object body = null)
+        protected async Task<TReturn> SendToApi<TReturn>(string url, object body = null, params (string Key, string Value)[] headers)
         {
             var route = Route.IsNullOrEmpty()
                 ? string.Empty
@@ -40,6 +40,9 @@ namespace PeterDoStuff.MudWasmHosted.Client.Api
             
             if (body != null)
                 request.SetBody(body);
+
+            foreach (var header in headers)
+                request.SetHeader(header.Key, header.Value);
             
             var result = await request.SendAsync<TReturn>();
             
