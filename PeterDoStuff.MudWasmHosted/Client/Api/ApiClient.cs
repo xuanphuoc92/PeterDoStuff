@@ -19,7 +19,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Api
 
         protected virtual string Route { get; } = string.Empty;
 
-        protected async Task<TReturn> SendToApi<TReturn>(HttpMethod method, string url, object body)
+        protected async Task<TReturn> SendToApi<TReturn>(string url, object body)
         {
             var route = Route.IsNullOrEmpty()
                 ? string.Empty
@@ -27,7 +27,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Api
                 ? Route
                 : Route + '/';
 
-            var result = await Http.Request(method, route + url)
+            var result = await Http.Request(HttpMethod.Post, route + url)
                 .SetBody(body)
                 .SendAsync<TReturn>();
             
