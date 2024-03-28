@@ -5,7 +5,9 @@ namespace PeterDoStuff.MudWasmHosted.Client.Api
 {
     public class CryptographyClient : ApiClient, CryptographyApi
     {
+        protected override string Route => "api/Cryptography";
+
         public Task<byte[]> HashArgon2idQuick(CryptographyApi.Argon2idBody body) 
-            => SendToApi<byte[]>(HttpMethod.Post, "api/Cryptography/HashArgon2idQuick", body);
+            => SendToApi<byte[]>(HttpMethod.Post, "HashArgon2idQuick", body);
     }
 }

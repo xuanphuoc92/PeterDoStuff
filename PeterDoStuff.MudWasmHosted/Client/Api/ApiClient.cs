@@ -1,4 +1,5 @@
-﻿using PeterDoStuff.MudWasmHosted.Client.Extensions;
+﻿using PeterDoStuff.Extensions;
+using PeterDoStuff.MudWasmHosted.Client.Extensions;
 using System.Reflection.Metadata.Ecma335;
 
 namespace PeterDoStuff.MudWasmHosted.Client.Api
@@ -16,11 +17,20 @@ namespace PeterDoStuff.MudWasmHosted.Client.Api
             return client;
         }
 
+        protected virtual string Route { get; } = string.Empty;
+
         protected async Task<TReturn> SendToApi<TReturn>(HttpMethod method, string url, object body)
         {
-            var result = await Http.Request(method, url)
+            var route = Route.IsNullOrEmpty()
+                ? string.Empty
+                : Route.EndsWith('/')
+                ? Route
+                : Route + '/';
+
+            var result = await Http.Request(method, route + url)
                 .SetBody(body)
                 .SendAsync<TReturn>();
+            
             if (result.Success)
                 return result.Result;
             throw new ApiException($"Api Error: {result.Error}");
