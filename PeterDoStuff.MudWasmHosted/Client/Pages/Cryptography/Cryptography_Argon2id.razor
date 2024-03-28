@@ -74,18 +74,6 @@
     }
     private async Task HashArgon2idServer()
     {
-        // var result = await Http
-        //     .Request(HttpMethod.Post, "api/security/HashArgon2id")
-        //     .SetBodyParam("input", InputByteArray)
-        //     .SetBodyParam("salt", argon2idSalt)
-        //     .SendAsync<byte[]>();
-        // argon2idHash = result.Result;
-        // if (result.Failure)
-        //     await ShowError(result.Error);
-        // argon2idHashTime = result.ElapsedMilliseconds != null
-        //     ? $"{result.ElapsedMilliseconds} ms"
-        //     : null;
-
         try
         {
             Stopwatch sw = Stopwatch.StartNew();
@@ -102,18 +90,6 @@
     }
     private async Task HashArgon2idQuick()
     {
-        // var result = await Http
-        //     .Request(HttpMethod.Post, "api/security/HashArgon2idQuick")
-        //     .SetBodyParam("input", InputByteArray)
-        //     .SetBodyParam("salt", argon2idSalt)
-        //     .SendAsync<byte[]>();
-        // argon2idHash = result.Result;
-        // if (result.Failure)
-        //     await ShowError(result.Error);
-        // argon2idHashTime = result.ElapsedMilliseconds != null
-        //     ? $"{result.ElapsedMilliseconds} ms"
-        //     : null;
-
         try
         {
             Stopwatch sw = Stopwatch.StartNew();
