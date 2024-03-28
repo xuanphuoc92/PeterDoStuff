@@ -18,5 +18,20 @@ namespace PeterDoStuff.MudWasmHosted.Client.Api
 
         public Task<byte[]> DecryptAes(AesBody body)
             => SendToApi<byte[]>("DecryptAes", body);
+
+        public Task<RsaKeys> GenerateRsaKeys()
+            => SendToApi<RsaKeys>("GenerateRsaKeys");
+
+        public Task<byte[]> EncryptRsa(RsaBody body)
+            => SendToApi<byte[]>("EncryptRsa", body);
+
+        public Task<byte[]> DecryptRsa(RsaBody body)
+            => SendToApi<byte[]>("DecryptRsa", body);
+
+        public Task<byte[]> SignRsa(RsaBody body)
+            => SendToApi<byte[]>("SignRsa", body);
+
+        public Task<bool> VerifyRsa(RsaBody body)
+            => SendToApi<bool>("VerifyRsa", body);
     }
 }
