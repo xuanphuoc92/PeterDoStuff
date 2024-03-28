@@ -99,8 +99,15 @@
         //     ? $"{result.ElapsedMilliseconds} ms"
         //     : null;
 
-        argon2idHash = await ApiClient
-            .As<CryptographyClient>(Http)
-            .HashArgon2idQuick(new CryptographyApi.Argon2idBody(InputByteArray, argon2idSalt));
+        try
+        {
+            argon2idHash = await ApiClient
+                .As<CryptographyClient>(Http)
+                .HashArgon2idQuick(new CryptographyApi.Argon2idBody(InputByteArray, argon2idSalt));
+        } 
+        catch (ApiException ex)
+        {
+            await ShowError(ex.Message);
+        }
     }
 }
