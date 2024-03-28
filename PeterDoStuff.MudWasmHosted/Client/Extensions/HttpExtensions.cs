@@ -76,7 +76,10 @@ namespace PeterDoStuff.MudWasmHosted.Client.Extensions
             if (result.Success)
                 result.Result = await response.Content.ReadFromJsonAsync<TResponse>();
             else if (result.Error == null && response != null)
-                result.Error = await response.Content.ReadAsStringAsync();
+            {
+                result.Error = response.StatusCode + ": ";
+                result.Error += await response.Content.ReadAsStringAsync();
+            }
             return result;
         }
 

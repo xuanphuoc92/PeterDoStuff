@@ -2,6 +2,7 @@
 @using PeterDoStuff.MudWasmHosted.Client.Api
 @using PeterDoStuff.MudWasmHosted.Client.Extensions
 @using PeterDoStuff.MudWasmHosted.Shared
+@using System.Diagnostics
 @inject HttpClient Http
 
 <MudText Typo="Typo.h4">
@@ -87,9 +88,12 @@
 
         try
         {
+            Stopwatch sw = Stopwatch.StartNew();
             argon2idHash = await ApiClient
                 .As<CryptographyClient>(Http)
                 .HashArgon2id(new Argon2idBody(InputByteArray, argon2idSalt));
+            sw.Stop();
+            argon2idHashTime = $"{sw.ElapsedMilliseconds} ms";
         }
         catch (ApiException ex)
         {
@@ -112,9 +116,12 @@
 
         try
         {
+            Stopwatch sw = Stopwatch.StartNew();
             argon2idHash = await ApiClient
                 .As<CryptographyClient>(Http)
                 .HashArgon2idQuick(new Argon2idBody(InputByteArray, argon2idSalt));
+            sw.Stop();
+            argon2idHashTime = $"{sw.ElapsedMilliseconds} ms";
         } 
         catch (ApiException ex)
         {
