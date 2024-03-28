@@ -4,13 +4,22 @@ using System.Reflection.Metadata.Ecma335;
 
 namespace PeterDoStuff.MudWasmHosted.Client.Api
 {
+    public static class ApiClientExtension
+    {
+        public static TApiClient As<TApiClient>(this HttpClient client) 
+            where TApiClient : ApiClient, new()
+        {
+            return ApiClient.As<TApiClient>(client);
+        }
+    }
+    
     public abstract class ApiClient
     {
         private HttpClient Http { get; set; }
 
         protected ApiClient() { }
 
-        public static TApiClient As<TApiClient>(HttpClient http) where TApiClient : ApiClient, new()
+        internal static TApiClient As<TApiClient>(HttpClient http) where TApiClient : ApiClient, new()
         {
             TApiClient client = new TApiClient();
             client.Http = http;

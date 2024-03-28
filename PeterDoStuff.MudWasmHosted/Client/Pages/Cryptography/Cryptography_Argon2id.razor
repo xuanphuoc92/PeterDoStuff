@@ -77,8 +77,8 @@
         try
         {
             Stopwatch sw = Stopwatch.StartNew();
-            argon2idHash = await ApiClient
-                .As<CryptographyClient>(Http)
+            argon2idHash = await Http
+                .As<CryptographyClient>()
                 .HashArgon2id(new Argon2idBody(InputByteArray, argon2idSalt));
             sw.Stop();
             argon2idHashTime = $"{sw.ElapsedMilliseconds} ms";
@@ -93,8 +93,8 @@
         try
         {
             Stopwatch sw = Stopwatch.StartNew();
-            argon2idHash = await ApiClient
-                .As<CryptographyClient>(Http)
+            argon2idHash = await Http
+                .As<CryptographyClient>()
                 .HashArgon2idQuick(new Argon2idBody(InputByteArray, argon2idSalt));
             sw.Stop();
             argon2idHashTime = $"{sw.ElapsedMilliseconds} ms";
