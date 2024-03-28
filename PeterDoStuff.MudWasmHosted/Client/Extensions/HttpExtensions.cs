@@ -47,12 +47,9 @@ namespace PeterDoStuff.MudWasmHosted.Client.Extensions
                 {
                     request.Headers.Add(header.Key, header.Value);
                 }
-                Stopwatch sw = Stopwatch.StartNew();
                 var response = await @this.Http.SendAsync(request);
-                sw.Stop();
                 var result = new HttpResult<TResponse>();
                 result.Success = response.StatusCode == System.Net.HttpStatusCode.OK;
-                result.ElapsedMilliseconds = sw.ElapsedMilliseconds;
                 return (result, response);
             }
             catch (Exception ex)
@@ -148,6 +145,5 @@ namespace PeterDoStuff.MudWasmHosted.Client.Extensions
         public bool Failure => !Success;
         public TResponse? Result { get; set; }
         public string? Error { get; set; } = null;
-        public long? ElapsedMilliseconds { get; set; } = null;
     }
 }
