@@ -1,5 +1,7 @@
 ﻿@using PeterDoStuff.Extensions
+@using PeterDoStuff.MudWasmHosted.Client.Api
 @using PeterDoStuff.MudWasmHosted.Client.Extensions
+@using PeterDoStuff.MudWasmHosted.Shared
 @inject HttpClient Http
 
 <MudText Typo="Typo.h4">
@@ -57,7 +59,7 @@
 
     [Parameter]
     public Func<string, Task> ShowError { get; set; }
-    
+
     private byte[]? argon2idSalt, argon2idHash;
     private string? argon2idHashTime;
     private void GenerateArgon2idSalt()
@@ -85,16 +87,20 @@
     }
     private async Task HashArgon2idQuick()
     {
-        var result = await Http
-            .Request(HttpMethod.Post, "api/security/HashArgon2idQuick")
-            .SetBodyParam("input", InputByteArray)
-            .SetBodyParam("salt", argon2idSalt)
-            .SendAsync<byte[]>();
-        argon2idHash = result.Result;
-        if (result.Failure)
-            await ShowError(result.Error);
-        argon2idHashTime = result.ElapsedMilliseconds != null
-            ? $"{result.ElapsedMilliseconds} ms"
-            : null;
+        // var result = await Http
+        //     .Request(HttpMethod.Post, "api/security/HashArgon2idQuick")
+        //     .SetBodyParam("input", InputByteArray)
+        //     .SetBodyParam("salt", argon2idSalt)
+        //     .SendAsync<byte[]>();
+        // argon2idHash = result.Result;
+        // if (result.Failure)
+        //     await ShowError(result.Error);
+        // argon2idHashTime = result.ElapsedMilliseconds != null
+        //     ? $"{result.ElapsedMilliseconds} ms"
+        //     : null;
+
+        argon2idHash = await ApiClient
+            .As<CryptographyClient>(Http)
+            .HashArgon2idQuick(new CryptographyApi.Argon2idBody(InputByteArray, argon2idSalt));
     }
 }
