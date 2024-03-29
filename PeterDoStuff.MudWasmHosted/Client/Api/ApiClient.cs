@@ -6,10 +6,10 @@ namespace PeterDoStuff.MudWasmHosted.Client.Api
 {
     public static class ApiClientExtension
     {
-        public static TApiClient As<TApiClient>(this HttpClient client) 
+        public static TApiClient As<TApiClient>(this HttpClient http) 
             where TApiClient : ApiClient, new()
         {
-            return ApiClient.As<TApiClient>(client);
+            return ApiClient.As<TApiClient>(http);
         }
     }
     
