@@ -80,7 +80,7 @@ else
             var googleMapApiKey = await Http
                 .As<EnvironmentClient>()
                 .Get("GoogleMapApi");
-            if (googleMapApi.IsNullOrEmpty() == false)
+            if (googleMapApiKey.IsNullOrEmpty() == false)
             {
                 googleMapApi = $"https://maps.googleapis.com/maps/api/js?key={googleMapApiKey}&callback={mapInteropMethod}";
                 mapAvailable = true;
