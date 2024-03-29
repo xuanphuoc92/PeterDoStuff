@@ -71,27 +71,25 @@ namespace PeterDoStuff.MudWasmHosted.Client.Extensions
         {
             (HttpResult<TResponse> result, HttpResponseMessage? response) = await SendAndGetResponse<TResponse>(@this);
             if (result.Success)
-                result.Result = await response.Content.ReadFromJsonAsync<TResponse>();
+            {
+                try
+                {
+                    result.Result = await response.Content.ReadFromJsonAsync<TResponse>();
+                }
+                catch (JsonException ex)
+                {
+                    // Handle the empty Json Return, which can be considered as valid
+                    if (ex.Message.Contains("not contain any JSON tokens"))
+                        result.Result = default(TResponse);
+                    else
+                        throw;
+                }
+            }
             else if (result.Error == null && response != null)
             {
                 result.Error = response.StatusCode + ": ";
                 result.Error += await response.Content.ReadAsStringAsync();
             }
-            return result;
-        }
-
-        /// <summary>
-        /// Send the Http Request and parse the response as string
-        /// </summary>
-        /// <param name="this"></param>
-        /// <returns></returns>
-        public async static Task<HttpResult<string>> SendAsync(this HttpRequestBuilder @this)
-        {
-            (HttpResult<string> result, HttpResponseMessage? response) = await SendAndGetResponse<string>(@this);
-            if (result.Success)
-                result.Result = await response.Content.ReadAsStringAsync();
-            else if (result.Error == null && response != null)
-                result.Error = await response.Content.ReadAsStringAsync();
             return result;
         }
     }
