@@ -72,18 +72,10 @@ namespace PeterDoStuff.MudWasmHosted.Client.Extensions
             (HttpResult<TResponse> result, HttpResponseMessage? response) = await SendAndGetResponse<TResponse>(@this);
             if (result.Success)
             {
-                try
-                {
-                    result.Result = await response.Content.ReadFromJsonAsync<TResponse>();
-                }
-                catch (JsonException ex)
-                {
-                    // Handle the empty Json Return, which can be considered as valid
-                    if (ex.Message.Contains("not contain any JSON tokens"))
-                        result.Result = default(TResponse);
-                    else
-                        throw;
-                }
+                if (typeof(string) == typeof(TResponse))
+                    result.SetResult(await response.Content.ReadAsStringAsync());
+                else
+                    result.SetResult(await response.Content.ReadFromJsonAsync<TResponse>());
             }
             else if (result.Error == null && response != null)
             {
@@ -141,7 +133,11 @@ namespace PeterDoStuff.MudWasmHosted.Client.Extensions
     {
         public bool Success { get; set; } = false;
         public bool Failure => !Success;
-        public TResponse? Result { get; set; }
+        public TResponse? Result { get; private set; }
+        public void SetResult(object result)
+        {
+            Result = (TResponse)result;
+        }
         public string? Error { get; set; } = null;
     }
 }
