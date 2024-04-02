@@ -33,18 +33,16 @@
 
             @foreach (var item in PlaygroundItem.Items)
             {
-                <MudLink Href="@item.Link" Underline="Underline.None">
-                    <MudPaper Elevation="2" Class="pa-4">
-                        <MudText Typo="Typo.h5" GutterBottom="true">
-                            <MudIcon Style="font-size:0.75em;" Icon="@item.Icon" />
-                            @item.Title
-                        </MudText>
-                        <MudDivider/>
-                        <MudText>
-                            @item.Description
-                        </MudText>
-                    </MudPaper>
-                </MudLink>
+                <MudButton Class="d-block pa-4" Variant="Variant.Filled" Href="@item.Link">
+                    <MudText Typo="Typo.h5" GutterBottom="true">
+                        <MudIcon Style="font-size:0.75em;" Icon="@item.Icon" />
+                        @item.Title
+                    </MudText>
+                    <MudDivider />
+                    <MudText>
+                        @item.Description
+                    </MudText>
+                </MudButton>
                 <br/>
                 <br />
             }
