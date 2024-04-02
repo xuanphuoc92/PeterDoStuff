@@ -56,5 +56,16 @@ namespace PeterDoStuff.MudWasmHosted.Client
                 _ => Icons.Material.Filled.QuestionMark
             };
         }
+
+        public static string GetColor(this PlaygroundGroup group)
+        {
+            return group switch
+            {
+                PlaygroundGroup.Tools => Colors.DeepPurple.Default,
+                PlaygroundGroup.Demos => Colors.Teal.Default,
+                PlaygroundGroup.Games => Colors.Amber.Darken4,
+                _ => Colors.Pink.Default,
+            };
+        }
     }
 }
