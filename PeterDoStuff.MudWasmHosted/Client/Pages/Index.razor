@@ -20,7 +20,7 @@
             <MudText Typo="Typo.h3" GutterBottom="true">
                 Peter Do Stuff
             </MudText>
-            <MudText Typo="Typo.h6" Class="mb-8">
+            <MudText Class="mb-8">
                 Welcome to my playground!
                 <br />
                 Try out the toolkits, services, demos, and games in this site.
@@ -32,7 +32,7 @@
                 <ItemTemplate>
                     <div class="d-flex flex-column flex-column justify-center" style="height:100%; background-color: @context.GetColor()">
                         <MudIcon Class="mx-auto" Icon="@context.GetIcon()" Size="@Size.Large" />
-                        <MudText Align="@Align.Center" Typo="Typo.h5" Class="mx-auto">@context.ToString()</MudText>
+                        <MudText Align="@Align.Center" Typo="Typo.h6" Class="mx-auto">@context.ToString()</MudText>
                     </div>
                 </ItemTemplate>
             </MudCarousel>
