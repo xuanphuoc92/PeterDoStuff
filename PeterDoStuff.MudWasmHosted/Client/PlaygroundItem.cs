@@ -43,4 +43,18 @@ namespace PeterDoStuff.MudWasmHosted.Client
     {
         Tools, Demos, Games
     }
+
+    public static class PlaygroundExtensions
+    {
+        public static string GetIcon(this PlaygroundGroup group)
+        {
+            return group switch
+            {
+                PlaygroundGroup.Tools => Icons.Material.Filled.BuildCircle,
+                PlaygroundGroup.Demos => Icons.Material.Filled.StarPurple500,
+                PlaygroundGroup.Games => Icons.Material.Filled.BedroomBaby,
+                _ => Icons.Material.Filled.QuestionMark
+            };
+        }
+    }
 }
