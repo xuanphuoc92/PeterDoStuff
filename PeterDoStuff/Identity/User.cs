@@ -55,11 +55,11 @@ namespace PeterDoStuff.Identity
             _context.Dispose();
         }
 
-        public bool Register(string userName, string password)
+        public async Task<bool> Register(string userName, string password)
         {
             userName = userName.ToLower();
-            var auth = _context.UserAuths
-                .SingleOrDefault(ua => ua.UserName != null && ua.UserName.ToLower() == userName);
+            var auth = await _context.UserAuths
+                .SingleOrDefaultAsync(ua => ua.UserName != null && ua.UserName.ToLower() == userName);
             if (auth != null)
                 return false;
 
@@ -74,18 +74,18 @@ namespace PeterDoStuff.Identity
 
             user.Auths.Add(auth);
 
-            _context.Users.Add(user);
+            await _context.Users.AddAsync(user);
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return true;
         }
 
-        public bool Authenticate(string userName, string password)
+        public async Task<bool> Authenticate(string userName, string password)
         {
             userName = userName.ToLower();
-            var auth = _context.UserAuths
-                .SingleOrDefault(ua => ua.UserName != null && ua.UserName.ToLower() == userName);
+            var auth = await _context.UserAuths
+                .SingleOrDefaultAsync(ua => ua.UserName != null && ua.UserName.ToLower() == userName);
 
             if (auth == null) return false;
 

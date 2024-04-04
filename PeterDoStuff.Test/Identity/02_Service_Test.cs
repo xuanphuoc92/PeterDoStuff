@@ -23,20 +23,20 @@ namespace PeterDoStuff.Test.Identity
         }
 
         [TestMethod]
-        public void _01_RegisterAuthenticate()
+        public async Task _01_RegisterAuthenticate()
         {
             using var service = GetTestService();
             
             // Register 1st time
-            service.Register("NewUser", "P@ssw0rd").Should().BeTrue();
+            (await service.Register("NewUser", "P@ssw0rd")).Should().BeTrue();
 
             // Register 2nd time
-            service.Register("NewUser", "P@ssw0rd").Should().BeFalse();
+            (await service.Register("NewUser", "P@ssw0rd")).Should().BeFalse();
 
             // Authenticate
-            service.Authenticate("NonExistUser", "P@ssw0rd").Should().BeFalse();
-            service.Authenticate("NewUser", "WrongP@ssw0rd").Should().BeFalse();
-            service.Authenticate("NewUser", "P@ssw0rd").Should().BeTrue();
+            (await service.Authenticate("NonExistUser", "P@ssw0rd")).Should().BeFalse();
+            (await service.Authenticate("NewUser", "WrongP@ssw0rd")).Should().BeFalse();
+            (await service.Authenticate("NewUser", "P@ssw0rd")).Should().BeTrue();
         }
     }
 }
