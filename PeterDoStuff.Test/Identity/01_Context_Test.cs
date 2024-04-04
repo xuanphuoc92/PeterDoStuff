@@ -10,17 +10,9 @@ using System.Threading.Tasks;
 
 namespace PeterDoStuff.Test.Identity
 {
-    [TestClass]
-    public class _01_Context_Test
+    public abstract class _01_Context_Test
     {
-        private UserContext GetTestContext()
-        {
-            var options = new DbContextOptionsBuilder<UserContext>()
-                .UseInMemoryDatabase(databaseName: "TestDatabase")
-                .Options;
-
-            return new UserContext(options);
-        }
+        protected abstract UserContext GetTestContext();
 
         [TestMethod]
         public void _01_Setup()
