@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace PeterDoStuff.Test.Identity
 {
     [TestClass]
-    public class _01_BaseTest
+    public class _01_Context_Test
     {
         private UserContext GetTestContext()
         {
@@ -92,24 +92,6 @@ namespace PeterDoStuff.Test.Identity
                 user.Auths.Single().Id.Should().Be(userAuthId);
                 user.Auths.Single().UserId.Should().Be(userId);
 
-            }
-        }
-
-        [TestMethod]
-        public void _04_Register()
-        {
-            using (var context = GetTestContext())
-            {
-                var service = new UserService(context);
-                var result = service.Register("NewUser", "P@ssw0rd");
-                result.Should().BeTrue();
-            }
-
-            using (var context = GetTestContext())
-            {
-                var service = new UserService(context);
-                var result = service.Register("NewUser", "P@ssw0rd");
-                result.Should().BeFalse();
             }
         }
     }

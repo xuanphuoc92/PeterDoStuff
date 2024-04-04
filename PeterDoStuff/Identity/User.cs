@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace PeterDoStuff.Identity
@@ -41,12 +42,17 @@ namespace PeterDoStuff.Identity
         public DbSet<UserAuth> UserAuths => Set<UserAuth>();
     }
 
-    public class UserService
+    public class UserService : IDisposable
     {
         private readonly UserContext _context;
         public UserService (UserContext context)
         {
             _context = context;
+        }
+
+        public void Dispose()
+        {
+            _context.Dispose();
         }
 
         public bool Register(string userName, string password)
@@ -73,6 +79,19 @@ namespace PeterDoStuff.Identity
             _context.SaveChanges();
 
             return true;
+        }
+
+        public bool Authenticate(string userName, string password)
+        {
+            userName = userName.ToLower();
+            var auth = _context.UserAuths
+                .SingleOrDefault(ua => ua.UserName != null && ua.UserName.ToLower() == userName);
+
+            if (auth == null) return false;
+
+            var passwordHash = password.ToByteArray().HashArgon2id(auth.PasswordSalt);
+
+            return passwordHash.SequenceEqual(auth.PasswordHash);
         }
     }
 }
