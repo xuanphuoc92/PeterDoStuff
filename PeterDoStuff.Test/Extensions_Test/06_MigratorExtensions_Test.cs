@@ -47,8 +47,9 @@ namespace PeterDoStuff.Test.Extensions_Test
 
         private TestContext GetTestContext()
         {
+            var connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=PeterDoStuffDb;Integrated Security=True;Connect Timeout=10;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
             var options = new DbContextOptionsBuilder<TestContext>()
-                .UseInMemoryDatabase(databaseName: "TestDatabase")
+                .UseSqlServer(connectionString)
                 .Options;
 
             return new TestContext(options);
