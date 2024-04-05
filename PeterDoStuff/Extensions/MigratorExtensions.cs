@@ -2,6 +2,7 @@
 using System.Text;
 using System.Reflection;
 using System.ComponentModel.DataAnnotations;
+using PeterDoStuff.Attributes;
 
 namespace PeterDoStuff.Extensions
 {
@@ -63,7 +64,8 @@ namespace PeterDoStuff.Extensions
 
         private static bool AmongColumnTypes(Type propertyType)
         {
-            return _columnTypes.ContainsKey(propertyType) || propertyType.IsEnum;
+            Type typeToCheck = GetInnerTypeIfNullable(propertyType);
+            return _columnTypes.ContainsKey(typeToCheck) || typeToCheck.IsEnum;
         }
         private static string GetSqlTerm(PropertyInfo pi)
         {
@@ -101,10 +103,14 @@ namespace PeterDoStuff.Extensions
 
         private static Type GetInnerTypeIfNullable(Type propertyType)
         {
-            var isNullable = propertyType.IsGenericType && propertyType.GetGenericTypeDefinition() == typeof(Nullable<>);
+            var isNullable = 
+                propertyType.IsGenericType && 
+                propertyType.GetGenericTypeDefinition() == typeof(Nullable<>);
+
             Type typeToCheck = isNullable
                 ? propertyType.GetGenericArguments()[0]
                 : propertyType;
+
             return typeToCheck;
         }
 
@@ -122,14 +128,16 @@ namespace PeterDoStuff.Extensions
 
         private static string GetCustomType(PropertyInfo pi)
         {
-            if (pi.PropertyType == typeof(DateTime))
+            Type typeToCheck = GetInnerTypeIfNullable(pi.PropertyType);
+
+            if (typeToCheck == typeof(DateTime))
             {
                 var attribute = pi.GetCustomAttribute<DateOnlyAttribute>();
                 if (attribute != null)
                     return "date";
             }
 
-            if (pi.PropertyType.IsEnum)
+            if (typeToCheck.IsEnum)
             {
                 var attribute = pi.GetCustomAttribute<NumberEnumAttribute>();
                 if (attribute != null)
@@ -141,14 +149,16 @@ namespace PeterDoStuff.Extensions
 
         private static string GetCustomSize(PropertyInfo pi)
         {
-            if (pi.PropertyType == typeof(string) || pi.PropertyType == typeof(byte[])) 
+            Type typeToCheck = GetInnerTypeIfNullable(pi.PropertyType);
+
+            if (typeToCheck == typeof(string) || typeToCheck == typeof(byte[])) 
             {
                 var attribute = pi.GetCustomAttribute<MaxLengthAttribute>();
                 if (attribute != null)
                     return attribute.Length.ToString();
             }
 
-            if (pi.PropertyType == typeof(decimal))
+            if (typeToCheck == typeof(decimal))
             {
                 var attribute = pi.GetCustomAttribute<DecimalPrecisionScaleAttribute>();
                 if (attribute != null)
@@ -158,71 +168,4 @@ namespace PeterDoStuff.Extensions
             return "";
         }
     }
-
-    public class DecimalPrecisionScaleAttribute : ValidationAttribute
-    {
-        public readonly int Precision;
-        public readonly int Scale;
-
-        public DecimalPrecisionScaleAttribute(int precision, int scale)
-        {
-            Precision = precision;
-            Scale = scale;
-        }
-
-        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
-        {
-            if (value == null || !(value is decimal))
-            {
-                return ValidationResult.Success; // Let RequiredAttribute handle null values
-            }
-
-            decimal decimalValue = (decimal)value;
-
-            // Check precision
-            string stringValue = decimalValue.ToString();
-            int integerDigits = stringValue.Contains(".") ? stringValue.Split('.')[0].Length : stringValue.Length;
-
-            if (integerDigits > Precision - Scale)
-            {
-                return new ValidationResult($"The field {validationContext.DisplayName} must have a precision of {Precision} or fewer digits in total.");
-            }
-
-            // Check scale
-            if (decimalValue % 1 != 0 && stringValue.Split('.')[1].Length > Scale)
-            {
-                return new ValidationResult($"The field {validationContext.DisplayName} must have a scale of {Scale} or fewer digits after the decimal point.");
-            }
-
-            return ValidationResult.Success;
-        }
-    }
-
-    public class DateOnlyAttribute : ValidationAttribute
-    {
-        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
-        {
-            if (value != null)
-            {
-                var date = (DateTime)value;
-
-                if (date.Hour == 0 && date.Minute == 0 && date.Second == 0)
-                {
-                    return ValidationResult.Success;
-                }
-                else
-                {
-                    return new ValidationResult("The value must be a date only (hours, minutes, seconds should all be 0).");
-                }
-            }
-
-            // If the value is null, then consider it as valid.
-            return ValidationResult.Success;
-        }
-    }
-
-    /// <summary>
-    /// This enum attribute indicates that when saved in the database, the enum value is turned into int type.
-    /// </summary>
-    public class NumberEnumAttribute : Attribute { }
 }

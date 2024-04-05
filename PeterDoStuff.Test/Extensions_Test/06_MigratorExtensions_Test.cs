@@ -1,6 +1,7 @@
 ﻿using ApprovalTests.Reporters;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using PeterDoStuff.Attributes;
 using PeterDoStuff.Extensions;
 using PeterDoStuff.Identity;
 using PeterDoStuff.Test.Extensions;
@@ -35,10 +36,10 @@ namespace PeterDoStuff.Test.Extensions_Test
 
             public byte[]? BigHash { get; set; }
 
-            public decimal DefaultDecimal { get; set; }
+            public decimal? DefaultDecimal { get; set; }
 
             [DecimalPrecisionScale(20, 8)]            
-            public decimal CustomDecimal { get; set; }
+            public decimal? CustomDecimal { get; set; }
 
             public int Number { get; set; }
 
@@ -48,7 +49,7 @@ namespace PeterDoStuff.Test.Extensions_Test
             public DateTime CreatedTime { get; set; }
             
             [DateOnly]
-            public DateTime CreatedDate { get; set; }
+            public DateTime? CreatedDate { get; set; }
 
             public TestEnum DefaultEnum { get; set; }
             [NumberEnum]
@@ -111,6 +112,9 @@ namespace PeterDoStuff.Test.Extensions_Test
             validationResults[0].ErrorMessage.WriteToConsole("Exceed precision");
 
             entity.CustomDecimal = 123456789001.23456789m;
+            entity.IsValid().Should().BeTrue();
+
+            entity.CustomDecimal = 123456789012;
             entity.IsValid().Should().BeTrue();
 
             entity.CreatedDate = DateTime.Today.AddMinutes(1);
