@@ -112,6 +112,14 @@ namespace PeterDoStuff.Test.Extensions_Test
 
             entity.CustomDecimal = 123456789001.23456789m;
             entity.IsValid().Should().BeTrue();
+
+            entity.CreatedDate = DateTime.Today.AddMinutes(1);
+            entity.IsValid(out validationResults).Should().BeFalse();
+            validationResults.Should().HaveCount(1);
+            validationResults[0].ErrorMessage.WriteToConsole("Not Date only");
+
+            entity.CreatedDate = DateTime.Today;
+            entity.IsValid().Should().BeTrue();
         }
     }
 }

@@ -179,7 +179,7 @@ namespace PeterDoStuff.Extensions
     {
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            if (value != null && value is DateTime)
+            if (value != null)
             {
                 var date = (DateTime)value;
 
@@ -193,7 +193,7 @@ namespace PeterDoStuff.Extensions
                 }
             }
 
-            // If the value is null or not a DateTime instance, then consider it as valid.
+            // If the value is null, then consider it as valid.
             return ValidationResult.Success;
         }
     }
