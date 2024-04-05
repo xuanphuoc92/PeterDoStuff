@@ -37,7 +37,7 @@ namespace PeterDoStuff.Extensions
                 var entityType = dbSet.PropertyType.GetGenericArguments()[0];
                 var columns = entityType
                     .GetProperties()
-                    .Where(p => AmongColumnTypes(p.PropertyType) || p.PropertyType.IsEnum)
+                    .Where(p => AmongColumnTypes(p.PropertyType))
                     .Select(p => GetSqlColumn(p));
 
                 sql.AppendLine($"CREATE TABLE [{dbSet.Name}] (");
@@ -63,7 +63,7 @@ namespace PeterDoStuff.Extensions
 
         private static bool AmongColumnTypes(Type propertyType)
         {
-            return _columnTypes.Keys.Contains(propertyType);
+            return _columnTypes.ContainsKey(propertyType) || propertyType.IsEnum;
         }
         private static string GetSqlColumn(PropertyInfo pi)
         {
