@@ -10,5 +10,7 @@
     [Longitude] float,
     [Latitude] float,
     [CreatedTime] datetime,
-    [CreatedDate] date
+    [CreatedDate] date,
+    [DefaultEnum] nvarchar(7),
+    [NumberEnum] int
 );

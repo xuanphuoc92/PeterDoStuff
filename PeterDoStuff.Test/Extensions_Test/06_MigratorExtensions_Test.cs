@@ -48,6 +48,15 @@ namespace PeterDoStuff.Test.Extensions_Test
             
             [DateOnly]
             public DateTime CreatedDate { get; set; }
+
+            public TestEnum DefaultEnum { get; set; }
+            [NumberEnum]
+            public TestEnum NumberEnum { get; set; }
+        }
+
+        private enum TestEnum
+        {
+            Default, Custom, Special
         }
 
         private TestContext GetTestContext()

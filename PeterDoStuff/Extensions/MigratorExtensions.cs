@@ -37,7 +37,7 @@ namespace PeterDoStuff.Extensions
                 var entityType = dbSet.PropertyType.GetGenericArguments()[0];
                 var columns = entityType
                     .GetProperties()
-                    .Where(p => AmongColumnTypes(p.PropertyType))
+                    .Where(p => AmongColumnTypes(p.PropertyType) || p.PropertyType.IsEnum)
                     .Select(p => GetSqlColumn(p));
 
                 sql.AppendLine($"CREATE TABLE [{dbSet.Name}] (");
@@ -69,18 +69,32 @@ namespace PeterDoStuff.Extensions
         {
             var name = pi.Name;
             
-            string defaultType = _columnTypes[pi.PropertyType].DefaultSqlType;
+            string defaultType = _columnTypes.ContainsKey(pi.PropertyType)
+                ? _columnTypes[pi.PropertyType].DefaultSqlType
+                : "nvarchar"; // i.e. Enum
             string customType = GetCustomType(pi);
-
             var type = customType != "" ? customType : defaultType;
             
-            string defaultSize = _columnTypes[pi.PropertyType].DefaultSize;
+            string defaultSize = _columnTypes.ContainsKey(pi.PropertyType)
+                ? _columnTypes[pi.PropertyType].DefaultSize
+                : (type == "nvarchar" ? GetEnumSize(pi) : "");
             string customSize = GetCustomSize(pi);
-            
             string finalSize = customSize != "" ? customSize : defaultSize;
-            
             var size = finalSize.IsNullOrEmpty() ? "" : $"({finalSize})";
+
             return $"    [{name}] {type}{size}";
+        }
+
+        private static string GetEnumSize(PropertyInfo pi)
+        {
+            var enumValues = pi.PropertyType.GetEnumValues();
+            int maxValue = -1;
+            foreach (var enumValue in enumValues ) 
+            {
+                if (enumValue.ToString().Length > maxValue)
+                    maxValue = enumValue.ToString().Length;
+            }
+            return maxValue.ToString();
         }
 
         private static string GetCustomType(PropertyInfo pi)
@@ -90,6 +104,13 @@ namespace PeterDoStuff.Extensions
                 var attribute = pi.GetCustomAttribute<DateOnlyAttribute>();
                 if (attribute != null)
                     return "date";
+            }
+
+            if (pi.PropertyType.IsEnum)
+            {
+                var attribute = pi.GetCustomAttribute<NumberEnumAttribute>();
+                if (attribute != null)
+                    return "int";
             }
 
             return "";
@@ -176,4 +197,9 @@ namespace PeterDoStuff.Extensions
             return ValidationResult.Success;
         }
     }
+
+    /// <summary>
+    /// This enum attribute indicates that when saved in the database, the enum value is turned into int type.
+    /// </summary>
+    public class NumberEnumAttribute : Attribute { }
 }
