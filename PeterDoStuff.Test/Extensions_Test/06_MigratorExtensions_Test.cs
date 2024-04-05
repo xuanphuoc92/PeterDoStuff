@@ -20,8 +20,12 @@ namespace PeterDoStuff.Test.Extensions_Test
         private class TestContext : DbContext
         {
             public TestContext(DbContextOptions<TestContext> options) : base(options) { }
-            public DbSet<TestEntity> __TestTable__ => Set<TestEntity>();
+            public DbSet<TestEntity1> __TestTable__ => Set<TestEntity1>();
+            public DbSet<TestEntity2> __AnotherTestTable__ => Set<TestEntity2>();
         }
+
+        private class TestEntity1 : TestEntity { }
+        private class TestEntity2 : TestEntity { }
 
         private class TestEntity
         {
@@ -98,8 +102,8 @@ namespace PeterDoStuff.Test.Extensions_Test
                 await context.GetMigrator().DropAsync();
                 await context.GetMigrator().CreateAsync();
 
-                var defaultEntity = new TestEntity();
-                var customEntity = new TestEntity();
+                var defaultEntity = new TestEntity1();
+                var customEntity = new TestEntity1();
 
                 customEntity.Name = "Test Name";
                 customEntity.Description = "Test Description";

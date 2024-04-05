@@ -14,3 +14,19 @@
     [DefaultEnum] nvarchar(7),
     [NumberEnum] int
 );
+CREATE TABLE [__AnotherTestTable__] (
+    [Id] uniqueidentifier,
+    [Name] nvarchar(100),
+    [Description] nvarchar(max),
+    [StandardHash] varbinary(32),
+    [BigHash] varbinary(max),
+    [DefaultDecimal] decimal,
+    [CustomDecimal] decimal(20,8),
+    [Number] int,
+    [Longitude] float,
+    [Latitude] float,
+    [CreatedTime] datetime2,
+    [CreatedDate] date,
+    [DefaultEnum] nvarchar(7),
+    [NumberEnum] int
+);

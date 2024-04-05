@@ -1,1 +1,2 @@
 ﻿DROP TABLE IF EXISTS [__TestTable__];
+DROP TABLE IF EXISTS [__AnotherTestTable__];
