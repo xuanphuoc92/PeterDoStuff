@@ -3,6 +3,7 @@ using System.Text;
 using System.Reflection;
 using System.ComponentModel.DataAnnotations;
 using PeterDoStuff.Attributes;
+using System.Runtime.CompilerServices;
 
 namespace PeterDoStuff.Extensions
 {
@@ -28,7 +29,25 @@ namespace PeterDoStuff.Extensions
             this.context = context;
         }
 
-        public string Sql()
+        public string DropSql()
+        {
+            var dbSets = context.GetDbSetInfos();
+
+            StringBuilder sql = new StringBuilder();
+            foreach (var dbSet in dbSets)
+            {
+                sql.AppendLine($"DROP TABLE IF EXISTS [{dbSet.Name}];");                
+            }
+            return sql.ToString();
+        }
+
+        public async Task DropAsync()
+        {
+            var sql = FormattableStringFactory.Create(DropSql());
+            await context.Database.ExecuteSqlAsync(sql);
+        }
+
+        public string CreateSql()
         {
             var dbSets = context.GetDbSetInfos();
 
@@ -48,6 +67,12 @@ namespace PeterDoStuff.Extensions
             return sql.ToString();
         }
 
+        public async Task CreateAsync()
+        {
+            var sql = FormattableStringFactory.Create(CreateSql());
+            await context.Database.ExecuteSqlAsync(sql);
+        }
+
         private static readonly Dictionary<Type, (string DefaultSqlType, string DefaultSize)> _columnTypes
             = new Dictionary<Type, (string DefaultSqlType, string DefaultSize)>()
         {
@@ -58,7 +83,7 @@ namespace PeterDoStuff.Extensions
             { typeof(int), ("int", "" ) },
             { typeof(float), ("float", "" ) },
             { typeof(double), ("float", "" ) },
-            { typeof(DateTime), ("datetime", "" ) },
+            { typeof(DateTime), ("datetime2", "" ) },
             { typeof(DateOnly), ("date", "" ) },
         };
 

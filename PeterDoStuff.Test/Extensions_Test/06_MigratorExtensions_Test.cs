@@ -26,7 +26,7 @@ namespace PeterDoStuff.Test.Extensions_Test
         private class TestEntity
         {
             public Guid Id { get; set; }
-            
+
             [MaxLength(100)]
             public string Name { get; set; }
             public string? Description { get; set; }
@@ -52,6 +52,7 @@ namespace PeterDoStuff.Test.Extensions_Test
             public DateTime? CreatedDate { get; set; }
 
             public TestEnum DefaultEnum { get; set; }
+
             [NumberEnum]
             public TestEnum NumberEnum { get; set; }
         }
@@ -73,10 +74,54 @@ namespace PeterDoStuff.Test.Extensions_Test
 
         [TestMethod]
         [UseReporter(typeof(DiffReporter))]
-        public void _01_Sql()
+        public void _01_CreateSql()
         {
             using var context = GetTestContext();
-            context.GetMigrator().Sql().Verify();
+            context.GetMigrator().CreateSql().Verify();
+        }
+
+        [TestMethod]
+        [UseReporter(typeof(DiffReporter))]
+        public void _02_DropSql()
+        {
+            using var context = GetTestContext();
+            context.GetMigrator().DropSql().Verify();
+        }
+
+        [TestMethod]
+        public async Task _03_ReadWrite()
+        {
+            Guid defaultId, customId;
+
+            using (var context = GetTestContext())
+            {
+                await context.GetMigrator().DropAsync();
+                await context.GetMigrator().CreateAsync();
+
+                var defaultEntity = new TestEntity();
+                var customEntity = new TestEntity();
+
+                customEntity.Name = "Test Name";
+                customEntity.Description = "Test Description";
+
+                context.__TestTable__.Add(defaultEntity);
+                context.__TestTable__.Add(customEntity);
+                await context.SaveChangesAsync();
+
+                defaultId = defaultEntity.Id;
+                customId = customEntity.Id;
+            }
+
+            using (var context = GetTestContext()) 
+            {
+                var defaultEntity = context.__TestTable__.Find(defaultId);
+                var customEntity = context.__TestTable__.Find(customId);
+
+                defaultEntity.Name.Should().BeEmpty();
+                
+                customEntity.Name.Should().Be("Test Name");
+                customEntity.Description.Should().Be("Test Description");
+            }
         }
     }
 }

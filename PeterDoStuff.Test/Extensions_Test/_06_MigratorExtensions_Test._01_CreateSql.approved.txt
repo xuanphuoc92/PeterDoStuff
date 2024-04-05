@@ -9,7 +9,7 @@
     [Number] int,
     [Longitude] float,
     [Latitude] float,
-    [CreatedTime] datetime,
+    [CreatedTime] datetime2,
     [CreatedDate] date,
     [DefaultEnum] nvarchar(7),
     [NumberEnum] int
