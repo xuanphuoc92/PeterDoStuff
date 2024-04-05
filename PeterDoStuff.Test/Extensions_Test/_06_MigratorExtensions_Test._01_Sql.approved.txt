@@ -1,0 +1,12 @@
+﻿CREATE TABLE [__TestTable__] (
+    [Id] uniqueidentifier,
+    [Name] nvarchar(100),
+    [Description] nvarchar(max),
+    [StandardHash] varbinary(32),
+    [BigHash] varbinary(max),
+    [DefaultDecimal] decimal(19,4),
+    [CustomDecimal] decimal(20,8),
+    [Number] int,
+    [Longitude] float,
+    [Latitude] float
+);

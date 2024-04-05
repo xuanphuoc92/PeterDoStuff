@@ -19,7 +19,6 @@ namespace PeterDoStuff.Test.Identity
         {
             using (var context = GetTestContext())
             {
-                context.Database.EnsureCreated().Should().BeTrue();
                 context.Model.FindEntityType(typeof(User)).Should().NotBeNull();
                 context.Model.FindEntityType(typeof(UserAuth)).Should().NotBeNull();
             }
