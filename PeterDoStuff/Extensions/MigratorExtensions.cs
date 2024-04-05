@@ -38,7 +38,7 @@ namespace PeterDoStuff.Extensions
                 var columns = entityType
                     .GetProperties()
                     .Where(p => AmongColumnTypes(p.PropertyType))
-                    .Select(p => GetSqlColumn(p));
+                    .Select(p => GetSqlTerm(p));
 
                 sql.AppendLine($"CREATE TABLE [{dbSet.Name}] (");
                 sql.AppendLine(columns.Join(",\n"));
@@ -53,7 +53,7 @@ namespace PeterDoStuff.Extensions
             { typeof(string), ("nvarchar", "max" ) },
             { typeof(Guid), ("uniqueidentifier", "" ) },
             { typeof(byte[]), ("varbinary", "max" ) },
-            { typeof(decimal), ("decimal", "19,4" ) },
+            { typeof(decimal), ("decimal", "" ) },
             { typeof(int), ("int", "" ) },
             { typeof(float), ("float", "" ) },
             { typeof(double), ("float", "" ) },
@@ -65,24 +65,47 @@ namespace PeterDoStuff.Extensions
         {
             return _columnTypes.ContainsKey(propertyType) || propertyType.IsEnum;
         }
-        private static string GetSqlColumn(PropertyInfo pi)
+        private static string GetSqlTerm(PropertyInfo pi)
         {
             var name = pi.Name;
-            
-            string defaultType = _columnTypes.ContainsKey(pi.PropertyType)
-                ? _columnTypes[pi.PropertyType].DefaultSqlType
-                : "nvarchar"; // i.e. Enum
+
+            string defaultType = GetDefaultType(pi.PropertyType);
             string customType = GetCustomType(pi);
             var type = customType != "" ? customType : defaultType;
             
-            string defaultSize = _columnTypes.ContainsKey(pi.PropertyType)
-                ? _columnTypes[pi.PropertyType].DefaultSize
-                : (type == "nvarchar" ? GetEnumSize(pi) : "");
+            string defaultSize = GetDefaultSize(pi, type);
             string customSize = GetCustomSize(pi);
             string finalSize = customSize != "" ? customSize : defaultSize;
             var size = finalSize.IsNullOrEmpty() ? "" : $"({finalSize})";
 
             return $"    [{name}] {type}{size}";
+        }
+
+        private static string GetDefaultSize(PropertyInfo pi, string type)
+        {
+            Type typeToCheck = GetInnerTypeIfNullable(pi.PropertyType);
+
+            return _columnTypes.ContainsKey(typeToCheck)
+                ? _columnTypes[typeToCheck].DefaultSize
+                : (type == "nvarchar" ? GetEnumSize(pi) : ""); // Enum
+        }
+
+        private static string GetDefaultType(Type propertyType)
+        {
+            Type typeToCheck = GetInnerTypeIfNullable(propertyType);
+
+            return _columnTypes.ContainsKey(typeToCheck)
+                ? _columnTypes[typeToCheck].DefaultSqlType
+                : "nvarchar"; // Enum
+        }
+
+        private static Type GetInnerTypeIfNullable(Type propertyType)
+        {
+            var isNullable = propertyType.IsGenericType && propertyType.GetGenericTypeDefinition() == typeof(Nullable<>);
+            Type typeToCheck = isNullable
+                ? propertyType.GetGenericArguments()[0]
+                : propertyType;
+            return typeToCheck;
         }
 
         private static string GetEnumSize(PropertyInfo pi)

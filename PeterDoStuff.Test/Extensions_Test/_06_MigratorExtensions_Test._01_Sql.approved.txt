@@ -4,7 +4,7 @@
     [Description] nvarchar(max),
     [StandardHash] varbinary(32),
     [BigHash] varbinary(max),
-    [DefaultDecimal] decimal(19,4),
+    [DefaultDecimal] decimal,
     [CustomDecimal] decimal(20,8),
     [Number] int,
     [Longitude] float,
