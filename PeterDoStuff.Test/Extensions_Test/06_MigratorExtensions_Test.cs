@@ -26,7 +26,7 @@ namespace PeterDoStuff.Test.Extensions_Test
             public Guid Id { get; set; }
             
             [MaxLength(100)]
-            public string? Name { get; set; }
+            public string Name { get; set; }
             public string? Description { get; set; }
 
             [MaxLength(32)]
@@ -43,6 +43,11 @@ namespace PeterDoStuff.Test.Extensions_Test
 
             public float Longitude { get; set; }
             public double Latitude { get; set; }
+
+            public DateTime CreatedTime { get; set; }
+            
+            [DateOnly]
+            public DateTime CreatedDate { get; set; }
         }
 
         private TestContext GetTestContext()

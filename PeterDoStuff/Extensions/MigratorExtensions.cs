@@ -47,8 +47,8 @@ namespace PeterDoStuff.Extensions
             return sql.ToString();
         }
 
-        private static readonly Dictionary<Type, (string SqlType, string DefaultSize)> _columnTypes
-            = new Dictionary<Type, (string SqlType, string DefaultSize)>()
+        private static readonly Dictionary<Type, (string DefaultSqlType, string DefaultSize)> _columnTypes
+            = new Dictionary<Type, (string DefaultSqlType, string DefaultSize)>()
         {
             { typeof(string), ("nvarchar", "max" ) },
             { typeof(Guid), ("uniqueidentifier", "" ) },
@@ -57,6 +57,8 @@ namespace PeterDoStuff.Extensions
             { typeof(int), ("int", "" ) },
             { typeof(float), ("float", "" ) },
             { typeof(double), ("float", "" ) },
+            { typeof(DateTime), ("datetime", "" ) },
+            { typeof(DateOnly), ("date", "" ) },
         };
 
         private static bool AmongColumnTypes(Type propertyType)
@@ -66,7 +68,11 @@ namespace PeterDoStuff.Extensions
         private static string GetSqlColumn(PropertyInfo pi)
         {
             var name = pi.Name;
-            var type = _columnTypes[pi.PropertyType].SqlType;
+            
+            string defaultType = _columnTypes[pi.PropertyType].DefaultSqlType;
+            string customType = GetCustomType(pi);
+
+            var type = customType != "" ? customType : defaultType;
             
             string defaultSize = _columnTypes[pi.PropertyType].DefaultSize;
             string customSize = GetCustomSize(pi);
@@ -75,6 +81,18 @@ namespace PeterDoStuff.Extensions
             
             var size = finalSize.IsNullOrEmpty() ? "" : $"({finalSize})";
             return $"    [{name}] {type}{size}";
+        }
+
+        private static string GetCustomType(PropertyInfo pi)
+        {
+            if (pi.PropertyType == typeof(DateTime))
+            {
+                var attribute = pi.GetCustomAttribute<DateOnlyAttribute>();
+                if (attribute != null)
+                    return "date";
+            }
+
+            return "";
         }
 
         private static string GetCustomSize(PropertyInfo pi)
@@ -132,6 +150,29 @@ namespace PeterDoStuff.Extensions
                 return new ValidationResult($"The field {validationContext.DisplayName} must have a scale of {Scale} or fewer digits after the decimal point.");
             }
 
+            return ValidationResult.Success;
+        }
+    }
+
+    public class DateOnlyAttribute : ValidationAttribute
+    {
+        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        {
+            if (value != null && value is DateTime)
+            {
+                var date = (DateTime)value;
+
+                if (date.Hour == 0 && date.Minute == 0 && date.Second == 0)
+                {
+                    return ValidationResult.Success;
+                }
+                else
+                {
+                    return new ValidationResult("The value must be a date only (hours, minutes, seconds should all be 0).");
+                }
+            }
+
+            // If the value is null or not a DateTime instance, then consider it as valid.
             return ValidationResult.Success;
         }
     }

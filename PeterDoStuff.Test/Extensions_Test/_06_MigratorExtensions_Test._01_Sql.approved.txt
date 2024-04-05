@@ -8,5 +8,7 @@
     [CustomDecimal] decimal(20,8),
     [Number] int,
     [Longitude] float,
-    [Latitude] float
+    [Latitude] float,
+    [CreatedTime] datetime,
+    [CreatedDate] date
 );
