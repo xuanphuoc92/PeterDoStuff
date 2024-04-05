@@ -27,21 +27,32 @@ namespace PeterDoStuff.Test.Identity
         [TestMethod]
         public void _02_Add()
         {
+            Guid userId, userAuthId;
+
             using (var context = GetTestContext())
             {
-                context.Users.Add(new User() { Name = "Test" });
-                context.UserAuths.Add(new UserAuth());
+                User user = new User() { Name = "Test" };
+                context.Users.Add(user);
+                UserAuth userAuth = new UserAuth();
+                context.UserAuths.Add(userAuth);
                 context.SaveChanges();
+
+                userId = user.Id;
+                userAuthId = userAuth.Id;
             }
 
             using (var context = GetTestContext())
             {
-                context.Users.Count().Should().Be(1);
-                context.UserAuths.Count().Should().Be(1);
-                
-                var user = context.Users.Single();
+                context.Users.Find(userId).Should().NotBeNull();
+                context.UserAuths.Find(userAuthId).Should().NotBeNull();
+
+                context.Users.Find(userAuthId).Should().BeNull();
+                context.UserAuths.Find(userId).Should().BeNull();
+
+                var user = context.Users.Find(userId);
                 user.Id.ToString().WriteToConsole();
                 user.Id.Should().NotBe(new Guid());
+                user.Id.Should().Be(userId);
             }
         }
 
