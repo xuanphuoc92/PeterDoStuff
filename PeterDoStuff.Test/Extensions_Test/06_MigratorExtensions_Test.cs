@@ -1,6 +1,7 @@
 ﻿using ApprovalTests.Reporters;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PeterDoStuff.Attributes;
 using PeterDoStuff.Extensions;
 using PeterDoStuff.Identity;
@@ -22,6 +23,17 @@ namespace PeterDoStuff.Test.Extensions_Test
             public TestContext(DbContextOptions<TestContext> options) : base(options) { }
             public DbSet<TestEntity1> __TestTable__ => Set<TestEntity1>();
             public DbSet<TestEntity2> __AnotherTestTable__ => Set<TestEntity2>();
+
+            protected override void OnModelCreating(ModelBuilder modelBuilder)
+            {
+                base.OnModelCreating(modelBuilder);
+
+                // TODO: Make it into a custom DbContext
+                modelBuilder.Entity<TestEntity1>()
+                    .Property(e => e.DefaultEnum)
+                    .HasConversion(new EnumToStringConverter<TestEnum>())
+                    .HasColumnType("nvarchar(7)"); ;
+            }
         }
 
         private class TestEntity1 : TestEntity { }
@@ -32,7 +44,7 @@ namespace PeterDoStuff.Test.Extensions_Test
             public Guid Id { get; set; }
 
             [MaxLength(100)]
-            public string Name { get; set; }
+            public string Name { get; set; } = "";
             public string? Description { get; set; }
 
             [MaxLength(32)]
@@ -42,7 +54,7 @@ namespace PeterDoStuff.Test.Extensions_Test
 
             public decimal? DefaultDecimal { get; set; }
 
-            [DecimalPrecisionScale(20, 8)]            
+            [DecimalPrecisionScale(20, 8)]
             public decimal? CustomDecimal { get; set; }
 
             public int Number { get; set; }
@@ -51,7 +63,7 @@ namespace PeterDoStuff.Test.Extensions_Test
             public double Latitude { get; set; }
 
             public DateTime CreatedTime { get; set; }
-            
+
             [DateOnly]
             public DateTime? CreatedDate { get; set; }
 

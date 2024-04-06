@@ -81,7 +81,7 @@ namespace PeterDoStuff.Extensions
             { typeof(byte[]), ("varbinary", "max" ) },
             { typeof(decimal), ("decimal", "" ) },
             { typeof(int), ("int", "" ) },
-            { typeof(float), ("float", "" ) },
+            { typeof(float), ("real", "" ) },
             { typeof(double), ("float", "" ) },
             { typeof(DateTime), ("datetime2", "" ) },
             { typeof(DateOnly), ("date", "" ) },
