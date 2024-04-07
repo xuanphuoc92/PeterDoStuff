@@ -55,6 +55,9 @@ namespace PeterDoStuff.Test.Extensions_Test
             
             [Column(TypeName = "nvarchar(7)")]
             public TestEnum StringEnum { get; set; }
+
+            [NotMapped]
+            public string NoMapColumn { get; set; }
         }
 
         private enum TestEnum
@@ -117,6 +120,7 @@ namespace PeterDoStuff.Test.Extensions_Test
                 customEntity.CreatedDate = new DateTime(2024, 01, 01);
                 customEntity.DefaultEnum = TestEnum.Special;
                 customEntity.StringEnum = TestEnum.Custom;
+                customEntity.NoMapColumn = "No Map Test";
 
                 context.__TestTable__.Add(defaultEntity);
                 context.__CustomTestTable__.Add(customEntity);
@@ -144,7 +148,8 @@ namespace PeterDoStuff.Test.Extensions_Test
                 defaultEntity.CreatedDate.Should().BeNull();
                 defaultEntity.DefaultEnum.Should().Be(TestEnum.Default);
                 defaultEntity.StringEnum.Should().Be(TestEnum.Default);
-                
+                defaultEntity.NoMapColumn.Should().BeNull();
+
                 customEntity.Name.Should().Be("Test Name");
                 customEntity.Description.Should().Be("Test Description");
                 customEntity.StandardHash.ToUTF8String().Should().Be("Test Hash");
@@ -158,6 +163,7 @@ namespace PeterDoStuff.Test.Extensions_Test
                 customEntity.CreatedDate.Should().Be(new DateTime(2024, 01, 01));
                 customEntity.DefaultEnum.Should().Be(TestEnum.Special);
                 customEntity.StringEnum.Should().Be(TestEnum.Custom);
+                customEntity.NoMapColumn.Should().BeNull();
             }
         }
     }

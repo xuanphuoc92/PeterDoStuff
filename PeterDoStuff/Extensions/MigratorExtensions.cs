@@ -73,7 +73,7 @@ namespace PeterDoStuff.Extensions
                 var entityType = dbSet.PropertyType.GetGenericArguments()[0];
                 var columnInfos = entityType
                     .GetProperties()
-                    .Where(p => IsColumnType(p.PropertyType));
+                    .Where(pi => IsColumn(pi));
                 
                 var columns = columnInfos
                     .Select(info => GetSqlColumn(info));
@@ -101,9 +101,12 @@ namespace PeterDoStuff.Extensions
             { typeof(DateOnly), ("date", "" ) },
         };
 
-        private static bool IsColumnType(Type propertyType)
+        private static bool IsColumn(PropertyInfo pi)
         {
-            Type typeToCheck = GetInnerTypeIfNullable(propertyType);
+            if (pi.GetCustomAttribute<NotMappedAttribute>() != null)
+                return false;
+
+            Type typeToCheck = GetInnerTypeIfNullable(pi.PropertyType);
             return typeToCheck.IsEnum || _columnTypes.ContainsKey(typeToCheck);
         }
 
