@@ -89,7 +89,7 @@ namespace PeterDoStuff.Test.Extensions_Test
         {
             using var context = GetTestContext();
             context.GetMigrator().GetDropSql().Verify();
-        }
+        }        
 
         [TestMethod]
         public async Task _03_ReadWrite()
@@ -165,6 +165,13 @@ namespace PeterDoStuff.Test.Extensions_Test
                 customEntity.StringEnum.Should().Be(TestEnum.Custom);
                 customEntity.NoMapColumn.Should().BeNull();
             }
+        }
+
+        [TestMethod]
+        public void _04_DescribeMapping()
+        {
+            using var context = GetTestContext();
+            context.GetMigrator().DescribeMapping().WriteToConsole();
         }
     }
 }

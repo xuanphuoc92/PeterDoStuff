@@ -60,7 +60,8 @@ namespace PeterDoStuff.Extensions
         }
 
         /// <summary>
-        /// Get the SQL script to create all tables of the DbContext.
+        /// Get the SQL script to create all tables of the DbContext. 
+        /// Columns will based on Column attribute first, or (if Column attribute not defined) based on Migrator mapping setting (call DescribeMapping() for more info).
         /// </summary>
         /// <returns></returns>
         public string GetCreateSql()
@@ -87,7 +88,7 @@ namespace PeterDoStuff.Extensions
         }
 
         // Based on: https://learn.microsoft.com/en-us/dotnet/framework/data/adonet/sql-server-data-type-mappings
-        private static readonly Dictionary<Type, (string DefaultSqlType, string DefaultSize)> _columnTypes
+        private static readonly Dictionary<Type, (string DefaultSqlType, string DefaultSize)> _presetMapping
             = new Dictionary<Type, (string DefaultSqlType, string DefaultSize)>()
         {
             { typeof(string), ("nvarchar", "max" ) },
@@ -101,16 +102,30 @@ namespace PeterDoStuff.Extensions
             { typeof(DateOnly), ("date", "" ) },
         };
 
-        private static bool IsColumn(PropertyInfo pi)
+        private Dictionary<Type, (string DefaultSqlType, string DefaultSize)> _mapping
+            { get; set; } = _presetMapping;
+
+        public string DescribeMapping()
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (var kv in _mapping)
+            {
+                sb.AppendLine($"{kv.Key.FullName} => {kv.Value.DefaultSqlType}{( kv.Value.DefaultSize != "" ? $"({kv.Value.DefaultSize})" : "" )}");
+            }
+            sb.AppendLine("Enum => int");
+            return sb.ToString();
+        }
+
+        private bool IsColumn(PropertyInfo pi)
         {
             if (pi.GetCustomAttribute<NotMappedAttribute>() != null)
                 return false;
 
             Type typeToCheck = GetInnerTypeIfNullable(pi.PropertyType);
-            return typeToCheck.IsEnum || _columnTypes.ContainsKey(typeToCheck);
+            return typeToCheck.IsEnum || _mapping.ContainsKey(typeToCheck);
         }
 
-        private static string GetSqlColumn(PropertyInfo pi)
+        private string GetSqlColumn(PropertyInfo pi)
         {
             var name = pi.Name;
             
@@ -122,7 +137,7 @@ namespace PeterDoStuff.Extensions
             return $"    [{name}] {columnType}";
         }
 
-        private static string GetDefaultColumnType(PropertyInfo pi)
+        private string GetDefaultColumnType(PropertyInfo pi)
         {
             string defaultType = GetDefaultType(pi.PropertyType);
             string customType = GetCustomType(pi);
@@ -137,21 +152,21 @@ namespace PeterDoStuff.Extensions
             return columnType;
         }
 
-        private static string GetDefaultSize(PropertyInfo pi)
+        private string GetDefaultSize(PropertyInfo pi)
         {
             Type typeToCheck = GetInnerTypeIfNullable(pi.PropertyType);
 
-            return _columnTypes.ContainsKey(typeToCheck)
-                ? _columnTypes[typeToCheck].DefaultSize
+            return _mapping.ContainsKey(typeToCheck)
+                ? _mapping[typeToCheck].DefaultSize
                 : ""; // Enum
         }
 
-        private static string GetDefaultType(Type propertyType)
+        private string GetDefaultType(Type propertyType)
         {
             Type typeToCheck = GetInnerTypeIfNullable(propertyType);
 
-            return _columnTypes.ContainsKey(typeToCheck)
-                ? _columnTypes[typeToCheck].DefaultSqlType
+            return _mapping.ContainsKey(typeToCheck)
+                ? _mapping[typeToCheck].DefaultSqlType
                 : "int"; // Enum
         }
 
