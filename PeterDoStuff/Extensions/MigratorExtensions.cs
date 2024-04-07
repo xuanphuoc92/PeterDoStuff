@@ -56,13 +56,16 @@ namespace PeterDoStuff.Extensions
             foreach (var dbSet in dbSets)
             {
                 var entityType = dbSet.PropertyType.GetGenericArguments()[0];
-                var columns = entityType
+                var columnInfos = entityType
                     .GetProperties()
-                    .Where(p => AmongColumnTypes(p.PropertyType))
-                    .Select(p => GetSqlTerm(p));
+                    .Where(p => AmongColumnTypes(p.PropertyType));
+                
+                var columns = columnInfos
+                    .Select(info => GetSqlColumn(info));
+                var constraints = new List<string>() { $"    CONSTRAINT PK_{dbSet.Name}_Id PRIMARY KEY (Id)" };
 
                 sql.AppendLine($"CREATE TABLE [{dbSet.Name}] (");
-                sql.AppendLine(columns.Join(",\n"));
+                sql.AppendLine(columns.Union(constraints).Join(",\n"));
                 sql.AppendLine($");");
             }
             return sql.ToString();
@@ -93,7 +96,7 @@ namespace PeterDoStuff.Extensions
             Type typeToCheck = GetInnerTypeIfNullable(propertyType);
             return _columnTypes.ContainsKey(typeToCheck) || typeToCheck.IsEnum;
         }
-        private static string GetSqlTerm(PropertyInfo pi)
+        private static string GetSqlColumn(PropertyInfo pi)
         {
             var name = pi.Name;
             

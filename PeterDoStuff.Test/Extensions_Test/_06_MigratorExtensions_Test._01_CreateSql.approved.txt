@@ -12,7 +12,8 @@
     [CreatedTime] datetime2,
     [CreatedDate] date,
     [DefaultEnum] int,
-    [StringEnum] nvarchar(7)
+    [StringEnum] nvarchar(7),
+    CONSTRAINT PK___TestTable___Id PRIMARY KEY (Id)
 );
 CREATE TABLE [__CustomTestTable__] (
     [Id] uniqueidentifier,
@@ -28,5 +29,6 @@ CREATE TABLE [__CustomTestTable__] (
     [CreatedTime] datetime2,
     [CreatedDate] date,
     [DefaultEnum] int,
-    [StringEnum] nvarchar(7)
+    [StringEnum] nvarchar(7),
+    CONSTRAINT PK___CustomTestTable___Id PRIMARY KEY (Id)
 );
