@@ -1,5 +1,8 @@
 ﻿@using PeterDoStuff.Extensions
+@using PeterDoStuff.MudWasmHosted.Client.Api
 @using PeterDoStuff.MudWasmHosted.Client.Extensions
+@using PeterDoStuff.MudWasmHosted.Shared
+@using System.Diagnostics
 @inject HttpClient Http
 
 <MudText Typo="Typo.h4">
@@ -57,7 +60,7 @@
 
     [Parameter]
     public Func<string, Task> ShowError { get; set; }
-    
+
     private byte[]? argon2idSalt, argon2idHash;
     private string? argon2idHashTime;
     private void GenerateArgon2idSalt()
@@ -71,30 +74,34 @@
     }
     private async Task HashArgon2idServer()
     {
-        var result = await Http
-            .Request(HttpMethod.Post, "api/security/HashArgon2id")
-            .SetBodyParam("input", InputByteArray)
-            .SetBodyParam("salt", argon2idSalt)
-            .SendAsync<byte[]>();
-        argon2idHash = result.Result;
-        if (result.Failure)
-            await ShowError(result.Error);
-        argon2idHashTime = result.ElapsedMilliseconds != null
-            ? $"{result.ElapsedMilliseconds} ms"
-            : null;
+        try
+        {
+            Stopwatch sw = Stopwatch.StartNew();
+            argon2idHash = await Http
+                .As<CryptographyClient>()
+                .HashArgon2id(new Argon2idBody(InputByteArray, argon2idSalt));
+            sw.Stop();
+            argon2idHashTime = $"{sw.ElapsedMilliseconds} ms";
+        }
+        catch (ApiException ex)
+        {
+            await ShowError(ex.Message);
+        }
     }
     private async Task HashArgon2idQuick()
     {
-        var result = await Http
-            .Request(HttpMethod.Post, "api/security/HashArgon2idQuick")
-            .SetBodyParam("input", InputByteArray)
-            .SetBodyParam("salt", argon2idSalt)
-            .SendAsync<byte[]>();
-        argon2idHash = result.Result;
-        if (result.Failure)
-            await ShowError(result.Error);
-        argon2idHashTime = result.ElapsedMilliseconds != null
-            ? $"{result.ElapsedMilliseconds} ms"
-            : null;
+        try
+        {
+            Stopwatch sw = Stopwatch.StartNew();
+            argon2idHash = await Http
+                .As<CryptographyClient>()
+                .HashArgon2idQuick(new Argon2idBody(InputByteArray, argon2idSalt));
+            sw.Stop();
+            argon2idHashTime = $"{sw.ElapsedMilliseconds} ms";
+        } 
+        catch (ApiException ex)
+        {
+            await ShowError(ex.Message);
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿@using System.ComponentModel.DataAnnotations
 @using PeterDoStuff.Extensions
+@using PeterDoStuff.MudWasmHosted.Client.Api
 @using PeterDoStuff.MudWasmHosted.Client.Extensions
 @using SmartComponents
 @inject IJSRuntime JS
@@ -81,11 +82,17 @@ else
     {
         await base.OnInitializedAsync();
         SetSample(1);
-        var response = await Http
-            .Request(HttpMethod.Get, "api/environment")
-            .SetParam("key", "DisableSmartTextArea")
-            .SendAsync();
-        textAreaEnabled = response.Success && response.Result == "true" ? false : true;
+
+        try
+        {
+            textAreaEnabled = (await Http
+                .As<EnvironmentClient>()
+                .Get("DisableSmartTextArea")) == "true" ? false : true;
+        }
+        catch (ApiException ex)
+        {
+            textAreaEnabled = false;
+        }
     }
 
     private bool textAreaEnabled = false;

@@ -6,5 +6,9 @@ using System.Threading.Tasks;
 
 namespace PeterDoStuff.MudWasmHosted.Shared
 {
-    public record RsaKeys(string Public, string Private) { }
+    public interface EnvironmentApi
+    {
+        Task<string> Get(string key);
+        Task<string> GetMyFirstEnvironment();
+    }
 }

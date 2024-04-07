@@ -1,5 +1,7 @@
 ﻿@using PeterDoStuff.Extensions
+@using PeterDoStuff.MudWasmHosted.Client.Api
 @using PeterDoStuff.MudWasmHosted.Client.Extensions
+@using PeterDoStuff.MudWasmHosted.Shared
 @inject HttpClient Http
 
 <MudText Typo="Typo.h4">
@@ -80,15 +82,16 @@
     private byte[]? aesEncrypted;
     private async Task EncryptAesServer()
     {
-        var result = await Http
-            .Request(HttpMethod.Post, "api/security/EncryptAes")
-            .SetBodyParam("input", InputByteArray)
-            .SetBodyParam("key", aesKey)
-            .SetBodyParam("iv", aesIV)
-            .SendAsync<byte[]>();
-        aesEncrypted = result.Result;
-        if (result.Failure)
-            await ShowError(result.Error);
+        try
+        {
+            aesEncrypted = await Http
+                .As<CryptographyClient>()
+                .EncryptAes(new AesBody(InputByteArray, aesKey, aesIV));
+        }
+        catch (ApiException ex)
+        {
+            await ShowError(ex.Message);
+        }
     }
     private void EncryptAesClient()
     {
@@ -99,15 +102,16 @@
     private byte[]? aesDecrypted;
     private async Task DecryptAesServer()
     {
-        var result = await Http
-            .Request(HttpMethod.Post, "api/security/DecryptAes")
-            .SetBodyParam("input", aesEncrypted)
-            .SetBodyParam("key", aesKey)
-            .SetBodyParam("iv", aesIV)
-            .SendAsync<byte[]>();
-        aesDecrypted = result.Result;
-        if (result.Failure)
-            await ShowError(result.Error);
+        try
+        {
+            aesDecrypted = await Http
+                .As<CryptographyClient>()
+                .DecryptAes(new AesBody(aesEncrypted, aesKey, aesIV));
+        }
+        catch (ApiException ex)
+        {
+            await ShowError(ex.Message);
+        }
     }
     private void DecryptAesClient()
     {

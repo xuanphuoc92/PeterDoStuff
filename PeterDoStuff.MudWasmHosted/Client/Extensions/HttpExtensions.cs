@@ -47,12 +47,9 @@ namespace PeterDoStuff.MudWasmHosted.Client.Extensions
                 {
                     request.Headers.Add(header.Key, header.Value);
                 }
-                Stopwatch sw = Stopwatch.StartNew();
                 var response = await @this.Http.SendAsync(request);
-                sw.Stop();
                 var result = new HttpResult<TResponse>();
                 result.Success = response.StatusCode == System.Net.HttpStatusCode.OK;
-                result.ElapsedMilliseconds = sw.ElapsedMilliseconds;
                 return (result, response);
             }
             catch (Exception ex)
@@ -74,24 +71,17 @@ namespace PeterDoStuff.MudWasmHosted.Client.Extensions
         {
             (HttpResult<TResponse> result, HttpResponseMessage? response) = await SendAndGetResponse<TResponse>(@this);
             if (result.Success)
-                result.Result = await response.Content.ReadFromJsonAsync<TResponse>();
+            {
+                if (typeof(string) == typeof(TResponse))
+                    result.SetResult(await response.Content.ReadAsStringAsync());
+                else
+                    result.SetResult(await response.Content.ReadFromJsonAsync<TResponse>());
+            }
             else if (result.Error == null && response != null)
-                result.Error = await response.Content.ReadAsStringAsync();
-            return result;
-        }
-
-        /// <summary>
-        /// Send the Http Request and parse the response as string
-        /// </summary>
-        /// <param name="this"></param>
-        /// <returns></returns>
-        public async static Task<HttpResult<string>> SendAsync(this HttpRequestBuilder @this)
-        {
-            (HttpResult<string> result, HttpResponseMessage? response) = await SendAndGetResponse<string>(@this);
-            if (result.Success)
-                result.Result = await response.Content.ReadAsStringAsync();
-            else if (result.Error == null && response != null)
-                result.Error = await response.Content.ReadAsStringAsync();
+            {
+                result.Error = response.StatusCode + ": ";
+                result.Error += await response.Content.ReadAsStringAsync();
+            }
             return result;
         }
     }
@@ -143,8 +133,11 @@ namespace PeterDoStuff.MudWasmHosted.Client.Extensions
     {
         public bool Success { get; set; } = false;
         public bool Failure => !Success;
-        public TResponse? Result { get; set; }
+        public TResponse? Result { get; private set; }
+        public void SetResult(object result)
+        {
+            Result = (TResponse)result;
+        }
         public string? Error { get; set; } = null;
-        public long? ElapsedMilliseconds { get; set; } = null;
     }
 }

@@ -1,4 +1,5 @@
-﻿@using PeterDoStuff.MudWasmHosted.Client.Extensions
+﻿@using PeterDoStuff.MudWasmHosted.Client.Api
+@using PeterDoStuff.MudWasmHosted.Client.Extensions
 @using PeterDoStuff.Extensions
 @inject IJSRuntime JS
 @inject HttpClient Http
@@ -73,16 +74,21 @@ else
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        var response = await Http
-            .Request(HttpMethod.Get, "api/environment")
-            .SetParam("key", "GoogleMapApi")
-            .SendAsync();
 
-        if (response.Success && response.Result.IsNullOrEmpty() == false)
+        try
         {
-            var googleMapApiKey = response.Result;
-            googleMapApi = $"https://maps.googleapis.com/maps/api/js?key={googleMapApiKey}&callback={mapInteropMethod}";
-            mapAvailable = true;
+            var googleMapApiKey = await Http
+                .As<EnvironmentClient>()
+                .Get("GoogleMapApi");
+            if (googleMapApiKey.IsNullOrEmpty() == false)
+            {
+                googleMapApi = $"https://maps.googleapis.com/maps/api/js?key={googleMapApiKey}&callback={mapInteropMethod}";
+                mapAvailable = true;
+            }
+        }
+        catch (ApiException ex)
+        {
+            mapAvailable = false;
         }
     }
 
