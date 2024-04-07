@@ -105,7 +105,9 @@ namespace PeterDoStuff.Extensions
             string finalSize = customSize != "" ? customSize : defaultSize;
             var size = finalSize.IsNullOrEmpty() ? "" : $"({finalSize})";
 
-            return $"    [{name}] {type}{size}";
+            var columnType = $"{type}{size}";
+
+            return $"    [{name}] {columnType}";
         }
 
         private static string GetDefaultSize(PropertyInfo pi)
