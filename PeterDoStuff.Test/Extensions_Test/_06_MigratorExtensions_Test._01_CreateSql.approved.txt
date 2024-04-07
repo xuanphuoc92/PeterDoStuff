@@ -14,7 +14,7 @@
     [DefaultEnum] nvarchar(7),
     [NumberEnum] int
 );
-CREATE TABLE [__AnotherTestTable__] (
+CREATE TABLE [__CustomTestTable__] (
     [Id] uniqueidentifier,
     [Name] nvarchar(100),
     [Description] nvarchar(max),

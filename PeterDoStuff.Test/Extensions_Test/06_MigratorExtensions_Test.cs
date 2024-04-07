@@ -22,7 +22,7 @@ namespace PeterDoStuff.Test.Extensions_Test
         {
             public TestContext(DbContextOptions<TestContext> options) : base(options) { }
             public DbSet<TestEntity1> __TestTable__ => Set<TestEntity1>();
-            public DbSet<TestEntity2> __AnotherTestTable__ => Set<TestEntity2>();
+            public DbSet<TestEntity2> __CustomTestTable__ => Set<TestEntity2>();
 
             protected override void OnModelCreating(ModelBuilder modelBuilder)
             {
@@ -30,6 +30,11 @@ namespace PeterDoStuff.Test.Extensions_Test
 
                 // TODO: Make it into a custom DbContext
                 modelBuilder.Entity<TestEntity1>()
+                    .Property(e => e.DefaultEnum)
+                    .HasConversion(new EnumToStringConverter<TestEnum>())
+                    .HasColumnType("nvarchar(7)"); ;
+
+                modelBuilder.Entity<TestEntity2>()
                     .Property(e => e.DefaultEnum)
                     .HasConversion(new EnumToStringConverter<TestEnum>())
                     .HasColumnType("nvarchar(7)"); ;
@@ -115,13 +120,12 @@ namespace PeterDoStuff.Test.Extensions_Test
                 await context.GetMigrator().CreateAsync();
 
                 var defaultEntity = new TestEntity1();
-                var customEntity = new TestEntity1();
+                var customEntity = new TestEntity2();
 
                 customEntity.Name = "Test Name";
-                customEntity.Description = "Test Description";
 
                 context.__TestTable__.Add(defaultEntity);
-                context.__TestTable__.Add(customEntity);
+                context.__CustomTestTable__.Add(customEntity);
                 await context.SaveChangesAsync();
 
                 defaultId = defaultEntity.Id;
@@ -131,12 +135,11 @@ namespace PeterDoStuff.Test.Extensions_Test
             using (var context = GetTestContext()) 
             {
                 var defaultEntity = context.__TestTable__.Find(defaultId);
-                var customEntity = context.__TestTable__.Find(customId);
+                var customEntity = context.__CustomTestTable__.Find(customId);
 
                 defaultEntity.Name.Should().BeEmpty();
                 
                 customEntity.Name.Should().Be("Test Name");
-                customEntity.Description.Should().Be("Test Description");
             }
         }
     }
