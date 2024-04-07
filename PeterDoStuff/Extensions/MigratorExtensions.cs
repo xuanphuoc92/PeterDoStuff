@@ -4,6 +4,7 @@ using System.Reflection;
 using System.ComponentModel.DataAnnotations;
 using PeterDoStuff.Attributes;
 using System.Runtime.CompilerServices;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PeterDoStuff.Extensions
 {
@@ -95,19 +96,28 @@ namespace PeterDoStuff.Extensions
         private static string GetSqlTerm(PropertyInfo pi)
         {
             var name = pi.Name;
+            
+            string defaultColumnType = GetDefaultColumnType(pi);
+            string customColumnType = pi.GetCustomAttribute<ColumnAttribute>()?.TypeName ?? "";
 
+            string columnType = customColumnType != "" ? customColumnType : defaultColumnType;
+
+            return $"    [{name}] {columnType}";
+        }
+
+        private static string GetDefaultColumnType(PropertyInfo pi)
+        {
             string defaultType = GetDefaultType(pi.PropertyType);
             string customType = GetCustomType(pi);
             var type = customType != "" ? customType : defaultType;
-            
+
             string defaultSize = GetDefaultSize(pi);
             string customSize = GetCustomSize(pi);
             string finalSize = customSize != "" ? customSize : defaultSize;
             var size = finalSize.IsNullOrEmpty() ? "" : $"({finalSize})";
 
             var columnType = $"{type}{size}";
-
-            return $"    [{name}] {columnType}";
+            return columnType;
         }
 
         private static string GetDefaultSize(PropertyInfo pi)

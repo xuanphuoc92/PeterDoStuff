@@ -9,6 +9,7 @@ using PeterDoStuff.Test.Extensions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -72,7 +73,9 @@ namespace PeterDoStuff.Test.Extensions_Test
             [DateOnly]
             public DateTime? CreatedDate { get; set; }
 
-            public TestEnum DefaultEnum { get; set; }            
+            public TestEnum DefaultEnum { get; set; }
+            
+            [Column(TypeName = "nvarchar(7)")]
             public TestEnum StringEnum { get; set; }
         }
 

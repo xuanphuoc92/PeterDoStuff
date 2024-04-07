@@ -12,7 +12,7 @@
     [CreatedTime] datetime2,
     [CreatedDate] date,
     [DefaultEnum] int,
-    [StringEnum] int
+    [StringEnum] nvarchar(7)
 );
 CREATE TABLE [__CustomTestTable__] (
     [Id] uniqueidentifier,
@@ -28,5 +28,5 @@ CREATE TABLE [__CustomTestTable__] (
     [CreatedTime] datetime2,
     [CreatedDate] date,
     [DefaultEnum] int,
-    [StringEnum] int
+    [StringEnum] nvarchar(7)
 );
