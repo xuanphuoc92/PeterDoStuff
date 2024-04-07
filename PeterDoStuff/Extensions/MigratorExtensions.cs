@@ -87,24 +87,29 @@ namespace PeterDoStuff.Extensions
             return sql.ToString();
         }
 
-        // Based on: https://learn.microsoft.com/en-us/dotnet/framework/data/adonet/sql-server-data-type-mappings
-        private static readonly Dictionary<Type, (string DefaultSqlType, string DefaultSize)> _presetMapping
-            = new Dictionary<Type, (string DefaultSqlType, string DefaultSize)>()
+        private static int[] Size(params int[] sizes)
         {
-            { typeof(string), ("nvarchar", "max" ) },
-            { typeof(Guid), ("uniqueidentifier", "" ) },
-            { typeof(byte[]), ("varbinary", "max" ) },
-            { typeof(decimal), ("decimal", "" ) },
-            { typeof(int), ("int", "" ) },
-            { typeof(float), ("real", "" ) },
-            { typeof(double), ("float", "" ) },
-            { typeof(DateTime), ("datetime2", "" ) },
-            { typeof(DateOnly), ("date", "" ) },
-            { typeof(Int64), ("bigint", "" ) },
-            { typeof(bool), ("bit", "" ) },
+            return sizes;
+        }
+
+        // Based on: https://learn.microsoft.com/en-us/dotnet/framework/data/adonet/sql-server-data-type-mappings
+        private static readonly Dictionary<Type, (string DefaultSqlType, int[] DefaultSize)> _presetMapping
+            = new Dictionary<Type, (string DefaultSqlType, int[] DefaultSize)>()
+        {
+            { typeof(string), ("nvarchar", Size(-1) ) },
+            { typeof(Guid), ("uniqueidentifier", Size() ) },
+            { typeof(byte[]), ("varbinary", Size(-1) ) },
+            { typeof(decimal), ("decimal", Size() ) },
+            { typeof(int), ("int", Size() ) },
+            { typeof(float), ("real", Size() ) },
+            { typeof(double), ("float", Size() ) },
+            { typeof(DateTime), ("datetime2", Size() ) },
+            { typeof(DateOnly), ("date", Size() ) },
+            { typeof(Int64), ("bigint", Size() ) },
+            { typeof(bool), ("bit", Size() ) },
         };
 
-        private Dictionary<Type, (string DefaultSqlType, string DefaultSize)> _mapping
+        private Dictionary<Type, (string DefaultSqlType, int[] DefaultSize)> _mapping
             { get; set; } = _presetMapping;
 
         public string DescribeMapping()
@@ -112,10 +117,23 @@ namespace PeterDoStuff.Extensions
             StringBuilder sb = new StringBuilder();
             foreach (var kv in _mapping)
             {
-                sb.AppendLine($"{kv.Key.FullName} => {kv.Value.DefaultSqlType}{( kv.Value.DefaultSize != "" ? $"({kv.Value.DefaultSize})" : "" )}");
+                string size = sqlSize(kv.Value.DefaultSize);
+                size = size == "" ? "" : $"({size})";
+
+                sb.AppendLine($"{kv.Key.FullName} => {kv.Value.DefaultSqlType}{size}");
             }
             sb.AppendLine("Enum => int");
             return sb.ToString();
+        }
+
+        private static string sqlSize(int[] size)
+        {
+            if (size.Length == 1 && size[0] == -1)
+                return "max";
+
+            return size.Any()
+                ? size.Select(c => c.ToString()).Join(",")
+                : "";
         }
 
         private bool IsColumn(PropertyInfo pi)
@@ -158,9 +176,11 @@ namespace PeterDoStuff.Extensions
         {
             Type typeToCheck = GetInnerTypeIfNullable(pi.PropertyType);
 
-            return _mapping.ContainsKey(typeToCheck)
+            int[] size = _mapping.ContainsKey(typeToCheck)
                 ? _mapping[typeToCheck].DefaultSize
-                : ""; // Enum
+                : Size(); // Enum
+
+            return sqlSize(size);
         }
 
         private string GetDefaultType(Type propertyType)
@@ -203,21 +223,23 @@ namespace PeterDoStuff.Extensions
         {
             Type typeToCheck = GetInnerTypeIfNullable(pi.PropertyType);
 
+            int[] size = Size();
+
             if (typeToCheck == typeof(string) || typeToCheck == typeof(byte[])) 
             {
                 var attribute = pi.GetCustomAttribute<MaxLengthAttribute>();
                 if (attribute != null)
-                    return attribute.Length.ToString();
+                    size = Size(attribute.Length);
             }
 
             if (typeToCheck == typeof(decimal))
             {
                 var attribute = pi.GetCustomAttribute<DecimalPrecisionScaleAttribute>();
                 if (attribute != null)
-                    return $"{attribute.Precision},{attribute.Scale}";
+                    size = Size(attribute.Precision,attribute.Scale);
             }
 
-            return "";
+            return sqlSize(size);
         }
     }
 }
