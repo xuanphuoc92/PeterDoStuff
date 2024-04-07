@@ -11,8 +11,8 @@
     [Latitude] float,
     [CreatedTime] datetime2,
     [CreatedDate] date,
-    [DefaultEnum] nvarchar(7),
-    [NumberEnum] int
+    [DefaultEnum] int,
+    [StringEnum] int
 );
 CREATE TABLE [__CustomTestTable__] (
     [Id] uniqueidentifier,
@@ -27,6 +27,6 @@ CREATE TABLE [__CustomTestTable__] (
     [Latitude] float,
     [CreatedTime] datetime2,
     [CreatedDate] date,
-    [DefaultEnum] nvarchar(7),
-    [NumberEnum] int
+    [DefaultEnum] int,
+    [StringEnum] int
 );

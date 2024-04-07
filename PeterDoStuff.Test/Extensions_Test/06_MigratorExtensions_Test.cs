@@ -24,21 +24,21 @@ namespace PeterDoStuff.Test.Extensions_Test
             public DbSet<TestEntity1> __TestTable__ => Set<TestEntity1>();
             public DbSet<TestEntity2> __CustomTestTable__ => Set<TestEntity2>();
 
-            protected override void OnModelCreating(ModelBuilder modelBuilder)
-            {
-                base.OnModelCreating(modelBuilder);
+            //protected override void OnModelCreating(ModelBuilder modelBuilder)
+            //{
+            //    base.OnModelCreating(modelBuilder);
 
-                // TODO: Make it into a custom DbContext
-                modelBuilder.Entity<TestEntity1>()
-                    .Property(e => e.DefaultEnum)
-                    .HasConversion(new EnumToStringConverter<TestEnum>())
-                    .HasColumnType("nvarchar(7)"); ;
+            //    // TODO: Make it into a custom DbContext
+            //    modelBuilder.Entity<TestEntity1>()
+            //        .Property(e => e.DefaultEnum)
+            //        .HasConversion(new EnumToStringConverter<TestEnum>())
+            //        .HasColumnType("nvarchar(7)"); ;
 
-                modelBuilder.Entity<TestEntity2>()
-                    .Property(e => e.DefaultEnum)
-                    .HasConversion(new EnumToStringConverter<TestEnum>())
-                    .HasColumnType("nvarchar(7)"); ;
-            }
+            //    modelBuilder.Entity<TestEntity2>()
+            //        .Property(e => e.DefaultEnum)
+            //        .HasConversion(new EnumToStringConverter<TestEnum>())
+            //        .HasColumnType("nvarchar(7)"); ;
+            //}
         }
 
         private class TestEntity1 : TestEntity { }
@@ -72,10 +72,8 @@ namespace PeterDoStuff.Test.Extensions_Test
             [DateOnly]
             public DateTime? CreatedDate { get; set; }
 
-            public TestEnum DefaultEnum { get; set; }
-
-            [NumberEnum]
-            public TestEnum NumberEnum { get; set; }
+            public TestEnum DefaultEnum { get; set; }            
+            public TestEnum StringEnum { get; set; }
         }
 
         private enum TestEnum

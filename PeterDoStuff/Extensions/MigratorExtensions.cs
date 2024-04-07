@@ -100,7 +100,7 @@ namespace PeterDoStuff.Extensions
             string customType = GetCustomType(pi);
             var type = customType != "" ? customType : defaultType;
             
-            string defaultSize = GetDefaultSize(pi, type);
+            string defaultSize = GetDefaultSize(pi);
             string customSize = GetCustomSize(pi);
             string finalSize = customSize != "" ? customSize : defaultSize;
             var size = finalSize.IsNullOrEmpty() ? "" : $"({finalSize})";
@@ -108,13 +108,13 @@ namespace PeterDoStuff.Extensions
             return $"    [{name}] {type}{size}";
         }
 
-        private static string GetDefaultSize(PropertyInfo pi, string type)
+        private static string GetDefaultSize(PropertyInfo pi)
         {
             Type typeToCheck = GetInnerTypeIfNullable(pi.PropertyType);
 
             return _columnTypes.ContainsKey(typeToCheck)
                 ? _columnTypes[typeToCheck].DefaultSize
-                : (type == "nvarchar" ? GetEnumSize(pi) : ""); // Enum
+                : ""; // Enum
         }
 
         private static string GetDefaultType(Type propertyType)
@@ -123,7 +123,7 @@ namespace PeterDoStuff.Extensions
 
             return _columnTypes.ContainsKey(typeToCheck)
                 ? _columnTypes[typeToCheck].DefaultSqlType
-                : "nvarchar"; // Enum
+                : "int"; // Enum
         }
 
         private static Type GetInnerTypeIfNullable(Type propertyType)
@@ -139,17 +139,17 @@ namespace PeterDoStuff.Extensions
             return typeToCheck;
         }
 
-        private static string GetEnumSize(PropertyInfo pi)
-        {
-            var enumValues = pi.PropertyType.GetEnumValues();
-            int maxValue = -1;
-            foreach (var enumValue in enumValues ) 
-            {
-                if (enumValue.ToString().Length > maxValue)
-                    maxValue = enumValue.ToString().Length;
-            }
-            return maxValue.ToString();
-        }
+        //private static string GetEnumSize(PropertyInfo pi)
+        //{
+        //    var enumValues = pi.PropertyType.GetEnumValues();
+        //    int maxValue = -1;
+        //    foreach (var enumValue in enumValues ) 
+        //    {
+        //        if (enumValue.ToString().Length > maxValue)
+        //            maxValue = enumValue.ToString().Length;
+        //    }
+        //    return maxValue.ToString();
+        //}
 
         private static string GetCustomType(PropertyInfo pi)
         {
@@ -160,13 +160,6 @@ namespace PeterDoStuff.Extensions
                 var attribute = pi.GetCustomAttribute<DateOnlyAttribute>();
                 if (attribute != null)
                     return "date";
-            }
-
-            if (typeToCheck.IsEnum)
-            {
-                var attribute = pi.GetCustomAttribute<NumberEnumAttribute>();
-                if (attribute != null)
-                    return "int";
             }
 
             return "";
