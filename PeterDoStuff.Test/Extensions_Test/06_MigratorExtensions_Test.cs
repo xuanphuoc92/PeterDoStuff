@@ -24,22 +24,6 @@ namespace PeterDoStuff.Test.Extensions_Test
             public TestContext(DbContextOptions<TestContext> options) : base(options) { }
             public DbSet<TestEntity1> __TestTable__ => Set<TestEntity1>();
             public DbSet<TestEntity2> __CustomTestTable__ => Set<TestEntity2>();
-
-            //protected override void OnModelCreating(ModelBuilder modelBuilder)
-            //{
-            //    base.OnModelCreating(modelBuilder);
-
-            //    // TODO: Make it into a custom DbContext
-            //    modelBuilder.Entity<TestEntity1>()
-            //        .Property(e => e.DefaultEnum)
-            //        .HasConversion(new EnumToStringConverter<TestEnum>())
-            //        .HasColumnType("nvarchar(7)"); ;
-
-            //    modelBuilder.Entity<TestEntity2>()
-            //        .Property(e => e.DefaultEnum)
-            //        .HasConversion(new EnumToStringConverter<TestEnum>())
-            //        .HasColumnType("nvarchar(7)"); ;
-            //}
         }
 
         private class TestEntity1 : TestEntity { }
@@ -58,7 +42,7 @@ namespace PeterDoStuff.Test.Extensions_Test
 
             public byte[]? BigHash { get; set; }
 
-            public decimal? DefaultDecimal { get; set; }
+            public decimal DefaultDecimal { get; set; }
 
             [DecimalPrecisionScale(20, 8)]
             public decimal? CustomDecimal { get; set; }
@@ -124,6 +108,18 @@ namespace PeterDoStuff.Test.Extensions_Test
                 var customEntity = new TestEntity2();
 
                 customEntity.Name = "Test Name";
+                customEntity.Description = "Test Description";
+                customEntity.StandardHash = "Test Hash".ToByteArray();
+                customEntity.BigHash = "Test Big Hash".ToByteArray();
+                customEntity.DefaultDecimal = 1;
+                customEntity.CustomDecimal = 2.2m;
+                customEntity.Number = 3;
+                customEntity.Longitude = 1.234f;
+                customEntity.Latitude = 5.678f;
+                customEntity.CreatedTime = new DateTime(2024, 01, 01, 01, 01, 01);
+                customEntity.CreatedDate = new DateTime(2024, 01, 01);
+                customEntity.DefaultEnum = TestEnum.Special;
+                customEntity.StringEnum = TestEnum.Custom;
 
                 context.__TestTable__.Add(defaultEntity);
                 context.__CustomTestTable__.Add(customEntity);
@@ -139,8 +135,32 @@ namespace PeterDoStuff.Test.Extensions_Test
                 var customEntity = context.__CustomTestTable__.Find(customId);
 
                 defaultEntity.Name.Should().BeEmpty();
+                defaultEntity.Description.Should().BeNull();
+                defaultEntity.StandardHash.Should().BeNull();
+                defaultEntity.BigHash.Should().BeNull();
+                defaultEntity.DefaultDecimal.Should().Be(0);
+                defaultEntity.CustomDecimal.Should().BeNull();
+                defaultEntity.Number.Should().Be(0);
+                defaultEntity.Longitude.Should().Be(0);
+                defaultEntity.Latitude.Should().Be(0);
+                defaultEntity.CreatedTime.Should().Be(default);
+                defaultEntity.CreatedDate.Should().BeNull();
+                defaultEntity.DefaultEnum.Should().Be(TestEnum.Default);
+                defaultEntity.StringEnum.Should().Be(TestEnum.Default);
                 
                 customEntity.Name.Should().Be("Test Name");
+                customEntity.Description.Should().Be("Test Description");
+                customEntity.StandardHash.ToUTF8String().Should().Be("Test Hash");
+                customEntity.BigHash.ToUTF8String().Should().Be("Test Big Hash");
+                customEntity.DefaultDecimal.Should().Be(1);
+                customEntity.CustomDecimal.Should().Be(2.2m);
+                customEntity.Number.Should().Be(3);
+                customEntity.Longitude.Should().Be(1.234f);
+                customEntity.Latitude.Should().Be(5.678f);
+                customEntity.CreatedTime.Should().Be(new DateTime(2024, 01, 01, 01, 01, 01));
+                customEntity.CreatedDate.Should().Be(new DateTime(2024, 01, 01));
+                customEntity.DefaultEnum.Should().Be(TestEnum.Special);
+                customEntity.StringEnum.Should().Be(TestEnum.Custom);
             }
         }
     }
