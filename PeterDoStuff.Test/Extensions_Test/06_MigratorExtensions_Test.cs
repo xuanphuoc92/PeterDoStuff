@@ -29,7 +29,7 @@ namespace PeterDoStuff.Test.Extensions_Test
 
             [MaxLength(100)]
             public string Name { get; set; } = "";
-            public string? Description { get; set; }
+            public String? Description { get; set; }
 
             [MaxLength(32)]
             public byte[]? StandardHash { get; set; }
