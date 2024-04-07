@@ -77,7 +77,7 @@ namespace PeterDoStuff.Test.Extensions_Test
         public void _01_CreateSql()
         {
             using var context = GetTestContext();
-            context.GetMigrator().CreateSql().Verify();
+            context.GetMigrator().GetCreateSql().Verify();
         }
 
         [TestMethod]
@@ -85,7 +85,7 @@ namespace PeterDoStuff.Test.Extensions_Test
         public void _02_DropSql()
         {
             using var context = GetTestContext();
-            context.GetMigrator().DropSql().Verify();
+            context.GetMigrator().GetDropSql().Verify();
         }
 
         [TestMethod]
@@ -95,8 +95,8 @@ namespace PeterDoStuff.Test.Extensions_Test
 
             using (var context = GetTestContext())
             {
-                var dropSql = FormattableStringFactory.Create(context.GetMigrator().DropSql());
-                var createSql = FormattableStringFactory.Create(context.GetMigrator().CreateSql());
+                var dropSql = FormattableStringFactory.Create(context.GetMigrator().GetDropSql());
+                var createSql = FormattableStringFactory.Create(context.GetMigrator().GetCreateSql());
 
                 await context.Database.ExecuteSqlAsync(dropSql);
                 await context.Database.ExecuteSqlAsync(createSql);

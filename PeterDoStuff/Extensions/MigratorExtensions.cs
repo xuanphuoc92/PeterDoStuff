@@ -10,6 +10,11 @@ namespace PeterDoStuff.Extensions
 {
     public static class MigratorExtensions
     {
+        /// <summary>
+        /// Get the new Migrator (new Migrator(DbContext)) for the DbContext.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
         public static Migrator GetMigrator(this DbContext context)
             => new(context);
 
@@ -22,6 +27,9 @@ namespace PeterDoStuff.Extensions
                     p.PropertyType.GetGenericTypeDefinition() == typeof(DbSet<>));
     }
 
+    /// <summary>
+    /// This class provides the SQL to drop or create tables that defined as DbSet inside the DbContext.
+    /// </summary>
     public class Migrator
     {
         private readonly DbContext context;
@@ -30,7 +38,11 @@ namespace PeterDoStuff.Extensions
             this.context = context;
         }
 
-        public string DropSql()
+        /// <summary>
+        /// Get the SQL script to drop all tables of the DbContext.
+        /// </summary>
+        /// <returns></returns>
+        public string GetDropSql()
         {
             var dbSets = context.GetDbSetInfos();
 
@@ -42,7 +54,11 @@ namespace PeterDoStuff.Extensions
             return sql.ToString();
         }
 
-        public string CreateSql()
+        /// <summary>
+        /// Get the SQL script to create all tables of the DbContext.
+        /// </summary>
+        /// <returns></returns>
+        public string GetCreateSql()
         {
             var dbSets = context.GetDbSetInfos();
 
@@ -65,6 +81,7 @@ namespace PeterDoStuff.Extensions
             return sql.ToString();
         }
 
+        // Based on: https://learn.microsoft.com/en-us/dotnet/framework/data/adonet/sql-server-data-type-mappings
         private static readonly Dictionary<Type, (string DefaultSqlType, string DefaultSize)> _columnTypes
             = new Dictionary<Type, (string DefaultSqlType, string DefaultSize)>()
         {
@@ -84,6 +101,7 @@ namespace PeterDoStuff.Extensions
             Type typeToCheck = GetInnerTypeIfNullable(propertyType);
             return _columnTypes.ContainsKey(typeToCheck) || typeToCheck.IsEnum;
         }
+
         private static string GetSqlColumn(PropertyInfo pi)
         {
             var name = pi.Name;
@@ -141,18 +159,6 @@ namespace PeterDoStuff.Extensions
 
             return typeToCheck;
         }
-
-        //private static string GetEnumSize(PropertyInfo pi)
-        //{
-        //    var enumValues = pi.PropertyType.GetEnumValues();
-        //    int maxValue = -1;
-        //    foreach (var enumValue in enumValues ) 
-        //    {
-        //        if (enumValue.ToString().Length > maxValue)
-        //            maxValue = enumValue.ToString().Length;
-        //    }
-        //    return maxValue.ToString();
-        //}
 
         private static string GetCustomType(PropertyInfo pi)
         {
