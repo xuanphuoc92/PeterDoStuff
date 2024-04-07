@@ -42,12 +42,6 @@ namespace PeterDoStuff.Extensions
             return sql.ToString();
         }
 
-        public async Task DropAsync()
-        {
-            var sql = FormattableStringFactory.Create(DropSql());
-            await context.Database.ExecuteSqlAsync(sql);
-        }
-
         public string CreateSql()
         {
             var dbSets = context.GetDbSetInfos();
@@ -69,12 +63,6 @@ namespace PeterDoStuff.Extensions
                 sql.AppendLine($");");
             }
             return sql.ToString();
-        }
-
-        public async Task CreateAsync()
-        {
-            var sql = FormattableStringFactory.Create(CreateSql());
-            await context.Database.ExecuteSqlAsync(sql);
         }
 
         private static readonly Dictionary<Type, (string DefaultSqlType, string DefaultSize)> _columnTypes

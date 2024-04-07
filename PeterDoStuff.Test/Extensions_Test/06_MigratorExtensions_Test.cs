@@ -1,18 +1,12 @@
 ﻿using ApprovalTests.Reporters;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PeterDoStuff.Attributes;
 using PeterDoStuff.Extensions;
-using PeterDoStuff.Identity;
 using PeterDoStuff.Test.Extensions;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 
 namespace PeterDoStuff.Test.Extensions_Test
 {
@@ -101,8 +95,11 @@ namespace PeterDoStuff.Test.Extensions_Test
 
             using (var context = GetTestContext())
             {
-                await context.GetMigrator().DropAsync();
-                await context.GetMigrator().CreateAsync();
+                var dropSql = FormattableStringFactory.Create(context.GetMigrator().DropSql());
+                var createSql = FormattableStringFactory.Create(context.GetMigrator().CreateSql());
+
+                await context.Database.ExecuteSqlAsync(dropSql);
+                await context.Database.ExecuteSqlAsync(createSql);
 
                 var defaultEntity = new TestEntity1();
                 var customEntity = new TestEntity2();
