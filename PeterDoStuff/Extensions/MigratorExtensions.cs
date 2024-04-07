@@ -18,7 +18,12 @@ namespace PeterDoStuff.Extensions
         public static Migrator GetMigrator(this DbContext context)
             => new(context);
 
-        internal static IEnumerable<PropertyInfo> GetDbSetInfos(this DbContext context)
+        /// <summary>
+        /// Get the property infos of DbSet properties of a DbContext.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        internal static IEnumerable<PropertyInfo> GetDbSetPropertyInfos(this DbContext context)
             => context
                 .GetType()
                 .GetProperties()
@@ -44,7 +49,7 @@ namespace PeterDoStuff.Extensions
         /// <returns></returns>
         public string GetDropSql()
         {
-            var dbSets = context.GetDbSetInfos();
+            var dbSets = context.GetDbSetPropertyInfos();
 
             StringBuilder sql = new StringBuilder();
             foreach (var dbSet in dbSets)
@@ -60,7 +65,7 @@ namespace PeterDoStuff.Extensions
         /// <returns></returns>
         public string GetCreateSql()
         {
-            var dbSets = context.GetDbSetInfos();
+            var dbSets = context.GetDbSetPropertyInfos();
 
             StringBuilder sql = new StringBuilder();
             foreach (var dbSet in dbSets)
@@ -68,7 +73,7 @@ namespace PeterDoStuff.Extensions
                 var entityType = dbSet.PropertyType.GetGenericArguments()[0];
                 var columnInfos = entityType
                     .GetProperties()
-                    .Where(p => AmongColumnTypes(p.PropertyType));
+                    .Where(p => IsColumnType(p.PropertyType));
                 
                 var columns = columnInfos
                     .Select(info => GetSqlColumn(info));
@@ -96,10 +101,10 @@ namespace PeterDoStuff.Extensions
             { typeof(DateOnly), ("date", "" ) },
         };
 
-        private static bool AmongColumnTypes(Type propertyType)
+        private static bool IsColumnType(Type propertyType)
         {
             Type typeToCheck = GetInnerTypeIfNullable(propertyType);
-            return _columnTypes.ContainsKey(typeToCheck) || typeToCheck.IsEnum;
+            return typeToCheck.IsEnum || _columnTypes.ContainsKey(typeToCheck);
         }
 
         private static string GetSqlColumn(PropertyInfo pi)
