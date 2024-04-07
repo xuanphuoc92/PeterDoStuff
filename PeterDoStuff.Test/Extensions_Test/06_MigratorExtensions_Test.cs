@@ -42,6 +42,11 @@ namespace PeterDoStuff.Test.Extensions_Test
             public decimal? CustomDecimal { get; set; }
 
             public int Number { get; set; }
+            public Int32 NumberInt32 { get; set; }
+            public Int64 BigNumberInt64 { get; set; }
+
+            public bool Flag1 { get; set; }
+            public Boolean Flag2 { get; set; }
 
             public float Longitude { get; set; }
             public double Latitude { get; set; }
@@ -114,6 +119,10 @@ namespace PeterDoStuff.Test.Extensions_Test
                 customEntity.DefaultDecimal = 1;
                 customEntity.CustomDecimal = 2.2m;
                 customEntity.Number = 3;
+                customEntity.NumberInt32 = 4;
+                customEntity.BigNumberInt64 = 5;
+                customEntity.Flag1 = true;
+                customEntity.Flag2 = true;
                 customEntity.Longitude = 1.234f;
                 customEntity.Latitude = 5.678f;
                 customEntity.CreatedTime = new DateTime(2024, 01, 01, 01, 01, 01);
@@ -142,6 +151,10 @@ namespace PeterDoStuff.Test.Extensions_Test
                 defaultEntity.DefaultDecimal.Should().Be(0);
                 defaultEntity.CustomDecimal.Should().BeNull();
                 defaultEntity.Number.Should().Be(0);
+                defaultEntity.NumberInt32.Should().Be(0);
+                defaultEntity.BigNumberInt64.Should().Be(0);
+                defaultEntity.Flag1.Should().BeFalse();
+                defaultEntity.Flag2.Should().BeFalse();
                 defaultEntity.Longitude.Should().Be(0);
                 defaultEntity.Latitude.Should().Be(0);
                 defaultEntity.CreatedTime.Should().Be(default);
@@ -157,6 +170,10 @@ namespace PeterDoStuff.Test.Extensions_Test
                 customEntity.DefaultDecimal.Should().Be(1);
                 customEntity.CustomDecimal.Should().Be(2.2m);
                 customEntity.Number.Should().Be(3);
+                customEntity.NumberInt32.Should().Be(4);
+                customEntity.BigNumberInt64.Should().Be(5);
+                customEntity.Flag1.Should().BeTrue();
+                customEntity.Flag2.Should().BeTrue();
                 customEntity.Longitude.Should().Be(1.234f);
                 customEntity.Latitude.Should().Be(5.678f);
                 customEntity.CreatedTime.Should().Be(new DateTime(2024, 01, 01, 01, 01, 01));

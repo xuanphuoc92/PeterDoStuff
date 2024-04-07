@@ -100,6 +100,8 @@ namespace PeterDoStuff.Extensions
             { typeof(double), ("float", "" ) },
             { typeof(DateTime), ("datetime2", "" ) },
             { typeof(DateOnly), ("date", "" ) },
+            { typeof(Int64), ("bigint", "" ) },
+            { typeof(bool), ("bit", "" ) },
         };
 
         private Dictionary<Type, (string DefaultSqlType, string DefaultSize)> _mapping
