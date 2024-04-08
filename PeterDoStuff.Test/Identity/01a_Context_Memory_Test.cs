@@ -14,10 +14,14 @@ namespace PeterDoStuff.Test.Identity
         protected override UserContext GetTestContext()
         {
             var options = new DbContextOptionsBuilder<UserContext>()
-                .UseInMemoryDatabase(databaseName: "TestDatabase")
+                .UseSqlite("Data Source=:memory:")
                 .Options;
 
-            return new UserContext(options);
+            var context = new UserContext(options);
+            context.Database.OpenConnection();
+            context.Database.EnsureCreated();
+
+            return context;
         }
     }
 }

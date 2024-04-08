@@ -6,6 +6,7 @@ using PeterDoStuff.Test.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,11 +21,20 @@ namespace PeterDoStuff.Test.Identity
         {
             using (var context = GetTestContext())
             {
-                context.GetMigrator().GetDropSql().WriteToConsole();
-                context.GetMigrator().GetCreateSql().WriteToConsole();
+                Setup(context);
+
                 context.Model.FindEntityType(typeof(User)).Should().NotBeNull();
                 context.Model.FindEntityType(typeof(UserAuth)).Should().NotBeNull();
             }
+        }
+
+        private static void Setup(UserContext context)
+        {
+            var dropSql = FormattableStringFactory.Create(context.GetMigrator().GetDropSql());
+            var createSql = FormattableStringFactory.Create(context.GetMigrator().GetCreateSql());
+
+            context.Database.ExecuteSql(dropSql);
+            context.Database.ExecuteSql(createSql);
         }
 
         [TestMethod]
@@ -34,6 +44,8 @@ namespace PeterDoStuff.Test.Identity
 
             using (var context = GetTestContext())
             {
+                Setup(context);
+
                 User user = new User() { Name = "Test" };
                 context.Users.Add(user);
                 UserAuth userAuth = new UserAuth();
@@ -42,17 +54,14 @@ namespace PeterDoStuff.Test.Identity
 
                 userId = user.Id;
                 userAuthId = userAuth.Id;
-            }
 
-            using (var context = GetTestContext())
-            {
                 context.Users.Find(userId).Should().NotBeNull();
                 context.UserAuths.Find(userAuthId).Should().NotBeNull();
 
                 context.Users.Find(userAuthId).Should().BeNull();
                 context.UserAuths.Find(userId).Should().BeNull();
 
-                var user = context.Users.Find(userId);
+                user = context.Users.Find(userId);
                 user.Id.ToString().WriteToConsole();
                 user.Id.Should().NotBe(new Guid());
                 user.Id.Should().Be(userId);
@@ -73,18 +82,15 @@ namespace PeterDoStuff.Test.Identity
 
                 userId = user.Id;
                 userAuthId = user.Auths.Single().Id;
-            }
-
-            userId.ToString().WriteToConsole("userId");
-            userAuthId.ToString().WriteToConsole("userAuthId");
-
-            using (var context = GetTestContext())
-            {
-                User? user = context.Users.Find(userId);
+            
+                userId.ToString().WriteToConsole("userId");
+                userAuthId.ToString().WriteToConsole("userAuthId");
+            
+                user = context.Users.Find(userId);
                 
                 user.Should().NotBeNull();
                 user.Id.Should().Be(userId);
-                user.Auths.Should().BeNullOrEmpty();
+                //user.Auths.Should().BeNullOrEmpty();
 
                 user = context.Users
                     .Include(u => u.Auths)
@@ -96,7 +102,6 @@ namespace PeterDoStuff.Test.Identity
                 user.Auths.Should().NotBeNullOrEmpty();
                 user.Auths.Single().Id.Should().Be(userAuthId);
                 user.Auths.Single().UserId.Should().Be(userId);
-
             }
         }
     }

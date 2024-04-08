@@ -1,11 +1,8 @@
 ﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using PeterDoStuff.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
+using PeterDoStuff.Extensions;
 
 namespace PeterDoStuff.Test.Identity
 {
@@ -15,10 +12,20 @@ namespace PeterDoStuff.Test.Identity
         private UserService GetTestService()
         {
             var options = new DbContextOptionsBuilder<UserContext>()
-                .UseInMemoryDatabase(databaseName: "TestDatabase")
+                .UseSqlite("Data Source=:memory:")
                 .Options;
 
             var context = new UserContext(options);
+
+            context.Database.OpenConnection();
+            context.Database.EnsureCreated();
+
+            var dropSql = FormattableStringFactory.Create(context.GetMigrator().GetDropSql());
+            var createSql = FormattableStringFactory.Create(context.GetMigrator().GetCreateSql());
+
+            context.Database.ExecuteSql(dropSql);
+            context.Database.ExecuteSql(createSql);
+
             return new UserService(context);
         }
 
