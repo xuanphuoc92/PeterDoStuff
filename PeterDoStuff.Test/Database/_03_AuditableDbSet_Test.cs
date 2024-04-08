@@ -26,6 +26,37 @@ namespace PeterDoStuff.Test.Database
 
             [Auditable]
             public DbSet<AuditableEntity> __AuditableTestTable__ { get; set; }
+
+            public override int SaveChanges()
+            {
+                var entries = ChangeTracker.Entries()
+                    .Where(entry => 
+                        entry.State == EntityState.Added ||
+                        entry.State == EntityState.Modified ||
+                        entry.State == EntityState.Deleted
+                    );
+
+                foreach (var entry in entries)
+                {
+                    var table = entry.Metadata.GetTableName();
+                    var auditTable = $"{table}_Audit";
+                    var action = entry.State switch
+                    {
+                        EntityState.Added => "INSERT",
+                        EntityState.Modified => "UPDATE",
+                        EntityState.Deleted => "DELETE",
+                        _ => entry.State.ToString()
+                    };
+
+                    var e = entry.Entity;
+
+                    FormattableString fs = $"INSERT INTO [__AuditableTestTable___Audit] ([Id], [Name], [AuditAction], [AuditTime]) VALUES ({e.GetPropertyValue("Id")}, {e.GetPropertyValue("Name")}, {action}, getDate());";
+
+                    Database.ExecuteSql(fs);
+                }
+
+                return base.SaveChanges();
+            }
         }
 
         private AuditableContext GetTestContext()

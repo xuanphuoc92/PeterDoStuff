@@ -174,13 +174,13 @@ namespace PeterDoStuff.Extensions
                 : "";
         }
 
-        private bool IsColumn(PropertyInfo pi)
+        public static bool IsColumn(PropertyInfo pi)
         {
             if (pi.GetCustomAttribute<NotMappedAttribute>() != null)
                 return false;
 
             Type typeToCheck = GetInnerTypeIfNullable(pi.PropertyType);
-            return typeToCheck.IsEnum || _mapping.ContainsKey(typeToCheck);
+            return typeToCheck.IsEnum || _presetMapping.ContainsKey(typeToCheck);
         }
 
         private string GetSqlColumn(PropertyInfo pi)
