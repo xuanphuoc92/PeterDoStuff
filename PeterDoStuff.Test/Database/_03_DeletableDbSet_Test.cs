@@ -71,6 +71,15 @@ namespace PeterDoStuff.Test.Database
 
                 entity.Id.Should().Be(1);
                 entity.Name.Should().Be("One");
+
+                context.__DeletableTestTable__.Remove(entity);
+                context.SaveChanges();
+            }
+
+            using (var context = GetTestContext())
+            {
+                var entity = context.__DeletableTestTable__.Find(1);
+                entity.Should().BeNull();
             }
         }
     }
