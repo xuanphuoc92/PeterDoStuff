@@ -87,7 +87,8 @@ namespace PeterDoStuff.Extensions
                 if (dbSet.GetCustomAttribute<WithDeletedBinAttribute>() != null)
                 {
                     string deletedBinTable = CraftCreateSql(entityType, $"{tableName}_Deleted", 
-                        includePrimaryKey: false);
+                        includePrimaryKey: false,
+                        $"INDEX IDX_{tableName}_Deleted_Id ([Id])");
                     sql.AppendLine(deletedBinTable);
                 }
             }
@@ -95,7 +96,9 @@ namespace PeterDoStuff.Extensions
             return sql.ToString();
         }
 
-        private string CraftCreateSql(Type entityType, string tableName, bool includePrimaryKey = true)
+        private string CraftCreateSql(Type entityType, string tableName, 
+            bool includePrimaryKey = true,
+            params string[] additionalConstraints)
         {
             var subSql = new StringBuilder();
             var columnInfos = entityType
@@ -108,6 +111,9 @@ namespace PeterDoStuff.Extensions
             
             if (includePrimaryKey)
                 constraints.Add($"    CONSTRAINT PK_{tableName}_Id PRIMARY KEY (Id)");
+
+            foreach (var addtionalConstraint in additionalConstraints)
+                constraints.Add($"    {addtionalConstraint}");
 
             subSql.AppendLine($"CREATE TABLE [{tableName}] (");
             subSql.AppendLine(columns.Union(constraints).Join(",\n"));
