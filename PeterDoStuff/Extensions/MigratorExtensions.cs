@@ -96,14 +96,17 @@ namespace PeterDoStuff.Extensions
                 var entityType = dbSetContainer.PropertyType.GetGenericArguments()[0];
                 string tableName = dbSetContainer.Name;
 
-                string subSql = CraftCreateSql(entityType, tableName);
-                sql.AppendLine(subSql);
+                string mainSql = CraftCreateSql(entityType, tableName);
+                string deletableSql = CraftCreateSql(entityType, $"{tableName}_Deleted", false);
+                
+                sql.AppendLine(mainSql);
+                sql.AppendLine(deletableSql);
             }
 
             return sql.ToString();
         }
 
-        private string CraftCreateSql(Type entityType, string tableName)
+        private string CraftCreateSql(Type entityType, string tableName, bool includePrimaryKey = true)
         {
             var subSql = new StringBuilder();
             var columnInfos = entityType
@@ -112,7 +115,10 @@ namespace PeterDoStuff.Extensions
 
             var columns = columnInfos
                 .Select(info => GetSqlColumn(info));
-            var constraints = new List<string>() { $"    CONSTRAINT PK_{tableName}_Id PRIMARY KEY (Id)" };
+            var constraints = new List<string>();
+            
+            if (includePrimaryKey)
+                constraints.Add($"    CONSTRAINT PK_{tableName}_Id PRIMARY KEY (Id)");
 
             subSql.AppendLine($"CREATE TABLE [{tableName}] (");
             subSql.AppendLine(columns.Union(constraints).Join(",\n"));
