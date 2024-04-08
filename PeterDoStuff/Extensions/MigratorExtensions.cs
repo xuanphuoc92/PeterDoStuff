@@ -59,8 +59,8 @@ namespace PeterDoStuff.Extensions
             {
                 sql.AppendLine($"DROP TABLE IF EXISTS [{dbSet.Name}];");
 
-                if (dbSet.GetCustomAttribute<WithDeletedBinAttribute>() != null)
-                    sql.AppendLine($"DROP TABLE IF EXISTS [{dbSet.Name}_Deleted];");
+                if (dbSet.GetCustomAttribute<AuditableAttribute>() != null)
+                    sql.AppendLine($"DROP TABLE IF EXISTS [{dbSet.Name}_Audit];");
             }
 
             return sql.ToString();
@@ -84,11 +84,11 @@ namespace PeterDoStuff.Extensions
                 string mainTable = CraftCreateSql(entityType, tableName);
                 sql.AppendLine(mainTable);
 
-                if (dbSet.GetCustomAttribute<WithDeletedBinAttribute>() != null)
+                if (dbSet.GetCustomAttribute<AuditableAttribute>() != null)
                 {
-                    string deletedBinTable = CraftCreateSql(entityType, $"{tableName}_Deleted", 
+                    string deletedBinTable = CraftCreateSql(entityType, $"{tableName}_Audit", 
                         includePrimaryKey: false,
-                        $"INDEX IDX_{tableName}_Deleted_Id ([Id])");
+                        $"INDEX IDX_{tableName}_Audit_Id ([Id])");
                     sql.AppendLine(deletedBinTable);
                 }
             }

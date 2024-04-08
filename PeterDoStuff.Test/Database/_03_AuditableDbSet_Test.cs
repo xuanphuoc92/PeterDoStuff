@@ -9,9 +9,9 @@ using System.Runtime.CompilerServices;
 namespace PeterDoStuff.Test.Database
 {
     [TestClass]
-    public class _03_DeletableDbSet_Test
+    public class _03_AuditableDbSet_Test
     {
-        private class DeletableEntity
+        private class AuditableEntity
         {
             public int Id { get; set; }
             
@@ -19,22 +19,22 @@ namespace PeterDoStuff.Test.Database
             public string Name { get; set; }
         }
 
-        private class DeletableContext : DbContext
+        private class AuditableContext : DbContext
         {
-            public DeletableContext(DbContextOptions<DeletableContext> options) : base(options) { }
+            public AuditableContext(DbContextOptions<AuditableContext> options) : base(options) { }
 
-            [WithDeletedBin]
-            public DbSet<DeletableEntity> __DeletableTestTable__ { get; set; }
+            [Auditable]
+            public DbSet<AuditableEntity> __AuditableTestTable__ { get; set; }
         }
 
-        private DeletableContext GetTestContext()
+        private AuditableContext GetTestContext()
         {
             var connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=PeterDoStuffDb;Integrated Security=True;Connect Timeout=10;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
-            var options = new DbContextOptionsBuilder<DeletableContext>()
+            var options = new DbContextOptionsBuilder<AuditableContext>()
                 .UseSqlServer(connectionString)
                 .Options;
 
-            return new DeletableContext(options);
+            return new AuditableContext(options);
         }
 
         [TestMethod]
@@ -56,29 +56,29 @@ namespace PeterDoStuff.Test.Database
                 context.Database.ExecuteSql(dropSql);
                 context.Database.ExecuteSql(createSql);
 
-                var entity = context.__DeletableTestTable__.Find(1);
+                var entity = context.__AuditableTestTable__.Find(1);
                 entity.Should().BeNull();
 
-                entity = new DeletableEntity { Id = 1, Name = "One" };
-                context.__DeletableTestTable__.Add(entity);
+                entity = new AuditableEntity { Id = 1, Name = "One" };
+                context.__AuditableTestTable__.Add(entity);
                 context.SaveChanges();
             }
 
             using (var context = GetTestContext())
             {
-                var entity = context.__DeletableTestTable__.Find(1);
+                var entity = context.__AuditableTestTable__.Find(1);
                 entity.Should().NotBeNull();
 
                 entity.Id.Should().Be(1);
                 entity.Name.Should().Be("One");
 
-                context.__DeletableTestTable__.Remove(entity);
+                context.__AuditableTestTable__.Remove(entity);
                 context.SaveChanges();
             }
 
             using (var context = GetTestContext())
             {
-                var entity = context.__DeletableTestTable__.Find(1);
+                var entity = context.__AuditableTestTable__.Find(1);
                 entity.Should().BeNull();
             }
         }

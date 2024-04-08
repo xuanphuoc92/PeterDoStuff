@@ -9,7 +9,7 @@ namespace PeterDoStuff.Attributes
     /// <summary>
     /// This class helps migrator to create a cloned [{TableName}_Deleted] table in its migration script (without Primary Key constraint)
     /// </summary>
-    public class WithDeletedBinAttribute : Attribute
+    public class AuditableAttribute : Attribute
     {
     }
 }
