@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using ApprovalTests.Reporters;
+using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using PeterDoStuff.Attributes;
 using PeterDoStuff.Extensions;
@@ -38,15 +39,24 @@ namespace PeterDoStuff.Test.Database
         }
 
         [TestMethod]
-        public void _01_Migrator()
+        [UseReporter(typeof(DiffReporter))]
+        public void _01_DropSql()
         {
             using var context = GetTestContext();
-            context.GetMigrator().GetDropSql().WriteToConsole();
+            context.GetMigrator().GetDropSql().Verify();
             context.GetMigrator().GetCreateSql().WriteToConsole();
         }
 
         [TestMethod]
-        public void _02_ReadWrite()
+        [UseReporter(typeof(DiffReporter))]
+        public void _02_CreateSql()
+        {
+            using var context = GetTestContext();
+            context.GetMigrator().GetCreateSql().Verify();
+        }
+
+        [TestMethod]
+        public void _03_ReadWrite()
         {
             using (var context = GetTestContext())
             {

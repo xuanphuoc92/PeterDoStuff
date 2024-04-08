@@ -1,0 +1,14 @@
+﻿CREATE TABLE [__AuditableTestTable__] (
+    [Id] int,
+    [Name] nvarchar(100),
+    CONSTRAINT PK___AuditableTestTable___Id PRIMARY KEY (Id)
+);
+CREATE TABLE [__AuditableTestTable___Audit] (
+    [Id] int,
+    [Name] nvarchar(100),
+    [AuditAction] nvarchar(50),
+    [AuditTime] datetime2,
+    [AuditActorId] uniqueidentifier,
+    [AuditActorName] nvarchar(200),
+    INDEX IDX___AuditableTestTable___Audit_Id ([Id])
+);
