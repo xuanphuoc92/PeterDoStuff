@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using PeterDoStuff.Attributes;
 using System.Runtime.CompilerServices;
 using System.ComponentModel.DataAnnotations.Schema;
+using PeterDoStuff.Database.EF;
 
 namespace PeterDoStuff.Extensions
 {
@@ -18,18 +19,29 @@ namespace PeterDoStuff.Extensions
         public static Migrator GetMigrator(this DbContext context)
             => new(context);
 
+        private static IEnumerable<PropertyInfo> GetPropertiesByGenericType(this DbContext context, Type genericType)
+            => context
+                .GetType()
+                .GetProperties()
+                .Where(p =>
+                    p.PropertyType.IsGenericType &&
+                    p.PropertyType.GetGenericTypeDefinition() == genericType);
+
         /// <summary>
         /// Get the property infos of DbSet properties of a DbContext.
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
         internal static IEnumerable<PropertyInfo> GetDbSetPropertyInfos(this DbContext context)
-            => context
-                .GetType()
-                .GetProperties()
-                .Where(p =>
-                    p.PropertyType.IsGenericType &&
-                    p.PropertyType.GetGenericTypeDefinition() == typeof(DbSet<>));
+            => context.GetPropertiesByGenericType(typeof(DbSet<>));
+
+        /// <summary>
+        /// Get the property infos of IDbSetContainer properties of a DbContext.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        internal static IEnumerable<PropertyInfo> GetDeletableDbSetPropertyInfos(this DbContext context)
+            => context.GetPropertiesByGenericType(typeof(DeletableDbSet<>));
     }
 
     /// <summary>
@@ -66,22 +78,32 @@ namespace PeterDoStuff.Extensions
         /// <returns></returns>
         public string GetCreateSql()
         {
-            var dbSets = context.GetDbSetPropertyInfos();
-
             StringBuilder sql = new StringBuilder();
+
+            var dbSets = context.GetDbSetPropertyInfos();
             foreach (var dbSet in dbSets)
             {
                 var entityType = dbSet.PropertyType.GetGenericArguments()[0];
                 string tableName = dbSet.Name;
-                
-                StringBuilder subSql = CraftCreateSql(entityType, tableName);
 
-                sql.AppendLine(subSql.ToString());
+                string subSql = CraftCreateSql(entityType, tableName);
+                sql.AppendLine(subSql);
             }
+
+            var dbSetContainers = context.GetDeletableDbSetPropertyInfos();
+            foreach (var dbSetContainer in dbSetContainers)
+            {
+                var entityType = dbSetContainer.PropertyType.GetGenericArguments()[0];
+                string tableName = dbSetContainer.Name;
+
+                string subSql = CraftCreateSql(entityType, tableName);
+                sql.AppendLine(subSql);
+            }
+
             return sql.ToString();
         }
 
-        private StringBuilder CraftCreateSql(Type entityType, string tableName)
+        private string CraftCreateSql(Type entityType, string tableName)
         {
             var subSql = new StringBuilder();
             var columnInfos = entityType
@@ -95,7 +117,7 @@ namespace PeterDoStuff.Extensions
             subSql.AppendLine($"CREATE TABLE [{tableName}] (");
             subSql.AppendLine(columns.Union(constraints).Join(",\n"));
             subSql.Append($");");
-            return subSql;
+            return subSql.ToString();
         }
 
         private static int[] Size(params int[] sizes)
