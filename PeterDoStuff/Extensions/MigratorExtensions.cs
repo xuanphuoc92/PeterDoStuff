@@ -19,13 +19,18 @@ namespace PeterDoStuff.Extensions
         public static Migrator GetMigrator(this DbContext context)
             => new(context);
 
-        private static IEnumerable<PropertyInfo> GetPropertiesByGenericType(this DbContext context, Type genericType)
+        private static IEnumerable<PropertyInfo> GetPropertyInfosByGenericType(this DbContext context, Type genericType)
             => context
                 .GetType()
                 .GetProperties()
                 .Where(p =>
                     p.PropertyType.IsGenericType &&
-                    p.PropertyType.GetGenericTypeDefinition() == genericType);
+                    (
+                        p.PropertyType.GetGenericTypeDefinition() == genericType || 
+                        p.PropertyType.GetInterfaces()
+                            .Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == genericType)
+                    )
+                );
 
         /// <summary>
         /// Get the property infos of DbSet properties of a DbContext.
@@ -33,15 +38,15 @@ namespace PeterDoStuff.Extensions
         /// <param name="context"></param>
         /// <returns></returns>
         internal static IEnumerable<PropertyInfo> GetDbSetPropertyInfos(this DbContext context)
-            => context.GetPropertiesByGenericType(typeof(DbSet<>));
+            => context.GetPropertyInfosByGenericType(typeof(DbSet<>));
 
         /// <summary>
         /// Get the property infos of IDbSetContainer properties of a DbContext.
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        internal static IEnumerable<PropertyInfo> GetDeletableDbSetPropertyInfos(this DbContext context)
-            => context.GetPropertiesByGenericType(typeof(DeletableDbSet<>));
+        internal static IEnumerable<PropertyInfo> GetDbSetContainerPropertyInfos(this DbContext context)
+            => context.GetPropertyInfosByGenericType(typeof(IDbSetContainer<>));
     }
 
     /// <summary>
@@ -90,7 +95,7 @@ namespace PeterDoStuff.Extensions
                 sql.AppendLine(subSql);
             }
 
-            var dbSetContainers = context.GetDeletableDbSetPropertyInfos();
+            var dbSetContainers = context.GetDbSetContainerPropertyInfos();
             foreach (var dbSetContainer in dbSetContainers)
             {
                 var entityType = dbSetContainer.PropertyType.GetGenericArguments()[0];
