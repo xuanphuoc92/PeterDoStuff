@@ -21,23 +21,10 @@ SELECT * FROM [_TestTable_];";
         private SqlCommand() { }
         
         /// <summary>
-        /// Get a new empty SQL Command. Use AppendLine() method to add sql to the command.
+        /// Get a new empty SQL Command. Use Append() and AppendLine() method to add sql to the command.
         /// </summary>
         /// <returns></returns>
         public static SqlCommand New() => new SqlCommand();
-
-        /// <summary>
-        /// Get a new SQL Command with the sql and (optionally) the parameters.
-        /// </summary>
-        /// <param name="sql">E.g. "SELECT * FROM [_TestTable] where ID = {0} and CreatedTime > {1};"</param>
-        /// <param name="parameters">E.g. "1001a", DateTime.Today</param>
-        /// <returns></returns>
-        public static SqlCommand New(string sql, params object[] parameters)
-        {
-            var command = New();
-            command.AppendLine(sql, parameters);
-            return command; 
-        }
 
         /// <summary>
         /// Append a line of sql to the existing command.
@@ -45,7 +32,19 @@ SELECT * FROM [_TestTable_];";
         /// <param name="sql">E.g. "SELECT * FROM [_TestTable] where ID = {0} and CreatedTime > {1};"</param>
         /// <param name="parameters">E.g. "1001a", DateTime.Today</param>
         /// <returns></returns>
-        public SqlCommand AppendLine(string sql, object[] parameters)
+        public SqlCommand AppendLine(string sql, params object[] parameters)
+        {
+            Sql += RecordAndFormat(sql, parameters) + Environment.NewLine;
+            return this;
+        }
+
+        /// <summary>
+        /// Append sql to the existing command.
+        /// </summary>
+        /// <param name="sql">E.g. "SELECT * FROM [_TestTable] where ID = {0} and CreatedTime > {1};"</param>
+        /// <param name="parameters">E.g. "1001a", DateTime.Today</param>
+        /// <returns></returns>
+        public SqlCommand Append(string sql, params object[] parameters)
         {
             Sql += RecordAndFormat(sql, parameters);
             return this;

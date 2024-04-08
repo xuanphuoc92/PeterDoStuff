@@ -88,7 +88,7 @@ namespace PeterDoStuff.Database
         /// <returns></returns>
         public Task<IEnumerable<T>> QueryAsync<T>(string sql, params object[] parameters)
         {
-            var command = SqlCommand.New(sql, parameters);
+            var command = SqlCommand.New().Append(sql, parameters);
             return QueryAsync<T>(command);
         }
 
@@ -123,7 +123,7 @@ namespace PeterDoStuff.Database
         /// <returns></returns>
         public async Task<int> ExecuteAsync(string sql, params object[] parameters)
         {
-            var command = SqlCommand.New(sql, parameters);
+            var command = SqlCommand.New().Append(sql, parameters);
             return await ExecuteAsync(command);
         }
 
