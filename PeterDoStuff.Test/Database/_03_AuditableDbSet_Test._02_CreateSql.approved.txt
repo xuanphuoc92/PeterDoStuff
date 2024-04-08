@@ -10,5 +10,5 @@ CREATE TABLE [__AuditableTestTable___Audit] (
     [AuditTime] datetime2,
     [AuditActorId] uniqueidentifier,
     [AuditActorName] nvarchar(200),
-    INDEX IDX___AuditableTestTable___Audit_Id ([Id])
+    INDEX IDX___AuditableTestTable___Audit_Id ([Id], [AuditTime])
 );

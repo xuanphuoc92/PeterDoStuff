@@ -92,7 +92,7 @@ namespace PeterDoStuff.Extensions
                         "[AuditTime] datetime2",
                         "[AuditActorId] uniqueidentifier",
                         "[AuditActorName] nvarchar(200)",
-                        $"INDEX IDX_{tableName}_Audit_Id ([Id])");
+                        $"INDEX IDX_{tableName}_Audit_Id ([Id], [AuditTime])");
                     sql.AppendLine(auditTable);
                 }
             }
