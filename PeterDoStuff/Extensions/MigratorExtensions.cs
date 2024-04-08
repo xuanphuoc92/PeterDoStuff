@@ -4,7 +4,6 @@ using System.Reflection;
 using System.ComponentModel.DataAnnotations;
 using PeterDoStuff.Attributes;
 using System.ComponentModel.DataAnnotations.Schema;
-using PeterDoStuff.Database.EF;
 
 namespace PeterDoStuff.Extensions
 {
@@ -24,11 +23,7 @@ namespace PeterDoStuff.Extensions
                 .GetProperties()
                 .Where(p =>
                     p.PropertyType.IsGenericType &&
-                    (
-                        p.PropertyType.GetGenericTypeDefinition() == genericType || 
-                        p.PropertyType.GetInterfaces()
-                            .Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == genericType)
-                    )
+                    p.PropertyType.GetGenericTypeDefinition() == genericType
                 );
 
         /// <summary>
@@ -38,14 +33,6 @@ namespace PeterDoStuff.Extensions
         /// <returns></returns>
         internal static IEnumerable<PropertyInfo> GetDbSetPropertyInfos(this DbContext context)
             => context.GetPropertyInfosByGenericType(typeof(DbSet<>));
-
-        /// <summary>
-        /// Get the property infos of IDbSetContainer properties of a DbContext.
-        /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        internal static IEnumerable<PropertyInfo> GetDbSetContainerPropertyInfos(this DbContext context)
-            => context.GetPropertyInfosByGenericType(typeof(IDbSetContainer<>));
     }
 
     /// <summary>
@@ -71,13 +58,6 @@ namespace PeterDoStuff.Extensions
             foreach (var dbSet in dbSets)
                 sql.AppendLine($"DROP TABLE IF EXISTS [{dbSet.Name}];");
 
-            var dbSetContainers = context.GetDbSetContainerPropertyInfos();
-            foreach (var dbSetContainer in dbSetContainers)
-            {
-                sql.AppendLine($"DROP TABLE IF EXISTS [{dbSetContainer.Name}];");
-                sql.AppendLine($"DROP TABLE IF EXISTS [{dbSetContainer.Name}_Deleted];");
-            }
-
             return sql.ToString();
         }
 
@@ -98,19 +78,6 @@ namespace PeterDoStuff.Extensions
 
                 string subSql = CraftCreateSql(entityType, tableName);
                 sql.AppendLine(subSql);
-            }
-
-            var dbSetContainers = context.GetDbSetContainerPropertyInfos();
-            foreach (var dbSetContainer in dbSetContainers)
-            {
-                var entityType = dbSetContainer.PropertyType.GetGenericArguments()[0];
-                string tableName = dbSetContainer.Name;
-
-                string mainSql = CraftCreateSql(entityType, tableName);
-                string deletableSql = CraftCreateSql(entityType, $"{tableName}_Deleted", false);
-                
-                sql.AppendLine(mainSql);
-                sql.AppendLine(deletableSql);
             }
 
             return sql.ToString();
