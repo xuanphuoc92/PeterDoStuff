@@ -72,19 +72,30 @@ namespace PeterDoStuff.Extensions
             foreach (var dbSet in dbSets)
             {
                 var entityType = dbSet.PropertyType.GetGenericArguments()[0];
-                var columnInfos = entityType
-                    .GetProperties()
-                    .Where(pi => IsColumn(pi));
+                string tableName = dbSet.Name;
                 
-                var columns = columnInfos
-                    .Select(info => GetSqlColumn(info));
-                var constraints = new List<string>() { $"    CONSTRAINT PK_{dbSet.Name}_Id PRIMARY KEY (Id)" };
+                StringBuilder subSql = CraftCreateSql(entityType, tableName);
 
-                sql.AppendLine($"CREATE TABLE [{dbSet.Name}] (");
-                sql.AppendLine(columns.Union(constraints).Join(",\n"));
-                sql.AppendLine($");");
+                sql.AppendLine(subSql.ToString());
             }
             return sql.ToString();
+        }
+
+        private StringBuilder CraftCreateSql(Type entityType, string tableName)
+        {
+            var subSql = new StringBuilder();
+            var columnInfos = entityType
+                .GetProperties()
+                .Where(pi => IsColumn(pi));
+
+            var columns = columnInfos
+                .Select(info => GetSqlColumn(info));
+            var constraints = new List<string>() { $"    CONSTRAINT PK_{tableName}_Id PRIMARY KEY (Id)" };
+
+            subSql.AppendLine($"CREATE TABLE [{tableName}] (");
+            subSql.AppendLine(columns.Union(constraints).Join(",\n"));
+            subSql.Append($");");
+            return subSql;
         }
 
         private static int[] Size(params int[] sizes)
