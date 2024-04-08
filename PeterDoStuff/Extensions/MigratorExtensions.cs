@@ -86,10 +86,14 @@ namespace PeterDoStuff.Extensions
 
                 if (dbSet.GetCustomAttribute<AuditableAttribute>() != null)
                 {
-                    string deletedBinTable = CraftCreateSql(entityType, $"{tableName}_Audit", 
+                    string auditTable = CraftCreateSql(entityType, $"{tableName}_Audit", 
                         includePrimaryKey: false,
+                        "[AuditAction] nvarchar(50)",
+                        "[AuditTime] datetime2",
+                        "[AuditActorId] uniqueidentifier",
+                        "[AuditActorName] nvarchar(200)",
                         $"INDEX IDX_{tableName}_Audit_Id ([Id])");
-                    sql.AppendLine(deletedBinTable);
+                    sql.AppendLine(auditTable);
                 }
             }
 
@@ -98,7 +102,7 @@ namespace PeterDoStuff.Extensions
 
         private string CraftCreateSql(Type entityType, string tableName, 
             bool includePrimaryKey = true,
-            params string[] additionalConstraints)
+            params string[] additionalDefinitions)
         {
             var subSql = new StringBuilder();
             var columnInfos = entityType
@@ -107,16 +111,16 @@ namespace PeterDoStuff.Extensions
 
             var columns = columnInfos
                 .Select(info => GetSqlColumn(info));
-            var constraints = new List<string>();
+            var additionalSql = new List<string>();
             
             if (includePrimaryKey)
-                constraints.Add($"    CONSTRAINT PK_{tableName}_Id PRIMARY KEY (Id)");
+                additionalSql.Add($"    CONSTRAINT PK_{tableName}_Id PRIMARY KEY (Id)");
 
-            foreach (var addtionalConstraint in additionalConstraints)
-                constraints.Add($"    {addtionalConstraint}");
+            foreach (var defintion in additionalDefinitions)
+                additionalSql.Add($"    {defintion}");
 
             subSql.AppendLine($"CREATE TABLE [{tableName}] (");
-            subSql.AppendLine(columns.Union(constraints).Join(",\n"));
+            subSql.AppendLine(columns.Union(additionalSql).Join(",\n"));
             subSql.Append($");");
             return subSql.ToString();
         }
