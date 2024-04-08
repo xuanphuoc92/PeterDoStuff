@@ -38,6 +38,7 @@ namespace PeterDoStuff.Test.Database
         public void _01_Migrator()
         {
             using var context = GetTestContext();
+            context.GetMigrator().GetDropSql().WriteToConsole();
             context.GetMigrator().GetCreateSql().WriteToConsole();
         }
     }

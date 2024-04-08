@@ -3,7 +3,6 @@ using System.Text;
 using System.Reflection;
 using System.ComponentModel.DataAnnotations;
 using PeterDoStuff.Attributes;
-using System.Runtime.CompilerServices;
 using System.ComponentModel.DataAnnotations.Schema;
 using PeterDoStuff.Database.EF;
 
@@ -66,13 +65,19 @@ namespace PeterDoStuff.Extensions
         /// <returns></returns>
         public string GetDropSql()
         {
-            var dbSets = context.GetDbSetPropertyInfos();
-
             StringBuilder sql = new StringBuilder();
+
+            var dbSets = context.GetDbSetPropertyInfos();
             foreach (var dbSet in dbSets)
+                sql.AppendLine($"DROP TABLE IF EXISTS [{dbSet.Name}];");
+
+            var dbSetContainers = context.GetDbSetContainerPropertyInfos();
+            foreach (var dbSetContainer in dbSetContainers)
             {
-                sql.AppendLine($"DROP TABLE IF EXISTS [{dbSet.Name}];");                
+                sql.AppendLine($"DROP TABLE IF EXISTS [{dbSetContainer.Name}];");
+                sql.AppendLine($"DROP TABLE IF EXISTS [{dbSetContainer.Name}_Deleted];");
             }
+
             return sql.ToString();
         }
 
