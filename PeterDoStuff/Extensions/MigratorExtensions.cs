@@ -56,7 +56,12 @@ namespace PeterDoStuff.Extensions
 
             var dbSets = context.GetDbSetPropertyInfos();
             foreach (var dbSet in dbSets)
+            {
                 sql.AppendLine($"DROP TABLE IF EXISTS [{dbSet.Name}];");
+
+                if (dbSet.GetCustomAttribute<WithDeletedBinAttribute>() != null)
+                    sql.AppendLine($"DROP TABLE IF EXISTS [{dbSet.Name}_Deleted];");
+            }
 
             return sql.ToString();
         }
@@ -76,8 +81,15 @@ namespace PeterDoStuff.Extensions
                 var entityType = dbSet.PropertyType.GetGenericArguments()[0];
                 string tableName = dbSet.Name;
 
-                string subSql = CraftCreateSql(entityType, tableName);
-                sql.AppendLine(subSql);
+                string mainTable = CraftCreateSql(entityType, tableName);
+                sql.AppendLine(mainTable);
+
+                if (dbSet.GetCustomAttribute<WithDeletedBinAttribute>() != null)
+                {
+                    string deletedBinTable = CraftCreateSql(entityType, $"{tableName}_Deleted", 
+                        includePrimaryKey: false);
+                    sql.AppendLine(deletedBinTable);
+                }
             }
 
             return sql.ToString();

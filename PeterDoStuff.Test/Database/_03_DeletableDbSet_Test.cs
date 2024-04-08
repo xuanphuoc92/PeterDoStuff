@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PeterDoStuff.Attributes;
 using PeterDoStuff.Extensions;
 using PeterDoStuff.Test.Extensions;
 using System.ComponentModel.DataAnnotations;
@@ -20,6 +21,7 @@ namespace PeterDoStuff.Test.Database
         {
             public DeletableContext(DbContextOptions<DeletableContext> options) : base(options) { }
 
+            [WithDeletedBin]
             public DbSet<DeletableEntity> __DeletableTestTable__ { get; set; }
         }
 
