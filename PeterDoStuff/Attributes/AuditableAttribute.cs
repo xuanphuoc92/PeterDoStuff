@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace PeterDoStuff.Attributes
 {
     /// <summary>
-    /// This class helps migrator to create a cloned [{TableName}_Deleted] table in its migration script (without Primary Key constraint)
+    /// This class helps migrator to create a cloned [{TableName}_Audit] table in its migration script.
     /// </summary>
     public class AuditableAttribute : Attribute
     {
