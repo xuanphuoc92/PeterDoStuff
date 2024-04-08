@@ -71,6 +71,19 @@ namespace PeterDoStuff.Test.Database
 
                 entity.Id.Should().Be(1);
                 entity.Name.Should().Be("One");
+                entity.Name = "Two";
+
+                context.__AuditableTestTable__.Update(entity);
+                context.SaveChanges();
+            }
+
+            using (var context = GetTestContext())
+            {
+                var entity = context.__AuditableTestTable__.Find(1);
+                entity.Should().NotBeNull();
+
+                entity.Id.Should().Be(1);
+                entity.Name.Should().Be("Two");
 
                 context.__AuditableTestTable__.Remove(entity);
                 context.SaveChanges();
