@@ -16,8 +16,8 @@ namespace PeterDoStuff.Test.Extensions_Test
         private class TestContext : DbContext
         {
             public TestContext(DbContextOptions<TestContext> options) : base(options) { }
-            public DbSet<TestEntity1> __TestTable__ => Set<TestEntity1>();
-            public DbSet<TestEntity2> __CustomTestTable__ => Set<TestEntity2>();
+            public DbSet<TestEntity1> __TestTable__ { get; set; }
+            public DbSet<TestEntity2> __CustomTestTable__ { get; set; }
         }
 
         private class TestEntity1 : TestEntity { }

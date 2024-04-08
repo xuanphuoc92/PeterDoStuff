@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using PeterDoStuff.Extensions;
 using PeterDoStuff.Identity;
 using PeterDoStuff.Test.Extensions;
 using System;
@@ -19,6 +20,8 @@ namespace PeterDoStuff.Test.Identity
         {
             using (var context = GetTestContext())
             {
+                context.GetMigrator().GetDropSql().WriteToConsole();
+                context.GetMigrator().GetCreateSql().WriteToConsole();
                 context.Model.FindEntityType(typeof(User)).Should().NotBeNull();
                 context.Model.FindEntityType(typeof(UserAuth)).Should().NotBeNull();
             }
