@@ -2,6 +2,7 @@
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using PeterDoStuff.Attributes;
+using PeterDoStuff.Database;
 using PeterDoStuff.Extensions;
 using PeterDoStuff.Test.Extensions;
 using System.ComponentModel.DataAnnotations;
@@ -191,19 +192,7 @@ namespace PeterDoStuff.Test.Extensions_Test
             context.GetMigrator().DescribeMapping().WriteToConsole();
         }
 
-        private class TestEntity3 : TestEntity;
-
-        private class TestContextB : DbContext
-        {
-            public TestContextB(DbContextOptions<TestContextB> options) : base(options) { }
-
-            public DbSet<TestEntity1> __TestTable__ { get; set; }
-            public DbSet<TestEntity3> __AddedTestTable__ => Set<TestEntity3>();
-        }
-
-        [TestMethod]
-        [UseReporter(typeof(DiffReporter))]
-        public void _05_AddTable()
+        private void SetupForUpdate()
         {
             using (var context = GetTestContext<TestContext>())
             {
@@ -213,13 +202,60 @@ namespace PeterDoStuff.Test.Extensions_Test
                 context.Database.ExecuteSql(dropSql);
                 context.Database.ExecuteSql(createSql);
             }
+        }
+
+        private class TestEntity3 : TestEntity;
+
+        private class TestContextB : DbContext
+        {
+            public TestContextB(DbContextOptions<TestContextB> options) : base(options) { }
+
+            public DbSet<TestEntity1> __TestTable__ { get; set; }
+            public DbSet<TestEntity3> __AddedTestTable__ { get; set; }
+        }
+
+        [TestMethod]
+        [UseReporter(typeof(DiffReporter))]
+        public void _05_AddTable()
+        {
+            SetupForUpdate();
 
             using (var context = GetTestContext<TestContextB>())
             {
                 context.GetMigrator().UpdateSql().Verify();
+            }
+        }
 
-                // Just to complete coverage:
-                context.__AddedTestTable__.Should().NotBeNull();
+        private class TestEntity4 : TestEntity
+        {
+            [MaxLength(100)]
+            public string NewStringColumn { get; set; }
+            [DecimalPrecisionScale(18,2)]
+            public decimal NewDecimalColumn { get; set; }
+        }
+
+        private class TestContextC : DbContext
+        {
+            public TestContextC(DbContextOptions<TestContextC> options) : base(options) { }
+            public DbSet<TestEntity4> __TestTable__ { get; set; }
+        }
+
+        [TestMethod]
+        [UseReporter(typeof(DiffReporter))]
+        public void _06_AddColumn()
+        {
+            SetupForUpdate();
+
+            using (var context = GetTestContext<TestContextC>())
+            {
+                string sql = context.GetMigrator().UpdateSql();
+                sql.Verify();
+
+                context.Database.GetDbConnection().Execute(SqlCommand.New().Append(sql));
+
+                var entity = new TestEntity4() { NewStringColumn = "Test", NewDecimalColumn = 1.2m };
+                context.__TestTable__.Add(entity);
+                context.SaveChanges();
             }
         }
     }

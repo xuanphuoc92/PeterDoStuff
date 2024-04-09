@@ -358,6 +358,22 @@ WHERE
                 {
                     string subSql = CreateTableSql(dbSet);
                     sql.Append(subSql);
+                    continue;
+                }
+
+                // Table exist
+                var oldColumns = profileGroups.Single(g => g.Key == table).ToList();
+                var newColumns = dbSet.PropertyType.GetGenericArguments()[0]
+                    .GetProperties()
+                    .Where(pi => IsMappedToColumn(pi));
+
+                var toAdd = newColumns.Where(pi => oldColumns.Any(oc => oc.Column == pi.Name) == false);
+                var toAlter = newColumns.Where(pi => oldColumns.Any(oc => oc.Column == pi.Name) == true);
+
+                if (toAdd.Any())
+                {
+                    sql.AppendLine($"ALTER TABLE [{table}] ADD");
+                    sql.AppendLine(toAdd.Select(c => GetSqlColumn(c)).Join("," + Environment.NewLine) + ";");
                 }
             }
 

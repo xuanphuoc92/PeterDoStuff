@@ -1,0 +1,3 @@
+﻿ALTER TABLE [__TestTable__] ADD
+    [NewStringColumn] nvarchar(100),
+    [NewDecimalColumn] decimal(18,2);
