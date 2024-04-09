@@ -1,6 +1,8 @@
 ﻿using Dapper;
 using Microsoft.EntityFrameworkCore;
+using PeterDoStuff.Attributes;
 using PeterDoStuff.Database;
+using System.Reflection;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace PeterDoStuff.Extensions
@@ -29,11 +31,17 @@ namespace PeterDoStuff.Extensions
                 );
 
             var tableGroups = entries.GroupBy(e => e.Metadata.GetTableName());
+            var dbSetInfos = _context
+                .GetDbSetPropertyInfos()
+                .ToDictionary(pi => pi.Name);
 
             SqlCommand sql = SqlCommand.New();
 
             foreach (var group in tableGroups)
             {
+                if (dbSetInfos[group.Key].GetCustomAttribute<AuditableAttribute>() == null)
+                    continue;
+                
                 var auditTable = $"{group.Key}_Audit";
 
                 var list = group.ToList();

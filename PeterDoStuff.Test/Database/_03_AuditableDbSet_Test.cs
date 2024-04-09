@@ -12,7 +12,7 @@ namespace PeterDoStuff.Test.Database
     [TestClass]
     public class _03_AuditableDbSet_Test
     {
-        private class AuditableEntity
+        private class TestEntity
         {
             public int Id { get; set; }
             
@@ -20,40 +20,21 @@ namespace PeterDoStuff.Test.Database
             public string Name { get; set; }
         }
 
+        private class AuditableEntity : TestEntity;
+
+        private class NonAuditableEntity : TestEntity;
+
         private class AuditableContext : DbContext
         {
             public AuditableContext(DbContextOptions<AuditableContext> options) : base(options) { }
 
             [Auditable]
             public DbSet<AuditableEntity> __AuditableTestTable__ { get; set; }
+            
+            public DbSet<NonAuditableEntity> __NonAuditableTestTable__ { get; set; }
 
             public override int SaveChanges()
             {
-                //var entries = ChangeTracker.Entries()
-                //    .Where(entry => 
-                //        entry.State == EntityState.Added ||
-                //        entry.State == EntityState.Modified ||
-                //        entry.State == EntityState.Deleted
-                //    );
-
-                //foreach (var entry in entries)
-                //{
-                //    var table = entry.Metadata.GetTableName();
-                //    var auditTable = $"{table}_Audit";
-                //    var action = entry.State switch
-                //    {
-                //        EntityState.Added => "INSERT",
-                //        EntityState.Modified => "UPDATE",
-                //        EntityState.Deleted => "DELETE",
-                //        _ => entry.State.ToString()
-                //    };
-
-                //    var e = entry.Entity;
-
-                //    FormattableString fs = $"INSERT INTO [__AuditableTestTable___Audit] ([Id], [Name], [AuditAction], [AuditTime]) VALUES ({e.GetPropertyValue("Id")}, {e.GetPropertyValue("Name")}, {action}, getDate());";
-
-                //    Database.ExecuteSql(fs);
-                //}
                 this.GetAuditor().AuditChanges();
 
                 return base.SaveChanges();
@@ -101,8 +82,14 @@ namespace PeterDoStuff.Test.Database
                 var entity = context.__AuditableTestTable__.Find(1);
                 entity.Should().BeNull();
 
+                var defaultEntity = new AuditableEntity { Id = -1, Name = "Minus One" };
                 entity = new AuditableEntity { Id = 1, Name = "One" };
+                context.__AuditableTestTable__.Add(defaultEntity);
                 context.__AuditableTestTable__.Add(entity);
+
+                var nonAuditableEntity = new NonAuditableEntity { Id = 1, Name = "One" };
+                context.__NonAuditableTestTable__.Add(nonAuditableEntity);
+
                 context.SaveChanges();
             }
 

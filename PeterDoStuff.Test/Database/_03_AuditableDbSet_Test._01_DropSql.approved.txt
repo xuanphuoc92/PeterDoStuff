@@ -1,2 +1,3 @@
 ﻿DROP TABLE IF EXISTS [__AuditableTestTable__];
 DROP TABLE IF EXISTS [__AuditableTestTable___Audit];
+DROP TABLE IF EXISTS [__NonAuditableTestTable__];
