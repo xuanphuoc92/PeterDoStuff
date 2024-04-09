@@ -4,18 +4,23 @@ using Microsoft.EntityFrameworkCore;
 using PeterDoStuff.Attributes;
 using PeterDoStuff.Extensions;
 using PeterDoStuff.Test.Extensions;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace PeterDoStuff.Test.Database
+namespace PeterDoStuff.Test.Extensions_Test
 {
     [TestClass]
-    public class _03_AuditableDbSet_Test
+    public class _08_AuditorExtensions_Test
     {
         private class TestEntity
         {
             public int Id { get; set; }
-            
+
             [MaxLength(100)]
             public string Name { get; set; }
         }
@@ -30,7 +35,7 @@ namespace PeterDoStuff.Test.Database
 
             [Auditable]
             public DbSet<AuditableEntity> __AuditableTestTable__ { get; set; }
-            
+
             public DbSet<NonAuditableEntity> __NonAuditableTestTable__ { get; set; }
 
             public override int SaveChanges()
