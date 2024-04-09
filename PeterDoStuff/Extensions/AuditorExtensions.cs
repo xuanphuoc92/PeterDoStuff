@@ -23,12 +23,20 @@ namespace PeterDoStuff.Extensions
 
         public void AuditChanges()
         {
+            SqlCommand sql = AuditLogInsertSql();
+
+            object param = new DynamicParameters(sql.Parameters);
+            _context.Database.GetDbConnection().Execute(sql.Sql, param);
+        }
+
+        private SqlCommand AuditLogInsertSql()
+        {
             var entries = _context.ChangeTracker.Entries()
-                .Where(entry =>
-                    entry.State == EntityState.Added ||
-                    entry.State == EntityState.Modified ||
-                    entry.State == EntityState.Deleted
-                );
+                            .Where(entry =>
+                                entry.State == EntityState.Added ||
+                                entry.State == EntityState.Modified ||
+                                entry.State == EntityState.Deleted
+                            );
 
             var tableGroups = entries.GroupBy(e => e.Metadata.GetTableName());
             var dbSetInfos = _context
@@ -41,7 +49,7 @@ namespace PeterDoStuff.Extensions
             {
                 if (dbSetInfos[group.Key].GetCustomAttribute<AuditableAttribute>() == null)
                     continue;
-                
+
                 var auditTable = $"{group.Key}_Audit";
 
                 var list = group.ToList();
@@ -57,11 +65,6 @@ namespace PeterDoStuff.Extensions
                 for (int i = 0; i < list.Count(); i++)
                 {
                     var entry = list[i];
-                    sql.Append("(");
-
-                    var entity = entry.Entity;
-                    foreach (var col in columns)
-                        sql.Append("{0}, ", entity.GetPropertyValue(col));
 
                     var action = entry.State switch
                     {
@@ -69,6 +72,19 @@ namespace PeterDoStuff.Extensions
                         EntityState.Modified => "UPDATE",
                         _ => "DELETE"
                     };
+
+                    var entity = entry.Entity;
+                    var oldPropertyValues = entry.OriginalValues.Properties.ToDictionary(
+                        p => p.Name,
+                        p => entry.OriginalValues[p]);
+
+                    sql.Append("(");
+
+                    foreach (var col in columns)
+                        sql.Append("{0}, ", 
+                            // It is possible to corrupt deleted data by changing it before delete.
+                            // Therefore, in the case of delete, use the oldPropertyValues dictionary instead.
+                            action == "DELETE" ? oldPropertyValues[col] : entity.GetPropertyValue(col));
 
                     sql.Append("{0}, getDate())", action);
 
@@ -79,8 +95,7 @@ namespace PeterDoStuff.Extensions
                 }
             }
 
-            object param = new DynamicParameters(sql.Parameters);
-            _context.Database.GetDbConnection().Execute(sql.Sql, param);
+            return sql;
         }
     }
 }

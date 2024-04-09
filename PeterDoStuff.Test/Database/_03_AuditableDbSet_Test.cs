@@ -100,7 +100,7 @@ namespace PeterDoStuff.Test.Database
 
                 entity.Id.Should().Be(1);
                 entity.Name.Should().Be("One");
-                entity.Name = "Two";
+                entity.Name = "One Updated";
 
                 context.__AuditableTestTable__.Update(entity);
                 context.SaveChanges();
@@ -112,9 +112,12 @@ namespace PeterDoStuff.Test.Database
                 entity.Should().NotBeNull();
 
                 entity.Id.Should().Be(1);
-                entity.Name.Should().Be("Two");
+                entity.Name.Should().Be("One Updated");
+
+                entity.Name = "One Before Delete";
 
                 context.__AuditableTestTable__.Remove(entity);
+
                 context.SaveChanges();
             }
 
@@ -122,6 +125,22 @@ namespace PeterDoStuff.Test.Database
             {
                 var entity = context.__AuditableTestTable__.Find(1);
                 entity.Should().BeNull();
+
+                context.__AuditableTestTable__
+                    .FromSql($"SELECT * FROM [__AuditableTestTable___Audit] WHERE Id = {-1} AND Name = {"Minus One"} AND AuditAction = {"INSERT"}")
+                    .Should().HaveCount(1);
+
+                context.__AuditableTestTable__
+                    .FromSql($"SELECT * FROM [__AuditableTestTable___Audit] WHERE Id = {1} AND Name = {"One"} AND AuditAction = {"INSERT"}")
+                    .Should().HaveCount(1);
+
+                context.__AuditableTestTable__
+                    .FromSql($"SELECT * FROM [__AuditableTestTable___Audit] WHERE Id = {1} AND Name = {"One Updated"} AND AuditAction = {"UPDATE"}")
+                    .Should().HaveCount(1);
+
+                context.__AuditableTestTable__
+                    .FromSql($"SELECT * FROM [__AuditableTestTable___Audit] WHERE Id = {1} AND Name = {"One Updated"} AND AuditAction = {"DELETE"}")
+                    .Should().HaveCount(1);
             }
         }
     }
