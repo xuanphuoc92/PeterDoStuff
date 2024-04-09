@@ -202,6 +202,7 @@ namespace PeterDoStuff.Test.Extensions_Test
         }
 
         [TestMethod]
+        [UseReporter(typeof(DiffReporter))]
         public void _05_AddTable()
         {
             using (var context = GetTestContext<TestContext>())
@@ -215,7 +216,10 @@ namespace PeterDoStuff.Test.Extensions_Test
 
             using (var context = GetTestContext<TestContextB>())
             {
-                context.GetMigrator().UpdateSql().WriteToConsole();
+                context.GetMigrator().UpdateSql().Verify();
+
+                // Just to complete coverage:
+                context.__AddedTestTable__.Should().NotBeNull();
             }
         }
     }
