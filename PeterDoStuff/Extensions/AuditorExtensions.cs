@@ -23,10 +23,8 @@ namespace PeterDoStuff.Extensions
 
         public void AuditChanges()
         {
-            SqlCommand sql = AuditLogInsertSql();
-
-            object param = new DynamicParameters(sql.Parameters);
-            _context.Database.GetDbConnection().Execute(sql.Sql, param);
+            SqlCommand command = AuditLogInsertSql();
+            _context.Database.GetDbConnection().Execute(command);
         }
 
         private SqlCommand AuditLogInsertSql()

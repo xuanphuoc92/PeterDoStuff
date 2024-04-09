@@ -4,6 +4,8 @@ using System.Reflection;
 using System.ComponentModel.DataAnnotations;
 using PeterDoStuff.Attributes;
 using System.ComponentModel.DataAnnotations.Schema;
+using Dapper;
+using PeterDoStuff.Database;
 
 namespace PeterDoStuff.Extensions
 {
@@ -78,23 +80,33 @@ namespace PeterDoStuff.Extensions
             var dbSets = context.GetDbSetPropertyInfos();
             foreach (var dbSet in dbSets)
             {
-                var entityType = dbSet.PropertyType.GetGenericArguments()[0];
-                string tableName = dbSet.Name;
+                string subSql = CreateTableSql(dbSet);
+                sql.Append(subSql);
+            }
 
-                string mainTable = CraftCreateSql(entityType, tableName);
-                sql.AppendLine(mainTable);
+            return sql.ToString();
+        }
 
-                if (dbSet.GetCustomAttribute<AuditableAttribute>() != null)
-                {
-                    string auditTable = CraftCreateSql(entityType, $"{tableName}_Audit", 
-                        includePrimaryKey: false,
-                        "[AuditAction] nvarchar(50)",
-                        "[AuditTime] datetime2",
-                        "[AuditActorId] uniqueidentifier",
-                        "[AuditActorName] nvarchar(200)",
-                        $"INDEX IDX_{tableName}_Audit_Id ([Id], [AuditTime])");
-                    sql.AppendLine(auditTable);
-                }
+        private string CreateTableSql(PropertyInfo dbSet)
+        {
+            var sql = new StringBuilder();
+
+            var entityType = dbSet.PropertyType.GetGenericArguments()[0];
+            string tableName = dbSet.Name;
+
+            string mainTable = CraftCreateSql(entityType, tableName);
+            sql.AppendLine(mainTable);
+
+            if (dbSet.GetCustomAttribute<AuditableAttribute>() != null)
+            {
+                string auditTable = CraftCreateSql(entityType, $"{tableName}_Audit",
+                    includePrimaryKey: false,
+                    "[AuditAction] nvarchar(50)",
+                    "[AuditTime] datetime2",
+                    "[AuditActorId] uniqueidentifier",
+                    "[AuditActorName] nvarchar(200)",
+                    $"INDEX IDX_{tableName}_Audit_Id ([Id], [AuditTime])");
+                sql.AppendLine(auditTable);
             }
 
             return sql.ToString();
@@ -283,6 +295,73 @@ namespace PeterDoStuff.Extensions
             }
 
             return sqlSize(size);
+        }
+
+        private class TableProfile
+        {
+            public string Table { get; set; }
+            public string Column { get; set; }
+            public string ColumnType { get; set; }
+            public int Max { get; set; }
+            public int Precision { get; set; }
+            public int Scale { get; set; }
+            public int PrimaryKeyOrder { get; set; }
+        }
+
+        private const string SQL_SERVER_PROFILE =
+@"SELECT 
+    t.name AS [Table],
+    c.name AS [Column],
+    ty.name AS [ColumnType],
+    c.max_length as [Max],
+    c.[precision] as [Precision],
+    c.[scale] as [Scale],
+    CASE
+        WHEN pk_col.key_ordinal IS NOT NULL THEN pk_col.key_ordinal
+        ELSE NULL
+    END AS [PrimaryKeyOrder]
+FROM 
+    sys.tables t
+INNER JOIN 
+    sys.columns c ON t.object_id = c.object_id
+INNER JOIN 
+    sys.types ty ON c.user_type_id = ty.user_type_id
+LEFT JOIN 
+    sys.identity_columns ic ON c.object_id = ic.object_id AND c.column_id = ic.column_id
+LEFT JOIN 
+    sys.indexes pk ON t.object_id = pk.object_id AND pk.is_primary_key = 1
+LEFT JOIN 
+    sys.index_columns pk_col ON pk.object_id = pk_col.object_id AND pk.index_id = pk_col.index_id AND c.column_id = pk_col.column_id
+WHERE 
+    t.is_ms_shipped = 0";
+
+        public string UpdateSql()
+        {
+            var dbSets = context.GetDbSetPropertyInfos();
+
+            var tables = dbSets.Select(pi => pi.Name);
+
+            var sqlCommand = SqlCommand.New().AppendLine(SQL_SERVER_PROFILE);
+            sqlCommand.AppendLine("AND t.name in {0}", tables);
+
+            var profileGroups = context.Database.GetDbConnection()
+                .Query<TableProfile>(sqlCommand)
+                .GroupBy(r => r.Table);
+
+            StringBuilder sql = new StringBuilder();
+            foreach (var dbSet in dbSets)
+            {
+                var table = dbSet.Name;
+
+                // No Table exist
+                if (profileGroups.Any(g => g.Key == table) == false)
+                {
+                    string subSql = CreateTableSql(dbSet);
+                    sql.Append(subSql);
+                }
+            }
+
+            return sql.ToString();
         }
     }
 }

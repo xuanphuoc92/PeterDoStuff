@@ -73,7 +73,7 @@ namespace PeterDoStuff.Test.Extensions_Test
         private TContext GetTestContext<TContext>() where TContext : DbContext
         {
             var connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=PeterDoStuffDb;Integrated Security=True;Connect Timeout=10;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
-            var options = new DbContextOptionsBuilder<TestContext>()
+            var options = new DbContextOptionsBuilder<TContext>()
                 .UseSqlServer(connectionString)
                 .Options;
 
@@ -189,6 +189,34 @@ namespace PeterDoStuff.Test.Extensions_Test
         {
             using var context = GetTestContext<TestContext>();
             context.GetMigrator().DescribeMapping().WriteToConsole();
+        }
+
+        private class TestEntity3 : TestEntity;
+
+        private class TestContextB : DbContext
+        {
+            public TestContextB(DbContextOptions<TestContextB> options) : base(options) { }
+
+            public DbSet<TestEntity1> __TestTable__ { get; set; }
+            public DbSet<TestEntity3> __AddedTestTable__ => Set<TestEntity3>();
+        }
+
+        [TestMethod]
+        public void _05_AddTable()
+        {
+            using (var context = GetTestContext<TestContext>())
+            {
+                var dropSql = FormattableStringFactory.Create(context.GetMigrator().GetDropSql());
+                var createSql = FormattableStringFactory.Create(context.GetMigrator().GetCreateSql());
+
+                context.Database.ExecuteSql(dropSql);
+                context.Database.ExecuteSql(createSql);
+            }
+
+            using (var context = GetTestContext<TestContextB>())
+            {
+                context.GetMigrator().UpdateSql().WriteToConsole();
+            }
         }
     }
 }

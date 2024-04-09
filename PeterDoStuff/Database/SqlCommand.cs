@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Dapper;
+using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 
@@ -75,6 +77,19 @@ SELECT * FROM [_TestTable_];";
             }
 
             return keys.ToArray();
+        }
+    }
+
+    public static class SqlCommandExtension
+    {
+        public static IEnumerable<T> Query<T>(this DbConnection @this, SqlCommand command)
+        {
+            return @this.Query<T>(command.Sql, new DynamicParameters(command.Parameters));
+        }
+
+        public static int Execute(this DbConnection @this, SqlCommand command)
+        {
+            return @this.Execute(command.Sql, new DynamicParameters(command.Parameters));
         }
     }
 }
