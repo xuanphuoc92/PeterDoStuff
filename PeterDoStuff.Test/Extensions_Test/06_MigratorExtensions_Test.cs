@@ -70,21 +70,21 @@ namespace PeterDoStuff.Test.Extensions_Test
             Default, Custom, Special
         }
 
-        private TestContext GetTestContext()
+        private TContext GetTestContext<TContext>() where TContext : DbContext
         {
             var connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=PeterDoStuffDb;Integrated Security=True;Connect Timeout=10;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
             var options = new DbContextOptionsBuilder<TestContext>()
                 .UseSqlServer(connectionString)
                 .Options;
 
-            return new TestContext(options);
+            return (TContext)Activator.CreateInstance(typeof(TContext), options);
         }
 
         [TestMethod]
         [UseReporter(typeof(DiffReporter))]
         public void _01_CreateSql()
         {
-            using var context = GetTestContext();
+            using var context = GetTestContext<TestContext>();
             context.GetMigrator().GetCreateSql().Verify();
         }
 
@@ -92,7 +92,7 @@ namespace PeterDoStuff.Test.Extensions_Test
         [UseReporter(typeof(DiffReporter))]
         public void _02_DropSql()
         {
-            using var context = GetTestContext();
+            using var context = GetTestContext<TestContext>();
             context.GetMigrator().GetDropSql().Verify();
         }        
 
@@ -101,7 +101,7 @@ namespace PeterDoStuff.Test.Extensions_Test
         {
             Guid defaultId, customId;
 
-            using (var context = GetTestContext())
+            using (var context = GetTestContext<TestContext>())
             {
                 var dropSql = FormattableStringFactory.Create(context.GetMigrator().GetDropSql());
                 var createSql = FormattableStringFactory.Create(context.GetMigrator().GetCreateSql());
@@ -139,7 +139,7 @@ namespace PeterDoStuff.Test.Extensions_Test
                 customId = customEntity.Id;
             }
 
-            using (var context = GetTestContext()) 
+            using (var context = GetTestContext<TestContext>())
             {
                 var defaultEntity = context.__TestTable__.Find(defaultId);
                 var customEntity = context.__CustomTestTable__.Find(customId);
@@ -187,7 +187,7 @@ namespace PeterDoStuff.Test.Extensions_Test
         [TestMethod]
         public void _04_DescribeMapping()
         {
-            using var context = GetTestContext();
+            using var context = GetTestContext<TestContext>();
             context.GetMigrator().DescribeMapping().WriteToConsole();
         }
     }
