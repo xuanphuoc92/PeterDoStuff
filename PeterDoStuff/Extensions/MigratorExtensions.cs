@@ -107,7 +107,7 @@ namespace PeterDoStuff.Extensions
             var subSql = new StringBuilder();
             var columnInfos = entityType
                 .GetProperties()
-                .Where(pi => IsColumn(pi));
+                .Where(pi => IsMappedToColumn(pi));
 
             var columns = columnInfos
                 .Select(info => GetSqlColumn(info));
@@ -174,7 +174,12 @@ namespace PeterDoStuff.Extensions
                 : "";
         }
 
-        public static bool IsColumn(PropertyInfo pi)
+        /// <summary>
+        /// Check if a property inside an entity class is to be mapped to a column.
+        /// </summary>
+        /// <param name="pi"></param>
+        /// <returns></returns>
+        public static bool IsMappedToColumn(PropertyInfo pi)
         {
             if (pi.GetCustomAttribute<NotMappedAttribute>() != null)
                 return false;

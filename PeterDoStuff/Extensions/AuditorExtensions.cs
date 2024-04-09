@@ -56,7 +56,7 @@ namespace PeterDoStuff.Extensions
                 var columns = list.First().Entity
                     .GetType()
                     .GetProperties()
-                    .Where(pi => Migrator.IsColumn(pi))
+                    .Where(pi => Migrator.IsMappedToColumn(pi))
                     .Select(pi => pi.Name)
                     .ToList();
 
