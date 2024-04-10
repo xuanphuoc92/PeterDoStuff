@@ -467,7 +467,7 @@ WHERE
                 else if (int.TryParse(sizeString, out int size))
                     sizes.Add(size);
                 else
-                    throw new Exception($"Invalid SQL definition: {defintion}");
+                    throw new Exception($"Invalid Size in the SQL definition: {defintion}");
             }
 
             return sizes.ToArray();

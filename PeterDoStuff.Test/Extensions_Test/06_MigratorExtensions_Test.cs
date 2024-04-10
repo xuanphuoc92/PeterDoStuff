@@ -366,10 +366,6 @@ namespace PeterDoStuff.Test.Extensions_Test
             Guid entityId;
             using (var context = GetTestContext<TestContext>())
             {
-                string sql = context.GetMigrator().GetDropSql();
-                sql += context.GetMigrator().GetCreateSql();
-                context.Database.GetDbConnection().Execute(SqlCommand.New().Append(sql));
-
                 var entity = new TestEntity1() { Name = "Test Name", Description = "Test Description" };
                 context.__TestTable__.Add(entity);
                 context.SaveChanges();
@@ -415,10 +411,6 @@ namespace PeterDoStuff.Test.Extensions_Test
             Guid entityId;
             using (var context = GetTestContext<TestContext>())
             {
-                string sql = context.GetMigrator().GetDropSql();
-                sql += context.GetMigrator().GetCreateSql();
-                context.Database.GetDbConnection().Execute(SqlCommand.New().Append(sql));
-
                 var entity = new TestEntity1() { Name = "Test Name", Description = "Test Description" };
                 context.__TestTable__.Add(entity);
                 context.SaveChanges();
@@ -436,6 +428,38 @@ namespace PeterDoStuff.Test.Extensions_Test
                 entity.Id.Should().Be(entityId);
                 entity.Name.Should().Be("Test Name");
                 entity.Description.Should().Be("Test Description");
+            }
+        }
+
+        private class TestErrorEntity
+        {
+            public Guid Id { get; set; }
+
+            [Column(TypeName = "nvarchar(error)")]
+            public string Name { get; set; } = "";
+        }
+
+        private class TestErrorContext : DbContext
+        {
+            public TestErrorContext(DbContextOptions<TestErrorContext> options) : base(options) { }
+
+            public DbSet<TestErrorEntity> __TestTable__ { get; set; }
+        }
+
+        [TestMethod]
+        [UseReporter(typeof(DiffReporter))]
+        public void _12_ErrorColumn()
+        {
+            SetupForUpdate();
+
+            using (var context = GetTestContext<TestErrorContext>())
+            {
+                Action errorAction = () => context.GetMigrator().UpdateSql();
+                var ex = errorAction.Should().Throw<Exception>().Subject.Single();
+                ex.Message.WriteToConsole();
+                ex.StackTrace.WriteToConsole();
+
+                var entity = new TestErrorEntity() { Id = Guid.NewGuid(), Name = "Test" };
             }
         }
     }
