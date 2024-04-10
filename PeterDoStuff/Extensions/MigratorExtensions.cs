@@ -388,7 +388,7 @@ WHERE
                     var oldColumnType = oldColumn.ColumnType;
                     var oldColumnSize = oldColumnType switch
                     {
-                        "nvarchar" => Size(oldColumn.Max / 2),
+                        "nvarchar" => Size(oldColumn.Max == -1 ? -1 : oldColumn.Max / 2),
                         "decimal" => Size(oldColumn.Precision, oldColumn.Scale),
                         _ => Size()
                     };
@@ -409,11 +409,17 @@ WHERE
                     // ALTER
                     string alterCommand = $"ALTER TABLE [{table}] ALTER COLUMN [{newAlterColumn.Name}] {newColumnDefintion}; -- From: [{newAlterColumn.Name}] {oldColumnDefinition}";
 
-                    if (oldColumnType == newColumnType &&
-                        IsSame(oldColumnSize, newColumnSize) == false &&
-                        IsIncreasing(oldColumnSize, newColumnSize) == true)
+                    bool sameType = oldColumnType == newColumnType;
+                    bool sameSize = IsSame(oldColumnSize, newColumnSize);
+                    bool increasingSize = IsIncreasing(oldColumnSize, newColumnSize);
+
+                    if (sameType == true &&
+                        sameSize == false)
                     {
-                        sql.AppendLine($"{alterCommand}");
+                        if (increasingSize == true) 
+                            sql.AppendLine($"{alterCommand}");
+                        else
+                            sql.AppendLine($"-- WARNING - Shrinking column: {alterCommand}");
                     }
                 }
             }
@@ -435,6 +441,9 @@ WHERE
         {
             for (int i = 0; i< oldColumnSize.Length; i++) 
             {
+                if (oldColumnSize[i] == -1 && newColumnSize[i] > 0)
+                    return false;
+                
                 if (oldColumnSize[i] > newColumnSize[i])
                     return false;
             }

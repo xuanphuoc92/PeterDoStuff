@@ -296,5 +296,50 @@ namespace PeterDoStuff.Test.Extensions_Test
                 entity.NewDecimalColumn.Should().Be(1.2m);
             }
         }
+
+        private class TestEntity6 : TestEntity
+        {
+            [MaxLength(50)]
+            public string NewStringColumn { get; set; }
+            [DecimalPrecisionScale(17, 0)]
+            public decimal NewDecimalColumn { get; set; }
+        }
+
+        private class TestContextE : DbContext
+        {
+            public TestContextE(DbContextOptions<TestContextE> options) : base(options) { }
+            public DbSet<TestEntity6> __TestTable__ { get; set; }
+        }
+
+        [TestMethod]
+        [UseReporter(typeof(DiffReporter))]
+        public void _08_ShrinkColumns()
+        {
+            SetupForUpdate();
+
+            Guid entityId;
+            using (var context = GetTestContext<TestContextC>())
+            {
+                string sql = context.GetMigrator().UpdateSql();
+                context.Database.GetDbConnection().Execute(SqlCommand.New().Append(sql));
+
+                var entity = new TestEntity4() { NewStringColumn = "Test", NewDecimalColumn = 1.2m };
+                context.__TestTable__.Add(entity);
+                context.SaveChanges();
+
+                entityId = entity.Id;
+            }
+
+            using (var context = GetTestContext<TestContextE>())
+            {
+                string updateSql = context.GetMigrator().UpdateSql();
+                updateSql.Verify();
+
+                context.Database.GetDbConnection().Execute(SqlCommand.New().Append(updateSql));
+                var entity = context.__TestTable__.Find(entityId);
+                entity.NewStringColumn.Should().Be("Test");
+                entity.NewDecimalColumn.Should().Be(1.2m);
+            }
+        }
     }
 }

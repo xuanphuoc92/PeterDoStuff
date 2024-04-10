@@ -1,0 +1,2 @@
+﻿-- WARNING - Shrinking column: ALTER TABLE [__TestTable__] ALTER COLUMN [NewStringColumn] nvarchar(50); -- From: [NewStringColumn] nvarchar(100)
+-- WARNING - Shrinking column: ALTER TABLE [__TestTable__] ALTER COLUMN [NewDecimalColumn] decimal(17,0); -- From: [NewDecimalColumn] decimal(18,2)
