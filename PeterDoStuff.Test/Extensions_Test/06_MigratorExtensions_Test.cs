@@ -431,6 +431,50 @@ namespace PeterDoStuff.Test.Extensions_Test
             }
         }
 
+        private class TestEntity9
+        {
+            public Guid Id { get; set; }
+
+            [MaxLength(100)]
+            public string Name { get; set; } = "";
+            public int? Description { get; set; }
+        }
+
+        private class TestContextH : DbContext
+        {
+            public TestContextH(DbContextOptions<TestContextH> options) : base(options) { }
+            public DbSet<TestEntity9> __TestTable__ { get; set; }
+        }
+
+        [TestMethod]
+        [UseReporter(typeof(DiffReporter))]
+        public void _10_AlterColumnType()
+        {
+            SetupForUpdate();
+
+            Guid entityId;
+            using (var context = GetTestContext<TestContext>())
+            {
+                var entity = new TestEntity1() { Name = "Test Name" };
+                context.__TestTable__.Add(entity);
+                context.SaveChanges();
+
+                entityId = entity.Id;
+            }
+
+            using (var context = GetTestContext<TestContextH>())
+            {
+                string updateSql = context.GetMigrator().UpdateSql();
+                updateSql.Verify();
+
+                context.Database.GetDbConnection().Execute(SqlCommand.New().Append(updateSql));
+                var entity = context.__TestTable__.Find(entityId);
+                entity.Id.Should().Be(entityId);
+                entity.Name.Should().Be("Test Name");
+                entity.Description.Should().BeNull();
+            }
+        }
+
         private class TestErrorEntity
         {
             public Guid Id { get; set; }

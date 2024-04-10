@@ -409,17 +409,17 @@ WHERE
                     string alterCommand = $"ALTER TABLE [{table}] ALTER COLUMN [{newAlterColumn.Name}] {newColumnDefintion}; -- From: [{newAlterColumn.Name}] {oldColumnDefinition}";
 
                     bool sameType = oldColumnType == newColumnType;
-                    bool sameSize = IsSame(oldColumnSize, newColumnSize);
-                    bool increasingSize = IsIncreasing(oldColumnSize, newColumnSize);
 
                     if (sameType == true &&
-                        sameSize == false)
+                        IsSame(oldColumnSize, newColumnSize) == false)
                     {
-                        if (increasingSize == true) 
+                        if (IsIncreasing(oldColumnSize, newColumnSize) == true) 
                             sql.AppendLine($"{alterCommand}");
                         else
                             sql.AppendLine($"-- WARNING - Shrinking column: {alterCommand}");
                     }
+                    else if (sameType == false)
+                        sql.AppendLine($"-- WARNING - Altering column: {alterCommand}");
                 }
             }
 
