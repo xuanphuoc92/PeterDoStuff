@@ -1,0 +1,1 @@
+﻿ALTER TABLE [__TestTable__] ALTER COLUMN [Name] nvarchar(max); -- From: [Name] nvarchar(100)

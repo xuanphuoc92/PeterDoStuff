@@ -341,5 +341,102 @@ namespace PeterDoStuff.Test.Extensions_Test
                 entity.NewDecimalColumn.Should().Be(1.2m);
             }
         }
+
+        private class TestEntity7
+        {
+            public Guid Id { get; set; }
+
+            // [MaxLength(100)] // To Max
+            public string Name { get; set; } = "";
+            public String? Description { get; set; }
+        }
+
+        private class TestContextF : DbContext
+        {
+            public TestContextF(DbContextOptions<TestContextF> options) : base(options) { }
+            public DbSet<TestEntity7> __TestTable__ { get; set; }
+        }
+
+        [TestMethod]
+        [UseReporter(typeof(DiffReporter))]
+        public void _09_EnlargeColumnToMax()
+        {
+            SetupForUpdate();
+
+            Guid entityId;
+            using (var context = GetTestContext<TestContext>())
+            {
+                string sql = context.GetMigrator().GetDropSql();
+                sql += context.GetMigrator().GetCreateSql();
+                context.Database.GetDbConnection().Execute(SqlCommand.New().Append(sql));
+
+                var entity = new TestEntity1() { Name = "Test Name", Description = "Test Description" };
+                context.__TestTable__.Add(entity);
+                context.SaveChanges();
+
+                entityId = entity.Id;
+            }
+
+            using (var context = GetTestContext<TestContextF>())
+            {
+                string updateSql = context.GetMigrator().UpdateSql();
+                updateSql.Verify();
+
+                context.Database.GetDbConnection().Execute(SqlCommand.New().Append(updateSql));
+                var entity = context.__TestTable__.Find(entityId);
+                entity.Id.Should().Be(entityId);
+                entity.Name.Should().Be("Test Name");
+                entity.Description.Should().Be("Test Description");
+            }
+        }
+
+        private class TestEntity8
+        {
+            public Guid Id { get; set; }
+
+            [MaxLength(100)]
+            public string Name { get; set; } = "";
+            [MaxLength(100)] // Shrink from max
+            public String? Description { get; set; }
+        }
+
+        private class TestContextG : DbContext
+        {
+            public TestContextG(DbContextOptions<TestContextG> options) : base(options) { }
+            public DbSet<TestEntity8> __TestTable__ { get; set; }
+        }
+
+        [TestMethod]
+        [UseReporter(typeof(DiffReporter))]
+        public void _10_ShrinkColumnFromMax()
+        {
+            SetupForUpdate();
+
+            Guid entityId;
+            using (var context = GetTestContext<TestContext>())
+            {
+                string sql = context.GetMigrator().GetDropSql();
+                sql += context.GetMigrator().GetCreateSql();
+                context.Database.GetDbConnection().Execute(SqlCommand.New().Append(sql));
+
+                var entity = new TestEntity1() { Name = "Test Name", Description = "Test Description" };
+                context.__TestTable__.Add(entity);
+                context.SaveChanges();
+
+                entityId = entity.Id;
+            }
+
+            using (var context = GetTestContext<TestContextG>())
+            {
+                string updateSql = context.GetMigrator().UpdateSql();
+                updateSql.Verify();
+
+                context.Database.GetDbConnection().Execute(SqlCommand.New().Append(updateSql));
+                var entity = context.__TestTable__.Find(entityId);
+                entity.Id.Should().Be(entityId);
+                entity.Name.Should().Be("Test Name");
+                entity.Description.Should().Be("Test Description");
+            }
+        }
     }
 }

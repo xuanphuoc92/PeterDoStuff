@@ -406,7 +406,6 @@ WHERE
                         ? Size()
                         : GetSizeFromDefintion(newColumnDefintion);
 
-                    // ALTER
                     string alterCommand = $"ALTER TABLE [{table}] ALTER COLUMN [{newAlterColumn.Name}] {newColumnDefintion}; -- From: [{newAlterColumn.Name}] {oldColumnDefinition}";
 
                     bool sameType = oldColumnType == newColumnType;
@@ -441,10 +440,11 @@ WHERE
         {
             for (int i = 0; i< oldColumnSize.Length; i++) 
             {
-                if (oldColumnSize[i] == -1 && newColumnSize[i] > 0)
+                // Max vs non-max
+                if (oldColumnSize[i] == -1 && newColumnSize[i] > -1)
                     return false;
                 
-                if (oldColumnSize[i] > newColumnSize[i])
+                if (oldColumnSize[i] > newColumnSize[i] && newColumnSize[i] > -1)
                     return false;
             }
             return true;

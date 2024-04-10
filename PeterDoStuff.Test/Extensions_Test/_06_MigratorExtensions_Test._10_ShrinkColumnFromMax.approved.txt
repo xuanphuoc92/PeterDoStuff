@@ -1,0 +1,1 @@
+﻿-- WARNING - Shrinking column: ALTER TABLE [__TestTable__] ALTER COLUMN [Description] nvarchar(100); -- From: [Description] nvarchar(max)
