@@ -149,7 +149,7 @@ namespace PeterDoStuff.Extensions
             { typeof(string), ("nvarchar", Size(-1) ) },
             { typeof(Guid), ("uniqueidentifier", Size() ) },
             { typeof(byte[]), ("varbinary", Size(-1) ) },
-            { typeof(decimal), ("decimal", Size() ) },
+            { typeof(decimal), ("decimal", Size(18,0) ) },
             { typeof(int), ("int", Size() ) },
             { typeof(float), ("real", Size() ) },
             { typeof(double), ("float", Size() ) },
@@ -203,16 +203,22 @@ namespace PeterDoStuff.Extensions
         private string GetSqlColumn(PropertyInfo pi)
         {
             var name = pi.Name;
-            
-            string defaultColumnType = GetDefaultColumnType(pi);
-            string customColumnType = pi.GetCustomAttribute<ColumnAttribute>()?.TypeName ?? "";
 
-            string columnType = customColumnType != "" ? customColumnType : defaultColumnType;
+            string columnType = GetColumnDefinition(pi);
 
             return $"    [{name}] {columnType}";
         }
 
-        private string GetDefaultColumnType(PropertyInfo pi)
+        private string GetColumnDefinition(PropertyInfo pi)
+        {
+            string defaultColumnDefinition = GetDefaultColumnDefinition(pi);
+            string customColumnDefinition = pi.GetCustomAttribute<ColumnAttribute>()?.TypeName ?? "";
+
+            string columnDefinition = customColumnDefinition != "" ? customColumnDefinition : defaultColumnDefinition;
+            return columnDefinition;
+        }
+
+        private string GetDefaultColumnDefinition(PropertyInfo pi)
         {
             string defaultType = GetDefaultType(pi.PropertyType);
             string customType = GetCustomType(pi);
@@ -223,8 +229,8 @@ namespace PeterDoStuff.Extensions
             string finalSize = customSize != "" ? customSize : defaultSize;
             var size = finalSize.IsNullOrEmpty() ? "" : $"({finalSize})";
 
-            var columnType = $"{type}{size}";
-            return columnType;
+            var columnDefinition = $"{type}{size}";
+            return columnDefinition;
         }
 
         private string GetDefaultSize(PropertyInfo pi)
@@ -375,9 +381,87 @@ WHERE
                     sql.AppendLine($"ALTER TABLE [{table}] ADD");
                     sql.AppendLine(toAdd.Select(c => GetSqlColumn(c)).Join("," + Environment.NewLine) + ";");
                 }
+
+                foreach (var newAlterColumn in toAlter)
+                {
+                    var oldColumn = oldColumns.Single(oc => oc.Column == newAlterColumn.Name);
+                    var oldColumnType = oldColumn.ColumnType;
+                    var oldColumnSize = oldColumnType switch
+                    {
+                        "nvarchar" => Size(oldColumn.Max / 2),
+                        "decimal" => Size(oldColumn.Precision, oldColumn.Scale),
+                        _ => Size()
+                    };
+                    var oldColumnSizeString = oldColumnSize.Any()
+                        ? "(" + sqlSize(oldColumnSize) + ")"
+                        : "";
+                    var oldColumnDefinition = $"{oldColumnType}{oldColumnSizeString}";
+
+                    var newColumnDefintion = GetColumnDefinition(newAlterColumn);
+                    var bracketIndex = newColumnDefintion.IndexOf('(');
+                    var newColumnType = bracketIndex == -1
+                        ? newColumnDefintion
+                        : newColumnDefintion.Substring(0, bracketIndex);
+                    var newColumnSize = bracketIndex == -1
+                        ? Size()
+                        : GetSizeFromDefintion(newColumnDefintion);
+
+                    // ALTER
+                    string alterCommand = $"ALTER TABLE [{table}] ALTER COLUMN [{newAlterColumn.Name}] {newColumnDefintion}; -- From: [{newAlterColumn.Name}] {oldColumnDefinition}";
+
+                    if (oldColumnType == newColumnType &&
+                        IsSame(oldColumnSize, newColumnSize) == false &&
+                        IsIncreasing(oldColumnSize, newColumnSize) == true)
+                    {
+                        sql.AppendLine($"{alterCommand}");
+                    }
+                }
             }
 
             return sql.ToString();
+        }
+
+        private bool IsSame(int[] oldColumnSize, int[] newColumnSize)
+        {
+            for (int i = 0; i < oldColumnSize.Length; i++)
+            {
+                if (oldColumnSize[i] != newColumnSize[i])
+                    return false;
+            }
+            return true;
+        }
+
+        private bool IsIncreasing(int[] oldColumnSize, int[] newColumnSize)
+        {
+            for (int i = 0; i< oldColumnSize.Length; i++) 
+            {
+                if (oldColumnSize[i] > newColumnSize[i])
+                    return false;
+            }
+            return true;
+        }
+
+        private int[] GetSizeFromDefintion(string defintion)
+        {
+            var bracketStart = defintion.IndexOf('(');
+            var bracketEnd = defintion.IndexOf(')');
+            
+            var sizeStrings = defintion
+                .Substring(bracketStart + 1, bracketEnd - bracketStart - 1)
+                .Split(',');
+
+            var sizes = new List<int>();
+            foreach (var sizeString in sizeStrings)
+            {
+                if (sizeString == "max")
+                    sizes.Add(-1);
+                else if (int.TryParse(sizeString, out int size))
+                    sizes.Add(size);
+                else
+                    throw new Exception($"Invalid SQL definition: {defintion}");
+            }
+
+            return sizes.ToArray();
         }
     }
 }

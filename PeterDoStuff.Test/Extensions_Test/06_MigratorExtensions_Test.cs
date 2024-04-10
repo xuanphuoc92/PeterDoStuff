@@ -248,14 +248,52 @@ namespace PeterDoStuff.Test.Extensions_Test
 
             using (var context = GetTestContext<TestContextC>())
             {
-                string sql = context.GetMigrator().UpdateSql();
-                sql.Verify();
+                context.GetMigrator().UpdateSql().Verify();
+            }
+        }
 
+        private class TestEntity5 : TestEntity
+        {
+            [MaxLength(120)]
+            public string NewStringColumn { get; set; }
+            [DecimalPrecisionScale(19, 4)]
+            public decimal NewDecimalColumn { get; set; }
+        }
+
+        private class TestContextD : DbContext
+        {
+            public TestContextD(DbContextOptions<TestContextD> options) : base(options) { }
+            public DbSet<TestEntity5> __TestTable__ { get; set; }
+        }
+
+        [TestMethod]
+        [UseReporter(typeof(DiffReporter))]
+        public void _07_EnlargeColumn()
+        {
+            SetupForUpdate();
+
+            Guid entityId;
+            using (var context = GetTestContext<TestContextC>())
+            {
+                string sql = context.GetMigrator().UpdateSql();
                 context.Database.GetDbConnection().Execute(SqlCommand.New().Append(sql));
 
                 var entity = new TestEntity4() { NewStringColumn = "Test", NewDecimalColumn = 1.2m };
                 context.__TestTable__.Add(entity);
                 context.SaveChanges();
+
+                entityId = entity.Id;
+            }
+
+            using (var context = GetTestContext<TestContextD>())
+            {
+                string updateSql = context.GetMigrator().UpdateSql();
+                updateSql.Verify();
+
+                context.Database.GetDbConnection().Execute(SqlCommand.New().Append(updateSql));
+                var entity = context.__TestTable__.Find(entityId);
+                entity.NewStringColumn.Should().Be("Test");
+                entity.NewDecimalColumn.Should().Be(1.2m);
             }
         }
     }
