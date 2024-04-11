@@ -1,6 +1,7 @@
 ﻿using ApprovalTests.Reporters;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using PeterDoStuff.Attributes;
 using PeterDoStuff.Database;
 using PeterDoStuff.Extensions;
@@ -505,6 +506,33 @@ namespace PeterDoStuff.Test.Extensions_Test
 
                 var entity = new TestErrorEntity() { Id = Guid.NewGuid(), Name = "Test" };
             }
+        }
+
+        private class TestBigLengthEntity
+        {
+            public Guid Id { get; set; }
+            [MaxLength(4001)]
+            public string BigString { get; set; }
+            [MaxLength(8001)]
+            public byte[] BigBinary { get; set; }
+        }
+
+        private class TestBigLengthContext : DbContext
+        {
+            public TestBigLengthContext(DbContextOptions<TestBigLengthContext> options) : base(options)
+            {
+            }
+
+            public DbSet<TestBigLengthEntity> TestBigLengthTable { get; set; }
+        }
+
+        [TestMethod]
+        [UseReporter(typeof(DiffReporter))]
+        public void _13_BigFieldsBecomeMax()
+        {
+            using var context = GetTestContext<TestBigLengthContext>();
+            context.GetMigrator().GetCreateSql().Verify();
+            var entity = new TestBigLengthEntity() { Id = new Guid(), BigString = "Test String", BigBinary = SecurityExtensions.GenerateSalt() };
         }
     }
 }

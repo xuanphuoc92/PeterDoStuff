@@ -1,0 +1,6 @@
+﻿CREATE TABLE [TestBigLengthTable] (
+    [Id] uniqueidentifier,
+    [BigString] nvarchar(max),
+    [BigBinary] varbinary(max),
+    CONSTRAINT PK_TestBigLengthTable_Id PRIMARY KEY (Id)
+);

@@ -290,7 +290,15 @@ namespace PeterDoStuff.Extensions
             {
                 var attribute = pi.GetCustomAttribute<MaxLengthAttribute>();
                 if (attribute != null)
-                    size = Size(attribute.Length);
+                {
+                    var isBigNVarChar = typeToCheck == typeof(string) && attribute.Length > 4000;
+                    var isBigVarBinary = typeToCheck == typeof(byte[]) && attribute.Length > 8000;
+
+                    if (isBigNVarChar || isBigVarBinary) 
+                        size = Size(-1);
+                    else
+                        size = Size(attribute.Length);
+                }
             }
 
             if (typeToCheck == typeof(decimal))
