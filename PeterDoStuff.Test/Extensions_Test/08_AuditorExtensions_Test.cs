@@ -25,7 +25,18 @@ namespace PeterDoStuff.Test.Extensions_Test
             public string Name { get; set; }
         }
 
-        private class AuditableEntity : TestEntity;
+        private class TestLineItemEntity
+        {
+            public int Id { get; set; }
+            public int AuditableEntityId { get; set; }
+            [MaxLength(100)]
+            public string Name { get; set; }
+        }
+
+        private class AuditableEntity : TestEntity
+        {
+            public List<TestLineItemEntity> LineItems { get; set; } = new();
+        }
 
         private class NonAuditableEntity : TestEntity;
 
@@ -37,6 +48,9 @@ namespace PeterDoStuff.Test.Extensions_Test
             public DbSet<AuditableEntity> __AuditableTestTable__ { get; set; }
 
             public DbSet<NonAuditableEntity> __NonAuditableTestTable__ { get; set; }
+
+            [Auditable]
+            public DbSet<TestLineItemEntity> __AuditableTestLineItemTable__ { get; set; }
 
             public override int SaveChanges()
             {
@@ -145,6 +159,119 @@ namespace PeterDoStuff.Test.Extensions_Test
 
                 context.__AuditableTestTable__
                     .FromSql($"SELECT * FROM [__AuditableTestTable___Audit] WHERE Id = {1} AND Name = {"One Updated"} AND AuditAction = {"DELETE"}")
+                    .Should().HaveCount(1);
+            }
+        }
+
+        [TestMethod]
+        public void _04_ReadWriteLineItems()
+        {
+            using (var context = GetTestContext())
+            {
+                var dropSql = FormattableStringFactory.Create(context.GetMigrator().GetDropSql());
+                var createSql = FormattableStringFactory.Create(context.GetMigrator().GetCreateSql());
+
+                context.Database.ExecuteSql(dropSql);
+                context.Database.ExecuteSql(createSql);
+
+                var entity = context.__AuditableTestTable__.Find(1);
+                entity.Should().BeNull();
+
+                var lineItem = context.__AuditableTestLineItemTable__.Find(1);
+                lineItem.Should().BeNull();
+
+                entity = new AuditableEntity { Id = 1, Name = "One" };
+                lineItem = new TestLineItemEntity { Id = 1, Name = "Line One" };
+                entity.LineItems.Add(lineItem);
+                
+                context.__AuditableTestTable__
+                    .Add(entity);
+
+                context.SaveChanges();
+            }
+
+            using (var context = GetTestContext())
+            {
+                var entity = context.__AuditableTestTable__.Include(e => e.LineItems).SingleOrDefault(e => e.Id == 1);
+                entity.Should().NotBeNull();
+
+                var lineItem = context.__AuditableTestLineItemTable__.Find(1);
+                lineItem.Should().NotBeNull();
+                lineItem.AuditableEntityId.Should().Be(1);
+                lineItem.Name.Should().Be("Line One");
+
+                lineItem = entity.LineItems.SingleOrDefault();
+                lineItem.AuditableEntityId.Should().Be(1);
+                lineItem.Name.Should().Be("Line One");
+
+                lineItem.Name = "Line One Update";
+
+                context.__AuditableTestTable__.Update(entity);
+                context.SaveChanges();
+            }
+
+            using (var context = GetTestContext())
+            {
+                var lineItem = context.__AuditableTestLineItemTable__.Find(1);
+                lineItem.Should().NotBeNull();
+                lineItem.AuditableEntityId.Should().Be(1);
+                lineItem.Name.Should().Be("Line One Update");
+                lineItem.Name = "Line One Update 2";
+
+                context.__AuditableTestLineItemTable__.Update(lineItem);
+                context.SaveChanges();
+            }
+
+            using (var context = GetTestContext())
+            {
+                var entity = context.__AuditableTestTable__.Include(e => e.LineItems).SingleOrDefault(e => e.Id == 1);
+                entity.Should().NotBeNull();
+                entity.LineItems.Should().HaveCount(1);
+
+                var lineItem = entity.LineItems.SingleOrDefault();
+                lineItem.AuditableEntityId.Should().Be(1);
+                lineItem.Name.Should().Be("Line One Update 2");
+
+                entity.LineItems.Remove(lineItem);
+
+                context.__AuditableTestTable__.Update(entity);
+                context.SaveChanges();
+            }
+
+            // Somehow this commented codes would throw error. To learn further:
+            //using (var context = GetTestContext())
+            //{
+            //    var entity = context.__AuditableTestTable__.Include(e => e.LineItems).SingleOrDefault(e => e.Id == 1);
+            //    entity.Should().NotBeNull();
+            //    entity.LineItems.Should().HaveCount(0);
+
+            //    var lineItem2 = new TestLineItemEntity() { Id = 2, Name = "Line Two" };
+
+            //    entity.LineItems.Add(lineItem2);
+
+            //    context.SaveChanges();
+            //}
+
+            using (var context = GetTestContext())
+            {
+                context.__AuditableTestTable__
+                    .FromSql($"SELECT * FROM [__AuditableTestTable___Audit] WHERE Id = {1} AND Name = {"One"} AND AuditAction = {"INSERT"}")
+                    .Should().HaveCount(1);
+
+                context.__AuditableTestTable__
+                    .FromSql($"SELECT * FROM [__AuditableTestTable___Audit] WHERE Id = {1} AND Name = {"One"} AND AuditAction = {"UPDATE"}")
+                    .Should().HaveCount(2);
+
+                context.__AuditableTestLineItemTable__
+                    .FromSql($"SELECT * FROM [__AuditableTestLineItemTable___Audit] WHERE Id = {1} AND AuditableEntityId = {1} AND AuditAction = {"INSERT"}")
+                    .Should().HaveCount(1);
+
+                context.__AuditableTestLineItemTable__
+                    .FromSql($"SELECT * FROM [__AuditableTestLineItemTable___Audit] WHERE Id = {1} AND AuditableEntityId = {1} AND AuditAction = {"UPDATE"}")
+                    .Should().HaveCount(2);
+
+                context.__AuditableTestLineItemTable__
+                    .FromSql($"SELECT * FROM [__AuditableTestLineItemTable___Audit] WHERE Id = {1} AND AuditableEntityId = {1} AND AuditAction = {"DELETE"}")
                     .Should().HaveCount(1);
             }
         }

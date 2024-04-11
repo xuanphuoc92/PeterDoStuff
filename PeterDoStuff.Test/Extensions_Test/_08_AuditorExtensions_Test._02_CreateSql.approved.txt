@@ -17,3 +17,19 @@ CREATE TABLE [__NonAuditableTestTable__] (
     [Name] nvarchar(100),
     CONSTRAINT PK___NonAuditableTestTable___Id PRIMARY KEY (Id)
 );
+CREATE TABLE [__AuditableTestLineItemTable__] (
+    [Id] int,
+    [AuditableEntityId] int,
+    [Name] nvarchar(100),
+    CONSTRAINT PK___AuditableTestLineItemTable___Id PRIMARY KEY (Id)
+);
+CREATE TABLE [__AuditableTestLineItemTable___Audit] (
+    [Id] int,
+    [AuditableEntityId] int,
+    [Name] nvarchar(100),
+    [AuditAction] nvarchar(50),
+    [AuditTime] datetime2,
+    [AuditActorId] uniqueidentifier,
+    [AuditActorName] nvarchar(200),
+    INDEX IDX___AuditableTestLineItemTable___Audit_Id ([Id], [AuditTime])
+);
