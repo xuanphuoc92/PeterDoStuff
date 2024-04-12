@@ -238,19 +238,31 @@ namespace PeterDoStuff.Test.Extensions_Test
                 context.SaveChanges();
             }
 
-            // Somehow this commented codes would throw error. To learn further:
-            //using (var context = GetTestContext())
-            //{
-            //    var entity = context.__AuditableTestTable__.Include(e => e.LineItems).SingleOrDefault(e => e.Id == 1);
-            //    entity.Should().NotBeNull();
-            //    entity.LineItems.Should().HaveCount(0);
+            using (var context = GetTestContext())
+            {
+                var entity = context.__AuditableTestTable__.Include(e => e.LineItems).SingleOrDefault(e => e.Id == 1);
+                entity.Should().NotBeNull();
+                entity.LineItems.Should().HaveCount(0);
 
-            //    var lineItem2 = new TestLineItemEntity() { Id = 2, Name = "Line Two" };
+                var lineItem2 = new TestLineItemEntity() { Id = 2, Name = "Line Two" };
+                context.__AuditableTestLineItemTable__.Add(lineItem2);
 
-            //    entity.LineItems.Add(lineItem2);
+                entity.LineItems.Add(lineItem2);
 
-            //    context.SaveChanges();
-            //}
+                context.__AuditableTestTable__.Update(entity);
+
+                context.SaveChanges();
+            }
+
+            using (var context = GetTestContext())
+            {
+                var entity = context.__AuditableTestTable__.Include(e => e.LineItems).SingleOrDefault(e => e.Id == 1);
+                entity.Should().NotBeNull();
+                entity.LineItems.Should().HaveCount(1);
+
+                context.__AuditableTestTable__.Remove(entity);
+                context.SaveChanges();
+            }
 
             using (var context = GetTestContext())
             {
@@ -260,7 +272,11 @@ namespace PeterDoStuff.Test.Extensions_Test
 
                 context.__AuditableTestTable__
                     .FromSql($"SELECT * FROM [__AuditableTestTable___Audit] WHERE Id = {1} AND Name = {"One"} AND AuditAction = {"UPDATE"}")
-                    .Should().HaveCount(2);
+                    .Should().HaveCount(3);
+
+                context.__AuditableTestTable__
+                    .FromSql($"SELECT * FROM [__AuditableTestTable___Audit] WHERE Id = {1} AND Name = {"One"} AND AuditAction = {"DELETE"}")
+                    .Should().HaveCount(1);
 
                 context.__AuditableTestLineItemTable__
                     .FromSql($"SELECT * FROM [__AuditableTestLineItemTable___Audit] WHERE Id = {1} AND AuditableEntityId = {1} AND AuditAction = {"INSERT"}")
@@ -272,6 +288,14 @@ namespace PeterDoStuff.Test.Extensions_Test
 
                 context.__AuditableTestLineItemTable__
                     .FromSql($"SELECT * FROM [__AuditableTestLineItemTable___Audit] WHERE Id = {1} AND AuditableEntityId = {1} AND AuditAction = {"DELETE"}")
+                    .Should().HaveCount(1);
+
+                context.__AuditableTestLineItemTable__
+                    .FromSql($"SELECT * FROM [__AuditableTestLineItemTable___Audit] WHERE Id = {2} AND AuditableEntityId = {1} AND AuditAction = {"INSERT"}")
+                    .Should().HaveCount(1);
+
+                context.__AuditableTestLineItemTable__
+                    .FromSql($"SELECT * FROM [__AuditableTestLineItemTable___Audit] WHERE Id = {2} AND AuditableEntityId = {1} AND AuditAction = {"DELETE"}")
                     .Should().HaveCount(1);
             }
         }
