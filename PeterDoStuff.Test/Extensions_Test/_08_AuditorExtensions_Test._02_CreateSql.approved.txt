@@ -31,6 +31,7 @@ CREATE TABLE [__AuditableTestLineItemTable___Audit] (
 );
 CREATE TABLE [Audit] (
     [Id] uniqueidentifier,
+    [AuditTable] nvarchar(50),
     [Action] nvarchar(20),
     [CreatedAt] datetime2,
     [UserId] uniqueidentifier,

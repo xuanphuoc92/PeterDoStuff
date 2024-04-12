@@ -12,6 +12,9 @@ namespace PeterDoStuff.Extensions
     public class AuditEntity
     {
         public Guid Id { get; set; }
+
+        [MaxLength(50)]
+        public string AuditTable { get; set; }
         
         [MaxLength(20)]
         public string Action { get; set; }
