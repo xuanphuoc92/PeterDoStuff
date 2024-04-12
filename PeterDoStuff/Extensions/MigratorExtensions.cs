@@ -101,11 +101,9 @@ namespace PeterDoStuff.Extensions
             if (dbSet.GetCustomAttribute<AuditableAttribute>() != null)
             {
                 string auditTable = CraftCreateSql(entityType, $"{tableName}_Audit",
-                    "[AuditAction] nvarchar(50)",
-                    "[AuditTime] datetime2",
-                    "[AuditActorId] uniqueidentifier",
-                    "[AuditActorName] nvarchar(200)",
-                    $"INDEX IDX_{tableName}_Audit_Id ([Id], [AuditTime])");
+                    "[AuditId] uniqueidentifier",
+                    $"INDEX IDX_{tableName}_Audit_Id ([Id])",
+                    $"INDEX IDX_{tableName}_Audit_AuditId ([AuditId])");
                 sql.AppendLine(auditTable);
             }
 

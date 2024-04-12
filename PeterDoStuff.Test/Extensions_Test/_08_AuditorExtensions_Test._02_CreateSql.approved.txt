@@ -6,11 +6,9 @@
 CREATE TABLE [__AuditableTestTable___Audit] (
     [Id] int,
     [Name] nvarchar(100),
-    [AuditAction] nvarchar(50),
-    [AuditTime] datetime2,
-    [AuditActorId] uniqueidentifier,
-    [AuditActorName] nvarchar(200),
-    INDEX IDX___AuditableTestTable___Audit_Id ([Id], [AuditTime])
+    [AuditId] uniqueidentifier,
+    INDEX IDX___AuditableTestTable___Audit_Id ([Id]),
+    INDEX IDX___AuditableTestTable___Audit_AuditId ([AuditId])
 );
 CREATE TABLE [__NonAuditableTestTable__] (
     [Id] int,
@@ -27,11 +25,9 @@ CREATE TABLE [__AuditableTestLineItemTable___Audit] (
     [Id] int,
     [AuditableEntityId] int,
     [Name] nvarchar(100),
-    [AuditAction] nvarchar(50),
-    [AuditTime] datetime2,
-    [AuditActorId] uniqueidentifier,
-    [AuditActorName] nvarchar(200),
-    INDEX IDX___AuditableTestLineItemTable___Audit_Id ([Id], [AuditTime])
+    [AuditId] uniqueidentifier,
+    INDEX IDX___AuditableTestLineItemTable___Audit_Id ([Id]),
+    INDEX IDX___AuditableTestLineItemTable___Audit_AuditId ([AuditId])
 );
 CREATE TABLE [Audit] (
     [Id] uniqueidentifier,
