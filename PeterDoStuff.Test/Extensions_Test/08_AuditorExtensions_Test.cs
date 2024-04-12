@@ -40,7 +40,13 @@ namespace PeterDoStuff.Test.Extensions_Test
 
         private class NonAuditableEntity : TestEntity;
 
-        private class AuditableContext : DbContext
+        private abstract class BaseContext : DbContext, IAuditableContext
+        {
+            public BaseContext(DbContextOptions options) : base(options) { }
+            public DbSet<AuditEntity> Audit { get; set; }
+        }
+
+        private class AuditableContext : BaseContext
         {
             public AuditableContext(DbContextOptions<AuditableContext> options) : base(options) { }
 

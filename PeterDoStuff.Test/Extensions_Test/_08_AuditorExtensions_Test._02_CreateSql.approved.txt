@@ -33,3 +33,11 @@ CREATE TABLE [__AuditableTestLineItemTable___Audit] (
     [AuditActorName] nvarchar(200),
     INDEX IDX___AuditableTestLineItemTable___Audit_Id ([Id], [AuditTime])
 );
+CREATE TABLE [Audit] (
+    [Id] uniqueidentifier,
+    [Action] nvarchar(20),
+    [CreatedAt] datetime2,
+    [UserId] uniqueidentifier,
+    [UserDescription] nvarchar(50),
+    CONSTRAINT PK_Audit_Id PRIMARY KEY (Id)
+);

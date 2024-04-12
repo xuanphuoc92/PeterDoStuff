@@ -2,11 +2,35 @@
 using Microsoft.EntityFrameworkCore;
 using PeterDoStuff.Attributes;
 using PeterDoStuff.Database;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace PeterDoStuff.Extensions
 {
+    public class AuditEntity
+    {
+        public Guid Id { get; set; }
+        
+        [MaxLength(20)]
+        public string Action { get; set; }
+
+        [ConcurrencyCheck]
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTime? CreatedAt { get; set; }
+
+        public Guid? UserId { get; set; }
+
+        [MaxLength(50)]
+        public string UserDescription { get; set; }
+    }
+
+    public interface IAuditableContext
+    {
+        DbSet<AuditEntity> Audit { get; set; }
+    }
+
     public static class AuditorExtensions
     {
         public static Auditor GetAuditor(this DbContext context)
