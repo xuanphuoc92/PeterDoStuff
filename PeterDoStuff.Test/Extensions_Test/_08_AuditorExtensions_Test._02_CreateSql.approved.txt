@@ -33,8 +33,6 @@ CREATE TABLE [Audit] (
     [Id] uniqueidentifier,
     [AuditTable] nvarchar(50),
     [Action] nvarchar(20),
-    [CreatedAt] datetime2,
-    [UserId] uniqueidentifier,
-    [UserDescription] nvarchar(50),
+    [Time] datetime2,
     CONSTRAINT PK_Audit_Id PRIMARY KEY (Id)
 );

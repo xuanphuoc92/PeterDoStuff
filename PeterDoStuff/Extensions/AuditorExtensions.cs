@@ -19,14 +19,12 @@ namespace PeterDoStuff.Extensions
         [MaxLength(20)]
         public string Action { get; set; }
 
-        [ConcurrencyCheck]
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        public DateTime? CreatedAt { get; set; }
+        public DateTime? Time { get; set; }
 
-        public Guid? UserId { get; set; }
+        //public Guid? UserId { get; set; }
 
-        [MaxLength(50)]
-        public string UserDescription { get; set; }
+        //[MaxLength(50)]
+        //public string UserDescription { get; set; }
     }
 
     public interface IAuditableContext
@@ -56,6 +54,8 @@ namespace PeterDoStuff.Extensions
 
         private SqlCommand AuditLogInsertSql()
         {
+            var auditTime = DateTime.Now;
+            
             var entries = _context.ChangeTracker.Entries()
                             .Where(entry =>
                                 entry.State == EntityState.Added ||
@@ -69,6 +69,8 @@ namespace PeterDoStuff.Extensions
                 .ToDictionary(pi => pi.Name);
 
             SqlCommand sql = SqlCommand.New();
+
+            var auditEntities = new List<AuditEntity>();
 
             foreach (var group in tableGroups)
             {
@@ -85,7 +87,7 @@ namespace PeterDoStuff.Extensions
                     .Select(pi => pi.Name)
                     .ToList();
 
-                sql.AppendLine($"INSERT INTO [{auditTable}] ({columns.Select(c => $"[{c}]").Join(", ")}, AuditAction, AuditTime) VALUES");
+                sql.AppendLine($"INSERT INTO [{auditTable}] ({columns.Select(c => $"[{c}]").Join(", ")}, AuditId) VALUES");
 
                 for (int i = 0; i < list.Count(); i++)
                 {
@@ -110,14 +112,30 @@ namespace PeterDoStuff.Extensions
                             // It is possible to corrupt deleted data by changing it before delete.
                             // Therefore, in the case of delete, use the oldPropertyValues dictionary instead.
                             action == "DELETE" ? oldPropertyValues[col] : entity.GetPropertyValue(col));
-
-                    sql.Append("{0}, getDate())", action);
+                    
+                    var auditId = Guid.NewGuid();
+                    sql.Append("{0})", auditId);
 
                     if (i == list.Count() - 1)
                         sql.AppendLine(";");
                     else
                         sql.AppendLine(",");
+
+                    auditEntities.Add(new AuditEntity() { Id = auditId, Action = action, AuditTable = auditTable, Time = auditTime });
                 }
+            }
+
+            // Insert the audit entities
+            sql.AppendLine($"INSERT INTO [Audit] ([Id], [Action], [AuditTable], [Time]) VALUES");
+            for (int i = 0; i < auditEntities.Count(); i++)
+            {
+                var auditEntity = auditEntities[i];
+                sql.AppendLine("({0}, {1}, {2}, {3})", 
+                    auditEntity.Id, auditEntity.Action, auditEntity.AuditTable, auditEntity.Time);
+                if (i == auditEntities.Count() - 1)
+                    sql.AppendLine(";");
+                else 
+                    sql.AppendLine(",");
             }
 
             return sql;
