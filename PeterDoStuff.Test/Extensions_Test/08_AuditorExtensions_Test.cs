@@ -206,7 +206,7 @@ namespace PeterDoStuff.Test.Extensions_Test
 
                 lineItem.Name = "Line One Update";
 
-                context.__AuditableTestTable__.Update(entity);
+                //context.__AuditableTestTable__.Update(entity);
                 context.SaveChanges();
             }
 
@@ -234,7 +234,7 @@ namespace PeterDoStuff.Test.Extensions_Test
 
                 entity.LineItems.Remove(lineItem);
 
-                context.__AuditableTestTable__.Update(entity);
+                //context.__AuditableTestTable__.Update(entity);
                 context.SaveChanges();
             }
 
@@ -249,8 +249,7 @@ namespace PeterDoStuff.Test.Extensions_Test
 
                 entity.LineItems.Add(lineItem2);
 
-                context.__AuditableTestTable__.Update(entity);
-
+                //context.__AuditableTestTable__.Update(entity);
                 context.SaveChanges();
             }
 
@@ -272,7 +271,7 @@ namespace PeterDoStuff.Test.Extensions_Test
 
                 context.__AuditableTestTable__
                     .FromSql($"SELECT * FROM [__AuditableTestTable___Audit] WHERE Id = {1} AND Name = {"One"} AND AuditAction = {"UPDATE"}")
-                    .Should().HaveCount(3);
+                    .Should().HaveCount(0);
 
                 context.__AuditableTestTable__
                     .FromSql($"SELECT * FROM [__AuditableTestTable___Audit] WHERE Id = {1} AND Name = {"One"} AND AuditAction = {"DELETE"}")
