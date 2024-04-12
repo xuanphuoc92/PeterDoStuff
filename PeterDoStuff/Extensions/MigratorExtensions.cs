@@ -94,13 +94,13 @@ namespace PeterDoStuff.Extensions
             var entityType = dbSet.PropertyType.GetGenericArguments()[0];
             string tableName = dbSet.Name;
 
-            string mainTable = CraftCreateSql(entityType, tableName);
+            string mainTable = CraftCreateSql(entityType, tableName,
+                $"CONSTRAINT PK_{tableName}_Id PRIMARY KEY (Id)");
             sql.AppendLine(mainTable);
 
             if (dbSet.GetCustomAttribute<AuditableAttribute>() != null)
             {
                 string auditTable = CraftCreateSql(entityType, $"{tableName}_Audit",
-                    includePrimaryKey: false,
                     "[AuditAction] nvarchar(50)",
                     "[AuditTime] datetime2",
                     "[AuditActorId] uniqueidentifier",
@@ -113,7 +113,6 @@ namespace PeterDoStuff.Extensions
         }
 
         private string CraftCreateSql(Type entityType, string tableName, 
-            bool includePrimaryKey = true,
             params string[] additionalDefinitions)
         {
             var subSql = new StringBuilder();
@@ -123,11 +122,8 @@ namespace PeterDoStuff.Extensions
 
             var columns = columnInfos
                 .Select(info => GetSqlColumn(info));
-            var additionalSql = new List<string>();
             
-            if (includePrimaryKey)
-                additionalSql.Add($"    CONSTRAINT PK_{tableName}_Id PRIMARY KEY (Id)");
-
+            var additionalSql = new List<string>();
             foreach (var defintion in additionalDefinitions)
                 additionalSql.Add($"    {defintion}");
 
