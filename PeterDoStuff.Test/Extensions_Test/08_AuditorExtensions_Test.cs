@@ -152,19 +152,19 @@ namespace PeterDoStuff.Test.Extensions_Test
                 entity.Should().BeNull();
 
                 context.__AuditableTestTable__
-                    .FromSql($"SELECT * FROM [__AuditableTestTable___Audit] WHERE Id = {-1} AND Name = {"Minus One"} AND AuditAction = {"INSERT"}")
+                    .FromSql($"SELECT A.* FROM [__AuditableTestTable___Audit] A LEFT JOIN [Audit] B ON A.AuditId = B.Id WHERE A.Id = {-1} AND A.Name = {"Minus One"} AND B.Action = {"INSERT"}")
                     .Should().HaveCount(1);
 
                 context.__AuditableTestTable__
-                    .FromSql($"SELECT * FROM [__AuditableTestTable___Audit] WHERE Id = {1} AND Name = {"One"} AND AuditAction = {"INSERT"}")
+                    .FromSql($"SELECT A.* FROM [__AuditableTestTable___Audit] A LEFT JOIN [Audit] B ON A.AuditId = B.Id WHERE A.Id = {1} AND A.Name = {"One"} AND B.Action = {"INSERT"}")
                     .Should().HaveCount(1);
 
                 context.__AuditableTestTable__
-                    .FromSql($"SELECT * FROM [__AuditableTestTable___Audit] WHERE Id = {1} AND Name = {"One Updated"} AND AuditAction = {"UPDATE"}")
+                    .FromSql($"SELECT A.* FROM [__AuditableTestTable___Audit] A LEFT JOIN [Audit] B ON A.AuditId = B.Id WHERE A.Id = {1} AND A.Name = {"One Updated"} AND B.Action = {"UPDATE"}")
                     .Should().HaveCount(1);
 
                 context.__AuditableTestTable__
-                    .FromSql($"SELECT * FROM [__AuditableTestTable___Audit] WHERE Id = {1} AND Name = {"One Updated"} AND AuditAction = {"DELETE"}")
+                    .FromSql($"SELECT A.* FROM [__AuditableTestTable___Audit] A LEFT JOIN [Audit] B ON A.AuditId = B.Id WHERE A.Id = {1} AND A.Name = {"One Updated"} AND B.Action = {"DELETE"}")
                     .Should().HaveCount(1);
             }
         }
@@ -272,35 +272,35 @@ namespace PeterDoStuff.Test.Extensions_Test
             using (var context = GetTestContext())
             {
                 context.__AuditableTestTable__
-                    .FromSql($"SELECT * FROM [__AuditableTestTable___Audit] WHERE Id = {1} AND Name = {"One"} AND AuditAction = {"INSERT"}")
+                    .FromSql($"SELECT A.* FROM [__AuditableTestTable___Audit] A LEFT JOIN [Audit] B ON A.AuditId = B.Id WHERE A.Id = {1} AND A.Name = {"One"} AND B.Action = {"INSERT"}")
                     .Should().HaveCount(1);
 
                 context.__AuditableTestTable__
-                    .FromSql($"SELECT * FROM [__AuditableTestTable___Audit] WHERE Id = {1} AND Name = {"One"} AND AuditAction = {"UPDATE"}")
+                    .FromSql($"SELECT A.* FROM [__AuditableTestTable___Audit] A LEFT JOIN [Audit] B ON A.AuditId = B.Id WHERE A.Id = {1} AND A.Name = {"One"} AND B.Action = {"UPDATE"}")
                     .Should().HaveCount(0);
 
                 context.__AuditableTestTable__
-                    .FromSql($"SELECT * FROM [__AuditableTestTable___Audit] WHERE Id = {1} AND Name = {"One"} AND AuditAction = {"DELETE"}")
+                    .FromSql($"SELECT A.* FROM [__AuditableTestTable___Audit] A LEFT JOIN [Audit] B ON A.AuditId = B.Id WHERE A.Id = {1} AND A.Name = {"One"} AND B.Action = {"DELETE"}")
                     .Should().HaveCount(1);
 
                 context.__AuditableTestLineItemTable__
-                    .FromSql($"SELECT * FROM [__AuditableTestLineItemTable___Audit] WHERE Id = {1} AND AuditableEntityId = {1} AND AuditAction = {"INSERT"}")
+                    .FromSql($"SELECT A.* FROM [__AuditableTestLineItemTable___Audit] A LEFT JOIN [Audit] B ON A.AuditId = B.Id WHERE A.Id = {1} AND A.AuditableEntityId = {1} AND B.Action = {"INSERT"}")
                     .Should().HaveCount(1);
 
                 context.__AuditableTestLineItemTable__
-                    .FromSql($"SELECT * FROM [__AuditableTestLineItemTable___Audit] WHERE Id = {1} AND AuditableEntityId = {1} AND AuditAction = {"UPDATE"}")
+                    .FromSql($"SELECT A.* FROM [__AuditableTestLineItemTable___Audit] A LEFT JOIN [Audit] B ON A.AuditId = B.Id WHERE A.Id = {1} AND A.AuditableEntityId = {1} AND B.Action = {"UPDATE"}")
                     .Should().HaveCount(2);
 
                 context.__AuditableTestLineItemTable__
-                    .FromSql($"SELECT * FROM [__AuditableTestLineItemTable___Audit] WHERE Id = {1} AND AuditableEntityId = {1} AND AuditAction = {"DELETE"}")
+                    .FromSql($"SELECT A.* FROM [__AuditableTestLineItemTable___Audit] A LEFT JOIN [Audit] B ON A.AuditId = B.Id WHERE A.Id = {1} AND A.AuditableEntityId = {1} AND B.Action = {"DELETE"}")
                     .Should().HaveCount(1);
 
                 context.__AuditableTestLineItemTable__
-                    .FromSql($"SELECT * FROM [__AuditableTestLineItemTable___Audit] WHERE Id = {2} AND AuditableEntityId = {1} AND AuditAction = {"INSERT"}")
+                    .FromSql($"SELECT A.* FROM [__AuditableTestLineItemTable___Audit] A LEFT JOIN [Audit] B ON A.AuditId = B.Id WHERE A.Id = {2} AND A.AuditableEntityId = {1} AND B.Action = {"INSERT"}")
                     .Should().HaveCount(1);
 
                 context.__AuditableTestLineItemTable__
-                    .FromSql($"SELECT * FROM [__AuditableTestLineItemTable___Audit] WHERE Id = {2} AND AuditableEntityId = {1} AND AuditAction = {"DELETE"}")
+                    .FromSql($"SELECT A.* FROM [__AuditableTestLineItemTable___Audit] A LEFT JOIN [Audit] B ON A.AuditId = B.Id WHERE A.Id = {2} AND A.AuditableEntityId = {1} AND B.Action = {"DELETE"}")
                     .Should().HaveCount(1);
             }
         }
