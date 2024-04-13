@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor.Services;
-using PeterDoStuff;
 using PeterDoStuff.Games;
 using PeterDoStuff.MudWasmHosted.Client;
 
