@@ -343,7 +343,7 @@ LEFT JOIN
 WHERE 
     t.is_ms_shipped = 0";
 
-        public string UpdateSql()
+        public string GetUpdateSql()
         {
             var dbSets = context.GetDbSetPropertyInfos();
 

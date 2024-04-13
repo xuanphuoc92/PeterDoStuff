@@ -2,15 +2,11 @@
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using PeterDoStuff.Attributes;
+using PeterDoStuff.Database;
 using PeterDoStuff.Extensions;
 using PeterDoStuff.Test.Extensions;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PeterDoStuff.Test.Extensions_Test
 {
@@ -60,8 +56,8 @@ namespace PeterDoStuff.Test.Extensions_Test
 
             public override int SaveChanges()
             {
-                this.GetAuditor().AuditChanges();
-
+                var auditSql = this.GetAuditor().GetAuditSql();
+                this.Database.GetDbConnection().Execute(auditSql);
                 return base.SaveChanges();
             }
         }

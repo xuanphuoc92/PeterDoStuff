@@ -1,7 +1,6 @@
 ﻿using ApprovalTests.Reporters;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using PeterDoStuff.Attributes;
 using PeterDoStuff.Database;
 using PeterDoStuff.Extensions;
@@ -223,7 +222,7 @@ namespace PeterDoStuff.Test.Extensions_Test
 
             using (var context = GetTestContext<TestContextB>())
             {
-                context.GetMigrator().UpdateSql().Verify();
+                context.GetMigrator().GetUpdateSql().Verify();
             }
         }
 
@@ -249,7 +248,7 @@ namespace PeterDoStuff.Test.Extensions_Test
 
             using (var context = GetTestContext<TestContextC>())
             {
-                context.GetMigrator().UpdateSql().Verify();
+                context.GetMigrator().GetUpdateSql().Verify();
             }
         }
 
@@ -276,7 +275,7 @@ namespace PeterDoStuff.Test.Extensions_Test
             Guid entityId;
             using (var context = GetTestContext<TestContextC>())
             {
-                string sql = context.GetMigrator().UpdateSql();
+                string sql = context.GetMigrator().GetUpdateSql();
                 context.Database.GetDbConnection().Execute(SqlCommand.New().Append(sql));
 
                 var entity = new TestEntity4() { NewStringColumn = "Test", NewDecimalColumn = 1.2m };
@@ -288,7 +287,7 @@ namespace PeterDoStuff.Test.Extensions_Test
 
             using (var context = GetTestContext<TestContextD>())
             {
-                string updateSql = context.GetMigrator().UpdateSql();
+                string updateSql = context.GetMigrator().GetUpdateSql();
                 updateSql.Verify();
 
                 context.Database.GetDbConnection().Execute(SqlCommand.New().Append(updateSql));
@@ -321,7 +320,7 @@ namespace PeterDoStuff.Test.Extensions_Test
             Guid entityId;
             using (var context = GetTestContext<TestContextC>())
             {
-                string sql = context.GetMigrator().UpdateSql();
+                string sql = context.GetMigrator().GetUpdateSql();
                 context.Database.GetDbConnection().Execute(SqlCommand.New().Append(sql));
 
                 var entity = new TestEntity4() { NewStringColumn = "Test", NewDecimalColumn = 1.2m };
@@ -333,7 +332,7 @@ namespace PeterDoStuff.Test.Extensions_Test
 
             using (var context = GetTestContext<TestContextE>())
             {
-                string updateSql = context.GetMigrator().UpdateSql();
+                string updateSql = context.GetMigrator().GetUpdateSql();
                 updateSql.Verify();
 
                 context.Database.GetDbConnection().Execute(SqlCommand.New().Append(updateSql));
@@ -376,7 +375,7 @@ namespace PeterDoStuff.Test.Extensions_Test
 
             using (var context = GetTestContext<TestContextF>())
             {
-                string updateSql = context.GetMigrator().UpdateSql();
+                string updateSql = context.GetMigrator().GetUpdateSql();
                 updateSql.Verify();
 
                 context.Database.GetDbConnection().Execute(SqlCommand.New().Append(updateSql));
@@ -421,7 +420,7 @@ namespace PeterDoStuff.Test.Extensions_Test
 
             using (var context = GetTestContext<TestContextG>())
             {
-                string updateSql = context.GetMigrator().UpdateSql();
+                string updateSql = context.GetMigrator().GetUpdateSql();
                 updateSql.Verify();
 
                 context.Database.GetDbConnection().Execute(SqlCommand.New().Append(updateSql));
@@ -465,7 +464,7 @@ namespace PeterDoStuff.Test.Extensions_Test
 
             using (var context = GetTestContext<TestContextH>())
             {
-                string updateSql = context.GetMigrator().UpdateSql();
+                string updateSql = context.GetMigrator().GetUpdateSql();
                 updateSql.Verify();
 
                 context.Database.GetDbConnection().Execute(SqlCommand.New().Append(updateSql));
@@ -499,7 +498,7 @@ namespace PeterDoStuff.Test.Extensions_Test
 
             using (var context = GetTestContext<TestErrorContext>())
             {
-                Action errorAction = () => context.GetMigrator().UpdateSql();
+                Action errorAction = () => context.GetMigrator().GetUpdateSql();
                 var ex = errorAction.Should().Throw<Exception>().Subject.Single();
                 ex.Message.WriteToConsole();
                 ex.StackTrace.WriteToConsole();

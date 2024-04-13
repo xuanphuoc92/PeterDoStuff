@@ -1,11 +1,8 @@
-﻿using Dapper;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using PeterDoStuff.Attributes;
 using PeterDoStuff.Database;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace PeterDoStuff.Extensions
 {
@@ -46,13 +43,7 @@ namespace PeterDoStuff.Extensions
             _context = context;
         }
 
-        public void AuditChanges()
-        {
-            SqlCommand command = AuditLogInsertSql();
-            _context.Database.GetDbConnection().Execute(command);
-        }
-
-        private SqlCommand AuditLogInsertSql()
+        public SqlCommand GetAuditSql()
         {
             var auditTime = DateTime.Now;
             
