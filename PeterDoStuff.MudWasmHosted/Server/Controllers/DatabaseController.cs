@@ -2,6 +2,7 @@
 using PeterDoStuff.Database;
 using PeterDoStuff.MudWasmHosted.Server.Auth;
 using PeterDoStuff.MudWasmHosted.Shared;
+using PeterDoStuff.Tools;
 
 namespace PeterDoStuff.MudWasmHosted.Server.Controllers
 {

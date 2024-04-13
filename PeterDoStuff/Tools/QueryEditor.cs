@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PeterDoStuff
+namespace PeterDoStuff.Tools
 {
     public class QueryEditor
     {

@@ -1,4 +1,5 @@
 ﻿using PeterDoStuff.MudWasmHosted.Shared;
+using PeterDoStuff.Tools;
 
 namespace PeterDoStuff.MudWasmHosted.Client.Api
 {

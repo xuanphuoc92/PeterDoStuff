@@ -4,7 +4,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Text;
 
-namespace PeterDoStuff
+namespace PeterDoStuff.Tools
 {
     public class FileScanner : IDisposable
     {
@@ -13,16 +13,16 @@ namespace PeterDoStuff
         }
 
         public List<FileScannerZipStat> ZipStats
-            { get; private set; } = new List<FileScannerZipStat>();
+        { get; private set; } = new List<FileScannerZipStat>();
 
         public string ScanZip(string path)
-        {   
+        {
             try
             {
                 using FileStream fileStream = File.OpenRead(path);
                 return ScanZip(fileStream);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 return ex.Message;
             }
@@ -48,7 +48,7 @@ namespace PeterDoStuff
                 }
                 return SUCCESSFUL;
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 return ex.Message;
             }

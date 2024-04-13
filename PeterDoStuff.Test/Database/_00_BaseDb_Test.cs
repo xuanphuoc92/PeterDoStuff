@@ -1,11 +1,7 @@
 ﻿using FluentAssertions;
 using PeterDoStuff.Database;
 using PeterDoStuff.Test.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using PeterDoStuff.Tools;
 
 namespace PeterDoStuff.Test.Database
 {

@@ -1,12 +1,7 @@
 ﻿using ApprovalTests.Reporters;
 using FluentAssertions;
 using PeterDoStuff.Test.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using PeterDoStuff.Tools;
 
 namespace PeterDoStuff.Test.FileScanner_Tests
 {
