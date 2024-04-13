@@ -1,7 +1,8 @@
 using ApprovalTests.Reporters;
+using PeterDoStuff.Games;
 using PeterDoStuff.Test.Extensions;
 using System.Text;
-using static PeterDoStuff.GameOfLife;
+using static PeterDoStuff.Games.GameOfLife;
 
 namespace PeterDoStuff.Test
 {

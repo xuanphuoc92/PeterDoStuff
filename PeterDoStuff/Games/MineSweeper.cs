@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using static PeterDoStuff.GameOfLife;
-
-namespace PeterDoStuff
+﻿namespace PeterDoStuff.Games
 {
     public class MineSweeper : IDisposable
     {

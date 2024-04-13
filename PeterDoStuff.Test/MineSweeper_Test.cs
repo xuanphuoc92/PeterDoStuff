@@ -1,10 +1,11 @@
 ﻿using FluentAssertions;
+using PeterDoStuff.Games;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static PeterDoStuff.MineSweeper;
+using static PeterDoStuff.Games.MineSweeper;
 
 namespace PeterDoStuff.Test
 {

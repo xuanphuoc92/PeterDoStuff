@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Resources;
-using static PeterDoStuff.GameOfLife;
-
-namespace PeterDoStuff
+﻿namespace PeterDoStuff.Games
 {
     public class GameOfLife : IDisposable
     {
@@ -21,7 +15,7 @@ namespace PeterDoStuff
         }
 
 
-        private Dictionary<(int, int), Cell> _cells = new Dictionary<(int, int), Cell> ();
+        private Dictionary<(int, int), Cell> _cells = new Dictionary<(int, int), Cell>();
         private void InitCells()
         {
             // Create cells into the dictionary:
@@ -72,8 +66,8 @@ namespace PeterDoStuff
 
             internal void RegisterNeighbours(GameOfLife game)
             {
-                for (int x = X-1; x <= X+1; x++)
-                    for (int y = Y-1; y <= Y+1; y++)
+                for (int x = X - 1; x <= X + 1; x++)
+                    for (int y = Y - 1; y <= Y + 1; y++)
                     {
                         if (x == 0 || y == 0) continue;
                         if (x == game.Width + 1 || y == game.Height + 1) continue;
@@ -97,7 +91,7 @@ namespace PeterDoStuff
                 _nextState = State;
                 if (State == CellState.Live)
                 {
-                    if (_liveNeighbours < 2 || _liveNeighbours > 3) 
+                    if (_liveNeighbours < 2 || _liveNeighbours > 3)
                         _nextState = CellState.Dead;
                 }
                 else
