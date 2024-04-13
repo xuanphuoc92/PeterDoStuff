@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PeterDoStuff.Lingo
+namespace PeterDoStuff.Games.Lingo
 {
     public class Game
     {
@@ -73,9 +73,9 @@ namespace PeterDoStuff.Lingo
                 AlphabetStates[guessChar] = guessState;
                 guess.States.Add(guessState);
             }
-            
+
             Guesses.Add(guess);
-            
+
             IsGameOver = SecretWord == guess.Word || Guesses.Count == MAX_GUESS;
 
             return SecretWord == guess.Word ? GuessResult.Correct : GuessResult.Incorrect;

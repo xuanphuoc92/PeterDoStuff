@@ -1,5 +1,5 @@
 ﻿using FluentAssertions;
-using PeterDoStuff.Snake;
+using PeterDoStuff.Games.Snake;
 using PeterDoStuff.Test.Extensions;
 using System;
 using System.Collections.Generic;

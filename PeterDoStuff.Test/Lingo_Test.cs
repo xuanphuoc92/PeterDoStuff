@@ -1,7 +1,7 @@
 ﻿using ApprovalTests.Reporters;
 using FluentAssertions;
 using PeterDoStuff.Extensions;
-using PeterDoStuff.Lingo;
+using PeterDoStuff.Games.Lingo;
 using PeterDoStuff.Test.Extensions;
 using System;
 using System.Collections.Generic;

@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PeterDoStuff.Snake
+namespace PeterDoStuff.Games.Snake
 {
     public class Game
     {
         public int Width { get; private set; }
         public int Height { get; private set; }
-        public Dictionary<(int X, int Y), Cell> Cells { get; private set; } = new Dictionary<(int X, int Y), Cell> ();
+        public Dictionary<(int X, int Y), Cell> Cells { get; private set; } = new Dictionary<(int X, int Y), Cell>();
 
         private Snake? _snake = null;
         public Snake Snake => _snake ??= new Snake(this);
@@ -28,7 +28,7 @@ namespace PeterDoStuff.Snake
             Height = height;
 
             // Create the game cells
-            for (int x = 0; x < Width; x++) 
+            for (int x = 0; x < Width; x++)
             {
                 for (int y = 0; y < Height; y++)
                 {
@@ -56,7 +56,7 @@ namespace PeterDoStuff.Snake
                 .Where(c => c.State == CellState.Empty)
                 .OrderBy(c => rnd.Next())
                 .FirstOrDefault();
-            
+
             if (bait == null)
             {
                 State = GameState.Win;
@@ -157,9 +157,9 @@ namespace PeterDoStuff.Snake
         internal void Step()
         {
             var head = Head;
-            
+
             var nextX = Direction switch
-            { 
+            {
                 Direction.Right => head.X + 1,
                 Direction.Left => head.X - 1,
                 _ => head.X
@@ -209,7 +209,7 @@ namespace PeterDoStuff.Snake
 
     public class Cell
     {
-        public int X { get; private set; } 
+        public int X { get; private set; }
         public int Y { get; private set; }
 
         public Cell(int x, int y)

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PeterDoStuff.Lingo
+namespace PeterDoStuff.Games.Lingo
 {
     public class WordPool
     {
