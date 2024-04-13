@@ -1,5 +1,5 @@
 ﻿using FluentAssertions;
-using PeterDoStuff._2048;
+using PeterDoStuff.Games._2048;
 using System;
 using System.Collections.Generic;
 using System.Linq;

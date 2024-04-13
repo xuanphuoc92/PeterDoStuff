@@ -1,5 +1,5 @@
 ﻿@page "/chaos2048"
-@using PeterDoStuff._2048
+@using PeterDoStuff.Games._2048
 @inject IJSRuntime JS
 
 <MudText Typo="Typo.h3" GutterBottom="true">
@@ -301,19 +301,19 @@ else
     }
 
     private bool ShowSample = false;
-    private List<_2048.Block> SampleBlocks => new List<_2048.Block>()
+    private List<Games._2048.Block> SampleBlocks => new List<Games._2048.Block>()
     {
-        new _2048.Block(0, new Game(), 2),
-        new _2048.Block(0, new Game(), 4),
-        new _2048.Block(0, new Game(), 8),
-        new _2048.Block(0, new Game(), 16),
-        new _2048.Block(0, new Game(), 32),
-        new _2048.Block(0, new Game(), 64),
-        new _2048.Block(0, new Game(), 128),
-        new _2048.Block(0, new Game(), 256),
-        new _2048.Block(0, new Game(), 512),
-        new _2048.Block(0, new Game(), 1024),
-        new _2048.Block(0, new Game(), 2048),
+        new Games._2048.Block(0, new Game(), 2),
+        new Games._2048.Block(0, new Game(), 4),
+        new Games._2048.Block(0, new Game(), 8),
+        new Games._2048.Block(0, new Game(), 16),
+        new Games._2048.Block(0, new Game(), 32),
+        new Games._2048.Block(0, new Game(), 64),
+        new Games._2048.Block(0, new Game(), 128),
+        new Games._2048.Block(0, new Game(), 256),
+        new Games._2048.Block(0, new Game(), 512),
+        new Games._2048.Block(0, new Game(), 1024),
+        new Games._2048.Block(0, new Game(), 2048),
     };
 
     private Typo GetTypo(int number)

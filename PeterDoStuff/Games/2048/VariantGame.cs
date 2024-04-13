@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PeterDoStuff._2048
+﻿namespace PeterDoStuff.Games._2048
 {
     public class VariantGame : Game
     {
