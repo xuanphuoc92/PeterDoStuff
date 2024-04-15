@@ -29,8 +29,10 @@ namespace PeterDoStuff.Tools
 
         public List<FuncDependency> FuncDependencies { get; private set; } = new List<FuncDependency>();
 
-        public class FuncDependency
+        public struct FuncDependency
         {
+            public FuncDependency() { }
+
             public string LeftString
             {
                 get => Left.Join(", ");
