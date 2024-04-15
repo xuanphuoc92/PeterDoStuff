@@ -11,8 +11,8 @@ namespace PeterDoStuff.Tools
     {
         public List<string> GetAllAttributes()
         {
-            var allLefts = Dependencies.SelectMany(d => d.Left);
-            var allRights = Dependencies.SelectMany(d => d.Right);
+            var allLefts = FuncDependencies.SelectMany(d => d.Left);
+            var allRights = FuncDependencies.SelectMany(d => d.Right);
             return allLefts.Union(allRights).Distinct().ToList();
         }
 
@@ -21,15 +21,15 @@ namespace PeterDoStuff.Tools
             return new SchemaNormalizer();
         }
 
-        public SchemaNormalizer AddDependency(string[] left, string[] right)
+        public SchemaNormalizer AddFuncDependency(string[] left, string[] right)
         {
-            Dependencies.Add(new Dependency() { LeftString = left.Join(", "), RightString = right.Join(", ") });
+            FuncDependencies.Add(new FuncDependency() { LeftString = left.Join(", "), RightString = right.Join(", ") });
             return this;
         }
 
-        public List<Dependency> Dependencies { get; private set; } = new List<Dependency>();
+        public List<FuncDependency> FuncDependencies { get; private set; } = new List<FuncDependency>();
 
-        public class Dependency
+        public class FuncDependency
         {
             public string LeftString
             {
@@ -44,16 +44,29 @@ namespace PeterDoStuff.Tools
             
             public List<string> Left { get; private set; } = new List<string>();
             public List<string> Right { get; private set; } = new List<string>();
-            
-            //public bool IsTrivial()
-            //{
-            //    foreach (var right in Right)
-            //    {
-            //        if (!Left.Contains(right))
-            //            return false;
-            //    }
-            //    return true;
-            //}
+
+            public bool IsTrivial()
+            {
+                foreach (var right in Right)
+                {
+                    if (!Left.Contains(right))
+                        return false;
+                }
+                return true;
+            }
+
+            public bool IsNonTrivial() 
+                => IsTrivial() == false;
+
+            public bool IsCompletelyNonTrivial()
+            {
+                if (IsTrivial() == true) return false;
+
+                foreach (var right in Right)
+                    if (Left.Contains(right)) return false;
+                
+                return true;
+            }
         }
     }
 }
