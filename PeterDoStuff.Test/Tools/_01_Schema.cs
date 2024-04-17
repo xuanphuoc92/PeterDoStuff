@@ -35,5 +35,18 @@ namespace PeterDoStuff.Test.Tools
             fd3.IsNonTrivial().Should().BeTrue();
             fd3.IsCompletelyNonTrivial().Should().BeFalse();
         }
+
+        [TestMethod]
+        public void _02_MultiValDependency()
+        {
+            var mv1 = new MultiValDependency("A, B", "C, D");
+            var mv2 = new MultiValDependency("A, B", "A");
+
+            mv1.IsTrivial().Should().BeTrue();
+            mv2.IsTrivial().Should().BeTrue();
+
+            mv1.IsTrivial("E").Should().BeFalse();
+            mv1.IsTrivial("A", "E").Should().BeFalse();
+        }
     }
 }
