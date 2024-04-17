@@ -27,12 +27,10 @@ namespace PeterDoStuff.Test.Tools
             fd1.IsNonTrivial().Should().BeFalse();
             fd1.IsCompletelyNonTrivial().Should().BeFalse();
 
-            fd2.IsTrivial().Should().BeFalse();
-            fd2.IsNonTrivial().Should().BeTrue();
+            fd2.IsTrivial().Should().BeFalse();            
             fd2.IsCompletelyNonTrivial().Should().BeTrue();
 
-            fd3.IsTrivial().Should().BeFalse();
-            fd3.IsNonTrivial().Should().BeTrue();
+            fd3.IsTrivial().Should().BeFalse();            
             fd3.IsCompletelyNonTrivial().Should().BeFalse();
         }
 
@@ -43,6 +41,8 @@ namespace PeterDoStuff.Test.Tools
             var mv2 = new MultiValDependency("A, B", "A");
 
             mv1.IsTrivial().Should().BeTrue();
+            mv1.IsNonTrivial().Should().BeFalse();
+
             mv2.IsTrivial().Should().BeTrue();
 
             mv1.IsTrivial("E").Should().BeFalse();

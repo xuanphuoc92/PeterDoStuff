@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PeterDoStuff.Tools.Schema
+﻿namespace PeterDoStuff.Tools.Schema
 {
     public class MultiValDependency : Dependency
     {
@@ -31,5 +25,15 @@ namespace PeterDoStuff.Tools.Schema
             bool isYandRightSame = Y.OrderBy(y => y).SequenceEqual(Right.OrderBy(r => r));
             return isYandRightSame;
         }
+
+        /// <summary>
+        /// A multi-valued dependency X (left) ->> Y (right) if and only if:
+        /// 1. Y = R - X
+        /// or
+        /// 2. Y is subset of X
+        /// </summary>
+        /// <returns></returns>
+        public bool IsNonTrivial(params string[] otherAttributes) 
+            => IsTrivial(otherAttributes) == false;
     }
 }
