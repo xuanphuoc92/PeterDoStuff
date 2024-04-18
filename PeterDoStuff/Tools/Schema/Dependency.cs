@@ -13,12 +13,12 @@ namespace PeterDoStuff.Tools.Schema
         public string LeftString
         {
             get => Left.Join(", ");
-            set => Left = value.Split(",").Select(x => x.Trim()).ToList();
+            set => Left = value.Split(",").Select(x => x.Trim()).Where(x => x.IsNullOrEmpty() == false).ToList();
         }
         public string RightString
         {
             get => Right.Join(", ");
-            set => Right = value.Split(", ").Select(x => x.Trim()).ToList();
+            set => Right = value.Split(", ").Select(x => x.Trim()).Where(x => x.IsNullOrEmpty() == false).ToList();
         }
 
         public List<string> Left { get; private set; } = new List<string>();

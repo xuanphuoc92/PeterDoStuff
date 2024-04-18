@@ -6,27 +6,34 @@
         {
         }
 
+        /// <summary>
+        /// A functional dependency X (left) --> Y (right) is trivial if and only if Y is a subset of X.
+        /// </summary>
+        /// <returns></returns>
         public bool IsTrivial()
         {
-            foreach (var right in Right)
-            {
-                if (!Left.Contains(right))
-                    return false;
-            }
-            return true;
+            return Right.Any(right => Left.Contains(right) == false) == false;
         }
 
+        /// <summary>
+        /// A functional dependency X (left) --> Y (right) is trivial if and only if Y is a subset of X.
+        /// </summary>
+        /// <returns></returns>
         public bool IsNonTrivial()
             => IsTrivial() == false;
 
+        /// <summary>
+        /// A functional dependency X (left) --> Y (right) is completely non-trivial if and only if:
+        /// 1. Y is not empty and intersection of X and Y is empty
+        /// or
+        /// 2. X --> Y is non-trivial and intersection of X and Y is empty
+        /// </summary>
+        /// <returns></returns>
         public bool IsCompletelyNonTrivial()
         {
             if (IsTrivial() == true) return false;
 
-            foreach (var right in Right)
-                if (Left.Contains(right)) return false;
-
-            return true;
+            return Left.Any(left => Right.Contains(left)) == false;
         }
     }
 }
