@@ -52,6 +52,16 @@ namespace PeterDoStuff.Tools.Schema
             AddRow(table, 1);
             AddRow(table, 2);
             LogTable(table);
+            Log();
+
+            Log($"Step 2: For each attribute in Left ({chaseDependency.LeftString}), make their values the same");
+            foreach (var left in chaseDependency.Left)
+            {
+                var row1 = table[0];
+                var row2 = table[1];
+                row2[left] = row1[left];
+            }
+            LogTable(table);
 
             return false;
         }
@@ -80,6 +90,8 @@ namespace PeterDoStuff.Tools.Schema
 
 
         private void LogSeparator(char separatorChar) => Log(new string(separatorChar, 70));
+
+        private void Log() => Log("");
 
         private void Log(string line) => Logs += line + Environment.NewLine;
 
