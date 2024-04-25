@@ -18,7 +18,7 @@ namespace PeterDoStuff.Tools.Schema
         public string RightString
         {
             get => Right.Join(", ");
-            set => Right = value.Split(", ").Select(x => x.Trim()).Where(x => x.IsNullOrEmpty() == false).ToList();
+            set => Right = value.Split(",").Select(x => x.Trim()).Where(x => x.IsNullOrEmpty() == false).ToList();
         }
 
         public List<string> Left { get; private set; } = new List<string>();

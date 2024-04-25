@@ -22,12 +22,35 @@ namespace PeterDoStuff.Tools.Schema
             Log("Dependencies:");
             Dependencies.ForEach(d => Log(d.ToString()));
             Log($"Decomposition 1: {Decomposition1.Join(", ")}");
-            Log($"Decomposition 2: {Decomposition1.Join(", ")}");
+            Log($"Decomposition 2: {Decomposition2.Join(", ")}");
+
+            LogSeparator('=');
+
+            var intersect = Decomposition1.Intersect(Decomposition2).ToList();
+            string intersectString = intersect.Join(", ");
+            Log($"Intersect of Decompositions: {intersectString}");
+            var chaseDependency1 = new MultiValDependency(intersectString, Decomposition1.Except(intersect).Join(","));
+            var chaseDependency2 = new MultiValDependency(intersectString, Decomposition2.Except(intersect).Join(","));
+            Log("Chase Dependencies (Intesect ->> Decomposition except Intersect):");
+            Log(chaseDependency1.ToString());
+            Log(chaseDependency2.ToString());
+
+            LogSeparator('=');
+            Log($"Chase Depedency 1: {chaseDependency1}");
+            Lossless1 = Chase(chaseDependency1);
+
+            LogSeparator('=');
+            Log($"Chase Depedency 2: {chaseDependency2}");
+            Lossless2 = Chase(chaseDependency2);
         }
 
-        private void Log(string line)
+        private bool Chase(Dependency chaseDependency)
         {
-            Logs += line + Environment.NewLine;
+            return false;
         }
+
+        private void LogSeparator(char separatorChar) => Log(new string(separatorChar, 70));
+
+        private void Log(string line) => Logs += line + Environment.NewLine;
     }
 }
