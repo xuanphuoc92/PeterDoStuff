@@ -2,7 +2,7 @@
 
 namespace PeterDoStuff.Tools.Schema
 {
-    public class Dependency
+    public abstract class Dependency
     {
         public Dependency(string leftString, string rightString)
         {

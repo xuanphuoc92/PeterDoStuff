@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using PeterDoStuff.Test.Extensions;
 using PeterDoStuff.Tools.Schema;
 using System;
 using System.Collections.Generic;
@@ -47,6 +48,28 @@ namespace PeterDoStuff.Test.Tools
 
             mv1.IsTrivial("E").Should().BeFalse();
             mv1.IsTrivial("A", "E").Should().BeFalse();
+        }
+
+        [TestMethod]
+        public void _03_TheChase()
+        {
+            var theChase = new TheChase();
+            
+            // Arrange Input
+            theChase.Schema.AddRange(["A", "B", "C", "D", "E", "G"]);
+            theChase.Dependencies.Add(new FuncDependency("A,B","C"));
+            theChase.Dependencies.Add(new MultiValDependency("A,B","A,E"));
+            theChase.Dependencies.Add(new MultiValDependency("C,D","A,B"));
+            theChase.Decomposition1.AddRange(["A","B","C","D","G"]);
+            theChase.Decomposition2.AddRange(["C","D","E"]);
+
+            // Act Process
+            theChase.Chase();
+
+            // Assert Outputs
+            theChase.Logs.WriteToConsole();
+            theChase.Lossless1.Should().BeFalse();
+            theChase.Lossless2.Should().BeFalse();
         }
     }
 }

@@ -6,6 +6,8 @@
         {
         }
 
+        public override string ToString() => $"{LeftString} -> {RightString}";
+
         /// <summary>
         /// A functional dependency X (left) --> Y (right) is trivial if and only if Y is a subset of X.
         /// </summary>

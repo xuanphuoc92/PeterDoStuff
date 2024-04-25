@@ -6,6 +6,8 @@
         {
         }
 
+        public override string ToString() => $"{LeftString} ->> {RightString}";
+
         /// <summary>
         /// A multi-valued dependency X (left) ->> Y (right) if and only if:
         /// 1. Y = R - X
