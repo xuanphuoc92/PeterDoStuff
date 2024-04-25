@@ -1,6 +1,7 @@
 ﻿
 
 using PeterDoStuff.Extensions;
+using System.Data;
 
 namespace PeterDoStuff.Tools.Schema
 {
@@ -46,11 +47,61 @@ namespace PeterDoStuff.Tools.Schema
 
         private bool Chase(Dependency chaseDependency)
         {
+            Log("Step 1: Initialize table with 2 rows of distinct values");
+            List<Dictionary<string, string>> table = new();
+            AddRow(table, 1);
+            AddRow(table, 2);
+            LogTable(table);
+
             return false;
         }
+
+        private void AddRow(List<Dictionary<string, string>> table, int number)
+        {
+            var row = new Dictionary<string, string>();
+            for (int i = 0; i < Schema.Count; i++)
+            {
+                var col = Schema[i];
+                row[col] = ColumnText(i) + number;
+            }
+            table.Add(row);
+        }
+
+        private string ColumnText(int i)
+        {
+            string result = "";
+            while (i >= 0)
+            {
+                result = (char)('a' + i % 26) + result;
+                i = i / 26 - 1;
+            }
+            return result;
+        }
+
 
         private void LogSeparator(char separatorChar) => Log(new string(separatorChar, 70));
 
         private void Log(string line) => Logs += line + Environment.NewLine;
+
+        private void LogTable(List<Dictionary<string, string>> table)
+        {
+            // Calculate column sizes
+            Dictionary<string, int> colSizes = new();
+            foreach (var col in Schema)
+            {
+                var rowSizes = table.Select(r => r[col].Length).ToList();
+                rowSizes.Add(col.Length);
+                colSizes[col] = rowSizes.Max();
+            }
+
+            // Log the Header
+            string header = Schema.Select(c => c.PadRight(colSizes[c])).Join(" | ");
+            Log(header);
+            Log(new string('-', header.Length));
+
+            // Log the rows
+            foreach (var row in table)
+                Log(Schema.Select(col => row[col].PadRight(colSizes[col])).Join(" | "));
+        }
     }
 }
