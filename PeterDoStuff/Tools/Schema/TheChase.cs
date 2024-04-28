@@ -1,5 +1,6 @@
 ﻿
 
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using PeterDoStuff.Extensions;
 using System.Data;
 
@@ -73,6 +74,11 @@ namespace PeterDoStuff.Tools.Schema
                     var satisfy = TableSatisfiesDependency(table, dependency);
                     allSatisfy &= satisfy;
                     Log($"> Check dependency {dependency}: {satisfy}");
+                    if (satisfy == false)
+                    {
+                        Log("Update table to satisfy dependency");
+                        UpdateTableToSatisfyDependency(table, dependency);
+                    }
                 }
 
                 if (allSatisfy)
@@ -80,29 +86,81 @@ namespace PeterDoStuff.Tools.Schema
                     Log("Table satisifes all dependencies. End step 3.");
                     break;
                 }
-            } while (false);
+            } while (true);
 
             return false;
+        }
+
+        private void UpdateTableToSatisfyDependency(List<Dictionary<string, string>> table, Dependency dependency)
+        {
+            var count = table.Count;
+            for (int i = 0; i < count; i++)
+            {
+                var row = table[i];
+                var queriedRows = QuerySameInLeftAndDifferentInRight(table, dependency, row);
+
+                if (queriedRows.Any() == false)
+                    continue;
+
+                if (dependency is FuncDependency)
+                {
+                    foreach (var qrow in queriedRows)
+                    {
+                        Log($"Update row {table.IndexOf(qrow) + 1}:");
+                        foreach (var right in dependency.Right.Except(dependency.Left))
+                        {
+                            if (qrow[right] == row[right])
+                                continue;
+                            Log($"[{right}]: {qrow[right]} -> {row[right]}");
+                            qrow[right] = row[right];
+                        }
+                    }
+                }
+                else // if (dependency is MultiValDependency)
+                {
+                    var zAttributes = Schema.Except(dependency.Left.Union(dependency.Right));
+                    if (zAttributes.Any() == false)
+                        continue;
+
+                    var zRows = queriedRows
+                        .Where(qrow => zAttributes.All(z => qrow[z] == row[z]));
+
+                    if (zRows.Any())
+                        continue;
+
+                    foreach (var qrow in queriedRows)
+                    {
+                        var newRow = new Dictionary<string, string>();
+                        dependency.Left
+                            .ForEach(left => newRow[left] = row[left]);
+                        dependency.Right.Except(dependency.Left).ToList()
+                            .ForEach(right => newRow[right] = qrow[right]);
+                        zAttributes.ToList()
+                            .ForEach(z => newRow[z] = row[z]);
+
+                        Log($"New Row Add:");
+                        LogRow(newRow);
+                        table.Add(newRow);
+                    }
+                }
+            }
+
+            Log("Updated table:");
+            LogTable(table);
         }
 
         private bool TableSatisfiesDependency(List<Dictionary<string, string>> table, Dependency dependency)
         {
             foreach (var row in table)
             {
-                var queriedRows = table
-                    .Where(qrow => dependency.Left
-                        .All(left => qrow[left] == row[left]))
-                    .Where(qrow => dependency.Right.Except(dependency.Left)
-                        .Any(right => qrow[right] != row[right]))
-                    .ToList();
+                var queriedRows = QuerySameInLeftAndDifferentInRight(table, dependency, row);
 
                 if (queriedRows.Any() == false)
                     continue;
 
                 if (dependency is FuncDependency)
                     return false;
-
-                if (dependency is MultiValDependency)
+                else // if (dependency is MultiValDependency)
                 {
                     var zAttributes = Schema.Except(dependency.Left.Union(dependency.Right));
                     if (zAttributes.Any() == false)
@@ -117,6 +175,16 @@ namespace PeterDoStuff.Tools.Schema
             }
 
             return true;
+        }
+
+        private static List<Dictionary<string, string>> QuerySameInLeftAndDifferentInRight(List<Dictionary<string, string>> table, Dependency dependency, Dictionary<string, string> row)
+        {
+            return table
+                .Where(qrow => dependency.Left
+                    .All(left => qrow[left] == row[left]))
+                .Where(qrow => dependency.Right.Except(dependency.Left)
+                    .Any(right => qrow[right] != row[right]))
+                .ToList();
         }
 
         private void AddRow(List<Dictionary<string, string>> table, int number)
@@ -167,6 +235,28 @@ namespace PeterDoStuff.Tools.Schema
             // Log the rows
             foreach (var row in table)
                 Log(Schema.Select(col => row[col].PadRight(colSizes[col])).Join(" | "));
+        }
+
+        private void LogRow(Dictionary<string, string> row)
+        {
+            // Calculate column sizes
+            Dictionary<string, int> colSizes = new();
+            foreach (var col in Schema)
+            {
+                var rowSizes = new List<int>
+                {
+                    row[col].Length,
+                    col.Length
+                };
+                colSizes[col] = rowSizes.Max();
+            }
+
+            // Log the Header
+            string header = Schema.Select(c => c.PadRight(colSizes[c])).Join(" | ");
+            Log(header);
+
+            // Log the rows
+            Log(Schema.Select(col => row[col].PadRight(colSizes[col])).Join(" | "));
         }
     }
 }
