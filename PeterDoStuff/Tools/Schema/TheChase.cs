@@ -62,8 +62,61 @@ namespace PeterDoStuff.Tools.Schema
                 row2[left] = row1[left];
             }
             LogTable(table);
+            Log();
+
+            Log("Step 3: Check each dependency and update table until table satisifies all dependencies");
+            do
+            {
+                bool allSatisfy = true;
+                foreach (var dependency in Dependencies)
+                {
+                    var satisfy = TableSatisfiesDependency(table, dependency);
+                    allSatisfy &= satisfy;
+                    Log($"> Check dependency {dependency}: {satisfy}");
+                }
+
+                if (allSatisfy)
+                {
+                    Log("Table satisifes all dependencies. End step 3.");
+                    break;
+                }
+            } while (false);
 
             return false;
+        }
+
+        private bool TableSatisfiesDependency(List<Dictionary<string, string>> table, Dependency dependency)
+        {
+            foreach (var row in table)
+            {
+                var queriedRows = table
+                    .Where(qrow => dependency.Left
+                        .All(left => qrow[left] == row[left]))
+                    .Where(qrow => dependency.Right.Except(dependency.Left)
+                        .Any(right => qrow[right] != row[right]))
+                    .ToList();
+
+                if (queriedRows.Any() == false)
+                    continue;
+
+                if (dependency is FuncDependency)
+                    return false;
+
+                if (dependency is MultiValDependency)
+                {
+                    var zAttributes = Schema.Except(dependency.Left.Union(dependency.Right));
+                    if (zAttributes.Any() == false)
+                        continue;
+
+                    var zRows = queriedRows
+                        .Where(qrow => zAttributes.All(z => qrow[z] == row[z]));
+
+                    if (zRows.Any() == false)
+                        return false;
+                }
+            }
+
+            return true;
         }
 
         private void AddRow(List<Dictionary<string, string>> table, int number)
