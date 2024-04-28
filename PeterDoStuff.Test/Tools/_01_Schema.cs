@@ -62,16 +62,16 @@ namespace PeterDoStuff.Test.Tools
             theChase.Dependencies.Add(new FuncDependency("A,B","C"));
             theChase.Dependencies.Add(new MultiValDependency("A,B","A,E"));
             theChase.Dependencies.Add(new MultiValDependency("C,D","A,B"));
-            theChase.Decomposition1.AddRange(["A","B","C","D","G"]);
-            theChase.Decomposition2.AddRange(["C","D","E"]);
+            string[] decom1 = ["A", "B", "C", "D", "G"];
+            string[] decom2 = ["C", "D", "E"];
 
             // Act Process
-            theChase.Chase();
+            var result = theChase.Chase(decom1, decom2);
 
             // Assert Outputs
             theChase.Logs.Verify();
-            theChase.Lossless1.Should().BeTrue();
-            theChase.Lossless2.Should().BeTrue();
+            result.Lossless1.Should().BeTrue();
+            result.Lossless2.Should().BeTrue();
         }
     }
 }
