@@ -12,13 +12,25 @@ namespace PeterDoStuff.Tools.Schema
         public List<Dependency> Dependencies { get; private set; } = new();
         public string Logs { get; private set; }
 
-        public (bool Lossless1, bool Lossless2) Chase(IEnumerable<string> decomposition1, IEnumerable<string> decomposition2)
+        private void InitLogs()
         {
             Logs = "";
-
             Log($"Schema: {Schema.Join(", ")}");
             Log("Dependencies:");
             Dependencies.ForEach(d => Log(d.ToString()));
+        }
+
+        public bool ChaseDependency(Dependency chaseDependency)
+        {
+            InitLogs();
+            Log($"Chase Dependency: {chaseDependency}");
+            LogSeparator('=');
+            return Chase(chaseDependency);
+        }
+
+        public (bool Lossless1, bool Lossless2) ChaseDecompositions(IEnumerable<string> decomposition1, IEnumerable<string> decomposition2)
+        {
+            InitLogs();
             Log($"Decomposition 1: {decomposition1.Join(", ")}");
             Log($"Decomposition 2: {decomposition2.Join(", ")}");
 
@@ -35,14 +47,14 @@ namespace PeterDoStuff.Tools.Schema
 
             LogSeparator('=');
             Log($"Chase Depedency 1: {chaseDependency1}");
-            var lossles1 = Chase(chaseDependency1);
-            Log($"The decomposition is {(lossles1 ? "Lossless" : "Lossy")}");
+            var lossless1 = Chase(chaseDependency1);
+            Log($"The decomposition is {(lossless1 ? "Lossless" : "Lossy")}");
 
             LogSeparator('=');
             Log($"Chase Depedency 2: {chaseDependency2}");
             var lossless2 = Chase(chaseDependency2);
             Log($"The decomposition is {(lossless2 ? "Lossless" : "Lossy")}");
-            return (lossles1, lossless2);
+            return (lossless1, lossless2);
         }
 
         private bool Chase(Dependency chaseDependency)

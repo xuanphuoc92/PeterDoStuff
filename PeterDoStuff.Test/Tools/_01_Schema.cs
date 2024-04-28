@@ -66,12 +66,50 @@ namespace PeterDoStuff.Test.Tools
             string[] decom2 = ["C", "D", "E"];
 
             // Act Process
-            var result = theChase.Chase(decom1, decom2);
+            var result = theChase.ChaseDecompositions(decom1, decom2);
 
             // Assert Outputs
             theChase.Logs.Verify();
             result.Lossless1.Should().BeTrue();
             result.Lossless2.Should().BeTrue();
+        }
+
+        [TestMethod]
+        [UseReporter(typeof(DiffReporter))]
+        public void _04_TheChase_Positive()
+        {
+            var theChase = new TheChase();
+
+            // Arrange Input
+            theChase.Schema.AddRange(["A", "B", "C"]);
+            theChase.Dependencies.Add(new FuncDependency("A", "B"));
+            theChase.Dependencies.Add(new FuncDependency("B", "C"));
+
+            // Act Process
+            var result = theChase.ChaseDependency(new FuncDependency("A", "C"));
+
+            // Assert Outputs
+            theChase.Logs.Verify();
+            result.Should().BeTrue();
+        }
+
+        [TestMethod]
+        [UseReporter(typeof(DiffReporter))]
+        public void _05_TheChase_Negative()
+        {
+            var theChase = new TheChase();
+
+            // Arrange Input
+            theChase.Schema.AddRange(["A", "B", "C"]);
+            theChase.Dependencies.Add(new FuncDependency("A", "B"));
+            theChase.Dependencies.Add(new FuncDependency("B", "C"));
+
+            // Act Process
+            var result = theChase.ChaseDependency(new FuncDependency("C", "A"));
+
+            // Assert Outputs
+            theChase.Logs.Verify();
+            result.Should().BeFalse();
         }
     }
 }
