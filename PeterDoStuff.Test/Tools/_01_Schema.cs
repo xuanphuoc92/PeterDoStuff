@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using ApprovalTests.Reporters;
+using FluentAssertions;
 using PeterDoStuff.Test.Extensions;
 using PeterDoStuff.Tools.Schema;
 using System;
@@ -51,7 +52,8 @@ namespace PeterDoStuff.Test.Tools
         }
 
         [TestMethod]
-        public void _03_TheChase()
+        [UseReporter(typeof(DiffReporter))]
+        public void _03_TheChase_Sample()
         {
             var theChase = new TheChase();
             
@@ -67,7 +69,7 @@ namespace PeterDoStuff.Test.Tools
             theChase.Chase();
 
             // Assert Outputs
-            theChase.Logs.WriteToConsole();
+            theChase.Logs.Verify();
             theChase.Lossless1.Should().BeTrue();
             theChase.Lossless2.Should().BeTrue();
         }
