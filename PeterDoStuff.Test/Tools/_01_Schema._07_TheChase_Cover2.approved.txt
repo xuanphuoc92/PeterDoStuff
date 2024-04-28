@@ -24,12 +24,14 @@ a1 | b1 | c1
 a2 | b2 | c2
 
 Step 3: Check each dependency and update table until table satisifies all dependencies
-> Check dependency A -> B: True
-> Check dependency B -> C: True
+> Check dependency A -> B:
+Satisfied
+> Check dependency B -> C:
+Satisfied
 Table satisifes all dependencies. End step 3.
 
 Step 4: Check if table satisfies the chase depedency  ->> A
-Satisfy: False
+Not Satisfied
 The decomposition is Lossy
 ======================================================================
 Chase Depedency 2:  ->> B, C
@@ -46,10 +48,12 @@ a1 | b1 | c1
 a2 | b2 | c2
 
 Step 3: Check each dependency and update table until table satisifies all dependencies
-> Check dependency A -> B: True
-> Check dependency B -> C: True
+> Check dependency A -> B:
+Satisfied
+> Check dependency B -> C:
+Satisfied
 Table satisifes all dependencies. End step 3.
 
 Step 4: Check if table satisfies the chase depedency  ->> B, C
-Satisfy: False
+Not Satisfied
 The decomposition is Lossy

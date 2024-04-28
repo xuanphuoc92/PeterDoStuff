@@ -25,9 +25,12 @@ a1 | b1 | c1 | d1 | e1 | f1
 a2 | b2 | c1 | d1 | e2 | f2
 
 Step 3: Check each dependency and update table until table satisifies all dependencies
-> Check dependency A, B -> C: True
-> Check dependency A, B ->> A, E: True
-> Check dependency C, D ->> A, B: False
+> Check dependency A, B -> C:
+Satisfied
+> Check dependency A, B ->> A, E:
+Satisfied
+> Check dependency C, D ->> A, B:
+Not Satisfied
 Update table to satisfy dependency
 New Row Add:
 A  | B  | C  | D  | E  | G 
@@ -42,8 +45,10 @@ a1 | b1 | c1 | d1 | e1 | f1
 a2 | b2 | c1 | d1 | e2 | f2
 a2 | b2 | c1 | d1 | e1 | f1
 a1 | b1 | c1 | d1 | e2 | f2
-> Check dependency A, B -> C: True
-> Check dependency A, B ->> A, E: False
+> Check dependency A, B -> C:
+Satisfied
+> Check dependency A, B ->> A, E:
+Not Satisfied
 Update table to satisfy dependency
 New Row Add:
 A  | B  | C  | D  | E  | G 
@@ -68,14 +73,18 @@ a1 | b1 | c1 | d1 | e2 | f1
 a2 | b2 | c1 | d1 | e1 | f2
 a2 | b2 | c1 | d1 | e2 | f1
 a1 | b1 | c1 | d1 | e1 | f2
-> Check dependency C, D ->> A, B: True
-> Check dependency A, B -> C: True
-> Check dependency A, B ->> A, E: True
-> Check dependency C, D ->> A, B: True
+> Check dependency C, D ->> A, B:
+Satisfied
+> Check dependency A, B -> C:
+Satisfied
+> Check dependency A, B ->> A, E:
+Satisfied
+> Check dependency C, D ->> A, B:
+Satisfied
 Table satisifes all dependencies. End step 3.
 
 Step 4: Check if table satisfies the chase depedency C, D ->> A, B, G
-Satisfy: True
+Satisfied
 The decomposition is Lossless
 ======================================================================
 Chase Depedency 2: C, D ->> E
@@ -92,9 +101,12 @@ a1 | b1 | c1 | d1 | e1 | f1
 a2 | b2 | c1 | d1 | e2 | f2
 
 Step 3: Check each dependency and update table until table satisifies all dependencies
-> Check dependency A, B -> C: True
-> Check dependency A, B ->> A, E: True
-> Check dependency C, D ->> A, B: False
+> Check dependency A, B -> C:
+Satisfied
+> Check dependency A, B ->> A, E:
+Satisfied
+> Check dependency C, D ->> A, B:
+Not Satisfied
 Update table to satisfy dependency
 New Row Add:
 A  | B  | C  | D  | E  | G 
@@ -109,8 +121,10 @@ a1 | b1 | c1 | d1 | e1 | f1
 a2 | b2 | c1 | d1 | e2 | f2
 a2 | b2 | c1 | d1 | e1 | f1
 a1 | b1 | c1 | d1 | e2 | f2
-> Check dependency A, B -> C: True
-> Check dependency A, B ->> A, E: False
+> Check dependency A, B -> C:
+Satisfied
+> Check dependency A, B ->> A, E:
+Not Satisfied
 Update table to satisfy dependency
 New Row Add:
 A  | B  | C  | D  | E  | G 
@@ -135,12 +149,16 @@ a1 | b1 | c1 | d1 | e2 | f1
 a2 | b2 | c1 | d1 | e1 | f2
 a2 | b2 | c1 | d1 | e2 | f1
 a1 | b1 | c1 | d1 | e1 | f2
-> Check dependency C, D ->> A, B: True
-> Check dependency A, B -> C: True
-> Check dependency A, B ->> A, E: True
-> Check dependency C, D ->> A, B: True
+> Check dependency C, D ->> A, B:
+Satisfied
+> Check dependency A, B -> C:
+Satisfied
+> Check dependency A, B ->> A, E:
+Satisfied
+> Check dependency C, D ->> A, B:
+Satisfied
 Table satisifes all dependencies. End step 3.
 
 Step 4: Check if table satisfies the chase depedency C, D ->> E
-Satisfy: True
+Satisfied
 The decomposition is Lossless

@@ -82,9 +82,9 @@ namespace PeterDoStuff.Tools.Schema
                 bool allSatisfy = true;
                 foreach (var dependency in Dependencies)
                 {
+                    Log($"> Check dependency {dependency}:");
                     var satisfy = TableSatisfiesDependency(table, dependency);
                     allSatisfy &= satisfy;
-                    Log($"> Check dependency {dependency}: {satisfy}");
                     if (satisfy == false)
                     {
                         Log("Update table to satisfy dependency");
@@ -101,10 +101,7 @@ namespace PeterDoStuff.Tools.Schema
             Log();
 
             Log($"Step 4: Check if table satisfies the chase depedency {chaseDependency}");
-            var chaseSatisfy = TableSatisfiesDependency(table, chaseDependency);
-            Log($"Satisfy: {chaseSatisfy}");
-
-            return chaseSatisfy;
+            return TableSatisfiesDependency(table, chaseDependency);
         }
 
         private void UpdateTableToSatisfyDependency(List<Dictionary<string, string>> table, Dependency dependency)
@@ -176,7 +173,10 @@ namespace PeterDoStuff.Tools.Schema
                     continue;
 
                 if (dependency is FuncDependency)
+                {
+                    Log("Not Satisfied");
                     return false;
+                }
                 else // if (dependency is MultiValDependency)
                 {
                     var zAttributes = Schema.Except(dependency.Left.Union(dependency.Right));
@@ -187,10 +187,14 @@ namespace PeterDoStuff.Tools.Schema
                         .Where(qrow => zAttributes.All(z => qrow[z] == row[z]));
 
                     if (zRows.Any() == false)
+                    {
+                        Log("Not Satisfied");
                         return false;
+                    }
                 }
             }
 
+            Log("Satisfied");
             return true;
         }
 

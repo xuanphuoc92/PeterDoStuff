@@ -17,9 +17,11 @@ a1 | b1 | c1
 a2 | b1 | c1
 
 Step 3: Check each dependency and update table until table satisifies all dependencies
-> Check dependency A -> B: True
-> Check dependency B -> C: True
+> Check dependency A -> B:
+Satisfied
+> Check dependency B -> C:
+Satisfied
 Table satisifes all dependencies. End step 3.
 
 Step 4: Check if table satisfies the chase depedency B, C ->> A
-Satisfy: True
+Satisfied

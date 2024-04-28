@@ -147,6 +147,8 @@ namespace PeterDoStuff.Test.Tools
 
             // Assert Outputs
             theChase.Logs.Verify();
+            result.Lossless1.Should().BeFalse();
+            result.Lossless2.Should().BeFalse();
         }
     }
 }
