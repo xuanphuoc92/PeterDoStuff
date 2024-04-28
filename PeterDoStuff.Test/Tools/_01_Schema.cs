@@ -68,8 +68,8 @@ namespace PeterDoStuff.Test.Tools
 
             // Assert Outputs
             theChase.Logs.WriteToConsole();
-            theChase.Lossless1.Should().BeFalse();
-            theChase.Lossless2.Should().BeFalse();
+            theChase.Lossless1.Should().BeTrue();
+            theChase.Lossless2.Should().BeTrue();
         }
     }
 }

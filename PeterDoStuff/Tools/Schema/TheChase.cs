@@ -40,10 +40,12 @@ namespace PeterDoStuff.Tools.Schema
             LogSeparator('=');
             Log($"Chase Depedency 1: {chaseDependency1}");
             Lossless1 = Chase(chaseDependency1);
+            Log($"The decomposition is {(Lossless1 ? "Lossless" : "Lossy")}");
 
             LogSeparator('=');
             Log($"Chase Depedency 2: {chaseDependency2}");
             Lossless2 = Chase(chaseDependency2);
+            Log($"The decomposition is {(Lossless2 ? "Lossless" : "Lossy")}");
         }
 
         private bool Chase(Dependency chaseDependency)
@@ -87,8 +89,13 @@ namespace PeterDoStuff.Tools.Schema
                     break;
                 }
             } while (true);
+            Log();
 
-            return false;
+            Log($"Step 4: Check if table satisfies the chase depedency {chaseDependency}");
+            var chaseSatisfy = TableSatisfiesDependency(table, chaseDependency);
+            Log($"Satisfy: {chaseSatisfy}");
+
+            return chaseSatisfy;
         }
 
         private void UpdateTableToSatisfyDependency(List<Dictionary<string, string>> table, Dependency dependency)
