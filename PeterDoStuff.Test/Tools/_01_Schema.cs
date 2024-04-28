@@ -111,5 +111,42 @@ namespace PeterDoStuff.Test.Tools
             theChase.Logs.Verify();
             result.Should().BeFalse();
         }
+
+        [TestMethod]
+        [UseReporter(typeof(DiffReporter))]
+        public void _06_TheChase_Cover1()
+        {
+            var theChase = new TheChase();
+
+            // Arrange Input
+            theChase.Schema.AddRange(["A", "B", "C"]);
+            theChase.Dependencies.Add(new FuncDependency("A", "B"));
+            theChase.Dependencies.Add(new FuncDependency("B", "C"));
+
+            // Act Process
+            var result = theChase.ChaseDependency(new MultiValDependency("B, C", "A"));
+
+            // Assert Outputs
+            theChase.Logs.Verify();
+            result.Should().BeTrue();
+        }
+
+        [TestMethod]
+        [UseReporter(typeof(DiffReporter))]
+        public void _07_TheChase_Cover2()
+        {
+            var theChase = new TheChase();
+
+            // Arrange Input
+            theChase.Schema.AddRange(["A", "B", "C"]);
+            theChase.Dependencies.Add(new FuncDependency("A", "B"));
+            theChase.Dependencies.Add(new FuncDependency("B", "C"));
+
+            // Act Process
+            var result = theChase.ChaseDecompositions(["A"], ["B", "C"]);
+
+            // Assert Outputs
+            theChase.Logs.Verify();
+        }
     }
 }

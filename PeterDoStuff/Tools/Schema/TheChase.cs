@@ -125,8 +125,8 @@ namespace PeterDoStuff.Tools.Schema
                         Log($"Update row {table.IndexOf(qrow) + 1}:");
                         foreach (var right in dependency.Right.Except(dependency.Left))
                         {
-                            if (qrow[right] == row[right])
-                                continue;
+                            //if (qrow[right] == row[right])
+                            //    continue;
                             Log($"[{right}]: {qrow[right]} -> {row[right]}");
                             qrow[right] = row[right];
                         }
@@ -135,14 +135,15 @@ namespace PeterDoStuff.Tools.Schema
                 else // if (dependency is MultiValDependency)
                 {
                     var zAttributes = Schema.Except(dependency.Left.Union(dependency.Right));
-                    if (zAttributes.Any() == false)
-                        continue;
+                    
+                    //if (zAttributes.Any() == false)
+                    //    continue;
 
-                    var zRows = queriedRows
-                        .Where(qrow => zAttributes.All(z => qrow[z] == row[z]));
+                    //var zRows = queriedRows
+                    //    .Where(qrow => zAttributes.All(z => qrow[z] == row[z]));
 
-                    if (zRows.Any())
-                        continue;
+                    //if (zRows.Any())
+                    //    continue;
 
                     foreach (var qrow in queriedRows)
                     {
