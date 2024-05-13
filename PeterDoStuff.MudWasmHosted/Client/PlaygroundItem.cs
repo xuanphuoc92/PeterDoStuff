@@ -21,6 +21,7 @@ namespace PeterDoStuff.MudWasmHosted.Client
 
         public static readonly List<PlaygroundItem> Items = new List<PlaygroundItem>()
         {
+            new(PlaygroundGroup.Demos, "whatsapp", Icons.Custom.Brands.WhatsApp, "Chat on WhatsApp", "This page demonstrates WhatsApp How to use click to chat."),
             new(PlaygroundGroup.Demos, "smartComponent", Icons.Material.Filled.Lightbulb, "Smart Components", "This page demonstrates of smart components."),
             new(PlaygroundGroup.Tools, "qrCode", Icons.Material.Filled.QrCode, "QR Code", "This page demonstrates the QR code generating and scanning tools."),
             new(PlaygroundGroup.Games, "chaos2048", Icons.Material.Outlined._2k, "Chaos 2048", "This page demonstrates the game 2048 (with chaos animation mode)"),
