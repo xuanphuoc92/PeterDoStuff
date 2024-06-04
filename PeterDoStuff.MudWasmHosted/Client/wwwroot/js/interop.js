@@ -165,3 +165,45 @@ window.copyToClipboard = function (text) {
     // Clean up
     document.body.removeChild(textarea);
 };
+
+window.encryptAes = async (data, rawKey, iv) => {
+    const key = await crypto.subtle.importKey(
+        'raw',
+        rawKey,
+        { name: 'AES-CBC' },
+        false,
+        ['encrypt']
+    );
+
+    const encrypted = await window.crypto.subtle.encrypt(
+        {
+            name: "AES-CBC",
+            iv
+        },
+        key,
+        data
+    );
+
+    return new Uint8Array(encrypted);
+}
+
+window.decryptAes = async (data, rawKey, iv) => {
+    const key = await crypto.subtle.importKey(
+        'raw',
+        rawKey,
+        { name: 'AES-CBC' },
+        false,
+        ['decrypt']
+    );
+
+    const decrypted = await window.crypto.subtle.decrypt(
+        {
+            name: "AES-CBC",
+            iv
+        },
+        key,
+        data
+    );
+
+    return new Uint8Array(decrypted);
+}
