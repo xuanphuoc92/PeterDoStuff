@@ -3,6 +3,7 @@
 @using PeterDoStuff.MudWasmHosted.Client.Extensions
 @using PeterDoStuff.MudWasmHosted.Shared
 @inject HttpClient Http
+@inject IJSRuntime JS
 
 <MudText Typo="Typo.h4">
     Encryption and Signing/Hashing: RSA
@@ -18,11 +19,11 @@
 </MudText>
 
 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateRsaKeysServer" StartIcon="@ServerIcon">
-    Generate Random RSA Keys
+    Generate Random RSA Keys (online)
 </MudButton>
-@* <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="GenerateRsaKeysClient">
-    Generate RSA Keys at Client
-</MudButton> *@
+<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateRsaKeysClient">
+    Generate Random RSA Keys (offline)
+</MudButton>
 <MudGrid Spacing="1" Class="align-top mb-8">
     <MudItem xs="12" md="4">
         <MudText Color="Color.Success">Public</MudText>
@@ -125,9 +126,11 @@
         }
     }
 
-    private void GenerateRsaKeysClient()
+    private async Task GenerateRsaKeysClient()
     {
-        (rsaPublic, rsaPrivate) = SecurityExtensions.GenerateRSAKeys();
+        var result = await JS.InvokeAsync<Dictionary<string, string>>("generateRsaKeys", 2048);
+        rsaPublic = result["Public"];
+        rsaPrivate = result["Private"];
     }
 
     private async Task EncryptRsaServer()
