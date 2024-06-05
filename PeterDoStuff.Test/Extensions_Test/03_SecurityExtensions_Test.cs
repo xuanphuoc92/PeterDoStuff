@@ -132,6 +132,16 @@ namespace PeterDoStuff.Test.Extensions_Test
         public void _07_RSA()
         {
             (string publicKey, string privateKey) = SecurityExtensions.GenerateRSAKeys();
+            TestRsa(publicKey, privateKey);
+
+            var fullKeySet = SecurityExtensions.GenerateRSAKeysFull();                        
+
+            TestRsa(fullKeySet.PublicPem, fullKeySet.PrivatePem);
+            TestRsa(fullKeySet.PublicSpki, fullKeySet.PrivatePkcs8);
+        }
+
+        private static void TestRsa(string publicKey, string privateKey)
+        {
             publicKey.WriteToConsole("public");
             privateKey.WriteToConsole("private");
 
@@ -174,7 +184,7 @@ namespace PeterDoStuff.Test.Extensions_Test
 
             Action errorAction = () => "Hello1".ToByteArray().SignRSA(publicKey);
             errorAction.Should().Throw<Exception>();
-            
+
             "Hello1".ToByteArray().VerifyRSA(hash1, privateKey).Should().BeTrue();
             "Hello1".ToByteArray().VerifyRSA(hash2, privateKey).Should().BeFalse();
         }

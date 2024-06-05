@@ -199,8 +199,18 @@ namespace PeterDoStuff.Extensions
         public static (string Public, string Private) GenerateRSAKeys(int keySizeInBits = 2048)
         {
             using var rsa = RSA.Create(keySizeInBits);
-            var para = rsa.ExportParameters(false);
             return (rsa.ExportRSAPublicKeyPem(), rsa.ExportRSAPrivateKeyPem());
+        }
+
+        /// <summary>
+        /// Generate a random pair of RSA Public and Private Keys (default 2048 bits key size) in PEM formats, including SPKI (for Public) and PKCS8 (for Private)
+        /// </summary>
+        /// <param name="keySizeInBits"></param>
+        /// <returns></returns>
+        public static (string PublicPem, string PrivatePem, string PublicSpki, string PrivatePkcs8) GenerateRSAKeysFull(int keySizeInBits = 2048)
+        {
+            using var rsa = RSA.Create(keySizeInBits);
+            return (rsa.ExportRSAPublicKeyPem(), rsa.ExportRSAPrivateKeyPem(), rsa.ExportSubjectPublicKeyInfoPem(), rsa.ExportPkcs8PrivateKeyPem());
         }
 
         /// <summary>
