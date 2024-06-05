@@ -71,8 +71,8 @@
         <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
     </MudItem>
     <MudItem xs="8" md="5">
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SignRsaServer" StartIcon="@ServerIcon">Sign</MudButton>
-        @* <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="SignRsaClient">Sign at Client</MudButton> *@
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SignRsaServer" StartIcon="@ServerIcon">Sign (online)</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="SignRsaClient">Sign (offline)</MudButton>
         <ByteArrayTextField IsBase64Format="@IsBase64Format" @bind-Value="rsaHash" />
     </MudItem>
 
@@ -82,12 +82,15 @@
         <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
     </MudItem>
     <MudItem xs="7" md="4">
-        <MudButton Variant="Variant.Filled" Color="@rsaVerifyColor" OnClick="VerifyRsaServer" StartIcon="@ServerIcon">Verify</MudButton>
-        @* <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="VerifyRsaClient">Verify at Client</MudButton> *@
-        @* <br/>
-        <MudIcon
-        Icon="@(rsaVerified ? Icons.Material.Filled.CheckCircle : Icons.Material.Filled.Cancel)"
-        Color="@(rsaVerified ? Color.Success : Color.Error)" /> *@
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="VerifyRsaServer" StartIcon="@ServerIcon">Verify (online)</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="VerifyRsaClient">Verify (offline)</MudButton>
+        @if (rsaVerified != null)
+        {
+            <br/>
+            <MudIcon
+                Icon="@(rsaVerified.Value ? Icons.Material.Filled.CheckCircle : Icons.Material.Filled.Cancel)"
+                Color="@rsaVerifyColor" />
+        }
     </MudItem>
 </MudGrid>
 
@@ -189,10 +192,11 @@
             await ShowError(ex.Message);
         }
     }
-    private void SignRsaClient()
+    private async Task SignRsaClient()
     {
-        rsaHash = InputByteArray
-            .SignRSA(rsaPrivate);
+        // rsaHash = InputByteArray
+        //     .SignRSA(rsaPrivate);
+        rsaHash = await JS.InvokeAsync<byte[]>("signRsa", InputByteArray, rsaPrivate);
     }
 
     private bool? rsaVerified;
@@ -209,10 +213,11 @@
             await ShowError(ex.Message);
         }
     }
-    private void VerifyRsaClient()
+    private async Task VerifyRsaClient()
     {
-        rsaVerified = InputByteArray
-            .VerifyRSA(rsaHash, rsaPublic);
+        // rsaVerified = InputByteArray
+        //     .VerifyRSA(rsaHash, rsaPublic);
+        rsaVerified = await JS.InvokeAsync<bool>("verifyRsa", InputByteArray, rsaHash, rsaPublic);
     }
     private Color rsaVerifyColor
     {

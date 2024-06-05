@@ -251,10 +251,8 @@ function str2ab(str) {
     return buf;
 }
 
-async function importPublicKey(pem) {
+async function importKey(pem, pemHeader, pemFooter, keyFormat, rsaAlgorithmName, keyUsage) {
     // fetch the part of the PEM string between header and footer
-    const pemHeader = "-----BEGIN PUBLIC KEY-----";
-    const pemFooter = "-----END PUBLIC KEY-----";
     const pemContents = pem.substring(
         pemHeader.length,
         pem.length - pemFooter.length - 1,
@@ -264,44 +262,65 @@ async function importPublicKey(pem) {
     // convert from a binary string to an ArrayBuffer
     const binaryDer = str2ab(binaryDerString);
 
-    const publicKey = await window.crypto.subtle.importKey(
-        "spki",
+    const key = await window.crypto.subtle.importKey(
+        keyFormat,
         binaryDer,
         {
-            name: "RSA-OAEP",
+            name: rsaAlgorithmName,
             hash: "SHA-256",
         },
         true,
-        ["encrypt"],
+        [keyUsage],
     );
 
+    return key;
+}
+
+async function importPublicKey(pem) {
+    const publicKey = await importKey(
+        pem,
+        "-----BEGIN PUBLIC KEY-----",
+        "-----END PUBLIC KEY-----",
+        "spki",
+        "RSA-OAEP",
+        "encrypt"
+    );
     return publicKey;
 }
 
 async function importPrivateKey(pem) {
-    // fetch the part of the PEM string between header and footer
-    const pemHeader = "-----BEGIN PRIVATE KEY-----";
-    const pemFooter = "-----END PRIVATE KEY-----";
-    const pemContents = pem.substring(
-        pemHeader.length,
-        pem.length - pemFooter.length - 1,
-    );
-    // base64 decode the string to get the binary data
-    const binaryDerString = window.atob(pemContents);
-    // convert from a binary string to an ArrayBuffer
-    const binaryDer = str2ab(binaryDerString);
-
-    const privateKey = await window.crypto.subtle.importKey(
+    const privateKey = await importKey(
+        pem,
+        "-----BEGIN PRIVATE KEY-----",
+        "-----END PRIVATE KEY-----",
         "pkcs8",
-        binaryDer,
-        {
-            name: "RSA-OAEP",
-            hash: "SHA-256",
-        },
-        true,
-        ["decrypt"],
+        "RSA-OAEP",
+        "decrypt"
     );
+    return privateKey;
+}
 
+async function importPublicKeyForVerify(pem) {
+    const publicKey = await importKey(
+        pem,
+        "-----BEGIN PUBLIC KEY-----",
+        "-----END PUBLIC KEY-----",
+        "spki",
+        "RSASSA-PKCS1-v1_5",
+        "verify"
+    );
+    return publicKey;
+}
+
+async function importPrivateKeyForSign(pem) {
+    const privateKey = await importKey(
+        pem,
+        "-----BEGIN PRIVATE KEY-----",
+        "-----END PRIVATE KEY-----",
+        "pkcs8",
+        "RSASSA-PKCS1-v1_5",
+        "sign"
+    );
     return privateKey;
 }
 
@@ -327,4 +346,27 @@ window.decryptRsa = async (data, privatePem) => {
         data
     );
     return new Uint8Array(decrypted);
+}
+
+window.signRsa = async (data, privatePem) => {
+    const privateKey = await importPrivateKeyForSign(privatePem);
+    const signature = await window.crypto.subtle.sign(
+        {
+            name: "RSASSA-PKCS1-v1_5"
+        },
+        privateKey,
+        data
+    );
+    return new Uint8Array(signature);
+}
+
+window.verifyRsa = async (data, signature, publicPem) => {
+    const publicKey = await importPublicKeyForVerify(publicPem);
+    const result = await window.crypto.subtle.verify(
+        "RSASSA-PKCS1-v1_5",
+        publicKey,
+        signature,
+        data
+    );
+    return result;
 }
