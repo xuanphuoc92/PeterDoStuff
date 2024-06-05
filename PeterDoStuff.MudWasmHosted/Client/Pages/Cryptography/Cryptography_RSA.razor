@@ -21,7 +21,7 @@
 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateRsaKeysServer" StartIcon="@ServerIcon">
     Generate Random RSA Keys (online)
 </MudButton>
-<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateRsaKeysClient">
+<MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="GenerateRsaKeysClient">
     Generate Random RSA Keys (offline)
 </MudButton>
 <MudGrid Spacing="1" Class="align-top mb-8">
@@ -47,8 +47,8 @@
         <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
     </MudItem>
     <MudItem xs="8" md="5">
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="EncryptRsaServer" StartIcon="@ServerIcon">Encrypt</MudButton>
-        @* <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="EncryptRsaClient">Encrypt at Client</MudButton> *@
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="EncryptRsaServer" StartIcon="@ServerIcon">Encrypt (online)</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="EncryptRsaClient">Encrypt (offline)</MudButton>
         <ByteArrayTextField IsBase64Format="@IsBase64Format" @bind-Value="rsaEncrypted" />
     </MudItem>
     <MudItem xs="5" md="1" Class="d-flex justify-end">
@@ -57,8 +57,8 @@
         <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
     </MudItem>
     <MudItem xs="7" md="4">
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="DecryptRsaServer" StartIcon="@ServerIcon">Decrypt</MudButton>
-        @* <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="DecryptRsaClient">Decrypt at Client</MudButton> *@
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="DecryptRsaServer" StartIcon="@ServerIcon">Decrypt (online)</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="DecryptRsaClient">Decrypt (offline)</MudButton>
         <ByteArrayTextField AllowUTF8="true" IsBase64Format="@IsBase64Format" @bind-Value="rsaDecrypted" />
     </MudItem>
 
@@ -147,10 +147,11 @@
         }
     }
 
-    private void EncryptRsaClient()
+    private async Task EncryptRsaClient()
     {
-        rsaEncrypted = InputByteArray
-            .EncryptRSA(rsaPublic);
+        // rsaEncrypted = InputByteArray
+        //     .EncryptRSA(rsaPublic);
+        rsaEncrypted = await JS.InvokeAsync<byte[]>("encryptRsa", InputByteArray, rsaPublic);
     }
 
     private async Task DecryptRsaServer()
@@ -167,10 +168,11 @@
         }
     }
 
-    private void DecryptRsaClient()
+    private async Task DecryptRsaClient()
     {
-        rsaDecrypted = rsaEncrypted
-            .DecryptRSA(rsaPrivate);
+        // rsaDecrypted = rsaEncrypted
+        //     .DecryptRSA(rsaPrivate);
+        rsaDecrypted = await JS.InvokeAsync<byte[]>("decryptRsa", rsaEncrypted, rsaPrivate);
     }
 
     private byte[] rsaHash;
