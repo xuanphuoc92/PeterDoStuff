@@ -1,4 +1,5 @@
 ﻿@page "/schemaTools"
+@using PeterDoStuff.Tools.Schema
 
 <PageTitle>Schema Tools</PageTitle>
 
@@ -7,6 +8,73 @@
 
 <MudText Typo="Typo.h4">The Chase</MudText>
 
-@code {
+<MudText Typo="Typo.h5">Schema</MudText>
+<MudCheckBox @bind-Value="autoPopulateSchema" Color="Color.Primary" Label="Auto populate schema"/>
+<MudPaper Class="pa-2">
+    @foreach (var atb in schema)
+    {
+        <MudChip T="string" Label=true Color="Color.Primary">@atb</MudChip>
+    }
+</MudPaper>
 
+<MudText Typo="Typo.h5">Dependencies</MudText>
+
+<MudButton StartIcon="@Icons.Material.Filled.Add" Variant="Variant.Filled" Color="Color.Primary" OnClick="AddDependency">Add</MudButton>
+<MudButton StartIcon="@Icons.Material.Filled.ClearAll" Variant="Variant.Filled" Color="Color.Secondary" OnClick="ClearDependencies">Clear</MudButton>
+
+<MudGrid>
+    @foreach (var form in dependencyForms)
+    {
+        <MudItem xs="5">
+            <MudTextField T="string" Variant="Variant.Outlined" @bind-Value="form.Left" />
+        </MudItem>
+        <MudItem xs="1">
+            <MudButton OnClick="() => ToggleDependencyType(form)" Variant="Variant.Filled" Color="Color.Primary">
+                <MudIcon Icon="@(form.IsMVD ? mvdIcon : fdIcon)"/>
+            </MudButton>
+        </MudItem>
+        <MudItem xs="5">
+            <MudTextField T="string" Variant="Variant.Outlined" @bind-Value="form.Right" />
+        </MudItem>
+        <MudItem xs="1">
+            <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="() => RemoveDependency(form)">
+                <MudIcon Icon="@Icons.Material.Filled.Delete" />
+            </MudButton>
+        </MudItem>
+    }
+</MudGrid>
+
+
+@code {
+    bool autoPopulateSchema = true;
+    List<string> schema = ["A", "B", "C"];
+    List<DependencyForm> dependencyForms = new();
+
+    class DependencyForm
+    {
+        public string Left { get; set; }
+        public string Right { get; set; }
+        public bool IsMVD { get; set; }
+    }
+
+    void ToggleDependencyType(DependencyForm dependencyStruct)
+        => dependencyStruct.IsMVD = !dependencyStruct.IsMVD;
+
+    static readonly string mvdIcon = Icons.Material.Filled.KeyboardDoubleArrowRight;
+    static readonly string fdIcon = Icons.Material.Filled.KeyboardArrowRight;
+
+    void AddDependency()
+    {
+        dependencyForms.Add(new DependencyForm());
+    }
+
+    void ClearDependencies()
+    {
+        dependencyForms.Clear();
+    }
+
+    void RemoveDependency(DependencyForm form)
+    {
+        dependencyForms.Remove(form);
+    }
 }
