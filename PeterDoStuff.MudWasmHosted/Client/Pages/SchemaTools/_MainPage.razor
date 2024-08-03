@@ -22,20 +22,10 @@
 <MudButton StartIcon="@Icons.Material.Filled.Add" Variant="Variant.Filled" Color="Color.Primary" OnClick="AddDependency">Add</MudButton>
 <MudButton StartIcon="@Icons.Material.Filled.ClearAll" Variant="Variant.Filled" Color="Color.Secondary" OnClick="ClearDependencies">Clear</MudButton>
 
-    @foreach (var form in dependencyForms)
+    @foreach (var form in dependencyStructs)
     {
         <MudGrid Class="align-center">
-            <MudItem xs="5">
-                <MudTextField T="string" Variant="Variant.Outlined" @bind-Value="form.Left" />
-            </MudItem>
-            <MudItem xs="1">
-                <MudButton OnClick="() => ToggleDependencyType(form)" Variant="Variant.Filled" Color="Color.Primary">
-                    <MudIcon Icon="@(form.IsMVD ? mvdIcon : fdIcon)"/>
-                </MudButton>
-            </MudItem>
-            <MudItem xs="5">
-                <MudTextField T="string" Variant="Variant.Outlined" @bind-Value="form.Right" />
-            </MudItem>
+            <DependencyForm Form="@form" />
             <MudItem xs="1">
                 <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="() => RemoveDependency(form)">
                     <MudIcon Icon="@Icons.Material.Filled.Delete" />
@@ -55,16 +45,16 @@
 
 @code {
     bool autoPopulateSchema = true;
-    List<DependencyForm> dependencyForms = [];
+    List<DependencyForm.DependencyStruct> dependencyStructs = [];
 
-    class DependencyForm
+    class DependencyStruct
     {
         public string Left { get; set; }
         public string Right { get; set; }
         public bool IsMVD { get; set; }
     }
 
-    void ToggleDependencyType(DependencyForm dependencyStruct)
+    void ToggleDependencyType(DependencyStruct dependencyStruct)
         => dependencyStruct.IsMVD = !dependencyStruct.IsMVD;
 
     static readonly string mvdIcon = Icons.Material.Filled.KeyboardDoubleArrowRight;
@@ -72,17 +62,17 @@
 
     void AddDependency()
     {
-        dependencyForms.Add(new DependencyForm());
+        dependencyStructs.Add(new DependencyForm.DependencyStruct());
     }
 
     void ClearDependencies()
     {
-        dependencyForms.Clear();
+        dependencyStructs.Clear();
     }
 
-    void RemoveDependency(DependencyForm form)
+    void RemoveDependency(DependencyForm.DependencyStruct form)
     {
-        dependencyForms.Remove(form);
+        dependencyStructs.Remove(form);
     }
 
     List<string> schema 
@@ -91,10 +81,10 @@
         {
             try
             {
-                var lefts = dependencyForms
+                var lefts = dependencyStructs
                 .SelectMany(d => d.Left.Split(",").Select(s => s.Trim()))
                 .Distinct();
-                var rights = dependencyForms
+                var rights = dependencyStructs
                     .SelectMany(d => d.Right.Split(",").Select(s => s.Trim()))
                     .Distinct();
                 return lefts.Union(rights).Distinct().ToList();
