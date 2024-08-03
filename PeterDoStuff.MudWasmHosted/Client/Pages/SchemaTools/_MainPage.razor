@@ -8,90 +8,57 @@
 
 <MudText Typo="Typo.h4">The Chase</MudText>
 
-<MudText Typo="Typo.h5">Schema</MudText>
-@* <MudCheckBox @bind-Value="autoPopulateSchema" Color="Color.Primary" Label="Auto populate schema"/> *@
-<MudPaper Class="pa-2 mb-8">
-    @foreach (var atb in schema)
-    {
-        <MudChip T="string" Label=true Color="Color.Primary">@atb</MudChip>
-    }
-</MudPaper>
+<MudDivider Class="my-4" />
 
 <MudText Typo="Typo.h5">Dependencies</MudText>
 
 <MudButton StartIcon="@Icons.Material.Filled.Add" Variant="Variant.Filled" Color="Color.Primary" OnClick="AddDependency">Add</MudButton>
 <MudButton StartIcon="@Icons.Material.Filled.ClearAll" Variant="Variant.Filled" Color="Color.Secondary" OnClick="ClearDependencies">Clear</MudButton>
 
-    @foreach (var form in dependencyStructs)
-    {
-        <MudGrid Class="align-center">
-            <DependencyForm Form="@form" />
-            <MudItem xs="1">
-                <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="() => RemoveDependency(form)">
-                    <MudIcon Icon="@Icons.Material.Filled.Delete" />
-                </MudButton>
-            </MudItem>
-        </MudGrid>
-    }
+@foreach (var form in dependencyForms)
+{
+    <MudGrid Class="align-center">
+        <DependencyForm Form="@form" />
+        <MudItem xs="1">
+            <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="() => RemoveDependency(form)">
+                <MudIcon Icon="@Icons.Material.Filled.Delete" />
+            </MudButton>
+        </MudItem>
+    </MudGrid>
+}
 
-<MudDivider Class="ma-8"/>
+<MudDivider Class="my-4"/>
 
-<MudButton Variant="Variant.Filled">Chase</MudButton>
+<MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mb-4">Chase</MudButton>
+
+<MudGrid Class="align-center">
+    <DependencyForm Form="@chaseDependency" />
+</MudGrid>
 
 <MudTextField T="string" Label="Result" Variant="Variant.Outlined" AutoGrow Lines="5"
     @bind-Value="chaseLogs"
     Style="@($"font-family: {codeFontFamily}")" />
 
-
 @code {
-    bool autoPopulateSchema = true;
-    List<DependencyForm.DependencyStruct> dependencyStructs = [];
-
-    class DependencyStruct
-    {
-        public string Left { get; set; }
-        public string Right { get; set; }
-        public bool IsMVD { get; set; }
-    }
-
-    void ToggleDependencyType(DependencyStruct dependencyStruct)
-        => dependencyStruct.IsMVD = !dependencyStruct.IsMVD;
-
-    static readonly string mvdIcon = Icons.Material.Filled.KeyboardDoubleArrowRight;
-    static readonly string fdIcon = Icons.Material.Filled.KeyboardArrowRight;
+    List<DependencyForm.FormClass> dependencyForms = [];
 
     void AddDependency()
     {
-        dependencyStructs.Add(new DependencyForm.DependencyStruct());
+        dependencyForms.Add(new DependencyForm.FormClass());
     }
 
     void ClearDependencies()
     {
-        dependencyStructs.Clear();
+        dependencyForms.Clear();
     }
 
-    void RemoveDependency(DependencyForm.DependencyStruct form)
+    void RemoveDependency(DependencyForm.FormClass form)
     {
-        dependencyStructs.Remove(form);
-    }
-
-    List<string> schema 
-    {
-        get
-        {
-            try
-            {
-                var lefts = dependencyStructs
-                .SelectMany(d => d.Left.Split(",").Select(s => s.Trim()))
-                .Distinct();
-                var rights = dependencyStructs
-                    .SelectMany(d => d.Right.Split(",").Select(s => s.Trim()))
-                    .Distinct();
-                return lefts.Union(rights).Distinct().ToList();
-            } catch { return []; }
-        }
+        dependencyForms.Remove(form);
     }
 
     private string codeFontFamily = "Fira Code, Consolas, Input, DejaVu Sans Mono, JetBrains Mono, and MonoLisa;";
     string chaseLogs = "";
+
+    DependencyForm.FormClass chaseDependency = new();
 }

@@ -12,9 +12,9 @@
 
 @code {
     [Parameter]
-    public DependencyStruct Form { get; set; }
+    public FormClass Form { get; set; }
 
-    public class DependencyStruct
+    public class FormClass
     {
         public string Left { get; set; }
         public string Right { get; set; }
@@ -24,6 +24,6 @@
     void ToggleDependencyType()
         => Form.IsMVD = !Form.IsMVD;
 
-    static readonly string mvdIcon = Icons.Material.Filled.KeyboardDoubleArrowRight;
-    static readonly string fdIcon = Icons.Material.Filled.KeyboardArrowRight;
+    private static readonly string mvdIcon = Icons.Material.Filled.KeyboardDoubleArrowRight;
+    private static readonly string fdIcon = Icons.Material.Filled.KeyboardArrowRight;
 }
