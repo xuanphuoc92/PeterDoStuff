@@ -9,8 +9,8 @@
 <MudText Typo="Typo.h4">The Chase</MudText>
 
 <MudText Typo="Typo.h5">Schema</MudText>
-<MudCheckBox @bind-Value="autoPopulateSchema" Color="Color.Primary" Label="Auto populate schema"/>
-<MudPaper Class="pa-2">
+@* <MudCheckBox @bind-Value="autoPopulateSchema" Color="Color.Primary" Label="Auto populate schema"/> *@
+<MudPaper Class="pa-2 mb-8">
     @foreach (var atb in schema)
     {
         <MudChip T="string" Label=true Color="Color.Primary">@atb</MudChip>
@@ -22,33 +22,40 @@
 <MudButton StartIcon="@Icons.Material.Filled.Add" Variant="Variant.Filled" Color="Color.Primary" OnClick="AddDependency">Add</MudButton>
 <MudButton StartIcon="@Icons.Material.Filled.ClearAll" Variant="Variant.Filled" Color="Color.Secondary" OnClick="ClearDependencies">Clear</MudButton>
 
-<MudGrid>
     @foreach (var form in dependencyForms)
     {
-        <MudItem xs="5">
-            <MudTextField T="string" Variant="Variant.Outlined" @bind-Value="form.Left" />
-        </MudItem>
-        <MudItem xs="1">
-            <MudButton OnClick="() => ToggleDependencyType(form)" Variant="Variant.Filled" Color="Color.Primary">
-                <MudIcon Icon="@(form.IsMVD ? mvdIcon : fdIcon)"/>
-            </MudButton>
-        </MudItem>
-        <MudItem xs="5">
-            <MudTextField T="string" Variant="Variant.Outlined" @bind-Value="form.Right" />
-        </MudItem>
-        <MudItem xs="1">
-            <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="() => RemoveDependency(form)">
-                <MudIcon Icon="@Icons.Material.Filled.Delete" />
-            </MudButton>
-        </MudItem>
+        <MudGrid Class="align-center">
+            <MudItem xs="5">
+                <MudTextField T="string" Variant="Variant.Outlined" @bind-Value="form.Left" />
+            </MudItem>
+            <MudItem xs="1">
+                <MudButton OnClick="() => ToggleDependencyType(form)" Variant="Variant.Filled" Color="Color.Primary">
+                    <MudIcon Icon="@(form.IsMVD ? mvdIcon : fdIcon)"/>
+                </MudButton>
+            </MudItem>
+            <MudItem xs="5">
+                <MudTextField T="string" Variant="Variant.Outlined" @bind-Value="form.Right" />
+            </MudItem>
+            <MudItem xs="1">
+                <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="() => RemoveDependency(form)">
+                    <MudIcon Icon="@Icons.Material.Filled.Delete" />
+                </MudButton>
+            </MudItem>
+        </MudGrid>
     }
-</MudGrid>
+
+<MudDivider Class="ma-8"/>
+
+<MudButton Variant="Variant.Filled">Chase</MudButton>
+
+<MudTextField T="string" Label="Result" Variant="Variant.Outlined" AutoGrow Lines="5"
+    @bind-Value="chaseLogs"
+    Style="@($"font-family: {codeFontFamily}")" />
 
 
 @code {
     bool autoPopulateSchema = true;
-    List<string> schema = ["A", "B", "C"];
-    List<DependencyForm> dependencyForms = new();
+    List<DependencyForm> dependencyForms = [];
 
     class DependencyForm
     {
@@ -77,4 +84,24 @@
     {
         dependencyForms.Remove(form);
     }
+
+    List<string> schema 
+    {
+        get
+        {
+            try
+            {
+                var lefts = dependencyForms
+                .SelectMany(d => d.Left.Split(",").Select(s => s.Trim()))
+                .Distinct();
+                var rights = dependencyForms
+                    .SelectMany(d => d.Right.Split(",").Select(s => s.Trim()))
+                    .Distinct();
+                return lefts.Union(rights).Distinct().ToList();
+            } catch { return []; }
+        }
+    }
+
+    private string codeFontFamily = "Fira Code, Consolas, Input, DejaVu Sans Mono, JetBrains Mono, and MonoLisa;";
+    string chaseLogs = "";
 }
