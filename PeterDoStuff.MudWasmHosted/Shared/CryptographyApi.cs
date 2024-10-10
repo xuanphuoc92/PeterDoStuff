@@ -20,5 +20,20 @@ namespace PeterDoStuff.MudWasmHosted.Shared
     public record Argon2idBody(byte[] Input, byte[] Salt);
     public record AesBody(byte[] Input, byte[] Key, byte[] IV);
     public record RsaKeys(string Public, string Private);
-    public record RsaBody(byte[] Input, string Key, byte[] Hash = null);
+    public record RsaBody(byte[] Input, string Key,
+        byte[] Hash = null,
+        RsaEncryptPadding EncryptPadding = RsaEncryptPadding.Oaep256,
+        RsaSignHashing SignHashing = RsaSignHashing.Sha256);
+
+    public enum RsaEncryptPadding
+    {
+        Oaep256,
+        Pkcs1
+    }
+
+    public enum RsaSignHashing
+    {
+        Sha256,
+        Sha512
+    }
 }

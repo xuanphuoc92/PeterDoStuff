@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PeterDoStuff.MudWasmHosted.Shared;
 using PeterDoStuff.Extensions;
+using System.Security.Cryptography;
 
 namespace PeterDoStuff.MudWasmHosted.Server.Controllers
 {
@@ -47,21 +48,37 @@ namespace PeterDoStuff.MudWasmHosted.Server.Controllers
         [HttpPost]
         [Route("EncryptRsa")]
         public async Task<byte[]> EncryptRsa(RsaBody body)
-            => body.Input.EncryptRSA(body.Key);
+            => body.Input.EncryptRSA(body.Key, GetPadding(body.EncryptPadding));
 
         [HttpPost]
         [Route("DecryptRsa")]
         public async Task<byte[]> DecryptRsa(RsaBody body)
-            => body.Input.DecryptRSA(body.Key);
+            => body.Input.DecryptRSA(body.Key, GetPadding(body.EncryptPadding));
+
+        private static RSAEncryptionPadding GetPadding(RsaEncryptPadding? padding)
+            => padding switch
+            {
+                RsaEncryptPadding.Oaep256 => RSAEncryptionPadding.OaepSHA256,
+                RsaEncryptPadding.Pkcs1 => RSAEncryptionPadding.Pkcs1,
+                _ => throw new Exception($"Unknown Padding: {padding?.ToString() ?? "NULL"}")
+            };
 
         [HttpPost]
         [Route("SignRsa")]
         public async Task<byte[]> SignRsa(RsaBody body)
-            => body.Input.SignRSA(body.Key);
+            => body.Input.SignRSA(body.Key, GetHashAlgo(body.SignHashing));
 
         [HttpPost]
         [Route("VerifyRsa")]
         public async Task<bool> VerifyRsa(RsaBody body)
-            => body.Input.VerifyRSA(body.Hash, body.Key);
+            => body.Input.VerifyRSA(body.Hash, body.Key, GetHashAlgo(body.SignHashing));
+
+        private static HashAlgorithmName GetHashAlgo(RsaSignHashing? hashing)
+            => hashing switch
+            {
+                RsaSignHashing.Sha256 => HashAlgorithmName.SHA256,
+                RsaSignHashing.Sha512 => HashAlgorithmName.SHA512,
+                _ => throw new Exception($"Unknown Hashing: {hashing?.ToString() ?? "NULL"}")
+            };
     }
 }

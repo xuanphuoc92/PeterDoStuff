@@ -18,6 +18,30 @@
     Externally cross-checed with: <MudLink Target="_blank" Href="https://8gwifi.org/rsasignverifyfunctions.jsp">8gwifi.org</MudLink>
 </MudText>
 
+<MudText Typo="Typo.h6" Color="Color.Primary">Online Encryption Padding</MudText>
+<MudRadioGroup @bind-Value="encryptPadding" Class="mb-8">
+    <MudRadio Color="Color.Primary" Value="@RsaEncryptPadding.Oaep256">OAEP with SHA256 Hashing</MudRadio>
+    <MudRadio Color="Color.Primary" Value="@RsaEncryptPadding.Pkcs1">PKCS1</MudRadio>
+</MudRadioGroup>
+
+<MudText Typo="Typo.h6" Color="Color.Primary">Online Signing Hashing</MudText>
+<MudRadioGroup @bind-Value="signHashing" Class="mb-8">
+    <MudRadio Color="Color.Primary" Value="@RsaSignHashing.Sha256">SHA256</MudRadio>
+    <MudRadio Color="Color.Primary" Value="@RsaSignHashing.Sha512">SHA512</MudRadio>
+</MudRadioGroup>
+
+<MudText Typo="Typo.h6" Color="Color.Secondary">Offline Encryption Padding</MudText>
+<MudRadioGroup @bind-Value="offlineEncryptPadding" Class="mb-8">
+    <MudRadio Color="Color.Secondary" Value="@RsaEncryptPadding.Oaep256">OAEP with SHA256 Hashing</MudRadio>
+    <MudRadio Color="Color.Secondary" Value="@RsaEncryptPadding.Pkcs1" Disabled="true">PKCS1</MudRadio>
+</MudRadioGroup>
+
+<MudText Typo="Typo.h6" Color="Color.Secondary">Online Signing Hashing</MudText>
+<MudRadioGroup @bind-Value="offlineSignHashing" Class="mb-8">
+    <MudRadio Color="Color.Secondary" Value="@RsaSignHashing.Sha256">SHA256</MudRadio>
+    <MudRadio Color="Color.Secondary" Value="@RsaSignHashing.Sha512" Disabled="true">SHA512</MudRadio>
+</MudRadioGroup>
+
 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateRsaKeysServer" StartIcon="@ServerIcon">
     Generate Random RSA Keys (online)
 </MudButton>
@@ -113,6 +137,11 @@
     private string rsaPublic, rsaPrivate;
     private byte[] rsaEncrypted, rsaDecrypted;
 
+    private RsaEncryptPadding encryptPadding = RsaEncryptPadding.Oaep256,
+        offlineEncryptPadding = RsaEncryptPadding.Oaep256;
+    private RsaSignHashing signHashing = RsaSignHashing.Sha256,
+        offlineSignHashing = RsaSignHashing.Sha256;
+
     private async Task GenerateRsaKeysServer()
     {
         try
@@ -142,7 +171,7 @@
         {
             rsaEncrypted = await Http
                 .As<CryptographyClient>()
-                .EncryptRsa(new RsaBody(InputByteArray, rsaPublic));
+                .EncryptRsa(new RsaBody(InputByteArray, rsaPublic, EncryptPadding: encryptPadding));
         }
         catch (ApiException ex)
         {
@@ -163,7 +192,7 @@
         {
             rsaDecrypted = await Http
                 .As<CryptographyClient>()
-                .DecryptRsa(new RsaBody(rsaEncrypted, rsaPrivate));
+                .DecryptRsa(new RsaBody(rsaEncrypted, rsaPrivate, EncryptPadding: encryptPadding));
         }
         catch (ApiException ex)
         {
@@ -185,7 +214,7 @@
         {
             rsaHash = await Http
                 .As<CryptographyClient>()
-                .SignRsa(new RsaBody(InputByteArray, rsaPrivate));
+                .SignRsa(new RsaBody(InputByteArray, rsaPrivate, SignHashing: signHashing));
         }
         catch (ApiException ex)
         {
@@ -206,7 +235,7 @@
         {
             rsaVerified = await Http
                 .As<CryptographyClient>()
-                .VerifyRsa(new RsaBody(InputByteArray, rsaPublic, rsaHash));
+                .VerifyRsa(new RsaBody(InputByteArray, rsaPublic, rsaHash, SignHashing: signHashing));
         }
         catch (ApiException ex)
         {
