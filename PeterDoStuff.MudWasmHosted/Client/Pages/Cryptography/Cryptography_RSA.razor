@@ -9,50 +9,57 @@
     Encryption and Signing/Hashing: RSA
 </MudText>
 <MudText Class="mb-8">
-    RSA Encrypting and Decrypting plaground with 2048 bits key and PKCS1 Padding
+    RSA Encrypting and Decrypting plaground with 2048 bits key
     <br />
-    Externally cross-checed with: <MudLink Target="_blank" Href="https://devtoolcafe.com/tools/rsa">DevToolCafe.com</MudLink>
+    Externally cross-checed (PKCS1 Padding) with: <MudLink Target="_blank" Href="https://devtoolcafe.com/tools/rsa">DevToolCafe.com</MudLink>
     <br />
-    RSA Signing and Verifying with PKCS1 Padding and SHA512 Hashing
+    RSA Signing and Verifying with PKCS1 Padding
     <br />
-    Externally cross-checed with: <MudLink Target="_blank" Href="https://8gwifi.org/rsasignverifyfunctions.jsp">8gwifi.org</MudLink>
+    Externally cross-checed (SHA512 Hashing) with: <MudLink Target="_blank" Href="https://8gwifi.org/rsasignverifyfunctions.jsp">8gwifi.org</MudLink>
 </MudText>
 
-<MudText Typo="Typo.h6" Color="Color.Primary">Online KeyGen Format</MudText>
-<MudRadioGroup @bind-Value="keyGenFormat" Class="mb-8">
-    <MudRadio Color="Color.Primary" Value="@RsaKeysFormat.Spki_Pkcs8">SPKI / PKCS8</MudRadio>
-    <MudRadio Color="Color.Primary" Value="@RsaKeysFormat.Pem">PEM</MudRadio>
-</MudRadioGroup>
+<MudGrid Class="mb-8">
+    <MudItem xs="12" md="6">
+        <MudText Typo="Typo.h6" Color="Color.Primary">Online</MudText>
+        <MudText Color="Color.Primary">KeyGen Format</MudText>
+        <MudRadioGroup @bind-Value="keyGenFormat">
+            <MudRadio Color="Color.Primary" Value="@RsaKeysFormat.Spki_Pkcs8">SPKI / PKCS8</MudRadio>
+            <MudRadio Color="Color.Primary" Value="@RsaKeysFormat.Pem">PEM</MudRadio>
+        </MudRadioGroup>
 
-<MudText Typo="Typo.h6" Color="Color.Primary">Online Encryption Padding</MudText>
-<MudRadioGroup @bind-Value="encryptPadding" Class="mb-8">
-    <MudRadio Color="Color.Primary" Value="@RsaEncryptPadding.Oaep256">OAEP with SHA256 Hashing</MudRadio>
-    <MudRadio Color="Color.Primary" Value="@RsaEncryptPadding.Pkcs1">PKCS1</MudRadio>
-</MudRadioGroup>
+        <MudText Color="Color.Primary">Encryption Padding</MudText>
+        <MudRadioGroup @bind-Value="encryptPadding">
+            <MudRadio Color="Color.Primary" Value="@RsaEncryptPadding.Oaep256">OAEP with SHA256 Hashing</MudRadio>
+            <MudRadio Color="Color.Primary" Value="@RsaEncryptPadding.Pkcs1">PKCS1</MudRadio>
+        </MudRadioGroup>
 
-<MudText Typo="Typo.h6" Color="Color.Primary">Online Signing Hashing</MudText>
-<MudRadioGroup @bind-Value="signHashing" Class="mb-8">
-    <MudRadio Color="Color.Primary" Value="@RsaSignHashing.Sha256">SHA256</MudRadio>
-    <MudRadio Color="Color.Primary" Value="@RsaSignHashing.Sha512">SHA512</MudRadio>
-</MudRadioGroup>
+        <MudText Color="Color.Primary">Signing Hashing</MudText>
+        <MudRadioGroup @bind-Value="signHashing">
+            <MudRadio Color="Color.Primary" Value="@RsaSignHashing.Sha256">SHA256</MudRadio>
+            <MudRadio Color="Color.Primary" Value="@RsaSignHashing.Sha512">SHA512</MudRadio>
+        </MudRadioGroup>
+    </MudItem>
+    <MudItem xs="12" md="6">
+        <MudText Typo="Typo.h6" Color="Color.Secondary">Offline</MudText>
+        <MudText Color="Color.Secondary">KeyGen Format</MudText>
+        <MudRadioGroup @bind-Value="offlineKeyGenFormat">
+            <MudRadio Color="Color.Secondary" Value="@RsaKeysFormat.Spki_Pkcs8">SPKI / PKCS8</MudRadio>
+            <MudRadio Color="Color.Secondary" Value="@RsaKeysFormat.Pem" Disabled="true">PEM</MudRadio>
+        </MudRadioGroup>
 
-<MudText Typo="Typo.h6" Color="Color.Secondary">Offline KeyGen Format</MudText>
-<MudRadioGroup @bind-Value="offlineKeyGenFormat" Class="mb-8">
-    <MudRadio Color="Color.Secondary" Value="@RsaKeysFormat.Spki_Pkcs8">SPKI / PKCS8</MudRadio>
-    <MudRadio Color="Color.Secondary" Value="@RsaKeysFormat.Pem" Disabled="true">PEM</MudRadio>
-</MudRadioGroup>
+        <MudText Color="Color.Secondary">Encryption Padding</MudText>
+        <MudRadioGroup @bind-Value="offlineEncryptPadding">
+            <MudRadio Color="Color.Secondary" Value="@RsaEncryptPadding.Oaep256">OAEP with SHA256 Hashing</MudRadio>
+            <MudRadio Color="Color.Secondary" Value="@RsaEncryptPadding.Pkcs1" Disabled="true">PKCS1</MudRadio>
+        </MudRadioGroup>
 
-<MudText Typo="Typo.h6" Color="Color.Secondary">Offline Encryption Padding</MudText>
-<MudRadioGroup @bind-Value="offlineEncryptPadding" Class="mb-8">
-    <MudRadio Color="Color.Secondary" Value="@RsaEncryptPadding.Oaep256">OAEP with SHA256 Hashing</MudRadio>
-    <MudRadio Color="Color.Secondary" Value="@RsaEncryptPadding.Pkcs1" Disabled="true">PKCS1</MudRadio>
-</MudRadioGroup>
-
-<MudText Typo="Typo.h6" Color="Color.Secondary">Online Signing Hashing</MudText>
-<MudRadioGroup @bind-Value="offlineSignHashing" Class="mb-8">
-    <MudRadio Color="Color.Secondary" Value="@RsaSignHashing.Sha256">SHA256</MudRadio>
-    <MudRadio Color="Color.Secondary" Value="@RsaSignHashing.Sha512" Disabled="true">SHA512</MudRadio>
-</MudRadioGroup>
+        <MudText Color="Color.Secondary">Signing Hashing</MudText>
+        <MudRadioGroup @bind-Value="offlineSignHashing">
+            <MudRadio Color="Color.Secondary" Value="@RsaSignHashing.Sha256">SHA256</MudRadio>
+            <MudRadio Color="Color.Secondary" Value="@RsaSignHashing.Sha512" Disabled="true">SHA512</MudRadio>
+        </MudRadioGroup>
+    </MudItem>
+</MudGrid>
 
 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateRsaKeysServer" StartIcon="@ServerIcon">
     Generate Random RSA Keys (online)
