@@ -214,29 +214,31 @@ namespace PeterDoStuff.Extensions
         }
 
         /// <summary>
-        /// Encrypt using RSA Public Key with PKCS1 Padding
+        /// Encrypt using RSA Public Key.
         /// </summary>
         /// <param name="input"></param>
         /// <param name="publicKey">Public Key in PEM format</param>
+        /// <param name="padding">Padding used, default OAEP with SHA256 Hashing</param>
         /// <returns></returns>
-        public static byte[] EncryptRSA(this byte[] input, string publicKey) 
+        public static byte[] EncryptRSA(this byte[] input, string publicKey, RSAEncryptionPadding padding = null) 
         {
             using var rsa = RSA.Create();
             rsa.ImportFromPem(publicKey);
-            return rsa.Encrypt(input, RSAEncryptionPadding.Pkcs1);
+            return rsa.Encrypt(input, padding ?? RSAEncryptionPadding.OaepSHA256);
         }
 
         /// <summary>
-        /// Decrypt using RSA Private Key with PKCS1 Padding
+        /// Decrypt using RSA Private Key.
         /// </summary>
         /// <param name="input"></param>
         /// <param name="privateKey">Private Key in PEM format</param>
-        /// <returns></returns>
-        public static byte[] DecryptRSA(this byte[] input, string privateKey)
+        /// <param name="padding">Padding used, default OAEP with SHA256 Hashing</param>
+        /// <returns></returns>        
+        public static byte[] DecryptRSA(this byte[] input, string privateKey, RSAEncryptionPadding padding = null)
         {
             using var rsa = RSA.Create();
             rsa.ImportFromPem(privateKey);
-            return rsa.Decrypt(input, RSAEncryptionPadding.Pkcs1);
+            return rsa.Decrypt(input, padding ?? RSAEncryptionPadding.OaepSHA256);
         }
 
         /// <summary>

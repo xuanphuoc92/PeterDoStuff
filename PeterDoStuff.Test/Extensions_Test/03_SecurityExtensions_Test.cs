@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Intrinsics.Arm;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -231,12 +232,12 @@ ZyLOGR55QuJgCvj6GedbhAltgnhOzRCjSSea3e1KpAhao3Jr1lxC
             string signatureHex = "8846de279def06624f9bf3cf57b2916c708deea2813856ceaccf946a5cc4c48afe232407095929eca235f434fc9df6e150ea4e0ce70ec75bf623aafeb7e89a1c18d461f34ec00d300eee5720b3f9e3159e0305ee97c26552c28b0a8540feca9f2b0f5fe26614bdbecbd9cab13c13c01bd87395b56f4d68bebfa24230d36057df6a04b18e4d6b7e60684f374621c3f9366eedcb54eda6b291f3f89c971e74ebe2e6f3c93b3c5c8a94a21bf00b26fc0f2903ccd4953d26a164b91e329b04b8ee48c6b4064c0eaeee542c48d6b49b6e07ef8d6d800aff8e147c4c65883653e2d6265ef4753c8906499e4404578acf53c9f19bedb9af1abdfd331f9a3304dadccc34";
             string input = "Hello";
 
-            string encryptedRandomHex = input.ToByteArray().EncryptRSA(publicKey).ToHexString();
+            string encryptedRandomHex = input.ToByteArray().EncryptRSA(publicKey, RSAEncryptionPadding.Pkcs1).ToHexString();
 
             encryptedHex.Should().NotBe(encryptedRandomHex);
 
-            string decrypted1 = encryptedHex.ToByteArrayAsHexString().DecryptRSA(privateKey).ToUTF8String();
-            string decrypted2 = encryptedRandomHex.ToByteArrayAsHexString().DecryptRSA(privateKey).ToUTF8String();
+            string decrypted1 = encryptedHex.ToByteArrayAsHexString().DecryptRSA(privateKey, RSAEncryptionPadding.Pkcs1).ToUTF8String();
+            string decrypted2 = encryptedRandomHex.ToByteArrayAsHexString().DecryptRSA(privateKey, RSAEncryptionPadding.Pkcs1).ToUTF8String();
 
             decrypted1.Should().Be(input);
             decrypted2.Should().Be(input);
