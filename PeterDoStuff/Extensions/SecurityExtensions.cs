@@ -242,30 +242,38 @@ namespace PeterDoStuff.Extensions
         }
 
         /// <summary>
-        /// Sign using RSA Private Key, with SHA512 Hashing and PKCS1 Padding
+        /// Sign using RSA Private Key, with SHA256 Hashing and PKCS1 Padding as default
         /// </summary>
         /// <param name="data"></param>
         /// <param name="privateKey">Private Key in PEM format</param>
         /// <returns></returns>
-        public static byte[] SignRSA(this byte[] data, string privateKey)
+        public static byte[] SignRSA(this byte[] data, string privateKey, 
+            HashAlgorithmName hashAlgorithmName = new HashAlgorithmName())
         {
+            if (hashAlgorithmName.Name == null)
+                hashAlgorithmName = HashAlgorithmName.SHA256;
+
             using var rsa = RSA.Create();
             rsa.ImportFromPem(privateKey);
-            return rsa.SignData(data, HashAlgorithmName.SHA512, RSASignaturePadding.Pkcs1);
+            return rsa.SignData(data, hashAlgorithmName, RSASignaturePadding.Pkcs1);
         }
 
         /// <summary>
-        /// Verify using RSA Private Key, with SHA512 Hashing and PKCS1 Padding
+        /// Verify using RSA Private Key, with SHA256 Hashing and PKCS1 Padding as default
         /// </summary>
         /// <param name="data"></param>
         /// <param name="hash">Signature/Hash from RSA signing</param>
         /// <param name="publicKey">Public Key in PEM format</param>
         /// <returns></returns>
-        public static bool VerifyRSA(this byte[] data, byte[] hash, string publicKey)
+        public static bool VerifyRSA(this byte[] data, byte[] hash, string publicKey,
+            HashAlgorithmName hashAlgorithmName = new HashAlgorithmName())
         {
+            if (hashAlgorithmName.Name == null)
+                hashAlgorithmName = HashAlgorithmName.SHA256;
+
             using var rsa = RSA.Create();
             rsa.ImportFromPem(publicKey);
-            return rsa.VerifyData(data, hash, HashAlgorithmName.SHA512, RSASignaturePadding.Pkcs1);
+            return rsa.VerifyData(data, hash, hashAlgorithmName, RSASignaturePadding.Pkcs1);
         }
     }
 }

@@ -242,8 +242,10 @@ ZyLOGR55QuJgCvj6GedbhAltgnhOzRCjSSea3e1KpAhao3Jr1lxC
             decrypted1.Should().Be(input);
             decrypted2.Should().Be(input);
 
-            input.ToByteArray().SignRSA(privateKey).ToHexString().ToLower().Should().Be(signatureHex);
-            input.ToByteArray().VerifyRSA(signatureHex.ToByteArrayAsHexString(), publicKey).Should().BeTrue();
+            var sha512Hash = HashAlgorithmName.SHA512;
+
+            input.ToByteArray().SignRSA(privateKey, sha512Hash).ToHexString().ToLower().Should().Be(signatureHex);
+            input.ToByteArray().VerifyRSA(signatureHex.ToByteArrayAsHexString(), publicKey, sha512Hash).Should().BeTrue();
         }
 
         [TestMethod]
