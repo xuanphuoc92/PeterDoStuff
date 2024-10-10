@@ -39,10 +39,12 @@ namespace PeterDoStuff.MudWasmHosted.Server.Controllers
 
         [HttpPost]
         [Route("GenerateRsaKeys")]
-        public async Task<RsaKeys> GenerateRsaKeys()
+        public async Task<RsaKeys> GenerateRsaKeys(RsaKeyConfig config)
         {
-            var keys = SecurityExtensions.GenerateRSAKeys();
-            return new RsaKeys(keys.Public, keys.Private);
+            var keys = SecurityExtensions.GenerateRSAKeysFull();
+            if (config.Format == RsaKeysFormat.Spki_Pkcs8)
+                return new RsaKeys(keys.PublicSpki, keys.PrivatePkcs8);
+            return new RsaKeys(keys.PublicPem, keys.PrivatePem);
         }
 
         [HttpPost]

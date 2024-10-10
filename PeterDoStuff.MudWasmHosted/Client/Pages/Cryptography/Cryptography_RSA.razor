@@ -18,6 +18,12 @@
     Externally cross-checed with: <MudLink Target="_blank" Href="https://8gwifi.org/rsasignverifyfunctions.jsp">8gwifi.org</MudLink>
 </MudText>
 
+<MudText Typo="Typo.h6" Color="Color.Primary">Online KeyGen Format</MudText>
+<MudRadioGroup @bind-Value="keyGenFormat" Class="mb-8">
+    <MudRadio Color="Color.Primary" Value="@RsaKeysFormat.Spki_Pkcs8">SPKI / PKCS8</MudRadio>
+    <MudRadio Color="Color.Primary" Value="@RsaKeysFormat.Pem">PEM</MudRadio>
+</MudRadioGroup>
+
 <MudText Typo="Typo.h6" Color="Color.Primary">Online Encryption Padding</MudText>
 <MudRadioGroup @bind-Value="encryptPadding" Class="mb-8">
     <MudRadio Color="Color.Primary" Value="@RsaEncryptPadding.Oaep256">OAEP with SHA256 Hashing</MudRadio>
@@ -28,6 +34,12 @@
 <MudRadioGroup @bind-Value="signHashing" Class="mb-8">
     <MudRadio Color="Color.Primary" Value="@RsaSignHashing.Sha256">SHA256</MudRadio>
     <MudRadio Color="Color.Primary" Value="@RsaSignHashing.Sha512">SHA512</MudRadio>
+</MudRadioGroup>
+
+<MudText Typo="Typo.h6" Color="Color.Secondary">Offline KeyGen Format</MudText>
+<MudRadioGroup @bind-Value="offlineKeyGenFormat" Class="mb-8">
+    <MudRadio Color="Color.Secondary" Value="@RsaKeysFormat.Spki_Pkcs8">SPKI / PKCS8</MudRadio>
+    <MudRadio Color="Color.Secondary" Value="@RsaKeysFormat.Pem" Disabled="true">PEM</MudRadio>
 </MudRadioGroup>
 
 <MudText Typo="Typo.h6" Color="Color.Secondary">Offline Encryption Padding</MudText>
@@ -137,10 +149,9 @@
     private string rsaPublic, rsaPrivate;
     private byte[] rsaEncrypted, rsaDecrypted;
 
-    private RsaEncryptPadding encryptPadding = RsaEncryptPadding.Oaep256,
-        offlineEncryptPadding = RsaEncryptPadding.Oaep256;
-    private RsaSignHashing signHashing = RsaSignHashing.Sha256,
-        offlineSignHashing = RsaSignHashing.Sha256;
+    private RsaKeysFormat keyGenFormat, offlineKeyGenFormat;
+    private RsaEncryptPadding encryptPadding, offlineEncryptPadding;
+    private RsaSignHashing signHashing, offlineSignHashing;
 
     private async Task GenerateRsaKeysServer()
     {
@@ -148,7 +159,7 @@
         {
             var result = await Http
                 .As<CryptographyClient>()
-                .GenerateRsaKeys();
+                .GenerateRsaKeys(new RsaKeyConfig(keyGenFormat));
             rsaPublic = result.Public;
             rsaPrivate = result.Private;
         }
