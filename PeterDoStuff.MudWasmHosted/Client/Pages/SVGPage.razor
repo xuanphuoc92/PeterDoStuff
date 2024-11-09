@@ -4,12 +4,16 @@
 <PlaygroundTitle Page="svg"/>
 
 <svg width="@boxWidth" height="@boxHeight">
+    <rect width="@boxWidth" height="@boxHeight"
+        fill-opacity="0"
+        stroke="@strokeColor"
+        stroke-width="4" />
     <rect
         width="@size" height="@size"
         x="@xPosition" y="@yPosition"
-        stroke="@strokeColor"
         fill="@fillColor"
         fill-opacity="0.2"
+        stroke="@strokeColor"
         stroke-width="4">
         <animateTransform
             attributeName="transform"
