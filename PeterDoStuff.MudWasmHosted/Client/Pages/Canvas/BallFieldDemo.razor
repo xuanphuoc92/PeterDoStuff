@@ -1,0 +1,174 @@
+﻿@using Blazor.Extensions
+@using Blazor.Extensions.Canvas
+@using Blazor.Extensions.Canvas.Canvas2D
+@inject IJSRuntime JsRuntime;
+
+<MudText Typo="Typo.h5">Balls and Field</MudText>
+
+<MudText>
+    All thanks to <MudLink Href="https://github.com/carlfranklin/BlazorCanvas">Carl Franklin's Blazor Canvas Demo</MudLink> and <MudLink Href="https://swharden.com/blog/2021-01-07-blazor-canvas-animated-graphics/">Scott W Harden's Blog Post</MudLink>.
+</MudText>
+
+<div id="canvasHolder" style="position: fixed; width: 100%; height: 100%">
+    <BECanvas Width="600" Height="400" @ref="CanvasRef"></BECanvas>
+</div>
+
+<script>
+    function renderJS(timeStamp) {
+        theInstance.invokeMethodAsync('RenderInBlazor', timeStamp);
+        window.requestAnimationFrame(renderJS);
+    }
+
+    function resizeCanvasToFitWindow() {
+        var holder = document.getElementById('canvasHolder');
+        var canvas = holder.querySelector('canvas');
+        if (canvas) {
+            // canvas.width = window.innerWidth;
+            // canvas.height = window.innerHeight;
+            theInstance.invokeMethodAsync('ResizeInBlazor', canvas.width, canvas.height);
+        }
+    }
+
+    window.initRenderJS = (instance) => {
+        window.theInstance = instance;
+        window.addEventListener("resize", resizeCanvasToFitWindow);
+        resizeCanvasToFitWindow();
+        window.requestAnimationFrame(renderJS);
+    };
+</script>
+
+@code {
+    private Field BallField = new();
+    private Canvas2DContext ctx;
+    protected BECanvasComponent CanvasRef;
+    private DateTime LastRender;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            this.ctx = await CanvasRef.CreateCanvas2DAsync();
+            await JsRuntime.InvokeAsync<object>("initRenderJS", DotNetObjectReference.Create(this));
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    [JSInvokable]
+    public void ResizeInBlazor(double width, double height) => BallField.Resize(width, height);
+
+    [JSInvokable]
+    public async ValueTask RenderInBlazor(float timeStamp)
+    {
+        if (BallField.Balls.Count == 0)
+            BallField.AddRandomBalls(50);
+        BallField.StepForward();
+
+        double fps = 1.0 / (DateTime.Now - LastRender).TotalSeconds;
+        LastRender = DateTime.Now;
+
+        await this.ctx.BeginBatchAsync();
+        await this.ctx.ClearRectAsync(0, 0, BallField.Width, BallField.Height);
+        await this.ctx.SetFillStyleAsync("#003366");
+        await this.ctx.FillRectAsync(0, 0, BallField.Width, BallField.Height);
+        await this.ctx.SetFontAsync("26px Segoe UI");
+        await this.ctx.SetFillStyleAsync("#FFFFFF");
+        await this.ctx.FillTextAsync("Blazor WebAssembly + HTML Canvas", 10, 30);
+        await this.ctx.SetFontAsync("16px consolas");
+        await this.ctx.FillTextAsync($"FPS: {fps:0.000}", 10, 50);
+        await this.ctx.SetStrokeStyleAsync("#FFFFFF");
+        foreach (var ball in BallField.Balls)
+        {
+            await this.ctx.BeginPathAsync();
+            await this.ctx.ArcAsync(ball.X, ball.Y, ball.Radius, 0, 2 * Math.PI, false);
+            await this.ctx.SetFillStyleAsync(ball.Color);
+            await this.ctx.FillAsync();
+            await this.ctx.StrokeAsync();
+        }
+        await this.ctx.EndBatchAsync();
+    }
+
+    private class Ball
+    {
+        public double X { get; private set; }
+        public double Y { get; private set; }
+        public double XVel { get; private set; }
+        public double YVel { get; private set; }
+        public double Radius { get; private set; }
+        public string Color { get; private set; }
+
+        public Ball(double x, double y, double xVel, double yVel, double radius, string color)
+        {
+            (X, Y, XVel, YVel, Radius, Color) = (x, y, xVel, yVel, radius, color);
+        }
+
+        public void StepForward(double width, double height)
+        {
+            X += XVel;
+            Y += YVel;
+            if (X < 0 || X > width)
+                XVel *= -1;
+            if (Y < 0 || Y > height)
+                YVel *= -1;
+
+            if (X < 0)
+                X += 0 - X;
+            else if (X > width)
+                X -= X - width;
+
+            if (Y < 0)
+                Y += 0 - Y;
+            if (Y > height)
+                Y -= Y - height;
+        }
+    }
+
+    private class Field
+    {
+        public readonly List<Ball> Balls = new List<Ball>();
+        public double Width { get; private set; }
+        public double Height { get; private set; }
+
+        public void Resize(double width, double height) =>
+            (Width, Height) = (width, height);
+
+        public void StepForward()
+        {
+            foreach (Ball ball in Balls)
+                ball.StepForward(Width, Height);
+        }
+
+        private double RandomVelocity(Random rand, double min, double max)
+        {
+            double v = min + (max - min) * rand.NextDouble();
+            if (rand.NextDouble() > .5)
+                v *= -1;
+            return v;
+        }
+
+
+        private string RandomColor(Random rand) =>
+            string.Format("#{0:X6}", rand.Next(0xFFFFFF));
+
+        public void AddRandomBalls(int count = 10)
+        {
+            double minSpeed = .5;
+            double maxSpeed = 5;
+            double radius = 10;
+            Random rand = new Random();
+
+            for (int i = 0; i < count; i++)
+            {
+                Balls.Add(
+                    new Ball(
+                        x: Width * rand.NextDouble(),
+                        y: Height * rand.NextDouble(),
+                        xVel: RandomVelocity(rand, minSpeed, maxSpeed),
+                        yVel: RandomVelocity(rand, minSpeed, maxSpeed),
+                        radius: radius,
+                        color: RandomColor(rand)
+                )
+            );
+            }
+        }
+    }
+}
