@@ -2,14 +2,7 @@
 @using PeterDoStuff.Games._2048
 @inject IJSRuntime JS
 
-<MudText Typo="Typo.h3" GutterBottom="true">
-    <MudIcon Size="Size.Large" Icon="@Icons.Material.Outlined._2k" />
-    Chaos 2048
-</MudText>
-
-<MudText Class="mb-4">
-    <p>This page demonstrates the game 2048 (with chaos animation mode).</p>
-</MudText>
+<PlaygroundTitle Page="chaos2048" />
 
 <div class="d-flex mb-4 align-center">
     <MudButton Class="mr-4" Color="Color.Warning" Variant="MudBlazor.Variant.Outlined" OnClick="NewGame">New Game</MudButton>

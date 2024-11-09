@@ -5,13 +5,8 @@
 @using System.Dynamic
 @using PeterDoStuff.MudWasmHosted.Shared
 
-<PageTitle>Cryptography</PageTitle>
+<PlaygroundTitle Page="cryptography" />
 
-<MudText Typo="Typo.h3" GutterBottom="true">
-    <MudIcon Size="Size.Large" Icon="@Icons.Material.Filled.Security" />
-    Cryptography
-</MudText>
-<MudText Class="mb-8">This page provides common Cryptography services.</MudText>
 <MudText Class="mb-8">
     Take note that System.Security.Cryptography APIs (with a few exceptions) may not be supported on Blazor WASM and will cause Runtime Error if attempted to call on WASM Client side (but not on Server):
     <br />

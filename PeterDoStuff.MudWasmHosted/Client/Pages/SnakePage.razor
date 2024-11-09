@@ -2,14 +2,7 @@
 @using PeterDoStuff.Games.Snake
 @inject IJSRuntime JS
 
-<MudText Typo="Typo.h3" GutterBottom="true">
-    <MudIcon Size="Size.Large" Icon="@Icons.Material.Filled.Earbuds" />
-    Snake
-</MudText>
-
-<MudText Class="mb-4">
-    <p>This page demonstrates the game Snake.</p>
-</MudText>
+<PlaygroundTitle Page="snake" />
 
 <MudButton OnClick="Replay" Class="mr-4 mb-4" Variant="Variant.Outlined" Color="Color.Primary">Replay</MudButton>
 @if (isPlaying)

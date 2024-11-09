@@ -4,14 +4,7 @@
 
 @inject IJSRuntime JS
 
-<PageTitle>QR Code</PageTitle>
-
-<MudText Typo="Typo.h3" GutterBottom="true">
-    <MudIcon Size="Size.Large" Icon="@Icons.Material.Filled.QrCode" />
-    QR Code
-</MudText>
-
-<MudText Class="mb-8">This page demonstrates the QR code generating and scanning tools.</MudText>
+<PlaygroundTitle Page="qrCode" />
 
 <MudText Typo="Typo.h4" GutterBottom="true">Generate QR Code</MudText>
 <MudTextField T="string" @bind-Value="input" Label="String Input" Variant="Variant.Outlined" AutoGrow Lines="1"></MudTextField>
