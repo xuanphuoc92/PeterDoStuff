@@ -1,0 +1,21 @@
+﻿@page "/svg"
+
+<PlaygroundTitle Page="svg"/>
+
+<SimpleRectangle @ref="simpleRectangle" />
+
+@code {
+    SimpleRectangle simpleRectangle;
+
+    private Timer Timer;
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Timer = new Timer(Tick, null, 0, 10);
+    }
+
+    private void Tick(object? _ = null)
+    {
+        InvokeAsync(simpleRectangle.Tick);
+    }
+}

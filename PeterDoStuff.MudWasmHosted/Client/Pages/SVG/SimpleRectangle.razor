@@ -1,7 +1,4 @@
-﻿@page "/svg"
-
-
-<PlaygroundTitle Page="svg"/>
+﻿<MudText Class="my-4">Simple Rectangle rotating and moving:</MudText>
 
 <svg width="@boxWidth" height="@boxHeight">
     <rect width="@boxWidth" height="@boxHeight"
@@ -29,14 +26,15 @@
 @code {
     private const int size = 50;
     private const int boxHeight = size * 2;
-    private const int boxWidth = boxHeight* 5;
+    private const int boxWidth = boxHeight * 5;
     private const int leftEdge = size / 2;
     private const int rightEdge = boxWidth - size - (size / 2);
 
     private int xPosition = size / 2;
     private int yPosition = size / 2;
     private bool leftToRight = true;
-    private void MoveRectangle()
+
+    public async Task Tick()
     {
         if (xPosition >= rightEdge && leftToRight)
         {
@@ -49,21 +47,9 @@
             leftToRight = !leftToRight;
         }
         xPosition += leftToRight ? 1 : -1;
+        await InvokeAsync(StateHasChanged);
     }
 
     private string strokeColor => @Colors.DeepPurple.Accent3;
     private string fillColor => @Colors.DeepPurple.Accent3;
-
-    private Timer Timer;
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-        Timer = new Timer(Tick, null, 0, 10);
-    }
-
-    private void Tick(object? _ = null)
-    {
-        MoveRectangle();
-        InvokeAsync(StateHasChanged);
-    }
 }
