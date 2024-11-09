@@ -1,0 +1,65 @@
+﻿@page "/svg"
+
+
+<PlaygroundTitle Page="svg"/>
+
+<svg width="@boxWidth" height="@boxHeight">
+    <rect
+        width="@size" height="@size"
+        x="@xPosition" y="@yPosition"
+        stroke="@strokeColor"
+        fill="@fillColor"
+        fill-opacity="0.2"
+        stroke-width="4">
+        <animateTransform
+            attributeName="transform"
+            begin="0s"
+            dur="1s"
+            type="rotate"
+            from="0 @(xPosition + (size / 2)) @(size)"
+            to="360 @(xPosition + (size / 2)) @(size)"
+            repeatCount="indefinite" />
+    </rect>
+</svg>
+
+@code {
+    private const int size = 50;
+    private const int boxHeight = size * 2;
+    private const int boxWidth = boxHeight* 5;
+    private const int leftEdge = size / 2;
+    private const int rightEdge = boxWidth - size - (size / 2);
+
+    private int xPosition = size / 2;
+    private int yPosition = size / 2;
+    private bool leftToRight = true;
+    private void MoveRectangle()
+    {
+        if (xPosition >= rightEdge && leftToRight)
+        {
+            xPosition = rightEdge;
+            leftToRight = !leftToRight;
+        }
+        else if (xPosition <= leftEdge && !leftToRight)
+        {
+            xPosition = leftEdge;
+            leftToRight = !leftToRight;
+        }
+        xPosition += leftToRight ? 1 : -1;
+    }
+
+    private string strokeColor => @Colors.DeepPurple.Accent3;
+    private string fillColor => @Colors.DeepPurple.Accent3;
+
+    private Timer Timer;
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Timer = new Timer(Tick, null, 0, 10);
+    }
+
+    private void Tick(object? _ = null)
+    {
+        MoveRectangle();
+        InvokeAsync(StateHasChanged);
+    }
+}
