@@ -9,7 +9,29 @@
     <p>This page demonstrates the Canvas implementations.</p>
 </MudText>
 
-<BallFieldDemo />
+<MudForm Class="mb-4">
+    <MudRadioGroup @bind-Value="DemoSelected">
+        <MudRadio Value="@Demo.None" Color="Color.Primary">None</MudRadio>
+        <MudRadio Value="@Demo.BallField" Color="Color.Primary">Ball Field</MudRadio>
+    </MudRadioGroup>
+</MudForm>
+
+@switch (DemoSelected)
+{
+    @case Demo.BallField:
+        <BallFieldDemo />
+        break;
+    default:
+        <MudText>No Demo</MudText>
+        break;
+}
 
 @code {
+    private enum Demo
+    {
+        None,
+        BallField
+    }
+
+    private Demo DemoSelected = Demo.None;
 }
