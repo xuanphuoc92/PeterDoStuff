@@ -8,7 +8,7 @@
         public override async Task Tick(TModel model, DateTime? now = null)
         {
             var timespan = UpdateTick(now);
-            var delta = (timespan.Ticks == 0 ? 1 : timespan.TotalSeconds) * Velocity;
+            var delta = (timespan == null ? 1 : timespan.Value.TotalSeconds) * Velocity;
 
             if (model.X >= Right && leftToRight)
             {

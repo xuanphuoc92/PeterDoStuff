@@ -10,15 +10,17 @@
         where TModel : Model
     {
         protected DateTime? LastTick { get; set; }
-        protected TimeSpan UpdateTick(DateTime? now)
+        protected TimeSpan? UpdateTick(DateTime? now)
         {
-            if (now == null) return TimeSpan.Zero;
+            if (now == null) return null;
             if (LastTick == null)
             {
                 LastTick = now;
                 return TimeSpan.Zero;
             }
-            return now.Value - LastTick.Value;
+            var timeSpan = now.Value - LastTick.Value;
+            LastTick = now;
+            return timeSpan;
         }
 
         public Task Tick(Model model, DateTime? now = null) => Tick((TModel)model, now);

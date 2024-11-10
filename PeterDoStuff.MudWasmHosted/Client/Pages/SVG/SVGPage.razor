@@ -20,10 +20,10 @@
         canvas.CanvasRect.StrokeWidth = 4;
 
         var circle = new Circle(25) { X = 25, Y = 50 };
-        circle.SetAnimation(new PingPongX<Circle>(25, 475));
+        circle.SetAnimation(new PingPongX<Circle>(25, 475, 250));
         canvas.AddModel(circle);
 
-        Timer = new Timer(Tick, null, 0, 1);
+        Timer = new Timer(Tick, null, 0, 10);
     }
 
     private void Tick(object? _ = null)
