@@ -1,7 +1,7 @@
 ﻿namespace PeterDoStuff.Tools.Animations
 {
-    public class Circle(int radius) : Model
+    public class Circle(double radius) : Model
     {
-        public int Radius { get; set; } = radius;
+        public double Radius { get; set; } = radius;
     }
 }

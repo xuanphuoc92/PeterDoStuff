@@ -22,12 +22,12 @@ namespace PeterDoStuff.Tools.Animations
         public static float DEFAULT_FILL_OPACITY = 0;
 
         public string StrokeColor { get; set; } = DEFAULT_STROKE_COLOR;
-        public int StrokeWidth { get; set; } = DEFAULT_STROKE_WIDTH;
-        public float StrokeOpacity { get; set; } = DEFAULT_STROKE_OPACITY;
+        public double StrokeWidth { get; set; } = DEFAULT_STROKE_WIDTH;
+        public double StrokeOpacity { get; set; } = DEFAULT_STROKE_OPACITY;
 
         public string FillColor { get; set; } = DEFAULT_FILL_COLOR;
-        public int FillWidth { get; set; } = DEFAULT_FILL_WIDTH;
-        public float FillOpacity { get; set; } = DEFAULT_FILL_OPACITY;
+        public double FillWidth { get; set; } = DEFAULT_FILL_WIDTH;
+        public double FillOpacity { get; set; } = DEFAULT_FILL_OPACITY;
     }
 
     public static class ModelExtensions

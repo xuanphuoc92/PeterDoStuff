@@ -1,13 +1,13 @@
 ﻿namespace PeterDoStuff.Tools.Animations
 {
-    public class Canvas(int width, int height)
+    public class Canvas(double width, double height)
     {
-        public int Width 
+        public double Width 
         {
             get => CanvasRect.Width;
             set => CanvasRect.Width = value;
         }
-        public int Height 
+        public double Height 
         {
             get => CanvasRect.Height;
             set => CanvasRect.Height = value;

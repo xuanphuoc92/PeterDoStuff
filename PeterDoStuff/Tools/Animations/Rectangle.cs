@@ -1,8 +1,8 @@
 ﻿namespace PeterDoStuff.Tools.Animations
 {
-    public class Rectangle(int width, int height) : Model
+    public class Rectangle(double width, double height) : Model
     {
-        public int Width { get; set; } = width;
-        public int Height { get; set; } = height;
+        public double Width { get; set; } = width;
+        public double Height { get; set; } = height;
     }
 }

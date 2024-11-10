@@ -3,10 +3,14 @@
 
 <PlaygroundTitle Page="svg"/>
 
-<CanvasSvg Canvas="canvas" Width="500" Height="100" />
+<CanvasSvg Canvas="simpleCircleCanvas" Width="600" Height="100" />
+
+<MudDivider Class="my-4"/>
+
+<CanvasSvg Canvas="bouncingBalls" Width="600" Height="400" />
 
 @code {
-    Canvas canvas;
+    Canvas simpleCircleCanvas, bouncingBalls;
 
     private Timer Timer;
     protected override void OnInitialized()
@@ -16,19 +20,59 @@
         Model.DEFAULT_STROKE_COLOR = Colors.DeepPurple.Accent3;
         Model.DEFAULT_STROKE_WIDTH = 4;
 
-        canvas = new(500, 100);
-        canvas.CanvasRect.StrokeWidth = 4;
-
-        var circle = new Circle(25) { X = 25, Y = 50 };
-        circle.SetAnimation(new PingPongX<Circle>(25, 475, 250));
-        canvas.AddModel(circle);
+        SetupSimpleCircle();
+        SetupBouncingBalls();
 
         Timer = new Timer(Tick, null, 0, 10);
     }
 
+    private void SetupSimpleCircle()
+    {
+        simpleCircleCanvas = new(600, 100);
+        simpleCircleCanvas.CanvasRect.StrokeWidth = 4;
+
+        var circle = new Circle(25) { X = 25, Y = 50 };
+        circle.SetAnimation(new PingPongX<Circle>(25, 575, 250));
+        simpleCircleCanvas.AddModel(circle);
+    }
+
+    private void SetupBouncingBalls()
+    {
+        double width = 600, height = 400;
+        double radius = 10;
+        double ballStroke = 4;
+        double minSpeed = 50;
+        double maxSpeed = 500;
+
+        double widthRange = width - (radius + ballStroke) * 2;
+        double heightRange = height - (radius + ballStroke) * 2;
+        double speedRange = maxSpeed - minSpeed;
+
+        double left = radius + ballStroke, top = radius + ballStroke;
+        double right = left + widthRange, bottom = top + heightRange;
+
+        bouncingBalls = new(width, height);
+        bouncingBalls.CanvasRect.StrokeWidth = 4;        
+        Random random = new Random();
+
+        for (int i = 0; i < 10; i++)
+        {
+            var ball = new Circle(radius);
+            ball.StrokeWidth = ballStroke;
+            ball.X = left + (random.NextDouble() * widthRange);
+            ball.Y = top + (random.NextDouble() * heightRange);
+            double velocityX = minSpeed + (random.NextDouble() * speedRange);
+            double velocityY = minSpeed + (random.NextDouble() * speedRange);
+            var animation = new BouncingInBox<Circle>(left, right, top, bottom, velocityX, velocityY);
+            ball.SetAnimation(animation);
+            bouncingBalls.AddModel(ball);
+        }
+    }
+
     private void Tick(object? _ = null)
     {
-        InvokeAsync(canvas.Tick);
+        InvokeAsync(simpleCircleCanvas.Tick);
+        InvokeAsync(bouncingBalls.Tick);
         InvokeAsync(StateHasChanged);
     }
 }
