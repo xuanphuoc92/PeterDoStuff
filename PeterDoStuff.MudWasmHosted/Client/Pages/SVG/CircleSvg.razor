@@ -1,0 +1,15 @@
+﻿@using PeterDoStuff.Tools.Animations
+
+<circle cx="@Model.X" cy="@Model.Y"
+        r="@Model.Radius"
+        fill-color="@Model.FillColor"
+        fill-opacity="@Model.FillOpacity"
+        fill-width="@Model.FillWidth"
+        stroke="@Model.StrokeColor"
+        stroke-opacity="@Model.StrokeOpacity"
+        stroke-width="@Model.StrokeWidth" />
+
+@code {
+    [Parameter]
+    public Circle Model { get; set; }
+}
