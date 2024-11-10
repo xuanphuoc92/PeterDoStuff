@@ -6,7 +6,7 @@
 <CanvasSvg Canvas="canvas" Width="500" Height="100" />
 
 @code {
-    Canvas canvas = new(500, 100);
+    Canvas canvas;
 
     private Timer Timer;
     protected override void OnInitialized()
@@ -16,8 +16,11 @@
         Model.DEFAULT_STROKE_COLOR = Colors.DeepPurple.Accent3;
         Model.DEFAULT_STROKE_WIDTH = 4;
 
-        var circle = new Circle(25) { X = 50, Y = 50 };
-        circle.SetAnimation(new PingPongX<Circle>(50, 450));
+        canvas = new(500, 100);
+        canvas.CanvasRect.StrokeWidth = 4;
+
+        var circle = new Circle(25) { X = 25, Y = 50 };
+        circle.SetAnimation(new PingPongX<Circle>(25, 475));
         canvas.AddModel(circle);
 
         Timer = new Timer(Tick, null, 0, 10);
