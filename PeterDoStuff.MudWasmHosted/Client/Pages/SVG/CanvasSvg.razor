@@ -1,0 +1,53 @@
+﻿@using PeterDoStuff.Tools.Animations
+<svg width="@Width" height="@Height">
+    @for (int i = 0; i < Canvas.Models.Count(); i++)
+    {
+        var model = Canvas.Models[i];
+        if (model is Rectangle rectangle)
+        {
+            <rect width="@rectangle.Width" height="@rectangle.Height"
+                  fill-color="@rectangle.FillColor"
+                  fill-opacity="@rectangle.FillOpacity"
+                  fill-width="@rectangle.FillWidth"
+                  stroke="@rectangle.StrokeColor"
+                  stroke-opacity="@rectangle.StrokeOpacity"
+                  stroke-width="@rectangle.StrokeWidth" />
+        }
+        if (model is Circle circle)
+        {
+            <circle cx="@circle.X" cy="@circle.Y"
+                    r="@circle.Radius"
+                    fill-color="@circle.FillColor"
+                    fill-opacity="@circle.FillOpacity"
+                    fill-width="@circle.FillWidth"
+                    stroke="@circle.StrokeColor"
+                    stroke-opacity="@circle.StrokeOpacity"
+                    stroke-width="@circle.StrokeWidth" />
+        }
+    }
+</svg>
+
+@code {
+    [Parameter]
+    public int Width
+    {
+        get => Canvas.Width;
+        set => Canvas.Width = value;
+    }
+
+    [Parameter]
+    public int Height
+    {
+        get => Canvas.Height;
+        set => Canvas.Height = value;
+    }
+
+    [Parameter]
+    public Canvas Canvas { get; set; }
+
+    public async Task Tick()
+    {
+        await Canvas.Tick();
+        await InvokeAsync(StateHasChanged);
+    }
+}
