@@ -2,16 +2,26 @@
 {
     public interface Animation
     {
-        Task Tick(Model model);
+        Task Tick(Model model, DateTime? now = null);
     }
     
 
     public abstract class Animation<TModel> : Animation
         where TModel : Model
     {
-        public DateTime? LastTick { get; protected set; }
+        protected DateTime? LastTick { get; set; }
+        protected TimeSpan UpdateTick(DateTime? now)
+        {
+            if (now == null) return TimeSpan.Zero;
+            if (LastTick == null)
+            {
+                LastTick = now;
+                return TimeSpan.Zero;
+            }
+            return now.Value - LastTick.Value;
+        }
 
-        public Task Tick(Model model) => Tick((TModel)model);
+        public Task Tick(Model model, DateTime? now = null) => Tick((TModel)model, now);
 
         public abstract Task Tick(TModel model, DateTime? now = null);
     }

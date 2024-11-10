@@ -2,6 +2,6 @@
 {
     public class DoNothing : Animation
     {
-        public Task Tick(Model model) => Task.CompletedTask;
+        public Task Tick(Model model, DateTime? now = null) => Task.CompletedTask;
     }
 }

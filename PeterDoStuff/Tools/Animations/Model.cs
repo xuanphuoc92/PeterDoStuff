@@ -4,11 +4,11 @@ namespace PeterDoStuff.Tools.Animations
 {
     public abstract class Model
     {
-        public int X { get; set; }
-        public int Y { get; set; }
-        public int Z { get; set; }
+        public double X { get; set; }
+        public double Y { get; set; }
+        public double Z { get; set; }
 
-        public Task Tick() => Animation.Tick(this);
+        public Task Tick(DateTime? now = null) => Animation.Tick(this, now);
 
         [JsonIgnore]
         public Animation Animation { get; internal set; } = new DoNothing();

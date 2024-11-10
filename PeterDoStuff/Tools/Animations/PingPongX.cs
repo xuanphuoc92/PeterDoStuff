@@ -1,12 +1,15 @@
 ﻿namespace PeterDoStuff.Tools.Animations
 {
-    public class PingPongX<TModel>(int Left, int Right, int Velocity = 1) : Animation<TModel>
+    public class PingPongX<TModel>(int Left, int Right, double Velocity = 1) : Animation<TModel>
         where TModel : Model
     {
         private bool leftToRight;
 
         public override async Task Tick(TModel model, DateTime? now = null)
         {
+            var timespan = UpdateTick(now);
+            var delta = (timespan.Ticks == 0 ? 1 : timespan.TotalSeconds) * Velocity;
+
             if (model.X >= Right && leftToRight)
             {
                 model.X = Right;
@@ -17,7 +20,8 @@
                 model.X = Left;
                 leftToRight = !leftToRight;
             }
-            model.X += (leftToRight ? 1 : -1) * Velocity;
+
+            model.X += (leftToRight ? 1 : -1) * delta;
         }
     }
 }
