@@ -3,11 +3,18 @@
 
 <PlaygroundTitle Page="svg"/>
 
-<CanvasSvg Canvas="simpleCircleCanvas" Width="600" Height="100" />
+<CanvasSvg Canvas="simpleCircleCanvas" />
 
 <MudDivider Class="my-4"/>
 
-<CanvasSvg Canvas="bouncingBalls" Width="600" Height="400" />
+<MudText Class="mb-4">
+    Reference: 
+    <MudLink Href="https://swharden.com/blog/2021-01-07-blazor-canvas-animated-graphics/">
+        Draw Animated Graphics in the Browser with Blazor WebAssembly
+    </MudLink>
+</MudText>
+
+<CanvasSvg Canvas="bouncingBalls" />
 
 @code {
     Canvas simpleCircleCanvas, bouncingBalls;
@@ -28,17 +35,17 @@
 
     private void SetupSimpleCircle()
     {
-        simpleCircleCanvas = new(600, 100);
+        simpleCircleCanvas = new(300, 100);
         simpleCircleCanvas.CanvasRect.StrokeWidth = 4;
 
         var circle = new Circle(25) { X = 25, Y = 50 };
-        circle.SetAnimation(new PingPongX<Circle>(25, 575, 250));
+        circle.SetAnimation(new PingPongX<Circle>(25, 275, 250));
         simpleCircleCanvas.AddModel(circle);
     }
 
     private void SetupBouncingBalls()
     {
-        double width = 600, height = 400;
+        double width = 300, height = 400;
         double radius = 10;
         double ballStroke = 4;
         double minSpeed = 50;
