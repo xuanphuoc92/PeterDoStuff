@@ -88,13 +88,14 @@ namespace PeterDoStuff.Test.Tools
             await canvas.Tick();
             circle.X.Should().Be(51);
             await canvas.Tick();
-            circle.X.Should().Be(52);
+            circle.X.Should().BeGreaterThan(51);
 
             circle.X = 450;
             await canvas.Tick();
-            circle.X.Should().Be(449);
+            var prevX = circle.X;
+            prevX.Should().BeLessThan(450);
             await canvas.Tick();
-            circle.X.Should().Be(448);
+            circle.X.Should().BeLessThan(prevX);
         }
     }
 }

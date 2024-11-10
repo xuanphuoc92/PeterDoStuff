@@ -25,8 +25,9 @@
 
         public async Task<Canvas> Tick()
         {
+            DateTime now = DateTime.Now;
             foreach (var model in Models)
-                await model.Tick();
+                await model.Tick(now);
             return this;
         }
     }
