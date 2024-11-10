@@ -9,18 +9,30 @@
     public abstract class Animation<TModel> : Animation
         where TModel : Model
     {
+        public DateTime? LastTick { get; protected set; }
+
         public Task Tick(Model model) => Tick((TModel)model);
 
-        // Default: Do nothing.
-        public abstract Task Tick(TModel model);
+        public abstract Task Tick(TModel model, DateTime? now = null);
     }
 
-    public class CustomAnimation<TModel>(Action<TModel> animation) : Animation<TModel>
+    public class CustomAnimation<TModel> : Animation<TModel>
         where TModel : Model
     {
-        public override async Task Tick(TModel model)
+        private Action<TModel, DateTime?> _animation;
+
+        internal CustomAnimation(Action<TModel> animation) : this((t,m) => animation(t))
         {
-            animation(model);
+        }
+
+        internal CustomAnimation(Action<TModel, DateTime?> animation)
+        {
+            _animation = animation;
+        }
+
+        public override async Task Tick(TModel model, DateTime? now = null)
+        {
+            _animation(model, now);
         }
     }
 }

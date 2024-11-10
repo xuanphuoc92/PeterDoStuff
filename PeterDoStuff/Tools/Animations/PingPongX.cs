@@ -5,7 +5,7 @@
     {
         private bool leftToRight;
 
-        public override async Task Tick(TModel model)
+        public override async Task Tick(TModel model, DateTime? now = null)
         {
             if (model.X >= Right && leftToRight)
             {
