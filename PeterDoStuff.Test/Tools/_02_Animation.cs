@@ -32,5 +32,22 @@ namespace PeterDoStuff.Test.Tools
             rect.Height.Should().Be(400);
             rect.ToJson(beautify: true).WriteToConsole();
         }
+
+        [TestMethod]
+        public async Task _03_Tick()
+        {
+            var rect = new Rectangle(600, 400);
+            await rect.Tick();
+            rect.X.Should().Be(0);
+            rect.Y.Should().Be(0);
+
+            Action<Model> moveRight = (model) => model.X++;
+            rect.SetAnimation(moveRight);
+            await rect.Tick();
+            rect.X.Should().Be(1);
+            rect.SetAnimation(r => r.X--); // Move left
+            await rect.Tick();
+            rect.X.Should().Be(0);
+        }
     }
 }

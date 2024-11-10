@@ -1,10 +1,18 @@
-﻿namespace PeterDoStuff.Tools.Animation
+﻿using System.Text.Json.Serialization;
+
+namespace PeterDoStuff.Tools.Animation
 {
     public abstract class Model
     {
         public int X { get; set; }
         public int Y { get; set; }
         public int Z { get; set; }
+
+        public async Task Tick() => Animation(this);
+
+        [JsonIgnore]
+        public Action<Model> Animation { get; internal set; } 
+            = _ => { }; // Default, do nothing
 
         public static string DEFAULT_STROKE_COLOR = "#808080";
         public static int DEFAULT_STROKE_WIDTH = 1;
@@ -21,5 +29,15 @@
         public string FillColor { get; set; } = DEFAULT_FILL_COLOR;
         public int FillWidth { get; set; } = DEFAULT_FILL_WIDTH;
         public float FillOpacity { get; set; } = DEFAULT_FILL_OPACITY;
+    }
+
+    public static class ModelExtensions
+    {
+        public static TModel SetAnimation<TModel>(this TModel model, Action<TModel> animation)
+            where TModel : Model
+        {            
+            model.Animation = (baseModel => animation((TModel)baseModel));
+            return model;
+        }
     }
 }
