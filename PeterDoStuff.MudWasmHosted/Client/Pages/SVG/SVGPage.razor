@@ -2,10 +2,10 @@
 
 <PlaygroundTitle Page="svg"/>
 
-<SimpleRectangle @ref="simpleRectangle" />
+<SimpleCircle @ref="simpleCircle" />
 
 @code {
-    SimpleRectangle simpleRectangle;
+    SimpleCircle simpleCircle;
 
     private Timer Timer;
     protected override void OnInitialized()
@@ -16,6 +16,6 @@
 
     private void Tick(object? _ = null)
     {
-        InvokeAsync(simpleRectangle.Tick);
+        InvokeAsync(simpleCircle.Tick);
     }
 }

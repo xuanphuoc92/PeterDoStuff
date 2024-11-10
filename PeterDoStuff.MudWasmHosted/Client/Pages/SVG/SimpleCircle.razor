@@ -4,34 +4,26 @@
     <rect width="@boxWidth" height="@boxHeight"
         fill-opacity="0"
         stroke="@strokeColor"
-        stroke-width="4" />
-    <rect
-        width="@size" height="@size"
-        x="@xPosition" y="@yPosition"
+        stroke-width="1" />
+    <circle
+        cx="@xPosition" cy="@yPosition"
+        r="@radius"
         fill="@fillColor"
         fill-opacity="0.2"
         stroke="@strokeColor"
-        stroke-width="4">
-        <animateTransform
-            attributeName="transform"
-            begin="0s"
-            dur="1s"
-            type="rotate"
-            from="0 @(xPosition + (size / 2)) @(size)"
-            to="360 @(xPosition + (size / 2)) @(size)"
-            repeatCount="indefinite" />
-    </rect>
+        stroke-width="4" />
 </svg>
 
 @code {
     private const int size = 50;
+    private const int radius = size / 2;
     private const int boxHeight = size * 2;
     private const int boxWidth = boxHeight * 5;
-    private const int leftEdge = size / 2;
-    private const int rightEdge = boxWidth - size - (size / 2);
+    private const int leftEdge = size;
+    private const int rightEdge = boxWidth - size;
 
-    private int xPosition = size / 2;
-    private int yPosition = size / 2;
+    private int xPosition = size;
+    private int yPosition = size;
     private bool leftToRight = true;
 
     public async Task Tick()
