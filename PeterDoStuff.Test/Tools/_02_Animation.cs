@@ -86,9 +86,9 @@ namespace PeterDoStuff.Test.Tools
 
             circle.X.Should().Be(50);
             await canvas.Tick();
-            circle.X.Should().Be(51);
+            circle.X.Should().Be(50);
             await canvas.Tick();
-            circle.X.Should().BeGreaterThan(51);
+            circle.X.Should().BeGreaterThan(50);
 
             circle.X = 450;
             await canvas.Tick();
@@ -96,6 +96,25 @@ namespace PeterDoStuff.Test.Tools
             prevX.Should().BeLessThan(450);
             await canvas.Tick();
             circle.X.Should().BeLessThan(prevX);
+        }
+
+        [TestMethod]
+        public async Task _06_BouncingInBox()
+        {
+            var circle = new Circle(50);
+            circle.SetAnimation(new BouncingInBox<Circle>(0, 100, 0, 100, 1, 1));
+
+            circle.X = -5;
+            circle.Y = -5;
+            await circle.Tick();
+            circle.X.Should().Be(0);
+            circle.Y.Should().Be(0);
+
+            circle.X = 105;
+            circle.Y = 105;
+            await circle.Tick(DateTime.Now);
+            circle.X.Should().Be(100);
+            circle.Y.Should().Be(100);
         }
     }
 }
