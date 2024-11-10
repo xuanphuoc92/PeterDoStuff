@@ -17,7 +17,7 @@
                 model.X = Left;
                 leftToRight = !leftToRight;
             }
-            model.X += leftToRight ? 1 : -1;
+            model.X += (leftToRight ? 1 : -1) * Velocity;
         }
     }
 }
