@@ -3,12 +3,9 @@
 
 <PlaygroundTitle Page="svg"/>
 
-<SimpleCircle @ref="simpleCircle" />
-
 <CanvasSvg Canvas="canvas" Width="500" Height="100" />
 
 @code {
-    SimpleCircle simpleCircle;
     Canvas canvas = new(500, 100);
 
     private Timer Timer;
@@ -28,7 +25,6 @@
 
     private void Tick(object? _ = null)
     {
-        InvokeAsync(simpleCircle.Tick);
         InvokeAsync(canvas.Tick);
         InvokeAsync(StateHasChanged);
     }
