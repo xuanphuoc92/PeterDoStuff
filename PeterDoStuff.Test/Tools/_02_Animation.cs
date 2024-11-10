@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using PeterDoStuff.Extensions;
 using PeterDoStuff.Test.Extensions;
-using PeterDoStuff.Tools.Animation;
+using PeterDoStuff.Tools.Animations;
 
 namespace PeterDoStuff.Test.Tools
 {
@@ -67,6 +67,28 @@ namespace PeterDoStuff.Test.Tools
             circle.X.Should().Be(99);
             await circle.Tick();
             circle.X.Should().Be(98);
+        }
+
+        [TestMethod]
+        public async Task _05_Canvas()
+        {
+            var canvas = new Canvas(500, 100);
+
+            var circle = new Circle(50) { X = 50, Y = 50 };
+            circle.SetAnimation(new PingPongX<Circle>(50, 450));
+            canvas.AddModel(circle);
+
+            circle.X.Should().Be(50);
+            await canvas.Tick();
+            circle.X.Should().Be(51);
+            await canvas.Tick();
+            circle.X.Should().Be(52);
+
+            circle.X = 450;
+            await canvas.Tick();
+            circle.X.Should().Be(449);
+            await canvas.Tick();
+            circle.X.Should().Be(448);
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace PeterDoStuff.Tools.Animation
+namespace PeterDoStuff.Tools.Animations
 {
     public abstract class Model
     {
@@ -10,6 +10,7 @@ namespace PeterDoStuff.Tools.Animation
 
         public Task Tick() => Animation.Tick(this);
 
+        [JsonIgnore]
         public Animation Animation { get; internal set; } = new DoNothing();
 
         public static string DEFAULT_STROKE_COLOR = "#808080";

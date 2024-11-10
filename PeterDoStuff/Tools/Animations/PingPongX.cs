@@ -1,4 +1,4 @@
-﻿namespace PeterDoStuff.Tools.Animation
+﻿namespace PeterDoStuff.Tools.Animations
 {
     public class PingPongX<TModel>(int Left, int Right, int Velocity = 1) : Animation<TModel>
         where TModel : Model
