@@ -20,8 +20,12 @@
 
 <CanvasSvg Canvas="heartBeatCircle" />
 
+<MudDivider Class="my-4" />
+
+<CanvasSvg Canvas="growingBalls" />
+
 @code {
-    Canvas simpleCircleCanvas, bouncingBalls, heartBeatCircle;
+    Canvas simpleCircleCanvas, bouncingBalls, heartBeatCircle, growingBalls;
 
     private Timer Timer;
     protected override void OnInitialized()
@@ -34,6 +38,7 @@
         SetupSimpleCircle();
         SetupBouncingBalls();
         SetupHeartBeatCircle();
+        SetupGrowingBalls();
 
         Timer = new Timer(Tick, null, 0, 10);
     }
@@ -88,11 +93,46 @@
         heartBeatCircle.AddModel(circle);
     }
 
+    private void SetupGrowingBalls()
+    {
+        growingBalls = new(300, 300);
+        growingBalls.CanvasRect.StrokeWidth = 4;
+
+        double minSpeed = 50;
+        double maxSpeed = 500;
+
+        double speedRange = maxSpeed - minSpeed;
+
+        Random random = new Random();
+
+        for (int i = 0; i < 3; i++)
+        {
+            var ball = new Circle(10);
+            ball.StrokeWidth = 10;
+            ball.X = (random.NextDouble() * 300);
+            ball.Y = (random.NextDouble() * 300);
+            double velocityX = minSpeed + (random.NextDouble() * speedRange);
+            double velocityY = minSpeed + (random.NextDouble() * speedRange);
+
+            var growingAnimation = new HeartBeat(1, 3);
+            growingAnimation.BeatPeriod = TimeSpan.FromSeconds(5);
+            growingAnimation.GrowPhase = 0.5;
+
+            var bouncingAnimation = new BouncingBall(0, 300, 0, 300, velocityX, velocityY);
+
+            ball.AddAnimation(growingAnimation);
+            ball.AddAnimation(bouncingAnimation);
+
+            growingBalls.AddModel(ball);
+        }
+    }
+
     private void Tick(object? _ = null)
     {
         InvokeAsync(simpleCircleCanvas.Tick);
         InvokeAsync(bouncingBalls.Tick);
         InvokeAsync(heartBeatCircle.Tick);
+        InvokeAsync(growingBalls.Tick);
         InvokeAsync(StateHasChanged);
     }
 }

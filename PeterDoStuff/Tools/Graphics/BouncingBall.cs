@@ -15,7 +15,7 @@
         public override Task Tick(Model model, TimeSpan? timeSpan = null)
         {
             var circle = (Circle)model;
-            double ballRadius = circle.Radius + circle.ScaledStrokeWidth;
+            double ballRadius = circle.Radius + (circle.ScaledStrokeWidth / 2);
             _bouncingInBox.Left = Left + ballRadius;
             _bouncingInBox.Right = Right - ballRadius;
             _bouncingInBox.Top = Top + ballRadius;

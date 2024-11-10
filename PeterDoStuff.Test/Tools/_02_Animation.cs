@@ -123,14 +123,14 @@ namespace PeterDoStuff.Test.Tools
             circle.X = 5;
             circle.Y = 5;
             await circle.Tick();
-            circle.X.Should().Be(51);
-            circle.Y.Should().Be(51);
+            circle.X.Should().Be(50.5);
+            circle.Y.Should().Be(50.5);
 
             circle.X = 495;
             circle.Y = 495;
             await circle.Tick(DateTime.Now);
-            circle.X.Should().Be(449);
-            circle.Y.Should().Be(449);
+            circle.X.Should().Be(449.5);
+            circle.Y.Should().Be(449.5);
         }
 
         [TestMethod]
