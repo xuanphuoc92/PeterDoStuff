@@ -42,10 +42,11 @@ namespace PeterDoStuff.Test.Tools
             rect.Y.Should().Be(0);
 
             Action<Model> moveRight = (model) => model.X++;
-            rect.SetAnimation(moveRight);
+            rect.AddAnimation(moveRight);
             await rect.Tick();
             rect.X.Should().Be(1);
-            rect.SetAnimation(r => r.X--); // Move left
+            rect.ClearAnimations();
+            rect.AddAnimation(r => r.X--); // Move left
             await rect.Tick();
             rect.X.Should().Be(0);
         }
@@ -77,7 +78,7 @@ namespace PeterDoStuff.Test.Tools
             canvas.Height.Should().Be(100);
 
             var circle = new Circle(50) { X = 50, Y = 50 };
-            circle.SetAnimation(new BouncingInBox(50, 450, 50, 50, 1, 0));
+            circle.AddAnimation(new BouncingInBox(50, 450, 50, 50, 1, 0));
             canvas.AddModel(circle);
 
             circle.X.Should().Be(50);
@@ -98,7 +99,7 @@ namespace PeterDoStuff.Test.Tools
         public async Task _06_BouncingInBox()
         {
             var circle = new Circle(50);
-            circle.SetAnimation(new BouncingInBox(0, 100, 0, 100, 1, 1));
+            circle.AddAnimation(new BouncingInBox(0, 100, 0, 100, 1, 1));
 
             circle.X = -5;
             circle.Y = -5;
@@ -117,7 +118,7 @@ namespace PeterDoStuff.Test.Tools
         public async Task _07_BouncingBall()
         {
             var circle = new Circle(50);
-            circle.SetAnimation(new BouncingBall(0, 500, 0, 500, 1, 1));
+            circle.AddAnimation(new BouncingBall(0, 500, 0, 500, 1, 1));
 
             circle.X = 5;
             circle.Y = 5;
@@ -136,7 +137,7 @@ namespace PeterDoStuff.Test.Tools
         public async Task _08_HeartBeat()
         {
             var circle = new Circle(50);
-            circle.SetAnimation(new HeartBeat(1, 1.2));
+            circle.AddAnimation(new HeartBeat(1, 1.2));
 
             circle.Scale.Should().Be(1);
             await circle.Tick(DateTime.Now);

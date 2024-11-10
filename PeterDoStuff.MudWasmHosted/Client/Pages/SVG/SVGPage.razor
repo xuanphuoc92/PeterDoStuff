@@ -44,7 +44,7 @@
         simpleCircleCanvas.CanvasRect.StrokeWidth = 4;
 
         var circle = new Circle(25) { X = 25, Y = 50 };
-        circle.SetAnimation(new BouncingBall(0, 300, 0, 100, 250, 0));
+        circle.AddAnimation(new BouncingBall(0, 300, 0, 100, 250, 0));
         simpleCircleCanvas.AddModel(circle);
     }
 
@@ -71,7 +71,7 @@
             double velocityX = minSpeed + (random.NextDouble() * speedRange);
             double velocityY = minSpeed + (random.NextDouble() * speedRange);
             var animation = new BouncingBall(0, width, 0, height, velocityX, velocityY);
-            ball.SetAnimation(animation);
+            ball.AddAnimation(animation);
             bouncingBalls.AddModel(ball);
         }
     }
@@ -83,7 +83,7 @@
 
         var circle = new Circle(50) { X = 150, Y = 150 };
         circle.StrokeWidth = 10;
-        circle.SetAnimation(new HeartBeat(1, 1.2));
+        circle.AddAnimation(new HeartBeat(1, 1.2));
 
         heartBeatCircle.AddModel(circle);
     }
