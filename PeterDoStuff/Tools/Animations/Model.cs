@@ -8,11 +8,9 @@ namespace PeterDoStuff.Tools.Animation
         public int Y { get; set; }
         public int Z { get; set; }
 
-        public async Task Tick() => Animation(this);
+        public Task Tick() => Animation.Tick(this);
 
-        [JsonIgnore]
-        public Action<Model> Animation { get; internal set; } 
-            = _ => { }; // Default, do nothing
+        public Animation Animation { get; internal set; } = new DoNothing();
 
         public static string DEFAULT_STROKE_COLOR = "#808080";
         public static int DEFAULT_STROKE_WIDTH = 1;
@@ -35,8 +33,15 @@ namespace PeterDoStuff.Tools.Animation
     {
         public static TModel SetAnimation<TModel>(this TModel model, Action<TModel> animation)
             where TModel : Model
-        {            
-            model.Animation = (baseModel => animation((TModel)baseModel));
+        {
+            model.Animation = new CustomAnimation<TModel>(animation);
+            return model;
+        }
+
+        public static TModel SetAnimation<TModel>(this TModel model, Animation animation)
+            where TModel : Model
+        {
+            model.Animation = animation;
             return model;
         }
     }

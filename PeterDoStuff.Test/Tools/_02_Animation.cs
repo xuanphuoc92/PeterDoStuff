@@ -49,5 +49,24 @@ namespace PeterDoStuff.Test.Tools
             await rect.Tick();
             rect.X.Should().Be(0);
         }
+
+        [TestMethod]
+        public async Task _04_PingPongX()
+        {
+            var circle = new Circle(50);            
+            circle.SetAnimation(new PingPongX<Circle>(50, 100));
+            
+            circle.X.Should().Be(0);
+            await circle.Tick();
+            circle.X.Should().Be(51);
+            await circle.Tick();
+            circle.X.Should().Be(52);
+
+            circle.X = 100;
+            await circle.Tick();
+            circle.X.Should().Be(99);
+            await circle.Tick();
+            circle.X.Should().Be(98);
+        }
     }
 }
