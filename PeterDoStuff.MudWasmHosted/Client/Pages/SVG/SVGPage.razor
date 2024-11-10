@@ -16,8 +16,12 @@
 
 <CanvasSvg Canvas="bouncingBalls" />
 
+<MudDivider Class="my-4" />
+
+<CanvasSvg Canvas="heartBeatCircle" />
+
 @code {
-    Canvas simpleCircleCanvas, bouncingBalls;
+    Canvas simpleCircleCanvas, bouncingBalls, heartBeatCircle;
 
     private Timer Timer;
     protected override void OnInitialized()
@@ -29,6 +33,7 @@
 
         SetupSimpleCircle();
         SetupBouncingBalls();
+        SetupHeartBeatCircle();
 
         Timer = new Timer(Tick, null, 0, 10);
     }
@@ -45,7 +50,7 @@
 
     private void SetupBouncingBalls()
     {
-        double width = 300, height = 400;
+        double width = 300, height = 300;
         double radius = 10;
         double ballStroke = 10;
         double minSpeed = 50;
@@ -71,10 +76,23 @@
         }
     }
 
+    private void SetupHeartBeatCircle()
+    {
+        heartBeatCircle = new(300, 300);
+        heartBeatCircle.CanvasRect.StrokeWidth = 4;
+
+        var circle = new Circle(50) { X = 150, Y = 150 };
+        circle.StrokeWidth = 10;
+        circle.SetAnimation(new HeartBeat(1, 1.2));
+
+        heartBeatCircle.AddModel(circle);
+    }
+
     private void Tick(object? _ = null)
     {
         InvokeAsync(simpleCircleCanvas.Tick);
         InvokeAsync(bouncingBalls.Tick);
+        InvokeAsync(heartBeatCircle.Tick);
         InvokeAsync(StateHasChanged);
     }
 }
