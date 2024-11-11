@@ -35,7 +35,7 @@ namespace PeterDoStuff.Tools.Graphics
         public static TModel SetAnimation<TModel>(this TModel model, Action<TModel> animation)
             where TModel : Model
         {
-            model.Animation = new CustomAnimation<TModel>(animation);
+            model.Animation = new CustomAnimation(m => animation((TModel)m));
             return model;
         }
 

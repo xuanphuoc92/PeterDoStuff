@@ -6,7 +6,7 @@ using PeterDoStuff.Tools.Graphics;
 namespace PeterDoStuff.Test.Tools
 {
     [TestClass]
-    public class _02_Animation
+    public class _02_Graphics
     {
         [TestMethod]
         public void _01_Circle()
@@ -54,7 +54,7 @@ namespace PeterDoStuff.Test.Tools
         public async Task _04_PingPongX()
         {
             var circle = new Circle(50);            
-            circle.SetAnimation(new PingPongX<Circle>(50, 100));
+            circle.SetAnimation(new PingPongX(50, 100));
             
             circle.X.Should().Be(0);
             await circle.Tick();
@@ -81,7 +81,7 @@ namespace PeterDoStuff.Test.Tools
             canvas.Height.Should().Be(200);
 
             var circle = new Circle(50) { X = 50, Y = 50 };
-            circle.SetAnimation(new PingPongX<Circle>(50, 450));
+            circle.SetAnimation(new PingPongX(50, 450));
             canvas.AddModel(circle);
 
             circle.X.Should().Be(50);
@@ -102,7 +102,7 @@ namespace PeterDoStuff.Test.Tools
         public async Task _06_BouncingInBox()
         {
             var circle = new Circle(50);
-            circle.SetAnimation(new BouncingInBox<Circle>(0, 100, 0, 100, 1, 1));
+            circle.SetAnimation(new BouncingInBox(0, 100, 0, 100, 1, 1));
 
             circle.X = -5;
             circle.Y = -5;

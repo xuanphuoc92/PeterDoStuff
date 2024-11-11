@@ -39,7 +39,7 @@
         simpleCircleCanvas.CanvasRect.StrokeWidth = 4;
 
         var circle = new Circle(25) { X = 25, Y = 50 };
-        circle.SetAnimation(new PingPongX<Circle>(25, 275, 250));
+        circle.SetAnimation(new PingPongX(25, 275, 250));
         simpleCircleCanvas.AddModel(circle);
     }
 
@@ -70,7 +70,7 @@
             ball.Y = top + (random.NextDouble() * heightRange);
             double velocityX = minSpeed + (random.NextDouble() * speedRange);
             double velocityY = minSpeed + (random.NextDouble() * speedRange);
-            var animation = new BouncingInBox<Circle>(left, right, top, bottom, velocityX, velocityY);
+            var animation = new BouncingInBox(left, right, top, bottom, velocityX, velocityY);
             ball.SetAnimation(animation);
             bouncingBalls.AddModel(ball);
         }

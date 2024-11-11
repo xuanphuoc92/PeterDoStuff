@@ -1,13 +1,6 @@
 ﻿namespace PeterDoStuff.Tools.Graphics
 {
-    public interface Animation
-    {
-        Task Tick(Model model, DateTime? now = null);
-    }
-    
-
-    public abstract class Animation<TModel> : Animation
-        where TModel : Model
+    public abstract class Animation
     {
         protected DateTime? LastTick { get; set; }
         protected TimeSpan? UpdateTick(DateTime? now)
@@ -23,26 +16,23 @@
             return timeSpan;
         }
 
-        public Task Tick(Model model, DateTime? now = null) => Tick((TModel)model, now);
-
-        public abstract Task Tick(TModel model, DateTime? now = null);
+        public abstract Task Tick(Model model, DateTime? now = null);
     }
 
-    public class CustomAnimation<TModel> : Animation<TModel>
-        where TModel : Model
+    public class CustomAnimation : Animation
     {
-        private Action<TModel, DateTime?> _animation;
+        private Action<Model, DateTime?> _animation;
 
-        internal CustomAnimation(Action<TModel> animation) : this((t,m) => animation(t))
+        internal CustomAnimation(Action<Model> animation) : this((t,m) => animation(t))
         {
         }
 
-        internal CustomAnimation(Action<TModel, DateTime?> animation)
+        internal CustomAnimation(Action<Model, DateTime?> animation)
         {
             _animation = animation;
         }
 
-        public override async Task Tick(TModel model, DateTime? now = null)
+        public override async Task Tick(Model model, DateTime? now = null)
         {
             _animation(model, now);
         }
