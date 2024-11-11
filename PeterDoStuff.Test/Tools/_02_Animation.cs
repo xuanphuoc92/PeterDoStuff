@@ -131,5 +131,25 @@ namespace PeterDoStuff.Test.Tools
             circle.X.Should().Be(449);
             circle.Y.Should().Be(449);
         }
+
+        [TestMethod]
+        public async Task _08_HeartBeat()
+        {
+            var circle = new Circle(50);
+            circle.SetAnimation(new HeartBeat(1, 1.2));
+
+            circle.Scale.Should().Be(1);
+            await circle.Tick(DateTime.Now);
+            circle.Scale.Should().Be(1);
+            await circle.Tick(DateTime.Now);
+            circle.Scale.Should().BeGreaterThan(1);
+            await Task.Delay(210);
+            await circle.Tick(DateTime.Now);
+            circle.Scale.Should().BeGreaterThan(1);
+            circle.Scale.Should().BeLessThan(1.2);
+            await Task.Delay(810);
+            await circle.Tick(DateTime.Now);
+            circle.Scale.Should().Be(1);
+        }
     }
 }

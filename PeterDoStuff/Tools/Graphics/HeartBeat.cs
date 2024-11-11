@@ -1,0 +1,28 @@
+﻿namespace PeterDoStuff.Tools.Graphics
+{
+    public class HeartBeat : Animation
+    {
+        public double MinScale, MaxScale;
+        public TimeSpan BeatPeriod = TimeSpan.FromSeconds(1);
+        public double GrowPhase = 0.2;
+        public double Phase = 0;
+
+        public HeartBeat(double minScale, double maxScale)
+        {
+            (MinScale, MaxScale) = (minScale, maxScale);
+        }
+
+        public override async Task Tick(Model model, TimeSpan? timeSpan = null)
+        {
+            double deltaPhase = timeSpan.Value.TotalNanoseconds / BeatPeriod.TotalNanoseconds;
+            Phase += deltaPhase;
+
+            if (Phase > 1)
+                Phase = 0;
+
+            model.Scale = Phase < GrowPhase
+                ? (MinScale + Phase / GrowPhase * (MaxScale - MinScale))
+                : (MaxScale - (Phase - GrowPhase) / (1 - GrowPhase) * (MaxScale - MinScale));
+        }
+    }
+}
