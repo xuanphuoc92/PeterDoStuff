@@ -8,11 +8,9 @@ namespace PeterDoStuff.Tools.Graphics
 
         public double Left, Right, Top, Bottom, VelocityX, VelocityY;
 
-        public override async Task Tick(Model model, DateTime? now = null)
+        public override async Task Tick(Model model, TimeSpan? timeSpan = null)
         {
-            var timespan = UpdateTick(now);
-
-            double time = (timespan == null ? 1 : timespan.Value.TotalSeconds);
+            double time = (timeSpan == null ? 1 : timeSpan.Value.TotalSeconds);
 
             var deltaX = time * VelocityX;
             var deltaY = time * VelocityY;

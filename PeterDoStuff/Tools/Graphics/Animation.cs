@@ -16,25 +16,31 @@
             return timeSpan;
         }
 
-        public abstract Task Tick(Model model, DateTime? now = null);
+        public Task Tick(Model model, DateTime? now = null)
+        {
+            var timeSpan = UpdateTick(now);
+            return Tick(model, timeSpan);
+        }
+
+        public abstract Task Tick(Model model, TimeSpan? timeSpan = null);
     }
 
     public class CustomAnimation : Animation
     {
-        private Action<Model, DateTime?> _animation;
+        private Action<Model, TimeSpan?> _animation;
 
         internal CustomAnimation(Action<Model> animation) : this((t,m) => animation(t))
         {
         }
 
-        internal CustomAnimation(Action<Model, DateTime?> animation)
+        internal CustomAnimation(Action<Model, TimeSpan?> animation)
         {
             _animation = animation;
         }
 
-        public override async Task Tick(Model model, DateTime? now = null)
+        public override async Task Tick(Model model, TimeSpan? timeSpan = null)
         {
-            _animation(model, now);
+            _animation(model, timeSpan);
         }
     }
 }

@@ -2,6 +2,6 @@
 {
     public class DoNothing : Animation
     {
-        public override Task Tick(Model model, DateTime? now = null) => Task.CompletedTask;
+        public override Task Tick(Model model, TimeSpan? timeSpan = null) => Task.CompletedTask;
     }
 }
