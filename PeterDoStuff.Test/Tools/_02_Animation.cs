@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using PeterDoStuff.Extensions;
 using PeterDoStuff.Test.Extensions;
-using PeterDoStuff.Tools.Animations;
+using PeterDoStuff.Tools.Graphics;
 
 namespace PeterDoStuff.Test.Tools
 {

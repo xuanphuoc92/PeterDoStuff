@@ -1,5 +1,5 @@
 ﻿
-namespace PeterDoStuff.Tools.Animations
+namespace PeterDoStuff.Tools.Graphics
 {
     public class BouncingInBox<TModel>
         (double Left, double Right, double Top, double Bottom, double VelocityX, double VelocityY) 

@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace PeterDoStuff.Tools.Animations
+namespace PeterDoStuff.Tools.Graphics
 {
     public abstract class Model
     {

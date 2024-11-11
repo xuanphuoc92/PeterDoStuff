@@ -1,4 +1,4 @@
-﻿namespace PeterDoStuff.Tools.Animations
+﻿namespace PeterDoStuff.Tools.Graphics
 {
     public interface Animation
     {
