@@ -1,10 +1,13 @@
 ﻿
 namespace PeterDoStuff.Tools.Graphics
 {
-    public class BouncingInBox
-        (double Left, double Right, double Top, double Bottom, double VelocityX, double VelocityY) 
-        : Animation
+    public class BouncingInBox : Animation
     {
+        public BouncingInBox(double Left, double Right, double Top, double Bottom, double VelocityX, double VelocityY)
+            => (this.Left, this.Right, this.Top, this.Bottom, this.VelocityX, this.VelocityY) = (Left, Right, Top, Bottom, VelocityX, VelocityY);
+
+        public double Left, Right, Top, Bottom, VelocityX, VelocityY;
+
         public override async Task Tick(Model model, DateTime? now = null)
         {
             var timespan = UpdateTick(now);

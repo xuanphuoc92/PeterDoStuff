@@ -116,5 +116,24 @@ namespace PeterDoStuff.Test.Tools
             circle.X.Should().Be(100);
             circle.Y.Should().Be(100);
         }
+
+        [TestMethod]
+        public async Task _07_BouncingBall()
+        {
+            var circle = new Circle(50);
+            circle.SetAnimation(new BouncingBall(0, 500, 0, 500, 1, 1));
+
+            circle.X = 5;
+            circle.Y = 5;
+            await circle.Tick();
+            circle.X.Should().Be(51);
+            circle.Y.Should().Be(51);
+
+            circle.X = 495;
+            circle.Y = 495;
+            await circle.Tick(DateTime.Now);
+            circle.X.Should().Be(449);
+            circle.Y.Should().Be(449);
+        }
     }
 }
