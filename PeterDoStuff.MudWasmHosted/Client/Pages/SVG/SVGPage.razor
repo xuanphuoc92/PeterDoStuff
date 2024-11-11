@@ -39,7 +39,7 @@
         simpleCircleCanvas.CanvasRect.StrokeWidth = 4;
 
         var circle = new Circle(25) { X = 25, Y = 50 };
-        circle.SetAnimation(new PingPongX(25, 275, 250));
+        circle.SetAnimation(new BouncingInBox(25, 275, 50, 50, 250, 0));
         simpleCircleCanvas.AddModel(circle);
     }
 
