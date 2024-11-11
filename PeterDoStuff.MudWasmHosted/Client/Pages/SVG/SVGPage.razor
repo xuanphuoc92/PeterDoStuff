@@ -39,7 +39,7 @@
         simpleCircleCanvas.CanvasRect.StrokeWidth = 4;
 
         var circle = new Circle(25) { X = 25, Y = 50 };
-        circle.SetAnimation(new BouncingInBox(25, 275, 50, 50, 250, 0));
+        circle.SetAnimation(new BouncingBall(0, 300, 0, 100, 250, 0));
         simpleCircleCanvas.AddModel(circle);
     }
 
@@ -47,16 +47,11 @@
     {
         double width = 300, height = 400;
         double radius = 10;
-        double ballStroke = 4;
+        double ballStroke = 10;
         double minSpeed = 50;
         double maxSpeed = 500;
 
-        double widthRange = width - (radius + ballStroke) * 2;
-        double heightRange = height - (radius + ballStroke) * 2;
         double speedRange = maxSpeed - minSpeed;
-
-        double left = radius + ballStroke, top = radius + ballStroke;
-        double right = left + widthRange, bottom = top + heightRange;
 
         bouncingBalls = new(width, height);
         bouncingBalls.CanvasRect.StrokeWidth = 4;        
@@ -66,11 +61,11 @@
         {
             var ball = new Circle(radius);
             ball.StrokeWidth = ballStroke;
-            ball.X = left + (random.NextDouble() * widthRange);
-            ball.Y = top + (random.NextDouble() * heightRange);
+            ball.X = (random.NextDouble() * width);
+            ball.Y = (random.NextDouble() * height);
             double velocityX = minSpeed + (random.NextDouble() * speedRange);
             double velocityY = minSpeed + (random.NextDouble() * speedRange);
-            var animation = new BouncingInBox(left, right, top, bottom, velocityX, velocityY);
+            var animation = new BouncingBall(0, width, 0, height, velocityX, velocityY);
             ball.SetAnimation(animation);
             bouncingBalls.AddModel(ball);
         }
