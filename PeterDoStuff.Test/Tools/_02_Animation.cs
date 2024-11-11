@@ -75,10 +75,6 @@ namespace PeterDoStuff.Test.Tools
             var canvas = new Canvas(500, 100);
             canvas.Width.Should().Be(500);
             canvas.Height.Should().Be(100);
-            canvas.Width = 400;
-            canvas.Height = 200;
-            canvas.Width.Should().Be(400);
-            canvas.Height.Should().Be(200);
 
             var circle = new Circle(50) { X = 50, Y = 50 };
             circle.SetAnimation(new BouncingInBox(50, 450, 50, 50, 1, 0));

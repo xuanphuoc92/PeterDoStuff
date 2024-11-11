@@ -14,20 +14,22 @@ namespace PeterDoStuff.Tools.Graphics
         public Animation Animation { get; internal set; } = new DoNothing();
 
         public static string DEFAULT_STROKE_COLOR = "#808080";
-        public static int DEFAULT_STROKE_WIDTH = 1;
-        public static float DEFAULT_STROKE_OPACITY = 1;
+        public static double DEFAULT_STROKE_WIDTH = 1;
+        public static double DEFAULT_STROKE_OPACITY = 1;
 
         public static string DEFAULT_FILL_COLOR = "#808080";
-        public static int DEFAULT_FILL_WIDTH = 0;
-        public static float DEFAULT_FILL_OPACITY = 0;
+        public static double DEFAULT_FILL_OPACITY = 0;
 
         public string StrokeColor { get; set; } = DEFAULT_STROKE_COLOR;
         public double StrokeWidth { get; set; } = DEFAULT_STROKE_WIDTH;
         public double StrokeOpacity { get; set; } = DEFAULT_STROKE_OPACITY;
 
         public string FillColor { get; set; } = DEFAULT_FILL_COLOR;
-        public double FillWidth { get; set; } = DEFAULT_FILL_WIDTH;
         public double FillOpacity { get; set; } = DEFAULT_FILL_OPACITY;
+
+        public static double DEFAULT_SCALE = 1;
+        public double Scale { get; set; } = DEFAULT_SCALE;
+        public double ScaledStrokeWidth => StrokeWidth * Scale;
     }
 
     public static class ModelExtensions

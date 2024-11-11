@@ -2,6 +2,6 @@
 {
     public class Circle(double radius) : Model
     {
-        public double Radius { get; set; } = radius;
+        public double Radius => Scale * radius;
     }
 }

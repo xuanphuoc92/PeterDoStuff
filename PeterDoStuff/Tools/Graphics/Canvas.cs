@@ -2,16 +2,8 @@
 {
     public class Canvas(double width, double height)
     {
-        public double Width 
-        {
-            get => CanvasRect.Width;
-            set => CanvasRect.Width = value;
-        }
-        public double Height 
-        {
-            get => CanvasRect.Height;
-            set => CanvasRect.Height = value;
-        }
+        public double Width => CanvasRect.Width;
+        public double Height => CanvasRect.Height;
 
         public Rectangle CanvasRect { get; private set; } = new Rectangle(width, height);
 
