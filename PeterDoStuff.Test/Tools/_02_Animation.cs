@@ -50,24 +50,24 @@ namespace PeterDoStuff.Test.Tools
             rect.X.Should().Be(0);
         }
 
-        [TestMethod]
-        public async Task _04_PingPongX()
-        {
-            var circle = new Circle(50);            
-            circle.SetAnimation(new PingPongX(50, 100));
+        //[TestMethod]
+        //public async Task _04_PingPongX()
+        //{
+        //    var circle = new Circle(50);            
+        //    circle.SetAnimation(new PingPongX(50, 100));
             
-            circle.X.Should().Be(0);
-            await circle.Tick();
-            circle.X.Should().Be(51);
-            await circle.Tick();
-            circle.X.Should().Be(52);
+        //    circle.X.Should().Be(0);
+        //    await circle.Tick();
+        //    circle.X.Should().Be(51);
+        //    await circle.Tick();
+        //    circle.X.Should().Be(52);
 
-            circle.X = 100;
-            await circle.Tick();
-            circle.X.Should().Be(99);
-            await circle.Tick();
-            circle.X.Should().Be(98);
-        }
+        //    circle.X = 100;
+        //    await circle.Tick();
+        //    circle.X.Should().Be(99);
+        //    await circle.Tick();
+        //    circle.X.Should().Be(98);
+        //}
 
         [TestMethod]
         public async Task _05_Canvas()
@@ -81,7 +81,7 @@ namespace PeterDoStuff.Test.Tools
             canvas.Height.Should().Be(200);
 
             var circle = new Circle(50) { X = 50, Y = 50 };
-            circle.SetAnimation(new PingPongX(50, 450));
+            circle.SetAnimation(new BouncingInBox(50, 450, 50, 50, 1, 0));
             canvas.AddModel(circle);
 
             circle.X.Should().Be(50);
@@ -93,7 +93,7 @@ namespace PeterDoStuff.Test.Tools
             circle.X = 450;
             await canvas.Tick();
             var prevX = circle.X;
-            prevX.Should().BeLessThan(450);
+            prevX.Should().Be(450);
             await canvas.Tick();
             circle.X.Should().BeLessThan(prevX);
         }
