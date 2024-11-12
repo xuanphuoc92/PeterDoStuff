@@ -254,5 +254,42 @@ namespace PeterDoStuff.Test.Tools
             circle.FillColor.Should().Be("#000000");
             circle.FillOpacity.Should().Be(0.2);
         }
+
+        [TestMethod]
+        public async Task _14_Wander()
+        {
+            var circle = new Circle(5);
+            var wander = new Wander()
+            {
+                Gap = TimeSpan.FromMilliseconds(100),
+                MinX = 0, MaxX = 1000,
+                MinY = 0, MaxY = 1000,
+                Velocity = 250,
+                SlowRange = 200
+            };
+            circle.AddAnimation(wander);
+
+            wander.Gap.Should().Be(TimeSpan.FromMilliseconds(100));
+            wander.MinX.Should().Be(0);
+            wander.MaxX.Should().Be(1000);
+            wander.MinY.Should().Be(0);
+            wander.MaxY.Should().Be(1000);
+            wander.Velocity.Should().Be(250);
+            wander.SlowRange.Should().Be(200);
+
+            await circle.Tick(DateTime.Now);
+            circle.X.Should().Be(0);
+            circle.Y.Should().Be(0);
+
+            await Task.Delay(50);
+            await circle.Tick(DateTime.Now);
+            circle.X.Should().Be(0);
+            circle.Y.Should().Be(0);
+
+            await Task.Delay(60);
+            await circle.Tick(DateTime.Now);
+            circle.X.Should().BeGreaterThan(0);
+            circle.Y.Should().BeGreaterThan(0);
+        }
     }
 }

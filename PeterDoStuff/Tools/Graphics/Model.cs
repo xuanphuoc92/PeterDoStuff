@@ -7,7 +7,7 @@
         public double Z { get; set; }
     }
 
-    public abstract class Model : Vector
+    public class Model : Vector
     {
         public double X { get; set; }
         public double Y { get; set; }
