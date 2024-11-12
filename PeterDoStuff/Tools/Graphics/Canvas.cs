@@ -1,6 +1,6 @@
 ﻿namespace PeterDoStuff.Tools.Graphics
 {
-    public class Canvas(double width, double height)
+    public class Canvas
     {
         public ModelBuilder ModelBuilder = new();
 
@@ -8,7 +8,14 @@
         public double Width => CanvasRect.Width;
         public double Height => CanvasRect.Height;
 
-        public Rectangle CanvasRect { get; private set; } = new Rectangle(width, height);
+        public Canvas(double width, double height, ModelBuilder? builder = null)
+        {
+            if (builder != null)
+                ModelBuilder = builder;
+            CanvasRect = ModelBuilder.Build(() => new Rectangle(width, height));
+        }
+
+        public Rectangle CanvasRect { get; private set; }
 
         public List<Model> Models { get; private set; } = [];
 

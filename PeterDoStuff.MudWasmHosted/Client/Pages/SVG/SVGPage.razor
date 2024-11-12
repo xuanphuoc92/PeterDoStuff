@@ -23,20 +23,26 @@
 <CanvasSvg Canvas="canvas" />
 
 @code {
-    Canvas[] demos = [
-        new DemoSimpleCircle(),
-        new DemoBouncingBalls(),
-        new DemoHeartBeat(),
-        new DemoGrowingBalls(),
-        new DemoCirclingTimer(),
-        new DemoBlinkAndFollow(),
-    ];
+    Canvas[] demos;
     Canvas canvas;
+
+    ModelBuilder builder = new ModelBuilder()
+        .SetStroke(Colors.DeepPurple.Accent3, 4, 1)
+        .SetFill(Colors.DeepPurple.Accent3, 0.2);
 
     private Timer Timer;
     protected override void OnInitialized()
     {
         base.OnInitialized();
+
+        demos = [
+            new DemoSimpleCircle(builder),
+            new DemoBouncingBalls(builder),
+            new DemoHeartBeat(builder),
+            new DemoGrowingBalls(builder),
+            new DemoCirclingTimer(builder),
+            new DemoBlinkAndFollow(builder),
+        ];
 
         canvas = demos.Last();
 

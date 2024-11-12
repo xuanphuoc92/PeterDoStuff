@@ -4,7 +4,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
 {
     public class DemoHeartBeat : Canvas
     {
-        public DemoHeartBeat() : base(300, 300)
+        public DemoHeartBeat(ModelBuilder builder) : base(300, 300, builder)
         {
             Name = "Heart Beat";
 

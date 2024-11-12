@@ -241,8 +241,7 @@ namespace PeterDoStuff.Test.Tools
             var modelBuilder = new ModelBuilder();
             modelBuilder.SetStroke("#FFFFFF", 4, 0.5).SetFill("#000000", 0.2);
 
-            var canvas = new Canvas(300, 300);
-            canvas.ModelBuilder = modelBuilder;
+            var canvas = new Canvas(300, 300, modelBuilder);
 
             var circle = new Circle(5);
             canvas.AddModel(circle);

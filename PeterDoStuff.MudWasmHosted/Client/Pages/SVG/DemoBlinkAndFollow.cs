@@ -4,7 +4,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
 {
     public class DemoBlinkAndFollow : Canvas
     {
-        public DemoBlinkAndFollow() : base(300, 300)
+        public DemoBlinkAndFollow(ModelBuilder builder) : base(300, 300, builder)
         {
             Name = "Blink and Follow";
 

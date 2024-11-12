@@ -4,7 +4,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
 {
     public class DemoBouncingBalls : Canvas
     {
-        public DemoBouncingBalls() : base(300, 300)
+        public DemoBouncingBalls(ModelBuilder builder) : base(300, 300, builder)
         {
             Name = "Bouncing Balls";
             

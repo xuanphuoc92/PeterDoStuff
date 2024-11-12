@@ -4,7 +4,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
 {
     public class DemoCirclingTimer : Canvas
     {
-        public DemoCirclingTimer() : base(300, 300)
+        public DemoCirclingTimer(ModelBuilder builder) : base(300, 300, builder)
         {
             Name = "Circling Timer";
             DateTime now = DateTime.Now;
@@ -20,7 +20,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
             text.Content = "0";
             text.FontSize = 75;
             text.StrokeWidth = 0;
-            text.FillColor = Model.DEFAULT_STROKE_COLOR;
+            text.FillColor = builder.StrokeColor;
             text.FillOpacity = 1;
             text.AddAnimation(new Timer() { LastTick = now });
             AddModel(text);
