@@ -12,7 +12,6 @@ namespace PeterDoStuff.Tools.Graphics
                 await animation.Tick(now);
         }
 
-        [JsonIgnore]
         public List<Animation> Animations = [];
 
         public static string DEFAULT_STROKE_COLOR = "#808080";
