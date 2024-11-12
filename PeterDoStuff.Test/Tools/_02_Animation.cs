@@ -178,5 +178,30 @@ namespace PeterDoStuff.Test.Tools
             text.Content = "Hello";
             text.Content.Should().Be("Hello");
         }
+
+        [TestMethod]
+        public async Task _11_Blink()
+        {
+            var circle = new Circle(10);
+            circle.AddAnimation(new Blink()
+            {
+                MinX = 0, MaxX = 100, MinY = 0, MaxY = 200,
+                BlinkGap = TimeSpan.FromMilliseconds(100)
+            });
+
+            circle.X.Should().Be(0);
+            circle.Y.Should().Be(0);
+
+            await circle.Tick(DateTime.Now);
+            circle.X.Should().Be(0);
+            circle.Y.Should().Be(0);
+
+            await Task.Delay(101);
+            await circle.Tick(DateTime.Now);
+            circle.X.Should().BeGreaterThan(0);
+            circle.X.Should().BeLessThan(100);
+            circle.Y.Should().BeGreaterThan(0);
+            circle.Y.Should().BeLessThan(200);
+        }
     }
 }
