@@ -1,0 +1,17 @@
+﻿@using PeterDoStuff.Tools.Graphics
+
+<text x="@Model.X" y="@Model.Y"
+      font-size="@Model.FontSize"
+      text-anchor="@Model.Anchor"
+      fill="@Model.FillColor"
+      fill-opacity="@Model.FillOpacity"
+      stroke="@Model.StrokeColor"
+      stroke-opacity="@Model.StrokeOpacity"
+      stroke-width="@Model.ScaledStrokeWidth">
+    @Model.Content
+</text>
+
+@code {
+    [Parameter]
+    public Text Model { get; set; }
+}

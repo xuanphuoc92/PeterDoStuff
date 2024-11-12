@@ -176,5 +176,12 @@ namespace PeterDoStuff.Test.Tools
             circle.X.Should().BeGreaterThanOrEqualTo(300);
             circle.Y.Should().BeGreaterThanOrEqualTo(200);
         }
+
+        [TestMethod]
+        public async Task _10_Text()
+        {
+            var text = new Text();
+            text.ToJson(beautify: true).WriteToConsole();
+        }
     }
 }

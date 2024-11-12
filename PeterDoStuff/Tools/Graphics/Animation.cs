@@ -4,7 +4,7 @@
     {
         public Model Model;
                 
-        protected DateTime? LastTick;
+        public DateTime? LastTick;
         protected TimeSpan? UpdateTick(DateTime? now)
         {
             if (now == null) return null;
