@@ -2,11 +2,11 @@
 
 namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
 {
-    public class DemoCircling : Canvas
+    public class DemoCirclingTimer : Canvas
     {
-        public DemoCircling() : base(300, 300)
+        public DemoCirclingTimer() : base(300, 300)
         {
-            Name = "Circling";
+            Name = "Circling Timer";
             DateTime now = DateTime.Now;
             
             var circle = new Circle(10);
