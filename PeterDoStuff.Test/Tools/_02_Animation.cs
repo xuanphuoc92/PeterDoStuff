@@ -144,7 +144,7 @@ namespace PeterDoStuff.Test.Tools
             circle.Scale.Should().BeLessThan(1.2);
             await Task.Delay(810);
             await circle.Tick(DateTime.Now);
-            circle.Scale.Should().Be(1);
+            circle.Scale.Should().BeGreaterThan(1);
         }
 
         [TestMethod]

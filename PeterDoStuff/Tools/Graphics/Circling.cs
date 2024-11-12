@@ -19,7 +19,7 @@ namespace PeterDoStuff.Tools.Graphics
             Phase += deltaPhase;
 
             if (Phase > 1)
-                Phase = 0;
+                Phase -= (int)Phase;
 
             double radian = Phase * 2 * Math.PI;
             Model.X = CenterX + Radius * Math.Sin(radian);

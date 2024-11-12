@@ -18,7 +18,7 @@
             Phase += deltaPhase;
 
             if (Phase > 1)
-                Phase = 0;
+                Phase -= (int)Phase;
 
             Model.Scale = Phase < GrowPhase
                 ? (MinScale + Phase / GrowPhase * (MaxScale - MinScale))
