@@ -3,7 +3,9 @@
 
 <PlaygroundTitle Page="svg"/>
 
-<MudRadioGroup @bind-Value="canvas">
+<MudCheckBox @bind-Value="showAll">Show All</MudCheckBox>
+
+<MudRadioGroup @bind-Value="canvas" Disabled="@showAll">
     @for (int i = 0; i < demos.Length; i++)
     {
         var demo = demos[i];
@@ -13,11 +15,23 @@
 
 <MudDivider Class="my-4" />
 
-<CanvasSvg Canvas="canvas" />
+@if(showAll)
+{
+    @for (int i = 0; i < demos.Length; i++)
+    {
+        var demo = demos[i];
+        <CanvasSvg Canvas="demo" />
+    }
+}
+else
+{
+    <CanvasSvg Canvas="canvas" />
+}
 
 @code {
     Canvas[] demos;
     Canvas canvas;
+    bool showAll;
 
     ModelStyler builder = new ModelStyler()
         .SetStroke(Colors.DeepPurple.Accent3, 4, 1)
@@ -46,7 +60,7 @@
     private void Tick(object? _ = null)
     {
         foreach (var demo in demos)
-            InvokeAsync(canvas.Resolve);
+            InvokeAsync(demo.Resolve);
         InvokeAsync(StateHasChanged);
     }
 }
