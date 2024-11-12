@@ -203,5 +203,35 @@ namespace PeterDoStuff.Test.Tools
             circle.Y.Should().BeGreaterThan(0);
             circle.Y.Should().BeLessThan(200);
         }
+
+        [TestMethod]
+        public async Task _12_Pull()
+        {
+            var anchor = new Circle(10);
+            
+            var circle = new Circle(10);
+            circle.AddAnimation(new Pull()
+            {
+                Anchor = anchor,
+                Velocity = 10,
+            });
+
+            circle.X.Should().Be(0);
+            circle.Y.Should().Be(0);
+
+            await circle.Tick(DateTime.Now);
+            circle.X.Should().Be(0);
+            circle.Y.Should().Be(0);
+
+            anchor.X = 1000;
+            anchor.Y = 1000;
+
+            await circle.Tick(DateTime.Now);
+            circle.X.Should().BeGreaterThan(0);
+            circle.X.Should().BeLessThan(1000);
+            circle.Y.Should().BeGreaterThan(0);
+            circle.Y.Should().BeLessThan(1000);
+            circle.X.Should().Be(circle.Y);
+        }
     }
 }

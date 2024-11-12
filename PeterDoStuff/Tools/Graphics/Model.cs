@@ -1,10 +1,17 @@
-﻿using System.Text.Json.Serialization;
-
-namespace PeterDoStuff.Tools.Graphics
+﻿namespace PeterDoStuff.Tools.Graphics
 {
-    public abstract class Model
+    public interface Vector
     {
-        public double X, Y, Z;
+        public double X { get; set; }
+        public double Y { get; set; }
+        public double Z { get; set; }
+    }
+
+    public abstract class Model : Vector
+    {
+        public double X { get; set; }
+        public double Y { get; set; }
+        public double Z { get; set; }
 
         public async Task Tick(DateTime? now = null)
         {
