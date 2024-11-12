@@ -5,6 +5,7 @@ namespace PeterDoStuff.Tools.Graphics
     {
         public Vector Anchor;
         public double Velocity;
+        public double SlowRange = 0;
 
         public override async Task Tick(TimeSpan? timeSpan = null)
         {
@@ -16,7 +17,7 @@ namespace PeterDoStuff.Tools.Graphics
                 return;
 
             double time = timeSpan.Value.TotalSeconds;
-            var delta = time * Velocity;
+            var delta = time * Math.Min(Velocity, d / SlowRange * Velocity);
 
             var deltaX = delta / d * dx;
             var deltaY = delta / d * dy;
