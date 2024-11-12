@@ -1,10 +1,9 @@
-﻿
-namespace PeterDoStuff.Tools.Graphics
+﻿namespace PeterDoStuff.Tools.Graphics
 {
     public class Follow : Animation
     {
         public Vector Anchor;
-        public double Velocity;
+        public double Velocity = 100;
         public double SlowRange = 0;
 
         public override async Task Tick(TimeSpan? timeSpan = null)
