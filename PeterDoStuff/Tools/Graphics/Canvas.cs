@@ -26,11 +26,11 @@
             return this;
         }
 
-        public async Task<Canvas> Tick()
+        public async Task<Canvas> Resolve()
         {
             DateTime now = DateTime.Now;
             foreach (var model in Models)
-                await model.Tick(now);
+                await model.Resolve(now);
             return this;
         }
     }

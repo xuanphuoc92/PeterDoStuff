@@ -13,7 +13,7 @@
         public double Y { get; set; }
         public double Z { get; set; }
 
-        public async Task Tick(DateTime? now = null)
+        public async Task Resolve(DateTime? now = null)
         {
             foreach (var animation in Animations)
                 await animation.Tick(now);

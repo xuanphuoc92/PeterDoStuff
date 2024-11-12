@@ -32,17 +32,17 @@ namespace PeterDoStuff.Test.Tools
         public async Task _03_Tick()
         {
             var rect = new Rectangle(600, 400);
-            await rect.Tick();
+            await rect.Resolve();
             rect.X.Should().Be(0);
             rect.Y.Should().Be(0);
 
             Action<Model> moveRight = (model) => model.X++;
             rect.AddAnimation(moveRight);
-            await rect.Tick();
+            await rect.Resolve();
             rect.X.Should().Be(1);
             rect.ClearAnimations();
             rect.AddAnimation(r => r.X--); // Move left
-            await rect.Tick();
+            await rect.Resolve();
             rect.X.Should().Be(0);
         }
 
@@ -77,16 +77,16 @@ namespace PeterDoStuff.Test.Tools
             canvas.AddModel(circle);
 
             circle.X.Should().Be(50);
-            await canvas.Tick();
+            await canvas.Resolve();
             circle.X.Should().Be(50);
-            await canvas.Tick();
+            await canvas.Resolve();
             circle.X.Should().BeGreaterThan(50);
 
             circle.X = 450;
-            await canvas.Tick();
+            await canvas.Resolve();
             var prevX = circle.X;
             prevX.Should().Be(450);
-            await canvas.Tick();
+            await canvas.Resolve();
             circle.X.Should().BeLessThan(prevX);
         }
 
@@ -98,13 +98,13 @@ namespace PeterDoStuff.Test.Tools
 
             circle.X = -5;
             circle.Y = -5;
-            await circle.Tick();
+            await circle.Resolve();
             circle.X.Should().Be(0);
             circle.Y.Should().Be(0);
 
             circle.X = 105;
             circle.Y = 105;
-            await circle.Tick(DateTime.Now);
+            await circle.Resolve(DateTime.Now);
             circle.X.Should().Be(100);
             circle.Y.Should().Be(100);
         }
@@ -117,13 +117,13 @@ namespace PeterDoStuff.Test.Tools
 
             circle.X = 5;
             circle.Y = 5;
-            await circle.Tick();
+            await circle.Resolve();
             circle.X.Should().Be(50.5);
             circle.Y.Should().Be(50.5);
 
             circle.X = 495;
             circle.Y = 495;
-            await circle.Tick(DateTime.Now);
+            await circle.Resolve(DateTime.Now);
             circle.X.Should().Be(449.5);
             circle.Y.Should().Be(449.5);
         }
@@ -135,16 +135,16 @@ namespace PeterDoStuff.Test.Tools
             circle.AddAnimation(new HeartBeat(1, 1.2));
 
             circle.Scale.Should().Be(1);
-            await circle.Tick(DateTime.Now);
+            await circle.Resolve(DateTime.Now);
             circle.Scale.Should().Be(1);
-            await circle.Tick(DateTime.Now);
+            await circle.Resolve(DateTime.Now);
             circle.Scale.Should().BeGreaterThan(1);
             await Task.Delay(210);
-            await circle.Tick(DateTime.Now);
+            await circle.Resolve(DateTime.Now);
             circle.Scale.Should().BeGreaterThan(1);
             circle.Scale.Should().BeLessThan(1.2);
             await Task.Delay(810);
-            await circle.Tick(DateTime.Now);
+            await circle.Resolve(DateTime.Now);
             circle.Scale.Should().BeGreaterThan(1);
         }
 
@@ -157,17 +157,17 @@ namespace PeterDoStuff.Test.Tools
             animation.CirclingPeriod = TimeSpan.FromMilliseconds(100);
             circle.AddAnimation(animation);
 
-            await circle.Tick(DateTime.Now);
+            await circle.Resolve(DateTime.Now);
             circle.X.Should().Be(300);
             circle.Y.Should().Be(200);
 
             await Task.Delay(25);
-            await circle.Tick(DateTime.Now);
+            await circle.Resolve(DateTime.Now);
             circle.X.Should().BeGreaterThan(300);
             circle.Y.Should().BeGreaterThan(200);
 
             await Task.Delay(85);
-            await circle.Tick(DateTime.Now);
+            await circle.Resolve(DateTime.Now);
             circle.X.Should().BeGreaterThanOrEqualTo(300);
             circle.Y.Should().BeGreaterThanOrEqualTo(200);
         }
@@ -193,12 +193,12 @@ namespace PeterDoStuff.Test.Tools
             circle.X.Should().Be(0);
             circle.Y.Should().Be(0);
 
-            await circle.Tick(DateTime.Now);
+            await circle.Resolve(DateTime.Now);
             circle.X.Should().Be(0);
             circle.Y.Should().Be(0);
 
             await Task.Delay(101);
-            await circle.Tick(DateTime.Now);
+            await circle.Resolve(DateTime.Now);
             circle.X.Should().BeGreaterThan(0);
             circle.X.Should().BeLessThan(100);
             circle.Y.Should().BeGreaterThan(0);
@@ -220,14 +220,14 @@ namespace PeterDoStuff.Test.Tools
             circle.X.Should().Be(0);
             circle.Y.Should().Be(0);
 
-            await circle.Tick(DateTime.Now);
+            await circle.Resolve(DateTime.Now);
             circle.X.Should().Be(0);
             circle.Y.Should().Be(0);
 
             anchor.X = 1000;
             anchor.Y = 1000;
 
-            await circle.Tick(DateTime.Now);
+            await circle.Resolve(DateTime.Now);
             circle.X.Should().BeGreaterThan(0);
             circle.X.Should().BeLessThan(1000);
             circle.Y.Should().BeGreaterThan(0);
@@ -277,17 +277,17 @@ namespace PeterDoStuff.Test.Tools
             wander.Velocity.Should().Be(250);
             wander.SlowRange.Should().Be(200);
 
-            await circle.Tick(DateTime.Now);
+            await circle.Resolve(DateTime.Now);
             circle.X.Should().Be(0);
             circle.Y.Should().Be(0);
 
             await Task.Delay(50);
-            await circle.Tick(DateTime.Now);
+            await circle.Resolve(DateTime.Now);
             circle.X.Should().Be(0);
             circle.Y.Should().Be(0);
 
             await Task.Delay(60);
-            await circle.Tick(DateTime.Now);
+            await circle.Resolve(DateTime.Now);
             circle.X.Should().BeGreaterThan(0);
             circle.Y.Should().BeGreaterThan(0);
         }

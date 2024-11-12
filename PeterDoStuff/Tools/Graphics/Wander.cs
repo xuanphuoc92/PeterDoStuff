@@ -31,7 +31,7 @@ namespace PeterDoStuff.Tools.Graphics
             if (_follow.Model == null)
                 _follow.Model = Model;
 
-            await _anchor.Tick(LastTick);
+            await _anchor.Resolve(LastTick);
             await _follow.Tick(LastTick);
         }
     }

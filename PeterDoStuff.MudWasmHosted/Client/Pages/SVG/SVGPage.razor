@@ -52,7 +52,7 @@
 
     private void Tick(object? _ = null)
     {
-        InvokeAsync(canvas.Tick);
+        InvokeAsync(canvas.Resolve);
         InvokeAsync(StateHasChanged);
     }
 }
