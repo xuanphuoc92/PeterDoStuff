@@ -8,8 +8,6 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
         {
             Name = "Heart Beat";
 
-            CanvasRect.StrokeWidth = 4;
-
             var circle = new Circle(50) { X = Width / 2, Y = Height / 2};
             circle.StrokeWidth = 20;
             circle.AddAnimation(new HeartBeat(1, 1.5));

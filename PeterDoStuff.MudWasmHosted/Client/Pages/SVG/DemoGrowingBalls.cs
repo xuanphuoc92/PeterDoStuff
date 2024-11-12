@@ -8,8 +8,6 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
         {
             Name = "Growing Balls";
 
-            CanvasRect.StrokeWidth = 4;
-
             double minSpeed = 50;
             double maxSpeed = 500;
 

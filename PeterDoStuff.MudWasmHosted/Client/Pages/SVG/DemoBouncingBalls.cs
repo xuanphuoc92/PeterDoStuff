@@ -15,7 +15,6 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
 
             double speedRange = maxSpeed - minSpeed;
 
-            CanvasRect.StrokeWidth = 4;
             Random random = new Random();
 
             for (int i = 0; i < 10; i++)

@@ -152,5 +152,29 @@ namespace PeterDoStuff.Test.Tools
             await circle.Tick(DateTime.Now);
             circle.Scale.Should().Be(1);
         }
+
+        [TestMethod]
+        public async Task _09_Circling()
+        {
+            var circle = new Circle(50);
+            
+            Circling animation = new Circling(300, 300, 100);
+            animation.CirclingPeriod = TimeSpan.FromMilliseconds(100);
+            circle.AddAnimation(animation);
+
+            await circle.Tick(DateTime.Now);
+            circle.X.Should().Be(300);
+            circle.Y.Should().Be(200);
+
+            await Task.Delay(25);
+            await circle.Tick(DateTime.Now);
+            circle.X.Should().BeGreaterThan(300);
+            circle.Y.Should().BeGreaterThan(200);
+
+            await Task.Delay(85);
+            await circle.Tick(DateTime.Now);
+            circle.X.Should().BeGreaterThanOrEqualTo(300);
+            circle.Y.Should().BeGreaterThanOrEqualTo(200);
+        }
     }
 }
