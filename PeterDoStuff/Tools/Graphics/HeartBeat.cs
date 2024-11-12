@@ -12,7 +12,7 @@
             (MinScale, MaxScale) = (minScale, maxScale);
         }
 
-        public override async Task Tick(Model model, TimeSpan? timeSpan = null)
+        public override async Task Tick(TimeSpan? timeSpan = null)
         {
             double deltaPhase = timeSpan.Value.TotalNanoseconds / BeatPeriod.TotalNanoseconds;
             Phase += deltaPhase;
@@ -20,7 +20,7 @@
             if (Phase > 1)
                 Phase = 0;
 
-            model.Scale = Phase < GrowPhase
+            Model.Scale = Phase < GrowPhase
                 ? (MinScale + Phase / GrowPhase * (MaxScale - MinScale))
                 : (MaxScale - (Phase - GrowPhase) / (1 - GrowPhase) * (MaxScale - MinScale));
         }

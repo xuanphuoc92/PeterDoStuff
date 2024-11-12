@@ -9,7 +9,7 @@ namespace PeterDoStuff.Tools.Graphics
         public async Task Tick(DateTime? now = null)
         {
             foreach (var animation in Animations)
-                await animation.Tick(this, now);
+                await animation.Tick(now);
         }
 
         [JsonIgnore]
@@ -52,13 +52,16 @@ namespace PeterDoStuff.Tools.Graphics
         public static TModel AddAnimation<TModel>(this TModel model, Action<TModel> animation)
             where TModel : Model
         {
-            model.Animations.Add(new CustomAnimation(m => animation((TModel)m)));
+            CustomAnimation customAnimation = new CustomAnimation(m => animation((TModel)m));
+            customAnimation.Model = model;
+            model.Animations.Add(customAnimation);
             return model;
         }
 
         public static TModel AddAnimation<TModel>(this TModel model, Animation animation)
             where TModel : Model
         {
+            animation.Model = model;
             model.Animations.Add(animation);
             return model;
         }

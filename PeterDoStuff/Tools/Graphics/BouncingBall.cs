@@ -12,16 +12,17 @@
 
         private BouncingInBox _bouncingInBox;
 
-        public override Task Tick(Model model, TimeSpan? timeSpan = null)
+        public override Task Tick(TimeSpan? timeSpan = null)
         {
-            var circle = (Circle)model;
+            var circle = (Circle)Model;
             double ballRadius = circle.Radius + (circle.ScaledStrokeWidth / 2);
+            _bouncingInBox.Model = Model;
             _bouncingInBox.Left = Left + ballRadius;
             _bouncingInBox.Right = Right - ballRadius;
             _bouncingInBox.Top = Top + ballRadius;
             _bouncingInBox.Bottom = Bottom - ballRadius;
 
-            return _bouncingInBox.Tick(model, timeSpan);
+            return _bouncingInBox.Tick(timeSpan);
         }
     }
 }

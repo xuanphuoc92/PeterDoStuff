@@ -8,33 +8,33 @@ namespace PeterDoStuff.Tools.Graphics
 
         public double Left, Right, Top, Bottom, VelocityX, VelocityY;
 
-        public override async Task Tick(Model model, TimeSpan? timeSpan = null)
+        public override async Task Tick(TimeSpan? timeSpan = null)
         {
             double time = (timeSpan == null ? 1 : timeSpan.Value.TotalSeconds);
 
             var deltaX = time * VelocityX;
             var deltaY = time * VelocityY;
 
-            model.X += deltaX;
-            model.Y += deltaY;
+            Model.X += deltaX;
+            Model.Y += deltaY;
 
-            if (model.X < Left || model.X > Right)
+            if (Model.X < Left || Model.X > Right)
                 VelocityX *= -1;
 
-            if (model.Y < Top || model.Y > Bottom)
+            if (Model.Y < Top || Model.Y > Bottom)
                 VelocityY *= -1;
 
-            if (model.X < Left)
-                model.X = Left;
+            if (Model.X < Left)
+                Model.X = Left;
 
-            if (model.X > Right)
-                model.X = Right;
+            if (Model.X > Right)
+                Model.X = Right;
 
-            if (model.Y < Top)
-                model.Y = Top;
+            if (Model.Y < Top)
+                Model.Y = Top;
 
-            if (model.Y > Bottom)
-                model.Y = Bottom;
+            if (Model.Y > Bottom)
+                Model.Y = Bottom;
         }
     }
 }

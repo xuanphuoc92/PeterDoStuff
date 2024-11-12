@@ -2,6 +2,8 @@
 {
     public abstract class Animation
     {
+        public Model Model;
+                
         protected DateTime? LastTick;
         protected TimeSpan? UpdateTick(DateTime? now)
         {
@@ -16,13 +18,13 @@
             return timeSpan;
         }
 
-        public Task Tick(Model model, DateTime? now = null)
+        public Task Tick(DateTime? now = null)
         {
             var timeSpan = UpdateTick(now);
-            return Tick(model, timeSpan);
+            return Tick(timeSpan);
         }
 
-        public abstract Task Tick(Model model, TimeSpan? timeSpan = null);
+        public abstract Task Tick(TimeSpan? timeSpan = null);
     }
 
     public class CustomAnimation : Animation
@@ -38,9 +40,9 @@
             _animation = animation;
         }
 
-        public override async Task Tick(Model model, TimeSpan? timeSpan = null)
+        public override async Task Tick(TimeSpan? timeSpan = null)
         {
-            _animation(model, timeSpan);
+            _animation(Model, timeSpan);
         }
     }
 }
