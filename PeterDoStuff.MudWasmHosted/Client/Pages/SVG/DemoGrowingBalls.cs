@@ -4,7 +4,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
 {
     public class DemoGrowingBalls : Canvas
     {
-        public DemoGrowingBalls(ModelBuilder builder) : base(300, 300, builder)
+        public DemoGrowingBalls(ModelStyler builder) : base(300, 300, builder)
         {
             Name = "Growing Balls";
 
@@ -18,7 +18,6 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
             for (int i = 0; i < 3; i++)
             {
                 var ball = new Circle(10);
-                ball.StrokeWidth = 10;
                 ball.X = (random.NextDouble() * Width);
                 ball.Y = (random.NextDouble() * Height);
                 double velocityX = minSpeed + (random.NextDouble() * speedRange);
@@ -33,7 +32,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
                 ball.AddAnimation(growingAnimation);
                 ball.AddAnimation(bouncingAnimation);
 
-                AddModel(ball);
+                AddAndStyleModel(ball);
             }
         }
     }

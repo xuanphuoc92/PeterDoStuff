@@ -4,12 +4,11 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
 {
     public class DemoBlinkAndFollow : Canvas
     {
-        public DemoBlinkAndFollow(ModelBuilder builder) : base(300, 300, builder)
+        public DemoBlinkAndFollow(ModelStyler builder) : base(300, 300, builder)
         {
             Name = "Blink and Follow";
 
             var anchor = new Circle(10) { X = Width / 2, Y = Height / 2 };
-            anchor.StrokeWidth = 4;
             anchor.AddAnimation(new Blink() {
                 MinX = 30,
                 MaxX = Width - 30,
@@ -18,7 +17,6 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
             });
 
             var circle = new Circle(10) { X = Width / 2, Y = Height / 2 };
-            circle.StrokeWidth = 4;
             circle.AddAnimation(new Follow()
             {
                 Anchor = anchor,
@@ -26,8 +24,8 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
                 SlowRange = 200
             });
 
-            AddModel(anchor);
-            AddModel(circle);
+            AddAndStyleModel(anchor);
+            AddAndStyleModel(circle);
         }
     }
 }

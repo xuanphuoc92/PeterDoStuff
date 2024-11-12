@@ -2,26 +2,26 @@
 {
     public class Canvas
     {
-        public ModelBuilder ModelBuilder = new();
+        public ModelStyler ModelBuilder = new();
 
         public string Name = "";
         public double Width => CanvasRect.Width;
         public double Height => CanvasRect.Height;
 
-        public Canvas(double width, double height, ModelBuilder? builder = null)
+        public Canvas(double width, double height, ModelStyler? builder = null)
         {
             if (builder != null)
                 ModelBuilder = builder;
-            CanvasRect = ModelBuilder.Build(() => new Rectangle(width, height));
+            CanvasRect = ModelBuilder.Style(() => new Rectangle(width, height));
         }
 
         public Rectangle CanvasRect { get; private set; }
 
         public List<Model> Models { get; private set; } = [];
 
-        public Canvas AddModel(Model model)
+        public Canvas AddAndStyleModel(Model model)
         {
-            model = ModelBuilder.Build(() => model);
+            model = ModelBuilder.Style(() => model);
             Models.Add(model);
             return this;
         }

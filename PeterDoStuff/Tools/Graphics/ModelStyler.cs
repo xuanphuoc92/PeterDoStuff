@@ -1,12 +1,12 @@
 ﻿namespace PeterDoStuff.Tools.Graphics
 {
-    public class ModelBuilder
+    public class ModelStyler
     {
         public string StrokeColor, FillColor;
         public double StrokeOpacity = 1, FillOpacity = 0;
         public double StrokeWidth = 1;
 
-        public ModelBuilder SetStroke(
+        public ModelStyler SetStroke(
             string color, double width, double? opacity = null)
         {
             StrokeColor = color;
@@ -16,7 +16,7 @@
             return this;
         }
 
-        public ModelBuilder SetFill(
+        public ModelStyler SetFill(
             string color, double? opacity = null)
         {
             FillColor = color;
@@ -25,7 +25,7 @@
             return this;
         }
 
-        public TModel Build<TModel>(Func<TModel> modelCreator) where TModel : Model
+        public TModel Style<TModel>(Func<TModel> modelCreator) where TModel : Model
         {
             var model = modelCreator();
             model.StrokeColor = StrokeColor;

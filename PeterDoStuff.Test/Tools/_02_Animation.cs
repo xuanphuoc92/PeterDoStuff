@@ -74,7 +74,7 @@ namespace PeterDoStuff.Test.Tools
 
             var circle = new Circle(50) { X = 50, Y = 50 };
             circle.AddAnimation(new BouncingInBox(50, 450, 50, 50, 1, 0));
-            canvas.AddModel(circle);
+            canvas.AddAndStyleModel(circle);
 
             circle.X.Should().Be(50);
             await canvas.Resolve();
@@ -238,13 +238,13 @@ namespace PeterDoStuff.Test.Tools
         [TestMethod]
         public void _13_ModelBuilder()
         {
-            var modelBuilder = new ModelBuilder();
+            var modelBuilder = new ModelStyler();
             modelBuilder.SetStroke("#FFFFFF", 4, 0.5).SetFill("#000000", 0.2);
 
             var canvas = new Canvas(300, 300, modelBuilder);
 
             var circle = new Circle(5);
-            canvas.AddModel(circle);
+            canvas.AddAndStyleModel(circle);
             circle.Radius.Should().Be(5);
 
             circle.StrokeColor.Should().Be("#FFFFFF");
