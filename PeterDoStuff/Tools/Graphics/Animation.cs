@@ -2,7 +2,7 @@
 {
     public abstract class Animation
     {
-        protected DateTime? LastTick { get; set; }
+        protected DateTime? LastTick;
         protected TimeSpan? UpdateTick(DateTime? now)
         {
             if (now == null) return null;

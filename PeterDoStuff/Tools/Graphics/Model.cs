@@ -4,9 +4,7 @@ namespace PeterDoStuff.Tools.Graphics
 {
     public abstract class Model
     {
-        public double X { get; set; }
-        public double Y { get; set; }
-        public double Z { get; set; }
+        public double X, Y, Z;
 
         public async Task Tick(DateTime? now = null)
         {
@@ -15,7 +13,7 @@ namespace PeterDoStuff.Tools.Graphics
         }
 
         [JsonIgnore]
-        public List<Animation> Animations { get; private set; } = [];
+        public List<Animation> Animations = [];
 
         public static string DEFAULT_STROKE_COLOR = "#808080";
         public static double DEFAULT_STROKE_WIDTH = 1;
@@ -24,15 +22,21 @@ namespace PeterDoStuff.Tools.Graphics
         public static string DEFAULT_FILL_COLOR = "#808080";
         public static double DEFAULT_FILL_OPACITY = 0;
 
-        public string StrokeColor { get; set; } = DEFAULT_STROKE_COLOR;
-        public double StrokeWidth { get; set; } = DEFAULT_STROKE_WIDTH;
-        public double StrokeOpacity { get; set; } = DEFAULT_STROKE_OPACITY;
-
-        public string FillColor { get; set; } = DEFAULT_FILL_COLOR;
-        public double FillOpacity { get; set; } = DEFAULT_FILL_OPACITY;
-
         public static double DEFAULT_SCALE = 1;
-        public double Scale { get; set; } = DEFAULT_SCALE;
+
+        public string 
+            StrokeColor = DEFAULT_STROKE_COLOR,
+            FillColor = DEFAULT_FILL_COLOR;
+
+        public double 
+            StrokeWidth = DEFAULT_STROKE_WIDTH;
+
+        public double 
+            StrokeOpacity = DEFAULT_STROKE_OPACITY,
+            FillOpacity = DEFAULT_FILL_OPACITY;
+
+        public double Scale = DEFAULT_SCALE;
+
         public double ScaledStrokeWidth => StrokeWidth * Scale;
     }
 
