@@ -2,6 +2,7 @@
 {
     public class Canvas(double width, double height)
     {
+        public string Name = "";
         public double Width => CanvasRect.Width;
         public double Height => CanvasRect.Height;
 
