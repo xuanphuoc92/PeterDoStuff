@@ -1,13 +1,12 @@
-﻿using MudBlazor;
-using PeterDoStuff.Tools.Graphics;
+﻿using PeterDoStuff.Tools.Graphics;
 
 namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
 {
-    public class DemoSimpleCircle : Canvas
+    public class DemoSimpleBall : Canvas
     {
-        public DemoSimpleCircle(ModelBuilder builder) : base(300, 300, builder)
+        public DemoSimpleBall(ModelBuilder builder) : base(300, 300, builder)
         {
-            Name = "Simple Circle";
+            Name = "Simple Ball";
 
             var circle = new Circle(25) { X = Width / 2, Y = Height / 2 };
             circle.AddAnimation(new BouncingBall(0, Width, 0, Height, 250, 0));
