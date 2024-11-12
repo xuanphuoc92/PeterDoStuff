@@ -205,12 +205,12 @@ namespace PeterDoStuff.Test.Tools
         }
 
         [TestMethod]
-        public async Task _12_Pull()
+        public async Task _12_Follow()
         {
             var anchor = new Circle(10);
             
             var circle = new Circle(10);
-            circle.AddAnimation(new Pull()
+            circle.AddAnimation(new Follow()
             {
                 Anchor = anchor,
                 Velocity = 10,
