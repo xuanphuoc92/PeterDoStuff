@@ -16,7 +16,8 @@ namespace PeterDoStuff.Test.Tools
             circle.X.Should().Be(0);
             circle.Y.Should().Be(0);
             circle.Z.Should().Be(0);
-            circle.StrokeColor.Should().Be(Model.DEFAULT_STROKE_COLOR);
+            circle.StrokeOpacity.Should().Be(1);
+            circle.FillOpacity.Should().Be(0);
         }
 
         [TestMethod]
@@ -232,6 +233,22 @@ namespace PeterDoStuff.Test.Tools
             circle.Y.Should().BeGreaterThan(0);
             circle.Y.Should().BeLessThan(1000);
             circle.X.Should().Be(circle.Y);
+        }
+
+        [TestMethod]
+        public void _13_ModelBuilder()
+        {
+            var modelBuilder = new ModelBuilder();
+            modelBuilder.SetStroke("#FFFFFF", 4, 0.5).SetFill("#000000", 0.2);
+            var circle = modelBuilder.Build(() => new Circle(5));
+            circle.Radius.Should().Be(5);
+
+            circle.StrokeColor.Should().Be("#FFFFFF");
+            circle.StrokeWidth.Should().Be(4);
+            circle.StrokeOpacity.Should().Be(0.5);
+
+            circle.FillColor.Should().Be("#000000");
+            circle.FillOpacity.Should().Be(0.2);
         }
     }
 }

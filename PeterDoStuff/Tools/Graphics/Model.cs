@@ -21,27 +21,13 @@
 
         public List<Animation> Animations = [];
 
-        public static string DEFAULT_STROKE_COLOR = "#808080";
-        public static double DEFAULT_STROKE_WIDTH = 1;
-        public static double DEFAULT_STROKE_OPACITY = 1;
+        public string StrokeColor, FillColor;
 
-        public static string DEFAULT_FILL_COLOR = "#808080";
-        public static double DEFAULT_FILL_OPACITY = 0;
+        public double StrokeWidth = 1;
 
-        public static double DEFAULT_SCALE = 1;
+        public double StrokeOpacity = 1, FillOpacity = 0;
 
-        public string 
-            StrokeColor = DEFAULT_STROKE_COLOR,
-            FillColor = DEFAULT_FILL_COLOR;
-
-        public double 
-            StrokeWidth = DEFAULT_STROKE_WIDTH;
-
-        public double 
-            StrokeOpacity = DEFAULT_STROKE_OPACITY,
-            FillOpacity = DEFAULT_FILL_OPACITY;
-
-        public double Scale = DEFAULT_SCALE;
+        public double Scale = 1;
 
         public double ScaledStrokeWidth => StrokeWidth * Scale;
     }
