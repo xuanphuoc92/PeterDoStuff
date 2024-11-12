@@ -240,7 +240,12 @@ namespace PeterDoStuff.Test.Tools
         {
             var modelBuilder = new ModelBuilder();
             modelBuilder.SetStroke("#FFFFFF", 4, 0.5).SetFill("#000000", 0.2);
-            var circle = modelBuilder.Build(() => new Circle(5));
+
+            var canvas = new Canvas(300, 300);
+            canvas.ModelBuilder = modelBuilder;
+
+            var circle = new Circle(5);
+            canvas.AddModel(circle);
             circle.Radius.Should().Be(5);
 
             circle.StrokeColor.Should().Be("#FFFFFF");

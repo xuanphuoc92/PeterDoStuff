@@ -2,6 +2,8 @@
 {
     public class Canvas(double width, double height)
     {
+        public ModelBuilder ModelBuilder = new();
+
         public string Name = "";
         public double Width => CanvasRect.Width;
         public double Height => CanvasRect.Height;
@@ -12,6 +14,7 @@
 
         public Canvas AddModel(Model model)
         {
+            model = ModelBuilder.Build(() => model);
             Models.Add(model);
             return this;
         }
