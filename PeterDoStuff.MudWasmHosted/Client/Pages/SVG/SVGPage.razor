@@ -3,13 +3,6 @@
 
 <PlaygroundTitle Page="svg"/>
 
-<MudText Class="my-4">
-    Model Reference:
-    <MudLink Href="https://swharden.com/blog/2021-01-07-blazor-canvas-animated-graphics/">
-        Draw Animated Graphics in the Browser with Blazor WebAssembly
-    </MudLink>
-</MudText>
-
 <MudRadioGroup @bind-Value="canvas">
     @for (int i = 0; i < demos.Length; i++)
     {
@@ -52,7 +45,8 @@
 
     private void Tick(object? _ = null)
     {
-        InvokeAsync(canvas.Resolve);
+        foreach (var demo in demos)
+            InvokeAsync(canvas.Resolve);
         InvokeAsync(StateHasChanged);
     }
 }
