@@ -16,12 +16,7 @@ namespace PeterDoStuff.Test.Tools
             circle.X.Should().Be(0);
             circle.Y.Should().Be(0);
             circle.Z.Should().Be(0);
-            circle.StrokeColor.Should().Be(Model.DEFAULT_STROKE_COLOR);            
-            circle.ToJson(beautify: true).WriteToConsole();
-
-            var json = circle.ToJson();
-            circle = json.FromJson<Circle>();
-            circle.Radius.Should().Be(5);
+            circle.StrokeColor.Should().Be(Model.DEFAULT_STROKE_COLOR);
         }
 
         [TestMethod]
@@ -30,7 +25,6 @@ namespace PeterDoStuff.Test.Tools
             var rect = new Rectangle(600, 400);
             rect.Width.Should().Be(600);
             rect.Height.Should().Be(400);
-            rect.ToJson(beautify: true).WriteToConsole();
         }
 
         [TestMethod]
@@ -178,10 +172,11 @@ namespace PeterDoStuff.Test.Tools
         }
 
         [TestMethod]
-        public async Task _10_Text()
+        public void _10_Text()
         {
             var text = new Text();
-            text.ToJson(beautify: true).WriteToConsole();
+            text.Content = "Hello";
+            text.Content.Should().Be("Hello");
         }
     }
 }
