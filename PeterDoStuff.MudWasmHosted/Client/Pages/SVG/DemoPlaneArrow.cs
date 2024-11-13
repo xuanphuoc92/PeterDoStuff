@@ -13,6 +13,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
             var polygon = new Polygon(0, size * -2, size, size, 0, 0, size * -1, size);
             polygon.X = Width / 2;
             polygon.Y = Height / 2;
+            polygon.Degree = 90;
 
             AddAndStyleModel(polygon);
         }

@@ -12,6 +12,7 @@
         public double X { get; set; }
         public double Y { get; set; }
         public double Z { get; set; }
+        public double Degree { get; set; }
 
         public virtual async Task Resolve(DateTime? now = null)
         {
