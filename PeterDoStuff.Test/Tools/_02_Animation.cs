@@ -325,5 +325,21 @@ namespace PeterDoStuff.Test.Tools
             line.End.Y.Should().BeGreaterThanOrEqualTo(4);
             line.End.Y.Should().BeLessThanOrEqualTo(200);
         }
+
+        [TestMethod]
+        public void _16_Path()
+        {
+            var path = new PathModel(50, 150);
+            
+            path.Children.Should().HaveCount(1);
+            path.Commands.Should().HaveCount(1);
+
+            path.LineTo(100, 150);
+            path.LineTo(150, 150);
+            path.LineTo(200, 150);
+            path.LineTo(250, 150);
+            path.Children.Should().HaveCount(5);
+            path.Commands.Should().HaveCount(5);
+        }
     }
 }

@@ -34,11 +34,11 @@
 
     public class CompositeModel : Model
     {
-        public Model[] Children { get; set; } = [];
+        public List<Model> Children { get; } = [];
 
         public CompositeModel(params Model[] children)
         {
-            Children = children;
+            Children.AddRange(children);
         }
 
         public override async Task Resolve(DateTime? now = null)
