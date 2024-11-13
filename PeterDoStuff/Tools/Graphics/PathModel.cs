@@ -21,9 +21,10 @@
             return this;
         }
 
-        public PathModel SmoothCurveTo(double x, double y, double xs, double ys)
+        public PathModel QuadCurveTo(double xs, double ys, double x, double y)
         {
-            Commands.Add(new("S", AddPoint(xs, ys), AddPoint(x, y)));
+            Model controlPoint = AddPoint(xs, ys);
+            Commands.Add(new("Q", controlPoint, AddPoint(x, y)));
             return this;
         }
 

@@ -9,16 +9,16 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
             Name = "Curve";
 
             var path = new PathModel(50, 150);
-            path.SmoothCurveTo(150, 150, 100, 150);
-            path.SmoothCurveTo(250, 150, 200, 150);
+            path.QuadCurveTo(100, 150, 150, 150);
+            path.QuadCurveTo(200, 150, 250, 150);
 
             AddAndStyleModel(path);
 
             path.FillOpacity = 0;
 
             DateTime now = DateTime.Now;
-            path.Commands[1].Points[0].AddAnimation(new BouncingInBox(0, Width, 50, Height - 50, 0, -50) { LastTick = now });
-            path.Commands[2].Points[0].AddAnimation(new BouncingInBox(0, Width, 50, Height - 50, 0, 50) { LastTick = now });
+            path.Commands[1].Points[0].AddAnimation(new BouncingInBox(0, Width, 50, Height - 50, 0, -100) { LastTick = now });
+            path.Commands[2].Points[0].AddAnimation(new BouncingInBox(0, Width, 50, Height - 50, 0, 100) { LastTick = now });
         }
     }
 }

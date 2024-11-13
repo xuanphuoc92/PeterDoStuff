@@ -350,8 +350,8 @@ namespace PeterDoStuff.Test.Tools
             curve.Children.Should().HaveCount(1);
             curve.Commands.Should().HaveCount(1);
 
-            curve.SmoothCurveTo(150, 150, 100, 150);
-            curve.SmoothCurveTo(250, 150, 200, 150);
+            curve.QuadCurveTo(100, 150, 150, 150);
+            curve.QuadCurveTo(200, 150, 250, 150);
             curve.Children.Should().HaveCount(5);
             curve.Commands.Should().HaveCount(3);
         }
