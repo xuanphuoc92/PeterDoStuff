@@ -13,7 +13,7 @@
         public double Y { get; set; }
         public double Z { get; set; }
 
-        public async Task Resolve(DateTime? now = null)
+        public virtual async Task Resolve(DateTime? now = null)
         {
             foreach (var animation in Animations)
                 await animation.Tick(now);
@@ -30,6 +30,23 @@
         public double Scale = 1;
 
         public double ScaledStrokeWidth => StrokeWidth * Scale;
+    }
+
+    public class CompositeModel : Model
+    {
+        public Model[] Children { get; set; } = [];
+
+        public CompositeModel(params Model[] children)
+        {
+            Children = children;
+        }
+
+        public override async Task Resolve(DateTime? now = null)
+        {
+            await base.Resolve(now);
+            foreach (var child in Children)
+                await child.Resolve(now);
+        }
     }
 
     public static class ModelExtensions

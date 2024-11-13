@@ -293,13 +293,37 @@ namespace PeterDoStuff.Test.Tools
         }
 
         [TestMethod]
-        public void _15_Line()
+        public async Task _15_Line()
         {
             var line = new Line().Set(1, 2, 3, 4);
             line.Start.X.Should().Be(1);
             line.Start.Y.Should().Be(2);
             line.End.X.Should().Be(3);
             line.End.Y.Should().Be(4);
+
+            line.End.AddAnimation(new Blink()
+            {
+                MinX = 3,
+                MaxX = 100,
+                MinY = 4,
+                MaxY = 200,
+                BlinkGap = TimeSpan.FromMilliseconds(100)
+            });
+
+            await line.Resolve(DateTime.Now);
+            line.Start.X.Should().Be(1);
+            line.Start.Y.Should().Be(2);
+            line.End.X.Should().Be(3);
+            line.End.Y.Should().Be(4);
+
+            await Task.Delay(100);
+            await line.Resolve(DateTime.Now);
+            line.Start.X.Should().Be(1);
+            line.Start.Y.Should().Be(2);
+            line.End.X.Should().BeGreaterThanOrEqualTo(3);
+            line.End.X.Should().BeLessThanOrEqualTo(100);
+            line.End.Y.Should().BeGreaterThanOrEqualTo(4);
+            line.End.Y.Should().BeLessThanOrEqualTo(200);
         }
     }
 }
