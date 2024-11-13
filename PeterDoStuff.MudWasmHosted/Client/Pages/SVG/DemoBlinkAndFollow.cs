@@ -9,17 +9,11 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
             Name = "Blink and Follow";
 
             var anchor = new Circle(10) { X = Width / 2, Y = Height / 2 };
-            anchor.AddAnimation(new Blink() {
-                MinX = 30,
-                MaxX = Width - 30,
-                MinY = 30,
-                MaxY = Height - 30,
-            });
+            anchor.AddAnimation(new Blink(30, Width - 30, 30, Height - 30));
 
             var circle = new Circle(10) { X = Width / 2, Y = Height / 2 };
-            circle.AddAnimation(new Follow()
+            circle.AddAnimation(new Follow(anchor)
             {
-                Anchor = anchor,
                 Velocity = 500,
                 SlowRange = 100,
                 StopRange = 2,

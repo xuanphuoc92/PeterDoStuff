@@ -5,8 +5,8 @@
         public ModelStyler ModelBuilder = new();
 
         public string Name = "";
-        public double Width => CanvasRect.Width;
-        public double Height => CanvasRect.Height;
+        public double Width => CanvasRect.ScaledWidth;
+        public double Height => CanvasRect.ScaledHeight;
 
         public Canvas(double width, double height, ModelStyler? builder = null)
         {

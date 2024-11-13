@@ -12,7 +12,7 @@ namespace PeterDoStuff.Test.Tools
         public void _01_Circle()
         {
             var circle = new Circle(5);
-            circle.Radius.Should().Be(5);
+            circle.ScaledRadius.Should().Be(5);
             circle.X.Should().Be(0);
             circle.Y.Should().Be(0);
             circle.Z.Should().Be(0);
@@ -24,8 +24,8 @@ namespace PeterDoStuff.Test.Tools
         public void _02_Rectangle()
         {
             var rect = new Rectangle(600, 400);
-            rect.Width.Should().Be(600);
-            rect.Height.Should().Be(400);
+            rect.ScaledWidth.Should().Be(600);
+            rect.ScaledHeight.Should().Be(400);
         }
 
         [TestMethod]
@@ -184,9 +184,8 @@ namespace PeterDoStuff.Test.Tools
         public async Task _11_Blink()
         {
             var circle = new Circle(10);
-            circle.AddAnimation(new Blink()
+            circle.AddAnimation(new Blink(0, 100, 0, 200)
             {
-                MinX = 0, MaxX = 100, MinY = 0, MaxY = 200,
                 BlinkGap = TimeSpan.FromMilliseconds(100)
             });
 
@@ -211,9 +210,8 @@ namespace PeterDoStuff.Test.Tools
             var anchor = new Circle(10);
             
             var circle = new Circle(10);
-            circle.AddAnimation(new Follow()
+            circle.AddAnimation(new Follow(anchor)
             {
-                Anchor = anchor,
                 Velocity = 10,
             });
 
@@ -245,7 +243,7 @@ namespace PeterDoStuff.Test.Tools
 
             var circle = new Circle(5);
             canvas.AddAndStyleModel(circle);
-            circle.Radius.Should().Be(5);
+            circle.ScaledRadius.Should().Be(5);
 
             circle.StrokeColor.Should().Be("#FFFFFF");
             circle.StrokeWidth.Should().Be(4);
@@ -259,21 +257,15 @@ namespace PeterDoStuff.Test.Tools
         public async Task _14_Wander()
         {
             var circle = new Circle(5);
-            var wander = new Wander()
+            var wander = new Wander(0, 1000, 0, 1000)
             {
                 Gap = TimeSpan.FromMilliseconds(100),
-                MinX = 0, MaxX = 1000,
-                MinY = 0, MaxY = 1000,
                 Velocity = 250,
                 SlowRange = 200
             };
             circle.AddAnimation(wander);
 
             wander.Gap.Should().Be(TimeSpan.FromMilliseconds(100));
-            wander.MinX.Should().Be(0);
-            wander.MaxX.Should().Be(1000);
-            wander.MinY.Should().Be(0);
-            wander.MaxY.Should().Be(1000);
             wander.Velocity.Should().Be(250);
             wander.SlowRange.Should().Be(200);
 
@@ -301,12 +293,8 @@ namespace PeterDoStuff.Test.Tools
             line.End.X.Should().Be(3);
             line.End.Y.Should().Be(4);
 
-            line.End.AddAnimation(new Blink()
+            line.End.AddAnimation(new Blink(3, 100, 4, 200)
             {
-                MinX = 3,
-                MaxX = 100,
-                MinY = 4,
-                MaxY = 200,
                 BlinkGap = TimeSpan.FromMilliseconds(100)
             });
 

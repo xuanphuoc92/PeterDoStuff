@@ -9,10 +9,8 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
             Name = "Wandering";
             
             var circle = new Circle(10) { X = Width / 2, Y = Height / 2 };
-            circle.AddAnimation(new Wander()
+            circle.AddAnimation(new Wander(30, Width - 30, 30, Height - 30)
             {
-                MinX = 30, MaxX = Width - 30,
-                MinY = 30, MaxY = Height - 30,
                 Velocity = 250,
                 SlowRange = 200
             });

@@ -3,36 +3,34 @@ namespace PeterDoStuff.Tools.Graphics
 {
     public class Wander : Animation
     {
-        private Model _anchor = new();
-        private Blink _blink = new();
-        private Follow _follow = new();
+        private Model Anchor;
+        private Blink Blink;
+        private Follow Follow;
         
-        public Wander()
+        public Wander(double minX, double maxX, double minY, double maxY)
         {
-            _anchor.AddAnimation(_blink);
-            _follow.Anchor = _anchor;
+            Blink = new(minX, maxX, minY, maxY);
+            Anchor =  new();
+            Anchor.AddAnimation(Blink);
+            Follow = new(Anchor);
         }
 
-        public TimeSpan Gap { get => _blink.BlinkGap; set => _blink.BlinkGap = value; }
-        public double MinX { get => _blink.MinX; set => _blink.MinX = value; }
-        public double MaxX { get => _blink.MaxX; set => _blink.MaxX = value; }
-        public double MinY { get => _blink.MinY; set => _blink.MinY = value; }
-        public double MaxY { get => _blink.MaxY; set => _blink.MaxY = value; }
-        public double Velocity { get => _follow.Velocity; set => _follow.Velocity = value; }
-        public double SlowRange { get => _follow.SlowRange; set => _follow.SlowRange = value; }
+        public TimeSpan Gap { get => Blink.BlinkGap; set => Blink.BlinkGap = value; }
+        public double Velocity { get => Follow.Velocity; set => Follow.Velocity = value; }
+        public double SlowRange { get => Follow.SlowRange; set => Follow.SlowRange = value; }
 
         protected override async Task Resolve(DateTime now)
         {
-            if (_anchor.X == default & _anchor.Y == default)
+            if (Anchor.X == default & Anchor.Y == default)
             {
-                _anchor.X = Model.X; _anchor.Y = Model.Y;
+                Anchor.X = Model.X; Anchor.Y = Model.Y;
             }
 
-            if (_follow.Model == null)
-                _follow.Model = Model;
+            if (Follow.Model == null)
+                Follow.Model = Model;
 
-            await _anchor.Resolve(now);
-            await _follow.Tick(now);
+            await Anchor.Resolve(now);
+            await Follow.Tick(now);
         }
     }
 }

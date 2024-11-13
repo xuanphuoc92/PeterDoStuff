@@ -3,6 +3,12 @@
     public class Follow : Animation
     {
         public Vector Anchor;
+
+        public Follow(Vector anchor)
+        {
+            Anchor = anchor;
+        }
+
         public double Velocity = 100;
         public double SlowRange = 0;
         public double StopRange = 0;

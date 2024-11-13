@@ -15,7 +15,7 @@
         protected override Task Resolve(DateTime now)
         {
             var circle = (Circle)Model;
-            double ballRadius = circle.Radius + (circle.ScaledStrokeWidth / 2);
+            double ballRadius = circle.ScaledRadius + (circle.ScaledStrokeWidth / 2);
             _bouncingInBox.Model = Model;
             _bouncingInBox.Left = Left + ballRadius;
             _bouncingInBox.Right = Right - ballRadius;

@@ -10,6 +10,14 @@
         
         private Random Random = new Random();
 
+        public Blink(double minX, double maxX, double minY, double maxY)
+        {
+            MinX = minX;
+            MaxX = maxX;
+            MinY = minY;
+            MaxY = maxY;
+        }
+
         protected override async Task Resolve(DateTime now)
         {
             var timeSpan = FromLastTick(now);
