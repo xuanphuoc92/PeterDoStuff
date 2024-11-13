@@ -1,21 +1,10 @@
 ﻿@using PeterDoStuff.Tools.Graphics
 <svg width="@Canvas.Width" height="@Canvas.Height">
-    <RectangleSvg Model="@Canvas.CanvasRect" />
+    <ModelSvg Model="@Canvas.CanvasRect" />
     @for (int i = 0; i < Canvas.Models.Count(); i++)
     {
         var model = Canvas.Models[i];
-        if (model is Rectangle rectangle)
-        {
-            <RectangleSvg Model="@rectangle" />
-        }
-        if (model is Circle circle)
-        {
-            <CircleSvg Model="@circle" />
-        }
-        if (model is Text text)
-        {
-            <TextSvg Model="@text" />
-        }
+        <ModelSvg Model="@model"/>
     }
 </svg>
 
