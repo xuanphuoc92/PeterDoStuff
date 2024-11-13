@@ -11,6 +11,10 @@
 {
     <TextSvg Model="@text" />
 }
+@if (Model is Line line)
+{
+    <LineSvg Model="@line" />
+}
 
 @code {
     [Parameter]

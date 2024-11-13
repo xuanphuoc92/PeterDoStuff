@@ -20,6 +20,11 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
             text.FontSize = 75;
             text.AddAnimation(new Timer() { LastTick = now });
             AddAndStyleModel(text);
+
+            var line = new Line().Set(Width / 2, Height / 2, Width / 2, 75);
+            AddAndStyleModel(line);
+            line.StrokeOpacity = 0.75;
+            line.End.AddAnimation(new Circling(Width / 2, Height / 2, 75) { LastTick = now });
         }
 
         private class Timer : Animation
