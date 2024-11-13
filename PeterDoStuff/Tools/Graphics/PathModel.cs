@@ -11,28 +11,34 @@
 
         public PathModel MoveTo(double x, double y)
         {
-            AddPathPoint(x, y);
-            Commands.Add(new("M"));
+            Commands.Add(new("M", AddPoint(x, y)));
             return this;
         }
 
         public PathModel LineTo(double x, double y)
         {
-            AddPathPoint(x, y);
-            Commands.Add(new("L"));
+            Commands.Add(new("L", AddPoint(x, y)));
             return this;
         }
 
-        private void AddPathPoint(double x, double y)
+        public PathModel SmoothCurveTo(double x, double y, double xs, double ys)
         {
-            var model = new Model() { X = x, Y = y, Z = this.Z };
-            Children.Add(model);
+            Commands.Add(new("S", AddPoint(x, y), AddPoint(xs, ys)));
+            return this;
+        }
+
+        private Model AddPoint(double x, double y)
+        {
+            var point = new Model() { X = x, Y = y, Z = this.Z };
+            Children.Add(point);
+            return point;
         }
     }
 
-    public class PathCommand(string command, params double[] parameters)
+    public class PathCommand(string command, Model point, params Model[] parameters)
     {
         public string Command = command;
-        public double[] Params = parameters;
+        public Model Point = point;
+        public Model[] Params = parameters;
     }
 }

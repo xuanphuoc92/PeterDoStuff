@@ -1,4 +1,5 @@
-﻿@using PeterDoStuff.Tools.Graphics
+﻿@using PeterDoStuff.Extensions
+@using PeterDoStuff.Tools.Graphics
 
 <path d="@D"
       stroke="@Model.StrokeColor"
@@ -16,11 +17,11 @@
         get
         {
             var d = "";
-            for (int i = 0; i < Model.Commands.Count; i++)
+            foreach (var command in Model.Commands)
             {
-                var command = Model.Commands[i].Command;
-                var point = Model.Children[i];
-                d += $"{command} {point.X} {point.Y} ";
+                var commadLine = command.Command + " " + command.Params.Select(p => $"{p.X} {p.Y}").Join(" ");
+                var point = command.Point;
+                d += $"{commadLine} {point.X} {point.Y} ";
             }
             return d;
         }

@@ -341,5 +341,19 @@ namespace PeterDoStuff.Test.Tools
             path.Children.Should().HaveCount(5);
             path.Commands.Should().HaveCount(5);
         }
+
+        [TestMethod]
+        public void _17_Curve()
+        {
+            var curve = new PathModel(50, 150);
+
+            curve.Children.Should().HaveCount(1);
+            curve.Commands.Should().HaveCount(1);
+
+            curve.SmoothCurveTo(150, 150, 100, 150);
+            curve.SmoothCurveTo(250, 150, 200, 150);
+            curve.Children.Should().HaveCount(5);
+            curve.Commands.Should().HaveCount(3);
+        }
     }
 }

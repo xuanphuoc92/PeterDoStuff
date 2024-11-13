@@ -22,6 +22,11 @@
         public Canvas AddAndStyleModel(Model model)
         {
             model = ModelBuilder.Style(() => model);
+            return AddModel(model);
+        }
+
+        public Canvas AddModel(Model model)
+        {
             Models.Add(model);
             return this;
         }
