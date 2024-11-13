@@ -17,8 +17,8 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
             path.FillOpacity = 0;
 
             DateTime now = DateTime.Now;
-            path.Commands[1].Params[0].AddAnimation(new BouncingInBox(0, Width, 50, Height - 50, 0, -50) { LastTick = now });
-            path.Commands[2].Params[0].AddAnimation(new BouncingInBox(0, Width, 50, Height - 50, 0, 50) { LastTick = now });
+            path.Commands[1].Points[0].AddAnimation(new BouncingInBox(0, Width, 50, Height - 50, 0, -50) { LastTick = now });
+            path.Commands[2].Points[0].AddAnimation(new BouncingInBox(0, Width, 50, Height - 50, 0, 50) { LastTick = now });
         }
     }
 }

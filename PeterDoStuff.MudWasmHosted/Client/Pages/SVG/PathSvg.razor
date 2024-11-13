@@ -18,11 +18,7 @@
         {
             var d = "";
             foreach (var command in Model.Commands)
-            {
-                var commadLine = command.Command + " " + command.Params.Select(p => $"{p.X} {p.Y}").Join(" ");
-                var point = command.Point;
-                d += $"{commadLine} {point.X} {point.Y} ";
-            }
+                d += command.Command + " " + command.Points.Select(p => $"{p.X} {p.Y}").Join(" ");
             return d;
         }
     }

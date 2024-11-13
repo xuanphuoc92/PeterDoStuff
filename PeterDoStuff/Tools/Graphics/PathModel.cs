@@ -23,7 +23,7 @@
 
         public PathModel SmoothCurveTo(double x, double y, double xs, double ys)
         {
-            Commands.Add(new("S", AddPoint(x, y), AddPoint(xs, ys)));
+            Commands.Add(new("S", AddPoint(xs, ys), AddPoint(x, y)));
             return this;
         }
 
@@ -35,10 +35,9 @@
         }
     }
 
-    public class PathCommand(string command, Model point, params Model[] parameters)
+    public class PathCommand(string command, params Model[] points)
     {
         public string Command = command;
-        public Model Point = point;
-        public Model[] Params = parameters;
+        public Model[] Points = points;
     }
 }
