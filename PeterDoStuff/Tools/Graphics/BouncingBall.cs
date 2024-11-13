@@ -12,7 +12,7 @@
 
         private BouncingInBox _bouncingInBox;
 
-        public override Task Resolve(DateTime now)
+        protected override Task Resolve(DateTime now)
         {
             var circle = (Circle)Model;
             double ballRadius = circle.Radius + (circle.ScaledStrokeWidth / 2);

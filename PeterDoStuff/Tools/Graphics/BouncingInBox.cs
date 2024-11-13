@@ -8,7 +8,7 @@ namespace PeterDoStuff.Tools.Graphics
 
         public double Left, Right, Top, Bottom, VelocityX, VelocityY;
 
-        public override async Task Resolve(DateTime now)
+        protected override async Task Resolve(DateTime now)
         {
             var timeSpan = FromLastTick(now);
             double time = timeSpan.TotalSeconds;

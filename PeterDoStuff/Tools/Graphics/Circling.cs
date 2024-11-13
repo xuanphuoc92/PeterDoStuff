@@ -13,7 +13,7 @@ namespace PeterDoStuff.Tools.Graphics
         public double CenterX, CenterY, Radius, Phase;
         public TimeSpan CirclingPeriod = TimeSpan.FromSeconds(1);
 
-        public override async Task Resolve(DateTime now)
+        protected override async Task Resolve(DateTime now)
         {
             var timeSpan = FromLastTick(now);
             double deltaPhase = timeSpan.TotalNanoseconds / CirclingPeriod.TotalNanoseconds;

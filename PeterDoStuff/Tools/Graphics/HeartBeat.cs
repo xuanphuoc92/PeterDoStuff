@@ -12,7 +12,7 @@
             (MinScale, MaxScale) = (minScale, maxScale);
         }
 
-        public override async Task Resolve(DateTime now)
+        protected override async Task Resolve(DateTime now)
         {
             var timeSpan = FromLastTick(now);
             double deltaPhase = timeSpan.TotalNanoseconds / BeatPeriod.TotalNanoseconds;

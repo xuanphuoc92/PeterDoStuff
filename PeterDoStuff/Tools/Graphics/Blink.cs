@@ -10,7 +10,7 @@
         
         private Random Random = new Random();
 
-        public override async Task Resolve(DateTime now)
+        protected override async Task Resolve(DateTime now)
         {
             var timeSpan = FromLastTick(now);
             double deltaPhase = timeSpan.TotalNanoseconds / BlinkGap.TotalNanoseconds;

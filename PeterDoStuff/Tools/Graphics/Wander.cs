@@ -21,7 +21,7 @@ namespace PeterDoStuff.Tools.Graphics
         public double Velocity { get => _follow.Velocity; set => _follow.Velocity = value; }
         public double SlowRange { get => _follow.SlowRange; set => _follow.SlowRange = value; }
 
-        public override async Task Resolve(DateTime now)
+        protected override async Task Resolve(DateTime now)
         {
             if (_anchor.X == default & _anchor.Y == default)
             {

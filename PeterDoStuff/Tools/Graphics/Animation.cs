@@ -18,7 +18,7 @@ namespace PeterDoStuff.Tools.Graphics
             UpdateTick(now);
         }
 
-        public abstract Task Resolve(DateTime now);
+        protected abstract Task Resolve(DateTime now);
     }
 
     public class CustomAnimation : Animation
@@ -34,7 +34,7 @@ namespace PeterDoStuff.Tools.Graphics
             _animation = animation;
         }
 
-        public override async Task Resolve(DateTime now)
+        protected override async Task Resolve(DateTime now)
         {
             _animation(Model, now);
         }
