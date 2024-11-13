@@ -15,7 +15,8 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
             var polygon = new Polygon(0, size * -2, size, size, 0, 0, size * -1, size);
             polygon.X = Width / 2;
             polygon.Y = Height / 2;
-
+            
+            polygon.AddAnimation(new HeartBeat(0.75, 2) { LastTick = now, BeatPeriod = TimeSpan.FromMilliseconds(500) });
             polygon.AddAnimation(new Rotating() { LastTick = now, Phase = 0.25 });
             polygon.AddAnimation(new Circling(Width / 2, Height / 2, 100) { LastTick = now });
 
