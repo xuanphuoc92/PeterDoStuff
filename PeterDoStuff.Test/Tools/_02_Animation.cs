@@ -161,12 +161,12 @@ namespace PeterDoStuff.Test.Tools
             circle.X.Should().Be(300);
             circle.Y.Should().Be(200);
 
-            await Task.Delay(25);
+            await Task.Delay(25); // At around 3 o'clock
             await circle.Resolve(DateTime.Now);
             circle.X.Should().BeGreaterThan(300);
             circle.Y.Should().BeGreaterThan(200);
 
-            await Task.Delay(85);
+            await Task.Delay(85); // Back to 12 o'clock
             await circle.Resolve(DateTime.Now);
             circle.X.Should().BeGreaterThanOrEqualTo(300);
             circle.Y.Should().BeGreaterThanOrEqualTo(200);
@@ -290,6 +290,16 @@ namespace PeterDoStuff.Test.Tools
             await circle.Resolve(DateTime.Now);
             circle.X.Should().BeGreaterThan(0);
             circle.Y.Should().BeGreaterThan(0);
+        }
+
+        [TestMethod]
+        public void _15_Line()
+        {
+            var line = new Line().Set(1, 2, 3, 4);
+            line.Start.X.Should().Be(1);
+            line.Start.Y.Should().Be(2);
+            line.End.X.Should().Be(3);
+            line.End.Y.Should().Be(4);
         }
     }
 }
