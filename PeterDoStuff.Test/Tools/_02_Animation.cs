@@ -354,6 +354,16 @@ namespace PeterDoStuff.Test.Tools
             curve.QuadCurveTo(200, 150, 250, 150);
             curve.Children.Should().HaveCount(5);
             curve.Commands.Should().HaveCount(3);
+
+            curve = new PathModel(50, 150);
+
+            curve.Children.Should().HaveCount(1);
+            curve.Commands.Should().HaveCount(1);
+
+            curve.QuadCurveTo(150, 150);
+            curve.QuadCurveTo(250, 150);
+            curve.Children.Should().HaveCount(3);
+            curve.Commands.Should().HaveCount(3);
         }
     }
 }

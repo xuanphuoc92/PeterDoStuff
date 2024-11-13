@@ -28,6 +28,12 @@
             return this;
         }
 
+        public PathModel QuadCurveTo(double x, double y)
+        {
+            Commands.Add(new("T", AddPoint(x, y)));
+            return this;
+        }
+
         private Model AddPoint(double x, double y)
         {
             var point = new Model() { X = x, Y = y, Z = this.Z };
