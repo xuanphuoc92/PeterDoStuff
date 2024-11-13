@@ -20,8 +20,10 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
             circle.AddAnimation(new Follow()
             {
                 Anchor = anchor,
-                Velocity = 250,
-                SlowRange = 200
+                Velocity = 500,
+                SlowRange = 100,
+                StopRange = 2,
+                MergeRange = 2,
             });
 
             AddAndStyleModel(anchor);
