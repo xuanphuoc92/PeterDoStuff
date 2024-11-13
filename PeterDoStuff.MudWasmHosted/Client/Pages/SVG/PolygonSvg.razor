@@ -1,0 +1,30 @@
+﻿@using PeterDoStuff.Extensions
+@using PeterDoStuff.Tools.Graphics
+<polygon points="@Points" 
+    fill-color="@Model.FillColor"
+    fill-opacity="@Model.FillOpacity"
+    stroke="@Model.StrokeColor"
+    stroke-opacity="@Model.StrokeOpacity"
+    stroke-width="@Model.StrokeWidth"
+    transform="@Transform"/>
+
+@code {
+    [Parameter]
+    public Polygon Model { get; set; }
+
+    public string Points
+    {
+        get
+        {
+            return Model.Points.Select(p => $"{p.X},{p.Y}").Join(" ");
+        }
+    }
+
+    public string Transform
+    {
+        get
+        {
+            return $"translate({Model.X},{Model.Y})";
+        }
+    }
+}

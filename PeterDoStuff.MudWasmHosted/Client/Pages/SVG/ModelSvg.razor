@@ -19,6 +19,10 @@
 {
     <PathSvg Model="@path" />
 }
+@if (Model is Polygon polygon)
+{
+    <PolygonSvg Model="polygon" />
+}
 
 @code {
     [Parameter]
