@@ -358,11 +358,28 @@ namespace PeterDoStuff.Test.Tools
         }
 
         [TestMethod]
-        public void _18_Polygon()
+        public async Task _18_Polygon()
         {
             var polygon = new Polygon(0, -50, 25, 25, 0, 0, -25, 25);
             polygon.Points.Should().HaveCount(4);
             polygon.Children.Should().HaveCount(4);
+
+            var rotating = new Rotating() { RotatingPeriod = TimeSpan.FromMilliseconds(100) };
+            polygon.AddAnimation(rotating);
+            polygon.Degree.Should().Be(0);
+
+            await polygon.Resolve();
+            polygon.Degree.Should().Be(0);
+
+            await polygon.Resolve();
+            polygon.Degree.Should().BeGreaterThan(0);
+
+            await Task.Delay(25);
+            await polygon.Resolve();
+            polygon.Degree.Should().BeGreaterThan(45);
+
+            await Task.Delay(75);
+            await polygon.Resolve();
         }
     }
 }
