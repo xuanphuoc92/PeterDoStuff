@@ -340,6 +340,9 @@ namespace PeterDoStuff.Test.Tools
             path.LineTo(250, 150);
             path.Children.Should().HaveCount(5);
             path.Commands.Should().HaveCount(5);
+            path.ClosePath();
+            path.Children.Should().HaveCount(5);
+            path.Commands.Should().HaveCount(6);
         }
 
         [TestMethod]

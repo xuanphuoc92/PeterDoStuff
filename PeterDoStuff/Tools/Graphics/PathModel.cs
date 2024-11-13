@@ -34,6 +34,12 @@
             return this;
         }
 
+        public PathModel ClosePath()
+        {
+            Commands.Add(new ("Z"));
+            return this;
+        }
+
         private Model AddPoint(double x, double y)
         {
             var point = new Model() { X = x, Y = y, Z = this.Z };
