@@ -1,0 +1,28 @@
+﻿@using PeterDoStuff.Tools.Graphics
+
+<path d="@D"
+      stroke="@Model.StrokeColor"
+      stroke-opacity="@Model.StrokeOpacity"
+      stroke-width="@Model.ScaledStrokeWidth"
+      fill="@Model.FillColor"
+      fill-opacity="@Model.FillOpacity"/>
+
+@code {
+    [Parameter]
+    public PathModel Model { get; set; }
+
+    private string D
+    {
+        get
+        {
+            var d = "";
+            for (int i = 0; i < Model.Commands.Count; i++)
+            {
+                var command = Model.Commands[i].Command;
+                var point = Model.Children[i];
+                d += $"{command} {point.X} {point.Y} ";
+            }
+            return d;
+        }
+    }
+}
