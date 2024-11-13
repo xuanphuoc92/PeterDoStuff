@@ -356,5 +356,13 @@ namespace PeterDoStuff.Test.Tools
             curve.Children.Should().HaveCount(3);
             curve.Commands.Should().HaveCount(3);
         }
+
+        [TestMethod]
+        public void _18_Polygon()
+        {
+            var polygon = new Polygon(0, -50, 25, 25, 0, 0, -25, 25);
+            polygon.Points.Should().HaveCount(4);
+            polygon.Children.Should().HaveCount(4);
+        }
     }
 }
