@@ -310,7 +310,7 @@ namespace PeterDoStuff.Test.Tools
                 BlinkGap = TimeSpan.FromMilliseconds(100)
             });
 
-            await line.Resolve(DateTime.Now);
+            await line.Resolve();
             line.Start.X.Should().Be(1);
             line.Start.Y.Should().Be(2);
             line.End.X.Should().Be(3);

@@ -10,9 +10,10 @@
         
         private Random Random = new Random();
 
-        public override async Task Tick(TimeSpan? timeSpan = null)
+        public override async Task Resolve(DateTime now)
         {
-            double deltaPhase = timeSpan.Value.TotalNanoseconds / BlinkGap.TotalNanoseconds;
+            var timeSpan = FromLastTick(now);
+            double deltaPhase = timeSpan.TotalNanoseconds / BlinkGap.TotalNanoseconds;
             Phase += deltaPhase;
 
             if (Phase > 1)

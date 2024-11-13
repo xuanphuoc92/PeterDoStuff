@@ -12,9 +12,10 @@
             (MinScale, MaxScale) = (minScale, maxScale);
         }
 
-        public override async Task Tick(TimeSpan? timeSpan = null)
+        public override async Task Resolve(DateTime now)
         {
-            double deltaPhase = timeSpan.Value.TotalNanoseconds / BeatPeriod.TotalNanoseconds;
+            var timeSpan = FromLastTick(now);
+            double deltaPhase = timeSpan.TotalNanoseconds / BeatPeriod.TotalNanoseconds;
             Phase += deltaPhase;
 
             if (Phase > 1)

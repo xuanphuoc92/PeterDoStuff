@@ -15,8 +15,10 @@
 
         public virtual async Task Resolve(DateTime? now = null)
         {
+            if (now == null)
+                now = DateTime.Now;
             foreach (var animation in Animations)
-                await animation.Tick(now);
+                await animation.Tick(now.Value);
         }
 
         public List<Animation> Animations = [];

@@ -31,9 +31,9 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
         {
             private TimeSpan TotalTimeSpan = TimeSpan.Zero;
 
-            public async override Task Tick(TimeSpan? timeSpan = null)
+            public async override Task Resolve(DateTime now)
             {
-                TotalTimeSpan += timeSpan ?? TimeSpan.Zero;
+                TotalTimeSpan += FromLastTick(now);
                 var textModel = (Text)Model;
                 textModel.Content = ((int)TotalTimeSpan.TotalSeconds).ToString();
             }

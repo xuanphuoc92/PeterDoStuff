@@ -21,7 +21,7 @@ namespace PeterDoStuff.Tools.Graphics
         public double Velocity { get => _follow.Velocity; set => _follow.Velocity = value; }
         public double SlowRange { get => _follow.SlowRange; set => _follow.SlowRange = value; }
 
-        public override async Task Tick(TimeSpan? timeSpan = null)
+        public override async Task Resolve(DateTime now)
         {
             if (_anchor.X == default & _anchor.Y == default)
             {
@@ -31,8 +31,8 @@ namespace PeterDoStuff.Tools.Graphics
             if (_follow.Model == null)
                 _follow.Model = Model;
 
-            await _anchor.Resolve(LastTick);
-            await _follow.Tick(LastTick);
+            await _anchor.Resolve(now);
+            await _follow.Tick(now);
         }
     }
 }
