@@ -31,13 +31,14 @@
             return this;
         }
 
-        public async Task<Canvas> Resolve()
+        public Task Resolve()
         {
             DateTime now = DateTime.Now;
+            List<Task> tasks = [];
             foreach (var model in Models)
-                await model.Resolve(now);
-            await Mouse.Resolve(now);
-            return this;
+                tasks.Add(model.Resolve(now));
+            tasks.Add(Mouse.Resolve(now));
+            return Task.WhenAll(tasks);
         }
     }
 }
