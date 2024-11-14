@@ -31,5 +31,6 @@
     {
         Canvas.Mouse.X = x;
         Canvas.Mouse.Y = y;
+        InvokeAsync(() => Canvas.Mouse.Resolve());
     }
 }
