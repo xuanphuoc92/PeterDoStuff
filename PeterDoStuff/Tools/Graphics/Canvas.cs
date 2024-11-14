@@ -2,31 +2,31 @@
 {
     public class Canvas
     {
-        public ModelStyler ModelBuilder = new();
+        public Style Style = new();
 
         public string Name = "";
-        public double Width => CanvasRect.ScaledWidth;
-        public double Height => CanvasRect.ScaledHeight;
+        public double Width => CanvasRect.Width;
+        public double Height => CanvasRect.Height;
 
-        public Canvas(double width, double height, ModelStyler? builder = null)
+        public Canvas(double width, double height, Style? style = null)
         {
-            if (builder != null)
-                ModelBuilder = builder;
-            CanvasRect = ModelBuilder.Style(() => new Rectangle(width, height));
+            if (style != null)
+                Style = style;
+            CanvasRect = new Rectangle(width, height)
+            {
+                Style = Style
+            };
+            Mouse = new();
         }
 
-        public Rectangle CanvasRect { get; private set; }
+        public Rectangle CanvasRect;
+        public Model Mouse;
 
         public List<Model> Models { get; private set; } = [];
 
-        public Canvas AddAndStyleModel(Model model)
-        {
-            model = ModelBuilder.Style(() => model);
-            return AddModel(model);
-        }
-
         public Canvas AddModel(Model model)
         {
+            model.Style = Style;
             Models.Add(model);
             return this;
         }
@@ -36,6 +36,7 @@
             DateTime now = DateTime.Now;
             foreach (var model in Models)
                 await model.Resolve(now);
+            await Mouse.Resolve(now);
             return this;
         }
     }

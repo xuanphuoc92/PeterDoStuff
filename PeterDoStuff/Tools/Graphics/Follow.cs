@@ -1,18 +1,14 @@
 ﻿namespace PeterDoStuff.Tools.Graphics
 {
-    public class Follow : Animation
+    public class Follow(Model anchor)
+        : Effect
     {
-        public Vector Anchor;
-
-        public Follow(Vector anchor)
-        {
-            Anchor = anchor;
-        }
+        public Model Anchor = anchor;
 
         public double Velocity = 100;
-        public double SlowRange = 0;
-        public double StopRange = 0;
-        public double MergeRange = 0;
+        public double SlowRange = 1;
+        public double StopRange = 1;
+        public double MergeRange = 1;
 
         protected override async Task Resolve(DateTime now)
         {
@@ -38,6 +34,8 @@
 
             Model.X += deltaX;
             Model.Y += deltaY;
+
+            Model.Degrees = PointTo(dx, dy);
         }
     }
 }

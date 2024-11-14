@@ -2,11 +2,11 @@
 @using PeterDoStuff.Tools.Graphics
 
 <path d="@D"
-      stroke="@Model.StrokeColor"
-      stroke-opacity="@Model.StrokeOpacity"
-      stroke-width="@Model.ScaledStrokeWidth"
-      fill="@Model.FillColor"
-      fill-opacity="@Model.FillOpacity"/>
+      stroke="@Model.Style.StrokeColor"
+      stroke-opacity="@Model.Style.StrokeOpacity"
+      stroke-width="@Model.Style.StrokeWidth"
+      fill="@Model.Style.FillColor"
+      fill-opacity="@Model.Style.FillOpacity"/>
 
 @code {
     [Parameter]

@@ -1,21 +1,22 @@
 ﻿namespace PeterDoStuff.Tools.Graphics
 {
-    public class BouncingBall : Animation
+    public class BouncingBall(double left, double right, double top, double bottom, double vx, double vy)
+        : Effect
     {
-        public BouncingBall(double Left, double Right, double Top, double Bottom, double VelocityX, double VelocityY)
-        {
-            (this.Left, this.Right, this.Top, this.Bottom, this.VelocityX, this.VelocityY) = (Left, Right, Top, Bottom, VelocityX, VelocityY);
-            _bouncingInBox = new(Left, Right, Top, Bottom, VelocityX, VelocityY);
-        }
+        public double 
+            Left = left,
+            Right = right,
+            Top = top, 
+            Bottom = bottom,
+            VelocityX = vx,
+            VelocityY = vy;
 
-        public double Left, Right, Top, Bottom, VelocityX, VelocityY;
-
-        private BouncingInBox _bouncingInBox;
+        private BouncingInBox _bouncingInBox = new(left, right, top, bottom, vx, vy);
 
         protected override Task Resolve(DateTime now)
         {
             var circle = (Circle)Model;
-            double ballRadius = circle.ScaledRadius + (circle.ScaledStrokeWidth / 2);
+            double ballRadius = (circle.Radius + (circle.Style.StrokeWidth / 2)) * circle.Scale;
             _bouncingInBox.Model = Model;
             _bouncingInBox.Left = Left + ballRadius;
             _bouncingInBox.Right = Right - ballRadius;

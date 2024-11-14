@@ -4,7 +4,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
 {
     public class DemoBouncingBalls : Canvas
     {
-        public DemoBouncingBalls(ModelStyler builder) : base(300, 300, builder)
+        public DemoBouncingBalls(Style style) : base(300, 300, style)
         {
             Name = "Bouncing Balls";
             
@@ -24,8 +24,8 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
                 double velocityX = minSpeed + (random.NextDouble() * speedRange);
                 double velocityY = minSpeed + (random.NextDouble() * speedRange);
                 var animation = new BouncingBall(0, Width, 0, Height, velocityX, velocityY);
-                ball.AddAnimation(animation);
-                AddAndStyleModel(ball);
+                ball.AddEffect(animation);
+                AddModel(ball);
             }
         }
     }

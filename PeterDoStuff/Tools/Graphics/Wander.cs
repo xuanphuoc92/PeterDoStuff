@@ -1,23 +1,18 @@
-﻿
-namespace PeterDoStuff.Tools.Graphics
+﻿namespace PeterDoStuff.Tools.Graphics
 {
-    public class Wander : Animation
+    public class Wander : Effect
     {
-        private Model Anchor;
-        private Blink Blink;
-        private Follow Follow;
+        public Model Anchor;
+        public Blink Blink;
+        public Follow Follow;
         
         public Wander(double minX, double maxX, double minY, double maxY)
         {
             Blink = new(minX, maxX, minY, maxY);
             Anchor =  new();
-            Anchor.AddAnimation(Blink);
+            Anchor.AddEffect(Blink);
             Follow = new(Anchor);
         }
-
-        public TimeSpan Gap { get => Blink.BlinkGap; set => Blink.BlinkGap = value; }
-        public double Velocity { get => Follow.Velocity; set => Follow.Velocity = value; }
-        public double SlowRange { get => Follow.SlowRange; set => Follow.SlowRange = value; }
 
         protected override async Task Resolve(DateTime now)
         {

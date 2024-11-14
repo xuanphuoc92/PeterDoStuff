@@ -1,16 +1,14 @@
 ﻿namespace PeterDoStuff.Tools.Graphics
 {
-    public class HeartBeat : Animation
+    public class HeartBeat(double minScale, double maxScale, double startPhase = 0)
+        : Effect
     {
-        public double MinScale, MaxScale;
+        public double
+            MinScale = minScale,
+            MaxScale = maxScale;
         public TimeSpan BeatPeriod = TimeSpan.FromSeconds(1);
         public double GrowPhase = 0.2;
-        public double Phase = 0;
-
-        public HeartBeat(double minScale, double maxScale)
-        {
-            (MinScale, MaxScale) = (minScale, maxScale);
-        }
+        public double Phase = startPhase;
 
         protected override async Task Resolve(DateTime now)
         {

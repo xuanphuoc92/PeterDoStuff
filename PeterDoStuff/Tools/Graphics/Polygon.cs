@@ -1,6 +1,4 @@
-﻿using System.Net;
-
-namespace PeterDoStuff.Tools.Graphics
+﻿namespace PeterDoStuff.Tools.Graphics
 {
     public class Polygon : CompositeModel
     {

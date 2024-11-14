@@ -1,12 +1,12 @@
 ﻿@using PeterDoStuff.Extensions
 @using PeterDoStuff.Tools.Graphics
 <polygon points="@Points" 
-    fill-color="@Model.FillColor"
-    fill-opacity="@Model.FillOpacity"
-    stroke="@Model.StrokeColor"
-    stroke-opacity="@Model.StrokeOpacity"
-    stroke-width="@Model.StrokeWidth"
-    transform="@Transform"/>
+    fill-color="@Model.Style.FillColor"
+    fill-opacity="@Model.Style.FillOpacity"
+    stroke="@Model.Style.StrokeColor"
+    stroke-opacity="@Model.Style.StrokeOpacity"
+    stroke-width="@Model.Style.StrokeWidth"
+    transform="@Model.SvgTransform"/>
 
 @code {
     [Parameter]
@@ -17,14 +17,6 @@
         get
         {
             return Model.Points.Select(p => $"{p.X},{p.Y}").Join(" ");
-        }
-    }
-
-    public string Transform
-    {
-        get
-        {
-            return $"translate({Model.X},{Model.Y}) rotate({Model.Degree}) scale({Model.Scale})";
         }
     }
 }

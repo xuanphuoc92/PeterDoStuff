@@ -2,8 +2,8 @@
 {
     public class Line : CompositeModel
     {
-        public Model Start { get; } = new();
-        public Model End { get; } = new();
+        public Model Start = new();
+        public Model End = new();
 
         public Line() : base()
         {

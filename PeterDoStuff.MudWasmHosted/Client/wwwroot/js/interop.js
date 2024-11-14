@@ -370,3 +370,15 @@ window.verifyRsa = async (data, signature, publicPem) => {
     );
     return result;
 }
+
+// JavaScript code to add in your HTML file or a separate JavaScript file
+window.updateMousePosition = function (canvasRef, dotNetObject) {
+    canvasRef.addEventListener('mousemove', function (event) {
+        const rect = canvasRef.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+
+        // Call the Blazor method to update mouse position
+        dotNetObject.invokeMethodAsync('UpdateMousePosition', x, y);
+    });
+};

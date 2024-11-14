@@ -4,7 +4,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
 {
     public class DemoGrowingBalls : Canvas
     {
-        public DemoGrowingBalls(ModelStyler builder) : base(300, 300, builder)
+        public DemoGrowingBalls(Style style) : base(300, 300, style)
         {
             Name = "Growing Balls";
 
@@ -29,10 +29,10 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
 
                 var bouncingAnimation = new BouncingBall(0, Width, 0, Height, velocityX, velocityY);
 
-                ball.AddAnimation(growingAnimation);
-                ball.AddAnimation(bouncingAnimation);
+                ball.AddEffect(growingAnimation);
+                ball.AddEffect(bouncingAnimation);
 
-                AddAndStyleModel(ball);
+                AddModel(ball);
             }
         }
     }

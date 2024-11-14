@@ -4,7 +4,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
 {
     public class DemoPath : Canvas
     {
-        public DemoPath(ModelStyler builder) : base(300, 300, builder)
+        public DemoPath(Style style) : base(300, 300, style)
         {
             Name = "Path";
 
@@ -14,13 +14,13 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
             path.LineTo(200, 150);
             path.LineTo(250, 150);
 
-            AddAndStyleModel(path);
+            AddModel(path);
 
-            path.FillOpacity = 0;
+            path.Style = Style.Clone().SetFill("", 0);
 
             DateTime now = DateTime.Now;
-            path.Children[1].AddAnimation(new BouncingInBox(0, Width, 50, Height - 50, 0, -250) { LastTick = now });
-            path.Children[3].AddAnimation(new BouncingInBox(0, Width, 50, Height - 50, 0, 250) { LastTick = now });
+            path.Children[1].AddEffect(new BouncingInBox(0, Width, 50, Height - 50, 0, -250) { LastTick = now });
+            path.Children[3].AddEffect(new BouncingInBox(0, Width, 50, Height - 50, 0, 250) { LastTick = now });
         }
     }
 }

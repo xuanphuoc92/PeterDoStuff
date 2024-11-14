@@ -1,12 +1,13 @@
 ﻿@using PeterDoStuff.Tools.Graphics
 
 <rect x="@Model.X" y="@Model.Y"
-      width="@Model.ScaledWidth" height="@Model.ScaledHeight"
-      fill-color="@Model.FillColor"
-      fill-opacity="@Model.FillOpacity"
-      stroke="@Model.StrokeColor"
-      stroke-opacity="@Model.StrokeOpacity"
-      stroke-width="@Model.ScaledStrokeWidth" />
+      width="@Model.Width" height="@Model.Height"
+      fill-color="@Model.Style.FillColor"
+      fill-opacity="@Model.Style.FillOpacity"
+      stroke="@Model.Style.StrokeColor"
+      stroke-opacity="@Model.Style.StrokeOpacity"
+      stroke-width="@Model.Style.StrokeWidth"
+      transform="@Model.SvgTransform" />
 
 @code {
     [Parameter]

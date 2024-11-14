@@ -4,7 +4,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
 {
     public class DemoBouncyTriangle : Canvas
     {
-        public DemoBouncyTriangle(ModelStyler builder) : base(300, 300, builder)
+        public DemoBouncyTriangle(Style style) : base(300, 300, style)
         {
             Name = "Bouncy Triangle";
 
@@ -30,12 +30,12 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
             {
                 double velocityX = minSpeed + (random.NextDouble() * speedRange);
                 double velocityY = minSpeed + (random.NextDouble() * speedRange);
-                path.Children[i].AddAnimation(new BouncingInBox(0, Width, 0, Height, velocityX, velocityY));
+                path.Children[i].AddEffect(new BouncingInBox(0, Width, 0, Height, velocityX, velocityY));
             }
 
             path.ClosePath();
 
-            AddAndStyleModel(path);
+            AddModel(path);
         }
     }
 }

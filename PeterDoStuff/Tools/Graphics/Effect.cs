@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace PeterDoStuff.Tools.Graphics
+﻿namespace PeterDoStuff.Tools.Graphics
 {
-    public abstract class Animation
+    public abstract class Effect
     {
         public Model Model;
                 
@@ -19,17 +17,24 @@ namespace PeterDoStuff.Tools.Graphics
         }
 
         protected abstract Task Resolve(DateTime now);
+
+        protected double PointTo(double dx, double dy)
+        {
+            var degrees = Math.Atan2(dy, dx) * 180 / Math.PI;
+            degrees += 90;
+            return degrees % 360;
+        }
     }
 
-    public class CustomAnimation : Animation
+    public class CustomEffect : Effect
     {
         private Action<Model, DateTime> _animation;
 
-        internal CustomAnimation(Action<Model> animation) : this((t,m) => animation(t))
+        internal CustomEffect(Action<Model> animation) : this((t,m) => animation(t))
         {
         }
 
-        internal CustomAnimation(Action<Model, DateTime> animation)
+        internal CustomEffect(Action<Model, DateTime> animation)
         {
             _animation = animation;
         }

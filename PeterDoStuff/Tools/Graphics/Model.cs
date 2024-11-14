@@ -1,63 +1,49 @@
 ﻿namespace PeterDoStuff.Tools.Graphics
 {
-    public interface Vector
+    public class Model
     {
-        public double X { get; set; }
-        public double Y { get; set; }
-        public double Z { get; set; }
-    }
+        public double X, Y, Z;
+        public double Degrees = 0;
+        public double Scale = 1;
+        public string SvgTransform => $"translate({X},{Y}) rotate({Degrees}) scale({Scale})";
 
-    public class Model : Vector
-    {
-        public double X { get; set; }
-        public double Y { get; set; }
-        public double Z { get; set; }
-        public double Degree { get; set; }
-
+        public List<Effect> Effects = [];
         public virtual async Task Resolve(DateTime? now = null)
         {
             if (now == null)
                 now = DateTime.Now;
-            foreach (var animation in Animations)
-                await animation.Tick(now.Value);
+            foreach (var effect in Effects)
+                await effect.Tick(now.Value);
         }
 
-        public List<Animation> Animations = [];
-
-        public string StrokeColor, FillColor;
-
-        public double StrokeWidth = 1;
-
-        public double StrokeOpacity = 1, FillOpacity = 0;
-
-        public double Scale = 1;
-
-        public double ScaledStrokeWidth => StrokeWidth * Scale;
+        public Style Style = new();
     }
 
     public static class ModelExtensions
     {
-        public static TModel ClearAnimations<TModel>(this TModel model)
+        public static TModel ClearEffects<TModel>(this TModel model)
             where TModel : Model
         {
-            model.Animations.Clear();
+            model.Effects.Clear();
             return model;
         }
 
-        public static TModel AddAnimation<TModel>(this TModel model, Action<TModel> animation)
+        public static TModel AddEffect<TModel>(this TModel model, Action<TModel> effect)
             where TModel : Model
         {
-            CustomAnimation customAnimation = new CustomAnimation(m => animation((TModel)m));
-            customAnimation.Model = model;
-            model.Animations.Add(customAnimation);
+            CustomEffect customEffect = new(m => effect((TModel)m))
+            {
+                Model = model
+            };
+            model.Effects.Add(customEffect);
             return model;
         }
 
-        public static TModel AddAnimation<TModel>(this TModel model, Animation animation)
+        public static TModel AddEffect<TModel>(this TModel model, Effect effect)
             where TModel : Model
         {
-            animation.Model = model;
-            model.Animations.Add(animation);
+            effect.Model = model;
+            model.Effects.Add(effect);
             return model;
         }
     }

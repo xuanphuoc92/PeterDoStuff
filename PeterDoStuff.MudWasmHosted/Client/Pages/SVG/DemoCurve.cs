@@ -4,7 +4,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
 {
     public class DemoCurve : Canvas
     {
-        public DemoCurve(ModelStyler builder) : base(300, 300, builder)
+        public DemoCurve(Style style) : base(300, 300, style)
         {
             Name = "Curve";
 
@@ -12,13 +12,13 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
             path.QuadCurveTo(100, 150, 150, 150);
             path.QuadCurveTo(200, 150, 250, 150);
 
-            AddAndStyleModel(path);
+            AddModel(path);
 
-            path.FillOpacity = 0;
+            path.Style = Style.Clone().SetFill("", 0);
 
             DateTime now = DateTime.Now;
-            path.Commands[1].Points[0].AddAnimation(new BouncingInBox(0, Width, 50, Height - 50, 0, -100) { LastTick = now });
-            path.Commands[2].Points[0].AddAnimation(new BouncingInBox(0, Width, 50, Height - 50, 0, 100) { LastTick = now });
+            path.Commands[1].Points[0].AddEffect(new BouncingInBox(0, Width, 50, Height - 50, 0, -100) { LastTick = now });
+            path.Commands[2].Points[0].AddEffect(new BouncingInBox(0, Width, 50, Height - 50, 0, 100) { LastTick = now });
         }
     }
 }

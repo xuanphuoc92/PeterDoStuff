@@ -1,12 +1,12 @@
 ﻿@using PeterDoStuff.Tools.Graphics
 
-<circle cx="@Model.X" cy="@Model.Y"
-        r="@Model.ScaledRadius"
-        fill-color="@Model.FillColor"
-        fill-opacity="@Model.FillOpacity"        
-        stroke="@Model.StrokeColor"
-        stroke-opacity="@Model.StrokeOpacity"
-        stroke-width="@Model.ScaledStrokeWidth" />
+<circle r="@Model.Radius"
+        fill-color="@Model.Style.FillColor"
+        fill-opacity="@Model.Style.FillOpacity"        
+        stroke="@Model.Style.StrokeColor"
+        stroke-opacity="@Model.Style.StrokeOpacity"
+        stroke-width="@Model.Style.StrokeWidth"
+        transform="@Model.SvgTransform" />
 
 @code {
     [Parameter]

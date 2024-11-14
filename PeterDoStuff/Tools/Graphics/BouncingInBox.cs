@@ -1,12 +1,15 @@
-﻿
-namespace PeterDoStuff.Tools.Graphics
+﻿namespace PeterDoStuff.Tools.Graphics
 {
-    public class BouncingInBox : Animation
+    public class BouncingInBox(double left, double right, double top, double bottom, double vx, double vy)
+        : Effect
     {
-        public BouncingInBox(double Left, double Right, double Top, double Bottom, double VelocityX, double VelocityY)
-            => (this.Left, this.Right, this.Top, this.Bottom, this.VelocityX, this.VelocityY) = (Left, Right, Top, Bottom, VelocityX, VelocityY);
-
-        public double Left, Right, Top, Bottom, VelocityX, VelocityY;
+        public double
+            Left = left,
+            Right = right,
+            Top = top,
+            Bottom = bottom,
+            VelocityX = vx,
+            VelocityY = vy;
 
         protected override async Task Resolve(DateTime now)
         {

@@ -4,7 +4,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
 {
     public class DemoArrowPlane : Canvas
     {
-        public DemoArrowPlane(ModelStyler builder) : base(300, 300, builder)
+        public DemoArrowPlane(Style style) : base(300, 300, style)
         {
             Name = "Arrow Plane";
 
@@ -16,11 +16,11 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
             polygon.X = Width / 2;
             polygon.Y = Height / 2;
             
-            polygon.AddAnimation(new HeartBeat(0.75, 2) { LastTick = now, BeatPeriod = TimeSpan.FromMilliseconds(500) });
-            polygon.AddAnimation(new Rotating() { LastTick = now, Phase = 0.25 });
-            polygon.AddAnimation(new Circling(Width / 2, Height / 2, 100) { LastTick = now });
+            polygon.AddEffect(new HeartBeat(0, 1) { LastTick = now, BeatPeriod = TimeSpan.FromSeconds(5), GrowPhase = 0.5 });
+            polygon.AddEffect(new Rotating() { LastTick = now, Phase = 0.25 });
+            polygon.AddEffect(new Clockwising(Width / 2, Height / 2, 100) { LastTick = now });
 
-            AddAndStyleModel(polygon);
+            AddModel(polygon);
         }
     }
 }

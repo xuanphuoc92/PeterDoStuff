@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using PeterDoStuff.Extensions;
 using PeterDoStuff.Test.Extensions;
 using PeterDoStuff.Tools.Graphics;
 
@@ -12,20 +11,21 @@ namespace PeterDoStuff.Test.Tools
         public void _01_Circle()
         {
             var circle = new Circle(5);
-            circle.ScaledRadius.Should().Be(5);
+            circle.Radius.Should().Be(5);
             circle.X.Should().Be(0);
             circle.Y.Should().Be(0);
             circle.Z.Should().Be(0);
-            circle.StrokeOpacity.Should().Be(1);
-            circle.FillOpacity.Should().Be(0);
+            circle.Style.StrokeOpacity.Should().Be(1);
+            circle.Style.FillOpacity.Should().Be(0);
+            circle.SvgTransform.WriteToConsole();
         }
 
         [TestMethod]
         public void _02_Rectangle()
         {
             var rect = new Rectangle(600, 400);
-            rect.ScaledWidth.Should().Be(600);
-            rect.ScaledHeight.Should().Be(400);
+            rect.Width.Should().Be(600);
+            rect.Height.Should().Be(400);
         }
 
         [TestMethod]
@@ -37,11 +37,11 @@ namespace PeterDoStuff.Test.Tools
             rect.Y.Should().Be(0);
 
             Action<Model> moveRight = (model) => model.X++;
-            rect.AddAnimation(moveRight);
+            rect.AddEffect(moveRight);
             await rect.Resolve();
             rect.X.Should().Be(1);
-            rect.ClearAnimations();
-            rect.AddAnimation(r => r.X--); // Move left
+            rect.ClearEffects();
+            rect.AddEffect(r => r.X--); // Move left
             await rect.Resolve();
             rect.X.Should().Be(0);
         }
@@ -73,8 +73,8 @@ namespace PeterDoStuff.Test.Tools
             canvas.Height.Should().Be(100);
 
             var circle = new Circle(50) { X = 50, Y = 50 };
-            circle.AddAnimation(new BouncingInBox(50, 450, 50, 50, 1, 0));
-            canvas.AddAndStyleModel(circle);
+            circle.AddEffect(new BouncingInBox(50, 450, 50, 50, 1, 0));
+            canvas.AddModel(circle);
 
             circle.X.Should().Be(50);
             await canvas.Resolve();
@@ -94,7 +94,7 @@ namespace PeterDoStuff.Test.Tools
         public async Task _06_BouncingInBox()
         {
             var circle = new Circle(50);
-            circle.AddAnimation(new BouncingInBox(0, 100, 0, 100, 1, 1));
+            circle.AddEffect(new BouncingInBox(0, 100, 0, 100, 1, 1));
 
             circle.X = -5;
             circle.Y = -5;
@@ -113,7 +113,7 @@ namespace PeterDoStuff.Test.Tools
         public async Task _07_BouncingBall()
         {
             var circle = new Circle(50);
-            circle.AddAnimation(new BouncingBall(0, 500, 0, 500, 1, 1));
+            circle.AddEffect(new BouncingBall(0, 500, 0, 500, 1, 1));
 
             circle.X = 5;
             circle.Y = 5;
@@ -132,7 +132,7 @@ namespace PeterDoStuff.Test.Tools
         public async Task _08_HeartBeat()
         {
             var circle = new Circle(50);
-            circle.AddAnimation(new HeartBeat(1, 1.2));
+            circle.AddEffect(new HeartBeat(1, 1.2));
 
             circle.Scale.Should().Be(1);
             await circle.Resolve(DateTime.Now);
@@ -149,13 +149,13 @@ namespace PeterDoStuff.Test.Tools
         }
 
         [TestMethod]
-        public async Task _09_Circling()
+        public async Task _09_Clockwising()
         {
             var circle = new Circle(50);
             
-            Circling animation = new Circling(300, 300, 100);
-            animation.CirclingPeriod = TimeSpan.FromMilliseconds(100);
-            circle.AddAnimation(animation);
+            Clockwising animation = new Clockwising(300, 300, 100);
+            animation.Period = TimeSpan.FromMilliseconds(100);
+            circle.AddEffect(animation);
 
             await circle.Resolve(DateTime.Now);
             circle.X.Should().Be(300);
@@ -184,7 +184,7 @@ namespace PeterDoStuff.Test.Tools
         public async Task _11_Blink()
         {
             var circle = new Circle(10);
-            circle.AddAnimation(new Blink(0, 100, 0, 200)
+            circle.AddEffect(new Blink(0, 100, 0, 200)
             {
                 BlinkGap = TimeSpan.FromMilliseconds(100)
             });
@@ -210,7 +210,7 @@ namespace PeterDoStuff.Test.Tools
             var anchor = new Circle(10);
             
             var circle = new Circle(10);
-            circle.AddAnimation(new Follow(anchor)
+            circle.AddEffect(new Follow(anchor)
             {
                 Velocity = 10,
             });
@@ -234,40 +234,37 @@ namespace PeterDoStuff.Test.Tools
         }
 
         [TestMethod]
-        public void _13_ModelBuilder()
+        public void _13_Style()
         {
-            var modelBuilder = new ModelStyler();
-            modelBuilder.SetStroke("#FFFFFF", 4, 0.5).SetFill("#000000", 0.2);
+            var style = new Style().Clone().SetStroke("#FFFFFF", 4, 0.5).SetFill("#000000", 0.2);
 
-            var canvas = new Canvas(300, 300, modelBuilder);
+            var canvas = new Canvas(300, 300, style);
 
             var circle = new Circle(5);
-            canvas.AddAndStyleModel(circle);
-            circle.ScaledRadius.Should().Be(5);
+            canvas.AddModel(circle);
+            circle.Radius.Should().Be(5);
 
-            circle.StrokeColor.Should().Be("#FFFFFF");
-            circle.StrokeWidth.Should().Be(4);
-            circle.StrokeOpacity.Should().Be(0.5);
+            circle.Style.StrokeColor.Should().Be("#FFFFFF");
+            circle.Style.StrokeWidth.Should().Be(4);
+            circle.Style.StrokeOpacity.Should().Be(0.5);
 
-            circle.FillColor.Should().Be("#000000");
-            circle.FillOpacity.Should().Be(0.2);
+            circle.Style.FillColor.Should().Be("#000000");
+            circle.Style.FillOpacity.Should().Be(0.2);
         }
 
         [TestMethod]
         public async Task _14_Wander()
         {
             var circle = new Circle(5);
-            var wander = new Wander(0, 1000, 0, 1000)
-            {
-                Gap = TimeSpan.FromMilliseconds(100),
-                Velocity = 250,
-                SlowRange = 200
-            };
-            circle.AddAnimation(wander);
+            var wander = new Wander(0, 1000, 0, 1000);
+            wander.Blink.BlinkGap = TimeSpan.FromMilliseconds(100);
+            wander.Follow.Velocity = 250;
+            wander.Follow.SlowRange = 200;
+            circle.AddEffect(wander);
 
-            wander.Gap.Should().Be(TimeSpan.FromMilliseconds(100));
-            wander.Velocity.Should().Be(250);
-            wander.SlowRange.Should().Be(200);
+            wander.Blink.BlinkGap.Should().Be(TimeSpan.FromMilliseconds(100));
+            wander.Follow.Velocity.Should().Be(250);
+            wander.Follow.SlowRange.Should().Be(200);
 
             await circle.Resolve(DateTime.Now);
             circle.X.Should().Be(0);
@@ -293,7 +290,7 @@ namespace PeterDoStuff.Test.Tools
             line.End.X.Should().Be(3);
             line.End.Y.Should().Be(4);
 
-            line.End.AddAnimation(new Blink(3, 100, 4, 200)
+            line.End.AddEffect(new Blink(3, 100, 4, 200)
             {
                 BlinkGap = TimeSpan.FromMilliseconds(100)
             });
@@ -364,22 +361,42 @@ namespace PeterDoStuff.Test.Tools
             polygon.Points.Should().HaveCount(4);
             polygon.Children.Should().HaveCount(4);
 
-            var rotating = new Rotating() { RotatingPeriod = TimeSpan.FromMilliseconds(100) };
-            polygon.AddAnimation(rotating);
-            polygon.Degree.Should().Be(0);
+            var rotating = new Rotating() { Period = TimeSpan.FromMilliseconds(100) };
+            polygon.AddEffect(rotating);
+            polygon.Degrees.Should().Be(0);
 
             await polygon.Resolve();
-            polygon.Degree.Should().Be(0);
+            polygon.Degrees.Should().Be(0);
 
             await polygon.Resolve();
-            polygon.Degree.Should().BeGreaterThan(0);
+            polygon.Degrees.Should().BeGreaterThan(0);
 
             await Task.Delay(25);
             await polygon.Resolve();
-            polygon.Degree.Should().BeGreaterThan(45);
+            polygon.Degrees.Should().BeGreaterThan(45);
 
             await Task.Delay(75);
             await polygon.Resolve();
+        }
+
+        [TestMethod]
+        public async Task _19_DistanceConstraint()
+        {
+            var point = new Model() { X = 0, Y = 0 };
+            var anchor = new Model() { X = 0, Y = 0 };
+
+            var distanceConstraint = new DistanceConstraint(anchor, 100);
+            point.AddEffect(distanceConstraint);
+
+            (anchor.X, anchor.Y) = (10, 10);
+            await point.Resolve();
+            point.X.Should().Be(0);
+            point.Y.Should().Be(0);
+
+            (anchor.X, anchor.Y) = (80, 80);
+            await point.Resolve();
+            point.X.Should().BeGreaterThan(0);
+            point.Y.Should().BeGreaterThan(0);
         }
     }
 }

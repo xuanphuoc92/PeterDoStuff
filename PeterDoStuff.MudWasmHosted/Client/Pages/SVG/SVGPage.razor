@@ -3,28 +3,42 @@
 
 <PlaygroundTitle Page="svg"/>
 
-<MudCheckBox @bind-Value="showAll">Show All</MudCheckBox>
-
-<MudRadioGroup @bind-Value="canvas" Disabled="@showAll">
-    @for (int i = 0; i < demos.Length; i++)
-    {
-        var demo = demos[i];
-        <MudRadio Value="@demo" Color="Color.Primary">@demo.Name</MudRadio>
-    }
-</MudRadioGroup>
-
-<MudDivider Class="my-4" />
+<MudCheckBox @bind-Value="showAll">Gallery</MudCheckBox>
 
 @if(showAll)
 {
-    @for (int i = 0; i < demos.Length; i++)
-    {
-        var demo = demos[i];
-        <CanvasSvg Canvas="demo" />
-    }
+    <MudButton StartIcon="@Icons.Material.Filled.ArrowBackIos" OnClick="Prev">Prev</MudButton>
+    <MudButton EndIcon="@Icons.Material.Filled.ArrowForwardIos" OnClick="Next">Next</MudButton>
+
+    <MudDivider Class="my-4" />
+
+    <MudGrid>
+        @for (int i = pageStart; i < Math.Min(pageStart + pageItems, demos.Length); i++)
+        {
+            var demo = demos[i];
+            <MudItem xs="12" lg="@(12 / pageItems)">
+                <MudText Class="mb-2">@demo.Name</MudText>
+                <CanvasSvg Canvas="demo" />
+            </MudItem>
+        }
+    </MudGrid>
 }
 else
 {
+    <MudRadioGroup @bind-Value="canvas">
+        <MudGrid Spacing="0">
+        @for (int i = 0; i < demos.Length; i++)
+        {
+            var demo = demos[i];
+            <MudItem xs="4" md="2">
+                <MudRadio Value="@demo" Color="Color.Primary">@demo.Name</MudRadio>
+            </MudItem>
+        }
+        </MudGrid>
+    </MudRadioGroup>
+
+    <MudDivider Class="my-4" />
+
     <CanvasSvg Canvas="canvas" />
 }
 
@@ -32,8 +46,24 @@ else
     Canvas[] demos;
     Canvas canvas;
     bool showAll;
+    int pageStart = 0;
+    int pageItems = 4;
 
-    ModelStyler builder = new ModelStyler()
+    private void Prev()
+    {
+        if (pageStart <= 0)
+            return;
+        pageStart -= pageItems;
+    }
+
+    private void Next()
+    {
+        if (pageStart + pageItems >= demos.Length)
+            return;
+        pageStart += pageItems;
+    }
+
+    Style style = new Style()
         .SetStroke(Colors.DeepPurple.Accent3, 4, 1)
         .SetFill(Colors.DeepPurple.Accent3, 0.2);
 
@@ -43,18 +73,20 @@ else
         base.OnInitialized();
 
         demos = [
-            new DemoSimpleBall(builder),
-            new DemoBouncingBalls(builder),
-            new DemoHeartBeat(builder),
-            new DemoGrowingBalls(builder),
-            new DemoCirclingTimer(builder),
-            new DemoBlinkAndFollow(builder),
-            new DemoWandering(builder),
-            new DemoPath(builder),
-            new DemoCurve(builder),
-            new DemoTCurve(builder),
-            new DemoBouncyTriangle(builder),
-            new DemoArrowPlane(builder),
+            new DemoSimpleBall(style),
+            new DemoBouncingBalls(style),
+            new DemoHeartBeat(style),
+            new DemoGrowingBalls(style),
+            new DemoTimer(style),
+            new DemoBlinkAndFollow(style),
+            new DemoWandering(style),
+            new DemoPath(style),
+            new DemoCurve(style),
+            new DemoTCurve(style),
+            new DemoBouncyTriangle(style),
+            new DemoArrowPlane(style),
+            new DemoChain(style),
+            new DemoFollowYourMouse(style),
         ];
 
         canvas = demos.Last();
