@@ -10,8 +10,17 @@
         protected TimeSpan FromLastTick(DateTime now)
             => LastTick == null ? TimeSpan.Zero : now - LastTick.Value;
 
+        public TimeSpan ConstraintTickGap = TimeSpan.FromSeconds(1);
+        private void ConstraintTick(DateTime now)
+        {
+            var timeSpan = FromLastTick(now);
+            if (timeSpan > ConstraintTickGap)
+                LastTick = now - ConstraintTickGap;
+        }
+
         public async Task Resolve(DateTime now)
         {
+            ConstraintTick(now);
             await Tick(now);
             UpdateTick(now);
         }

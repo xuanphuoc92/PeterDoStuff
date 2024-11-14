@@ -398,5 +398,19 @@ namespace PeterDoStuff.Test.Tools
             point.X.Should().BeGreaterThan(0);
             point.Y.Should().BeGreaterThan(0);
         }
+
+        [TestMethod]
+        public async Task _20_ConstraintTickGap()
+        {
+            var blink = new Blink(3, 100, 4, 200);
+            blink.ConstraintTickGap = TimeSpan.FromMilliseconds(100);
+            blink.LastTick.Should().BeNull();
+            
+            await blink.Resolve(DateTime.Now);
+            await Task.Delay(10);
+            await blink.Resolve(DateTime.Now);
+            await Task.Delay(120);
+            await blink.Resolve(DateTime.Now);
+        }
     }
 }

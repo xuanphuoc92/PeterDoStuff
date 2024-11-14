@@ -74,22 +74,22 @@ else
 
         demos = [
             new DemoSimpleBall(style),
-            new DemoBouncingBalls(style),
-            new DemoHeartBeat(style),
-            new DemoGrowingBalls(style),
-            new DemoTimer(style),
-            new DemoBlinkAndFollow(style),
-            new DemoWandering(style),
-            new DemoPath(style),
-            new DemoCurve(style),
-            new DemoTCurve(style),
-            new DemoBouncyTriangle(style),
-            new DemoArrowPlane(style),
-            new DemoChain(style),
-            new DemoFollowYourMouse(style),
-            new DemoDistanceConstraint(style),
-            new DemoChainedConstraint(style),
-        ];
+        new DemoBouncingBalls(style),
+        new DemoHeartBeat(style),
+        new DemoGrowingBalls(style),
+        new DemoTimer(style),
+        new DemoBlinkAndFollow(style),
+        new DemoWandering(style),
+        new DemoPath(style),
+        new DemoCurve(style),
+        new DemoTCurve(style),
+        new DemoBouncyTriangle(style),
+        new DemoArrowPlane(style),
+        new DemoChain(style),
+        new DemoFollowYourMouse(style),
+        new DemoDistanceConstraint(style),
+        new DemoChainedConstraint(style),
+    ];
 
         canvas = demos.Last();
 
@@ -98,8 +98,11 @@ else
 
     private void Tick(object? _ = null)
     {
-        foreach (var demo in demos)
-            InvokeAsync(() => demo.Resolve());
+        if (showAll)
+            foreach (var demo in demos)
+                InvokeAsync(() => demo.Resolve());
+        else
+            InvokeAsync(() => canvas.Resolve());
         InvokeAsync(StateHasChanged);
     }
 }
