@@ -8,6 +8,8 @@
 
         public double StrokeOpacity = 1, FillOpacity = 0;
 
+        public string StrokeDashArray = "";
+
         public Style Clone()
         {
             Style clone = new()
