@@ -22,7 +22,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
 
             var period = TimeSpan.FromSeconds(2);
 
-            arrowHead.AddEffect(new Rotating(180) 
+            arrowHead.AddEffect(new Rotating(period) 
             {
                 LastTick = now,
             });

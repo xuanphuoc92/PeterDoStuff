@@ -18,7 +18,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
             polygon.Degrees = 90;
             
             polygon.AddEffect(new HeartBeat(0, 1) { LastTick = now, BeatPeriod = TimeSpan.FromSeconds(5), GrowPhase = 0.5 });
-            polygon.AddEffect(new Rotating(360) { LastTick = now });
+            polygon.AddEffect(new Rotating(TimeSpan.FromSeconds(1)) { LastTick = now });
             polygon.AddEffect(new Clockwising(Width / 2, Height / 2, 100) { LastTick = now });
 
             AddAndStyle(polygon);

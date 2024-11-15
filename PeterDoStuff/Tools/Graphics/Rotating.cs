@@ -2,9 +2,19 @@
 
 namespace PeterDoStuff.Tools.Graphics
 {
-    public class Rotating(double degreesPerSecond) : Effect
+    public class Rotating : Effect
     {
-        public double DegreesPerSecond = degreesPerSecond;
+        public double DegreesPerSecond;
+
+        public Rotating(TimeSpan cycle)
+            : this(360 / cycle.TotalSeconds)
+        {
+        }
+
+        public Rotating(double degreesPerSecond)
+        {
+            DegreesPerSecond = degreesPerSecond;
+        }
 
         protected override async Task Tick(DateTime now)
         {
