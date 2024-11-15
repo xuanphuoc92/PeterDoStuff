@@ -11,7 +11,7 @@
             VelocityX = vx,
             VelocityY = vy;
 
-        protected override async Task Resolve(DateTime now)
+        protected override async Task Tick(DateTime now)
         {
             var timeSpan = FromLastTick(now);
             double time = timeSpan.TotalSeconds;

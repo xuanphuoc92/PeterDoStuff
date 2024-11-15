@@ -10,13 +10,13 @@
         protected TimeSpan FromLastTick(DateTime now)
             => LastTick == null ? TimeSpan.Zero : now - LastTick.Value;
 
-        public async Task Tick(DateTime now)
+        public async Task Resolve(DateTime now)
         {
-            await Resolve(now);
+            await Tick(now);
             UpdateTick(now);
         }
 
-        protected abstract Task Resolve(DateTime now);
+        protected abstract Task Tick(DateTime now);
 
         protected double PointTo(double dx, double dy)
         {
@@ -39,7 +39,7 @@
             _animation = animation;
         }
 
-        protected override async Task Resolve(DateTime now)
+        protected override async Task Tick(DateTime now)
         {
             _animation(Model, now);
         }

@@ -14,7 +14,7 @@
         private double RangeY => MaxY - MinY;
         private Random Random = new Random();
 
-        protected override async Task Resolve(DateTime now)
+        protected override async Task Tick(DateTime now)
         {
             var timeSpan = FromLastTick(now);
             double deltaPhase = timeSpan.TotalNanoseconds / BlinkGap.TotalNanoseconds;

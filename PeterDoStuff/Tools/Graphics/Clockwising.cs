@@ -11,7 +11,7 @@
 
         public TimeSpan Period = TimeSpan.FromSeconds(1);
 
-        protected override async Task Resolve(DateTime now)
+        protected override async Task Tick(DateTime now)
         {
             var timeSpan = FromLastTick(now);
             double deltaPhase = timeSpan.TotalNanoseconds / Period.TotalNanoseconds;

@@ -14,7 +14,7 @@
             Follow = new(Anchor);
         }
 
-        protected override async Task Resolve(DateTime now)
+        protected override async Task Tick(DateTime now)
         {
             if (Anchor.X == default & Anchor.Y == default)
             {
@@ -25,7 +25,7 @@
                 Follow.Model = Model;
 
             await Anchor.Resolve(now);
-            await Follow.Tick(now);
+            await Follow.Resolve(now);
         }
     }
 }

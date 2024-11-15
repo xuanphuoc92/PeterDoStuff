@@ -10,7 +10,7 @@
         public double GrowPhase = 0.2;
         public double Phase = startPhase;
 
-        protected override async Task Resolve(DateTime now)
+        protected override async Task Tick(DateTime now)
         {
             var timeSpan = FromLastTick(now);
             double deltaPhase = timeSpan.TotalNanoseconds / BeatPeriod.TotalNanoseconds;

@@ -26,7 +26,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
         {
             private TimeSpan TotalTimeSpan = TimeSpan.Zero;
 
-            protected async override Task Resolve(DateTime now)
+            protected async override Task Tick(DateTime now)
             {
                 TotalTimeSpan += FromLastTick(now);
                 var textModel = (Text)Model;

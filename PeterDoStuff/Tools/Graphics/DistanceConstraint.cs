@@ -6,7 +6,7 @@
         public double Distance = distance;
         public double PointingRange = 1;
 
-        protected override Task Resolve(DateTime now)
+        protected override Task Tick(DateTime now)
         {
             double dx = Anchor.X - Model.X;
             double dy = Anchor.Y - Model.Y;

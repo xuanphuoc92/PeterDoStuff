@@ -13,7 +13,7 @@
             if (now == null)
                 now = DateTime.Now;
             foreach (var effect in Effects)
-                await effect.Tick(now.Value);
+                await effect.Resolve(now.Value);
         }
 
         public Style Style = new();

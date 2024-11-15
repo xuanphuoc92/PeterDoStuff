@@ -13,7 +13,7 @@
 
         private BouncingInBox _bouncingInBox = new(left, right, top, bottom, vx, vy);
 
-        protected override Task Resolve(DateTime now)
+        protected override Task Tick(DateTime now)
         {
             var circle = (Circle)Model;
             double ballRadius = (circle.Radius + (circle.Style.StrokeWidth / 2)) * circle.Scale;
@@ -23,7 +23,7 @@
             _bouncingInBox.Top = Top + ballRadius;
             _bouncingInBox.Bottom = Bottom - ballRadius;
 
-            return _bouncingInBox.Tick(now);
+            return _bouncingInBox.Resolve(now);
         }
     }
 }

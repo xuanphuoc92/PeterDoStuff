@@ -10,7 +10,7 @@
         public double StopRange = 1;
         public double MergeRange = 1;
 
-        protected override async Task Resolve(DateTime now)
+        protected override async Task Tick(DateTime now)
         {
             var dx = Anchor.X - Model.X;
             var dy = Anchor.Y - Model.Y;
