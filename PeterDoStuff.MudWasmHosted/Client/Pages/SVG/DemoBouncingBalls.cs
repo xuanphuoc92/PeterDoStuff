@@ -25,7 +25,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
                 double velocityY = minSpeed + (random.NextDouble() * speedRange);
                 var animation = new BouncingBall(0, Width, 0, Height, velocityX, velocityY);
                 ball.AddEffect(animation);
-                AddModel(ball);
+                AddAndStyle(ball);
             }
         }
     }

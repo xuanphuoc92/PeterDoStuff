@@ -32,7 +32,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
                 ball.AddEffect(growingAnimation);
                 ball.AddEffect(bouncingAnimation);
 
-                AddModel(ball);
+                AddAndStyle(ball);
             }
         }
     }

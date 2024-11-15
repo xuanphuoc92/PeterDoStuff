@@ -10,7 +10,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
 
             var circle = new Circle(50) { X = Width / 2, Y = Height / 2};
             circle.AddEffect(new HeartBeat(1, 1.5));
-            AddModel(circle);
+            AddAndStyle(circle);
         }
     }
 }

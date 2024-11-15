@@ -24,7 +24,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
             });
             Mouse.X = arrowHead.X; Mouse.Y = arrowHead.Y;
 
-            AddModel(arrowHead);
+            AddAndStyle(arrowHead);
 
             Model anchor = arrowHead;
             var distance = 20;
@@ -36,7 +36,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
                 bodyJoint.Degrees = 90;
                 bodyJoint.X = arrowHead.X; bodyJoint.Y = arrowHead.Y;
                 bodyJoint.AddEffect(new DistanceConstraint(anchor, distance));
-                AddModel(bodyJoint);
+                AddAndStyle(bodyJoint);
                 anchor = bodyJoint;
             }
         }

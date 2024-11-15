@@ -33,7 +33,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
                 LastTick = now,
             });
 
-            AddModel(arrowHead);
+            AddAndStyle(arrowHead);
 
             Model anchor = arrowHead;
             var distance = 20;
@@ -46,7 +46,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
                 bodyJoint.X = startX;
                 bodyJoint.Y = startY;
                 bodyJoint.AddEffect(new DistanceConstraint(anchor, distance));
-                AddModel(bodyJoint);
+                AddAndStyle(bodyJoint);
                 anchor = bodyJoint;
             }
         }

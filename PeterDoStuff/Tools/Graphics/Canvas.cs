@@ -24,9 +24,14 @@
 
         public List<Model> Models { get; private set; } = [];
 
-        public Canvas AddModel(Model model)
+        public Canvas AddAndStyle(Model model)
         {
-            model.Style = Style;
+            model.Style = Style.Clone();
+            return Add(model);
+        }
+
+        public Canvas Add(Model model)
+        {
             Models.Add(model);
             return this;
         }

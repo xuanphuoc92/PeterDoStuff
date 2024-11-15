@@ -20,7 +20,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
             polygon.AddEffect(new Rotating() { LastTick = now, Phase = 0.25 });
             polygon.AddEffect(new Clockwising(Width / 2, Height / 2, 100) { LastTick = now });
 
-            AddModel(polygon);
+            AddAndStyle(polygon);
         }
     }
 }

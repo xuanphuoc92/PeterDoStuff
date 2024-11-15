@@ -12,9 +12,9 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
             path.QuadCurveTo(100, 150, 150, 150);
             path.QuadCurveTo(200, 150, 250, 150);
 
-            AddModel(path);
+            AddAndStyle(path);
 
-            path.Style = Style.Clone().SetFill("", 0);
+            path.Style.SetFill("", 0);
 
             DateTime now = DateTime.Now;
             path.Commands[1].Points[0].AddEffect(new BouncingInBox(0, Width, 50, Height - 50, 0, -100) { LastTick = now });

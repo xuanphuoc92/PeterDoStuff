@@ -20,8 +20,8 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
                 MergeRange = 2,
             });
 
-            AddModel(anchor);
-            AddModel(circle);
+            AddAndStyle(anchor);
+            AddAndStyle(circle);
         }
     }
 }

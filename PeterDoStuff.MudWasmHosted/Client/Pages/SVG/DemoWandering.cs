@@ -14,7 +14,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
             wander.Follow.SlowRange = 200;
             circle.AddEffect(wander);
 
-            AddModel(circle);
+            AddAndStyle(circle);
         }
     }
 }

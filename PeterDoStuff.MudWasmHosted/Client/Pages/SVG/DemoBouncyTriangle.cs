@@ -35,7 +35,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
 
             path.ClosePath();
 
-            AddModel(path);
+            AddAndStyle(path);
         }
     }
 }

@@ -11,7 +11,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
             
             var circle = new Circle(10);
             circle.AddEffect(new Clockwising(Width /2 , Height / 2, 100) { LastTick = now });
-            AddModel(circle);
+            AddAndStyle(circle);
 
             var text = new Text();
             text.X = Width / 2;
@@ -19,7 +19,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
             text.Content = "0";
             text.FontSize = 75;
             text.AddEffect(new Timer() { LastTick = now });
-            AddModel(text);
+            AddAndStyle(text);
         }
 
         private class Timer : Effect

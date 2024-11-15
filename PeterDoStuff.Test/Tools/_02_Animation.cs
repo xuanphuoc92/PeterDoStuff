@@ -74,7 +74,7 @@ namespace PeterDoStuff.Test.Tools
 
             var circle = new Circle(50) { X = 50, Y = 50 };
             circle.AddEffect(new BouncingInBox(50, 450, 50, 50, 1, 0));
-            canvas.AddModel(circle);
+            canvas.AddAndStyle(circle);
 
             circle.X.Should().Be(50);
             await canvas.Resolve();
@@ -241,7 +241,7 @@ namespace PeterDoStuff.Test.Tools
             var canvas = new Canvas(300, 300, style);
 
             var circle = new Circle(5);
-            canvas.AddModel(circle);
+            canvas.AddAndStyle(circle);
             circle.Radius.Should().Be(5);
 
             circle.Style.StrokeColor.Should().Be("#FFFFFF");
