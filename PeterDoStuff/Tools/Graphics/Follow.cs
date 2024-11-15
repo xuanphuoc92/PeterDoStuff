@@ -25,9 +25,8 @@
                 var deltaY = delta / d * dy;
 
                 Model.Move(deltaX, deltaY);
-            }
-
-            Model.PointTo(dx, dy);
+                Model.PointTo(deltaX, deltaY);
+            }            
 
             if (d <= MergeRange)
             {
