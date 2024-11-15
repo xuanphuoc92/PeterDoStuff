@@ -4,11 +4,6 @@
     {
         public List<Model> Models { get; } = [];
 
-        public CompositeModel(params Model[] children)
-        {
-            Models.AddRange(children);
-        }
-
         public override async Task Resolve(DateTime? now = null)
         {
             // To ensure all are synchronized.

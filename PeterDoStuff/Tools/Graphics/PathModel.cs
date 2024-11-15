@@ -4,7 +4,7 @@
     {
         public List<PathCommand> Commands { get; } = [];
 
-        public PathModel(double x, double y) : base()
+        public PathModel(double x, double y)
         {
             MoveTo(x, y);
         }

@@ -5,7 +5,7 @@
         public Model Start = new();
         public Model End = new();
 
-        public Line() : base()
+        public Line()
         {
             Models.AddRange([Start, End]);
         }
