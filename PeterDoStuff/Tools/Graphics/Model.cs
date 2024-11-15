@@ -49,13 +49,13 @@ namespace PeterDoStuff.Tools.Graphics
             return model;
         }
 
-        public static TModel PointTo<TModel>(this TModel model, Model target)
-            where TModel : Model
-        {
-            var dx = target.X - model.X;
-            var dy = target.Y - model.Y;
-            return model.PointTo(dx, dy);
-        }
+        //public static TModel PointTo<TModel>(this TModel model, Model target)
+        //    where TModel : Model
+        //{
+        //    var dx = target.X - model.X;
+        //    var dy = target.Y - model.Y;
+        //    return model.PointTo(dx, dy);
+        //}
 
         public static TModel PointTo<TModel>(this TModel model, double dx, double dy)
             where TModel : Model
