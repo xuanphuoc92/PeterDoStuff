@@ -1,9 +1,7 @@
 ﻿namespace PeterDoStuff.Tools.Graphics
 {
-    public class Canvas
+    public class Canvas : CompositeModel
     {
-        public Style Style = new();
-
         public string Name = "";
         public double Width => CanvasRect.Width;
         public double Height => CanvasRect.Height;
@@ -12,17 +10,14 @@
         {
             if (style != null)
                 Style = style;
-            CanvasRect = new Rectangle(width, height)
-            {
-                Style = Style
-            };
+            CanvasRect = new Rectangle(width, height);
+            AddAndStyle(CanvasRect);
             Mouse = new();
+            Add(Mouse);
         }
 
         public Rectangle CanvasRect;
-        public Model Mouse;
-
-        public List<Model> Models { get; private set; } = [];
+        public Model Mouse;        
 
         public Canvas AddAndStyle(Model model)
         {
@@ -34,16 +29,6 @@
         {
             Models.Add(model);
             return this;
-        }
-
-        public Task Resolve()
-        {
-            DateTime now = DateTime.Now;
-            List<Task> tasks = [];
-            foreach (var model in Models)
-                tasks.Add(model.Resolve(now));
-            tasks.Add(Mouse.Resolve(now));
-            return Task.WhenAll(tasks);
         }
     }
 }

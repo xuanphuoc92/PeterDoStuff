@@ -97,7 +97,7 @@ else
     private void Tick(object? _ = null)
     {
         foreach (var demo in demos)
-            InvokeAsync(demo.Resolve);
+            InvokeAsync(() => demo.Resolve());
         InvokeAsync(StateHasChanged);
     }
 }

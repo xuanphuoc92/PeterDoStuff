@@ -6,12 +6,11 @@
 
         public override async Task Resolve(DateTime? now = null)
         {
-            // To ensure all are synchronized.
-            if (now == null)
-                now = DateTime.Now;
             await base.Resolve(now);
-            foreach (var child in Models)
-                await child.Resolve(now);
+            List<Task> tasks = [];
+            foreach (var model in Models)
+                tasks.Add(model.Resolve(now));
+            await Task.WhenAll(tasks);
         }
     }
 }
