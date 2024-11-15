@@ -16,26 +16,23 @@
             var dy = Anchor.Y - Model.Y;
             var d = Math.Sqrt(dx * dx + dy * dy); // pythagoras theorem, duh
 
-            if (d <= StopRange)
+            if (d > StopRange)
             {
-                if (d <= MergeRange)
-                {
-                    Model.X = Anchor.X;
-                    Model.Y = Anchor.Y;
-                }
-                return;
+                var timeSpan = FromLastTick(now);
+                var delta = timeSpan.TotalSeconds * Math.Min(Velocity, d / SlowRange * Velocity);
+
+                var deltaX = delta / d * dx;
+                var deltaY = delta / d * dy;
+
+                Model.Move(deltaX, deltaY);
             }
 
-            var timeSpan = FromLastTick(now);            
-            var delta = timeSpan.TotalSeconds * Math.Min(Velocity, d / SlowRange * Velocity);
-
-            var deltaX = delta / d * dx;
-            var deltaY = delta / d * dy;
-
-            Model.X += deltaX;
-            Model.Y += deltaY;
-
             Model.PointTo(dx, dy);
+
+            if (d <= MergeRange)
+            {
+                Model.MoveTo(Anchor);
+            }
         }
     }
 }

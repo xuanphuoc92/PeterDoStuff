@@ -65,5 +65,27 @@ namespace PeterDoStuff.Tools.Graphics
             model.Degrees =  degrees.Cap(-180, 180);
             return model;
         }
+
+        public static TModel MoveTo<TModel>(this TModel model, Model target)
+            where TModel : Model
+        {
+            return model.MoveTo(target.X, target.Y);
+        }
+
+        public static TModel MoveTo<TModel>(this TModel model, double x, double y)
+            where TModel : Model
+        {
+            model.X = x;
+            model.Y = y;
+            return model;
+        }
+
+        public static TModel Move<TModel>(this TModel model, double dx, double dy)
+            where TModel : Model
+        {
+            model.X += dx;
+            model.Y += dy;
+            return model;
+        }
     }
 }
