@@ -361,7 +361,7 @@ namespace PeterDoStuff.Test.Tools
             polygon.Points.Should().HaveCount(4);
             polygon.Models.Should().HaveCount(4);
 
-            var rotating = new Rotating() { Period = TimeSpan.FromMilliseconds(100) };
+            var rotating = new Rotating(3600);
             polygon.AddEffect(rotating);
             polygon.Degrees.Should().Be(0);
 

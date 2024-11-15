@@ -18,14 +18,13 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
             var arrowHead = new Polygon(0, size * -2, size, size, 0, 0, size * -1, size);
             arrowHead.X = startX;
             arrowHead.Y = startY;
+            arrowHead.Degrees = 90;
 
             var period = TimeSpan.FromSeconds(2);
 
-            arrowHead.AddEffect(new Rotating() 
+            arrowHead.AddEffect(new Rotating(180) 
             {
-                Period = period,
                 LastTick = now,
-                Phase = 0.25,
             });
             arrowHead.AddEffect(new Clockwising(Width / 2, Height / 2, 100) 
             { 

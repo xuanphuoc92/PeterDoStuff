@@ -1,20 +1,16 @@
-﻿namespace PeterDoStuff.Tools.Graphics
+﻿using PeterDoStuff.Extensions;
+
+namespace PeterDoStuff.Tools.Graphics
 {
-    public class Rotating(double startPhase = 0) : Effect
+    public class Rotating(double degreesPerSecond) : Effect
     {
-        public TimeSpan Period = TimeSpan.FromSeconds(1);
-        public double Phase = startPhase;
+        public double DegreesPerSecond = degreesPerSecond;
 
         protected override async Task Tick(DateTime now)
         {
             var timeSpan = FromLastTick(now);
-            double deltaPhase = timeSpan.TotalNanoseconds / Period.TotalNanoseconds;
-            Phase += deltaPhase;
-
-            if (Phase > 1)
-                Phase -= (int)Phase;
-
-            Model.Degrees = Phase * 360;
+            var deltaDegress = DegreesPerSecond * timeSpan.TotalSeconds;
+            Model.Degrees = (Model.Degrees + deltaDegress).Cap(0, 360);
         }
     }
 }
