@@ -6,6 +6,9 @@
         public double Width => CanvasRect.Width;
         public double Height => CanvasRect.Height;
 
+        public Rectangle CanvasRect;
+        public Model Mouse;
+
         public Canvas(double width, double height, Style? style = null)
         {
             if (style != null)
@@ -15,9 +18,6 @@
             Mouse = new();
             Add(Mouse);
         }
-
-        public Rectangle CanvasRect;
-        public Model Mouse;        
 
         public Canvas AddAndStyle(Model model)
         {

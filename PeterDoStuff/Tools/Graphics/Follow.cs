@@ -35,7 +35,7 @@
             Model.X += deltaX;
             Model.Y += deltaY;
 
-            Model.Degrees = PointTo(dx, dy);
+            Model.PointTo(dx, dy);
         }
     }
 }

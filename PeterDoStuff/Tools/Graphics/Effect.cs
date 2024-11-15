@@ -17,13 +17,6 @@
         }
 
         protected abstract Task Tick(DateTime now);
-
-        protected double PointTo(double dx, double dy)
-        {
-            var degrees = Math.Atan2(dy, dx) * 180 / Math.PI;
-            degrees += 90;
-            return degrees % 360;
-        }
     }
 
     public class CustomEffect : Effect

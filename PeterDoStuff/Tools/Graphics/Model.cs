@@ -1,4 +1,6 @@
-﻿namespace PeterDoStuff.Tools.Graphics
+﻿using PeterDoStuff.Extensions;
+
+namespace PeterDoStuff.Tools.Graphics
 {
     public class Model
     {
@@ -44,6 +46,23 @@
         {
             effect.Model = model;
             model.Effects.Add(effect);
+            return model;
+        }
+
+        public static TModel PointTo<TModel>(this TModel model, Model target)
+            where TModel : Model
+        {
+            var dx = target.X - model.X;
+            var dy = target.Y - model.Y;
+            return model.PointTo(dx, dy);
+        }
+
+        public static TModel PointTo<TModel>(this TModel model, double dx, double dy)
+            where TModel : Model
+        {
+            var degrees = Math.Atan2(dy, dx) * 180 / Math.PI;
+            degrees += 90;
+            model.Degrees =  degrees.Cap(-180, 180);
             return model;
         }
     }

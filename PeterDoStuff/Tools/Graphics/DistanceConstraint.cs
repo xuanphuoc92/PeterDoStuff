@@ -19,7 +19,7 @@
             }
 
             if (d > PointingRange)
-                Model.Degrees = PointTo(dx, dy);
+                Model.PointTo(dx, dy);
 
             return Task.CompletedTask;
         }
