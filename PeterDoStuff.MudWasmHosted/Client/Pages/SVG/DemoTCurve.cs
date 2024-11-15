@@ -19,8 +19,8 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
             path.Style.SetFill("", 0);
 
             DateTime now = DateTime.Now;
-            path.Children[1].AddEffect(new BouncingInBox(0, Width, 50, Height - 50, 0, -250) { LastTick = now });
-            path.Children[3].AddEffect(new BouncingInBox(0, Width, 50, Height - 50, 0, 250) { LastTick = now });
+            path.Models[1].AddEffect(new BouncingInBox(0, Width, 50, Height - 50, 0, -250) { LastTick = now });
+            path.Models[3].AddEffect(new BouncingInBox(0, Width, 50, Height - 50, 0, 250) { LastTick = now });
         }
     }
 }

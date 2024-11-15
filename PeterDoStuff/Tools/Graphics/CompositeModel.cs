@@ -2,11 +2,11 @@
 {
     public class CompositeModel : Model
     {
-        public List<Model> Children { get; } = [];
+        public List<Model> Models { get; } = [];
 
         public CompositeModel(params Model[] children)
         {
-            Children.AddRange(children);
+            Models.AddRange(children);
         }
 
         public override async Task Resolve(DateTime? now = null)
@@ -15,7 +15,7 @@
             if (now == null)
                 now = DateTime.Now;
             await base.Resolve(now);
-            foreach (var child in Children)
+            foreach (var child in Models)
                 await child.Resolve(now);
         }
     }

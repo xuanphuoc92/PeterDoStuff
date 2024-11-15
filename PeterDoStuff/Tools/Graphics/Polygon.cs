@@ -21,7 +21,7 @@
         {
             var point = new Model() { X = x, Y = y };
             Points.Add(point);
-            Children.Add(point);
+            Models.Add(point);
         }
     }
 }

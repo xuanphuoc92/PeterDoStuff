@@ -30,7 +30,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
             {
                 double velocityX = minSpeed + (random.NextDouble() * speedRange);
                 double velocityY = minSpeed + (random.NextDouble() * speedRange);
-                path.Children[i].AddEffect(new BouncingInBox(0, Width, 0, Height, velocityX, velocityY));
+                path.Models[i].AddEffect(new BouncingInBox(0, Width, 0, Height, velocityX, velocityY));
             }
 
             path.ClosePath();

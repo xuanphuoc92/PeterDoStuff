@@ -316,17 +316,17 @@ namespace PeterDoStuff.Test.Tools
         {
             var path = new PathModel(50, 150);
             
-            path.Children.Should().HaveCount(1);
+            path.Models.Should().HaveCount(1);
             path.Commands.Should().HaveCount(1);
 
             path.LineTo(100, 150);
             path.LineTo(150, 150);
             path.LineTo(200, 150);
             path.LineTo(250, 150);
-            path.Children.Should().HaveCount(5);
+            path.Models.Should().HaveCount(5);
             path.Commands.Should().HaveCount(5);
             path.ClosePath();
-            path.Children.Should().HaveCount(5);
+            path.Models.Should().HaveCount(5);
             path.Commands.Should().HaveCount(6);
         }
 
@@ -335,22 +335,22 @@ namespace PeterDoStuff.Test.Tools
         {
             var curve = new PathModel(50, 150);
 
-            curve.Children.Should().HaveCount(1);
+            curve.Models.Should().HaveCount(1);
             curve.Commands.Should().HaveCount(1);
 
             curve.QuadCurveTo(100, 150, 150, 150);
             curve.QuadCurveTo(200, 150, 250, 150);
-            curve.Children.Should().HaveCount(5);
+            curve.Models.Should().HaveCount(5);
             curve.Commands.Should().HaveCount(3);
 
             curve = new PathModel(50, 150);
 
-            curve.Children.Should().HaveCount(1);
+            curve.Models.Should().HaveCount(1);
             curve.Commands.Should().HaveCount(1);
 
             curve.QuadCurveTo(150, 150);
             curve.QuadCurveTo(250, 150);
-            curve.Children.Should().HaveCount(3);
+            curve.Models.Should().HaveCount(3);
             curve.Commands.Should().HaveCount(3);
         }
 
@@ -359,7 +359,7 @@ namespace PeterDoStuff.Test.Tools
         {
             var polygon = new Polygon(0, -50, 25, 25, 0, 0, -25, 25);
             polygon.Points.Should().HaveCount(4);
-            polygon.Children.Should().HaveCount(4);
+            polygon.Models.Should().HaveCount(4);
 
             var rotating = new Rotating() { Period = TimeSpan.FromMilliseconds(100) };
             polygon.AddEffect(rotating);
