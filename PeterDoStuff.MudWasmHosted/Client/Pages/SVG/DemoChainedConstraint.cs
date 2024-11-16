@@ -8,16 +8,11 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
         {
             Name = "Chained Constraint";
 
-            Mouse = CreateJoint();
-            var anchor = Mouse;
+            var chain = new Chain(7, 25, CreateJoint);
+            Add(chain);
 
-            for (int i = 0; i < 6; i++)
-            {
-                var joint = CreateJoint();
-                joint.AddEffect(new DistanceConstraint(anchor, 25));
-                Add(joint);
-                anchor = joint;
-            }
+            var head = chain.Joints[0];
+            head.AddEffect(new Follow(Mouse) { Velocity = 1000, SlowRange = 100 });
         }
 
         private CompositeModel CreateJoint()

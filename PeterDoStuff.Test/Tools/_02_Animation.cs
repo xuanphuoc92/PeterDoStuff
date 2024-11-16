@@ -442,5 +442,12 @@ namespace PeterDoStuff.Test.Tools
             model.PointTo(anchor);
             model.Degrees.Should().Be(90);
         }
+
+        [TestMethod]
+        public void _22_Chain()
+        {
+            var chain = new Chain(8, 90, () => new Circle(30));
+            chain.Joints.Should().HaveCount(8);
+        }
     }
 }
