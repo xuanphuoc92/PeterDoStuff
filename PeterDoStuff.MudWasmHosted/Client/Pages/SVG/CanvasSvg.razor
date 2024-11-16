@@ -2,13 +2,12 @@
 @inject IJSRuntime JS;
 
 <svg width="@Canvas.Width" height="@Canvas.Height" @ref="svgRef">
-    <ModelSvg Model="@Canvas.CanvasRect" />
-    <ModelSvg Model="@Canvas.Mouse" />
     @for (int i = 0; i < Canvas.Models.Count(); i++)
     {
         var model = Canvas.Models[i];
         <ModelSvg Model="@model"/>
     }
+    <ModelSvg Model="@Canvas.Mouse" />
 </svg>
 
 @code {
@@ -22,7 +21,7 @@
         if (firstRender)
         {
             // Pass a reference to this component so JS can call C# methods on it
-            await JS.InvokeVoidAsync("updateMousePosition", svgRef, DotNetObjectReference.Create(this));
+            await JS.InvokeVoidAsync("updateMousePosition", svgRef, DotNetObjectReference.Create(this), nameof(UpdateMousePosition));
         }
     }
 

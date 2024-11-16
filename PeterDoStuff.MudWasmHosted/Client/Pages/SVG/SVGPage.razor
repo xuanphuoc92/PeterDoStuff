@@ -16,7 +16,7 @@
         @for (int i = pageStart; i < Math.Min(pageStart + pageItems, demos.Length); i++)
         {
             var demo = demos[i];
-            <MudItem xs="12" lg="@(12 / pageItems)">
+            <MudItem xs="12" md="4">
                 <MudText Class="mb-2">@demo.Name</MudText>
                 <CanvasSvg Canvas="demo" />
             </MudItem>
@@ -47,7 +47,7 @@ else
     Canvas canvas;
     bool showAll;
     int pageStart = 0;
-    int pageItems = 4;
+    int pageItems = 6;
 
     private void Prev()
     {
