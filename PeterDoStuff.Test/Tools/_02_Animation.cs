@@ -412,5 +412,19 @@ namespace PeterDoStuff.Test.Tools
             await Task.Delay(120);
             await blink.Resolve(DateTime.Now);
         }
+
+        [TestMethod]
+        public void _21_PointTo()
+        {
+            var model = new Model();
+            var anchor = new Model();
+            model.Degrees.Should().Be(0);
+            model.PointTo(anchor);
+            model.Degrees.Should().Be(0);
+
+            anchor.X = 1;
+            model.PointTo(anchor);
+            model.Degrees.Should().Be(90);
+        }
     }
 }

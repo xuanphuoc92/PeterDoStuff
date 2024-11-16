@@ -4,7 +4,6 @@
     {
         public Model Anchor = anchor;
         public double Distance = distance;
-        public double PointingRange = 1;
 
         protected override Task Tick(DateTime now)
         {
@@ -15,9 +14,6 @@
                 Model.X = Anchor.X - Distance * dx / d;
                 Model.Y = Anchor.Y - Distance * dy / d;
             }
-
-            if (d > PointingRange)
-                Model.PointTo(dx, dy);
 
             return Task.CompletedTask;
         }
