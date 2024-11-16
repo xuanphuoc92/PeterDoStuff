@@ -8,9 +8,7 @@
 
         protected override Task Tick(DateTime now)
         {
-            double dx = Anchor.X - Model.X;
-            double dy = Anchor.Y - Model.Y;
-            double d = Math.Sqrt(dx * dx + dy * dy);
+            (double d, double dx, double dy) = Model.GetDistance(Anchor);
 
             if (d > Distance)
             {

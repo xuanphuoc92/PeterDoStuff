@@ -87,5 +87,13 @@ namespace PeterDoStuff.Tools.Graphics
             model.Y += dy;
             return model;
         }
+
+        public static (double d, double dx, double dy) GetDistance(this Model model, Model target)
+        {
+            double dx = target.X - model.X;
+            double dy = target.Y - model.Y;
+            double d = Math.Sqrt(dx * dx + dy * dy);
+            return (d, dx, dy);
+        }
     }
 }

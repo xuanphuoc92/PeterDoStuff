@@ -15,6 +15,8 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
             double size = 20;
 
             var arrowHead = new Polygon(0, size * -2, size, size, 0, 0, size * -1, size);
+            arrowHead.X = Width / 2;
+            arrowHead.Y = Height / 2;
             arrowHead.AddEffect(new Follow(Mouse)
             {
                 Velocity = 250,
@@ -35,6 +37,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
                 bodyJoint.Scale = 0.5;
                 bodyJoint.Degrees = 90;
                 bodyJoint.X = arrowHead.X; bodyJoint.Y = arrowHead.Y;
+                bodyJoint.AddEffect(new PointTo(anchor));
                 bodyJoint.AddEffect(new DistanceConstraint(anchor, distance));
                 AddAndStyle(bodyJoint);
                 anchor = bodyJoint;

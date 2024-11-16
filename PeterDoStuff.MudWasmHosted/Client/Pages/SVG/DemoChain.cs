@@ -44,6 +44,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
                 bodyJoint.Degrees = 90;
                 bodyJoint.X = startX;
                 bodyJoint.Y = startY;
+                bodyJoint.AddEffect(new PointTo(anchor));
                 bodyJoint.AddEffect(new DistanceConstraint(anchor, distance));
                 AddAndStyle(bodyJoint);
                 anchor = bodyJoint;

@@ -12,9 +12,7 @@
 
         protected override async Task Tick(DateTime now)
         {
-            var dx = Anchor.X - Model.X;
-            var dy = Anchor.Y - Model.Y;
-            var d = Math.Sqrt(dx * dx + dy * dy); // pythagoras theorem, duh
+            (double d, double dx, double dy) = Model.GetDistance(Anchor);
 
             if (d > StopRange)
             {
