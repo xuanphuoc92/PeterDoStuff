@@ -381,4 +381,16 @@ window.updateMousePosition = function (canvasRef, dotNetObject, updateMouseMetho
         // Call the Blazor method to update mouse position
         dotNetObject.invokeMethodAsync(updateMouseMethodName, x, y);
     });
+
+    canvasRef.addEventListener('touchmove', function (event) {
+        if (event.touches.length > 0) {
+
+            const rect = canvasRef.getBoundingClientRect();
+            const x = event.touches[0].clientX - rect.left;
+            const y = event.touches[0].clientY - rect.top;
+
+            // Call the Blazor method to update mouse position
+            dotNetObject.invokeMethodAsync(updateMouseMethodName, x, y);
+        }
+    });
 };
