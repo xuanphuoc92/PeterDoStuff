@@ -38,7 +38,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
                 bodyJoint.Degrees = 90;
                 bodyJoint.X = arrowHead.X; bodyJoint.Y = arrowHead.Y;
                 bodyJoint.AddEffect(new PointTo(anchor));
-                bodyJoint.AddEffect(new DistanceConstraint(anchor, distance));
+                bodyJoint.AddEffect(new DistanceConstraint(anchor, distance, distance));
                 AddAndStyle(bodyJoint);
                 anchor = bodyJoint;
             }

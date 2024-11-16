@@ -380,7 +380,7 @@ namespace PeterDoStuff.Test.Tools
         }
 
         [TestMethod]
-        public async Task _19_DistanceConstraint()
+        public async Task _19_A_DistanceConstraint()
         {
             var point = new Model() { X = 0, Y = 0 };
             var anchor = new Model() { X = 0, Y = 0 };
@@ -397,6 +397,22 @@ namespace PeterDoStuff.Test.Tools
             await point.Resolve();
             point.X.Should().BeGreaterThan(0);
             point.Y.Should().BeGreaterThan(0);
+        }
+
+        [TestMethod]
+        public async Task _19_B_DistanceConstraint()
+        {
+            var point = new Model() { X = 0, Y = 0 };
+            var anchor = new Model() { X = 0, Y = 0 };
+
+            var distanceConstraint = new DistanceConstraint(anchor, 100);
+            distanceConstraint.MinDistance = 100;
+            point.AddEffect(distanceConstraint);
+
+            (anchor.X, anchor.Y) = (1, 1);
+            await point.Resolve();
+            point.X.Should().BeLessThan(0);
+            point.Y.Should().BeLessThan(0);
         }
 
         [TestMethod]
