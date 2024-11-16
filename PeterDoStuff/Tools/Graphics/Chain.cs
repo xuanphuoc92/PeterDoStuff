@@ -3,12 +3,17 @@
     public class Chain : CompositeModel
     {
         public List<Model> Joints = [];
-        
+
         public Chain(int jointCount, double jointDistance, Func<Model> jointModel)
+            : this(jointCount, jointDistance, _ => jointModel())
+        {
+        }
+
+        public Chain(int jointCount, double jointDistance, Func<int, Model> jointModel)
         {
             for (int i = 0; i < jointCount; i++)
             {
-                var joint = jointModel();
+                var joint = jointModel(i);
                 Joints.Add(joint);
                 Models.Add(joint);
 
