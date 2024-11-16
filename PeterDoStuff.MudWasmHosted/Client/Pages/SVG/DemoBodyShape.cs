@@ -20,7 +20,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
         {
             var joint = new CompositeModel();
             
-            var jointShape = new Circle(shapes[index] / 3);
+            var jointShape = new Circle(shapes[index] / 4);
             jointShape.Style = Style.Clone();
             jointShape.Style.StrokeWidth = 2;
             jointShape.Style.FillOpacity = 0;
