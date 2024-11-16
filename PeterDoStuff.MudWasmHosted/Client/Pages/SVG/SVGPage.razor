@@ -3,6 +3,24 @@
 
 <PlaygroundTitle Page="svg"/>
 
+<MudText>
+    Inspirations and References:
+</MudText>
+<MudList>
+    <MudListItem>
+        <MudLink Href="https://youtu.be/qlfh_rv6khY?si=KA6yOEJZD7lu3JoY" Target="_blank">
+            <MudIcon Icon="@Icons.Custom.Brands.YouTube" Size="Size.Medium"></MudIcon>
+            A simple procedural animation technique
+        </MudLink>
+    </MudListItem>
+    <MudListItem>
+        <MudLink Href="https://swharden.com/blog/2021-01-07-blazor-canvas-animated-graphics/" Target="_blank">
+            <MudIcon Icon="@Icons.Material.Filled.Edit" Size="Size.Medium"></MudIcon>
+            Draw Animated Graphics in the Browser with Blazor WebAssembly
+        </MudLink>
+    </MudListItem>
+</MudList>
+
 <MudCheckBox @bind-Value="showAll">Gallery</MudCheckBox>
 
 @if(showAll)
@@ -74,23 +92,23 @@ else
 
         demos = [
             new DemoSimpleBall(style),
-        new DemoBouncingBalls(style),
-        new DemoHeartBeat(style),
-        new DemoGrowingBalls(style),
-        new DemoTimer(style),
-        new DemoBlinkAndFollow(style),
-        new DemoWandering(style),
-        new DemoPath(style),
-        new DemoCurve(style),
-        new DemoTCurve(style),
-        new DemoBouncyTriangle(style),
-        new DemoArrowPlane(style),
-        new DemoChain(style),
-        new DemoFollowYourMouse(style),
-        new DemoDistanceConstraint(style),
-        new DemoChainedConstraint(style),
-        new DemoBodyShape(style),
-    ];
+            new DemoBouncingBalls(style),
+            new DemoHeartBeat(style),
+            new DemoGrowingBalls(style),
+            new DemoTimer(style),
+            new DemoBlinkAndFollow(style),
+            new DemoWandering(style),
+            new DemoPath(style),
+            new DemoCurve(style),
+            new DemoTCurve(style),
+            new DemoBouncyTriangle(style),
+            new DemoArrowPlane(style),
+            new DemoChain(style),
+            new DemoFollowYourMouse(style),
+            new DemoDistanceConstraint(style),
+            new DemoChainedConstraint(style),
+            new DemoBodyShape(style),
+        ];
 
         canvas = demos.Last();
 
