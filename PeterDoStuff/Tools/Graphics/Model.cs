@@ -8,11 +8,20 @@ namespace PeterDoStuff.Tools.Graphics
         public double Degrees = 0;
         public double Scale = 1;
 
-        public Model? Parent = null;
-        public double FinalX => (Parent?.X ?? 0) + X;
-        public double FinalY => (Parent?.Y ?? 0) + Y;
-        public double FinalDegrees => (Parent?.Degrees ?? 0) + Degrees;
-        public double FinalScale => (Parent?.Scale ?? 1) * Scale;
+        public List<Model> References = [];
+        public double FinalX => References.Sum(r => r.X) + X;
+        public double FinalY => References.Sum(r => r.Y) + Y;
+        public double FinalDegrees => References.Sum(r => r.Degrees) + Degrees;
+        public double FinalScale
+        {
+            get
+            {
+                var finalScale = Scale;
+                foreach (var reference in References)
+                    finalScale *= reference.Scale;
+                return finalScale;
+            }
+        }
 
 
         public string SvgTransform => $"translate({FinalX},{FinalY}) rotate({FinalDegrees}) scale({FinalScale})";

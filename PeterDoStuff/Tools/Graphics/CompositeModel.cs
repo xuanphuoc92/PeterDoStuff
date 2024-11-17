@@ -24,7 +24,7 @@
         {
             foreach (var model in models)
             {
-                model.Parent = this;
+                model.References.Add(this);
             }
             Models.AddRange(models);
         }
