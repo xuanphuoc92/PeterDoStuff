@@ -24,9 +24,8 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
             jointShape.Style.StrokeWidth = 2;
             jointShape.Style.FillOpacity = 0;
 
-            joint.Models.Add(jointShape);
-
-            joint.AddEffect(j => jointShape.MoveTo(j));
+            joint.Add(jointShape);
+            
             return joint;
         }
     }

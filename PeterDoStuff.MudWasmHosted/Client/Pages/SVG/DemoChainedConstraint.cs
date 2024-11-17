@@ -27,11 +27,9 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
             outer.Style.FillOpacity = 0;
             outer.Style.StrokeDashArray = "1%";
 
-            joint.Models.Add(center);
-            joint.Models.Add(outer);
+            joint.Add(center);
+            joint.Add(outer);
 
-            joint.AddEffect(j => center.MoveTo(j));
-            joint.AddEffect(j => outer.MoveTo(j));
             return joint;
         }
     }
