@@ -10,6 +10,9 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
         {
             Name = "Bouncing Balls";
 
+            Mouse.Style.StrokeOpacity *= 0.2;
+            Mouse.Style.FillOpacity *= 0.2;
+
             var random = new Random();
             for (int i = 0; i < 10; i++)
             {

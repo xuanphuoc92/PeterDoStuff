@@ -1,6 +1,7 @@
 ﻿@using PeterDoStuff.Graphics
+@inject IJSRuntime JS;
 
-<svg width="@Canvas.Rect.Width" height="@Canvas.Rect.Height">
+<svg width="@Canvas.Rect.Width" height="@Canvas.Rect.Height" @ref="svgRef">
     @for (int i = 0; i < Canvas.Children.Count(); i++)
     {
         var model = Canvas.Children[i];
@@ -11,4 +12,23 @@
 @code {
     [Parameter]
     public CanvasModel Canvas { get; set; }
+
+    private ElementReference svgRef;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Pass a reference to this component so JS can call C# methods on it
+            await JS.InvokeVoidAsync("updateMousePosition", svgRef, DotNetObjectReference.Create(this), nameof(UpdateMousePosition));
+        }
+    }
+
+    [JSInvokable]
+    public void UpdateMousePosition(double x, double y)
+    {
+        Canvas.Mouse.X = x;
+        Canvas.Mouse.Y = y;
+        InvokeAsync(() => Canvas.Mouse.Resolve());
+    }
 }

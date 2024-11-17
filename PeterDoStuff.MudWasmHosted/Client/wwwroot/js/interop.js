@@ -370,3 +370,26 @@ window.verifyRsa = async (data, signature, publicPem) => {
     );
     return result;
 }
+
+window.updateMousePosition = function (canvasRef, dotNetObject, updateMouseMethodName) {
+    canvasRef.addEventListener('mousemove', function (event) {
+        const rect = canvasRef.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+
+        // Call the Blazor method to update mouse position
+        dotNetObject.invokeMethodAsync(updateMouseMethodName, x, y);
+    });
+
+    canvasRef.addEventListener('touchmove', function (event) {
+        if (event.touches.length > 0) {
+
+            const rect = canvasRef.getBoundingClientRect();
+            const x = event.touches[0].clientX - rect.left;
+            const y = event.touches[0].clientY - rect.top;
+
+            // Call the Blazor method to update mouse position
+            dotNetObject.invokeMethodAsync(updateMouseMethodName, x, y);
+        }
+    });
+};
