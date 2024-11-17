@@ -9,6 +9,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
             new _01_BouncingBalls(style, new CircleModel(10)),
             new _02_DistanceConstraint(style),
             new _03_MagneticField(style),
+            new _04_MagneticMouse(style),
         ];
     }
 
