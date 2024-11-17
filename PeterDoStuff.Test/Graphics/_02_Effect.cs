@@ -137,5 +137,36 @@ namespace PeterDoStuff.Test.Graphics
             model.X.Should().Be(100);
             model.Y.Should().Be(200);
         }
+
+        [TestMethod]
+        public void _08_MoveOffset()
+        {
+            var model = new Model();
+            
+            var anchor = new Model();
+            anchor.X = 100;
+            anchor.Y = 200;
+
+            MoveTo moveTo = new MoveTo(anchor);
+            moveTo.Offset.X = 1;
+            moveTo.Offset.Y = 1;
+
+            model.Apply(moveTo);
+            model.Resolve();
+            model.X.Should().Be(101);
+            model.Y.Should().Be(201);
+
+            anchor.Deg = 90;
+            model.Apply(moveTo);
+            model.Resolve();
+            model.X.Should().Be(99);
+            model.Y.Should().Be(201);
+
+            anchor.Deg = 180;
+            model.Apply(moveTo);
+            model.Resolve();
+            model.X.Should().Be(99);
+            model.Y.Should().Be(199);
+        }
     }
 }

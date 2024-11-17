@@ -13,5 +13,7 @@
         }
 
         public static double RadToDeg(this double rad) => rad / Math.PI * 180;
+
+        public static double DegToRad(this double deg) => deg / 180 * Math.PI;
     }
 }

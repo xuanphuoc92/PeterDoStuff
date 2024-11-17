@@ -1,4 +1,6 @@
 ﻿
+using PeterDoStuff.Extensions;
+
 namespace PeterDoStuff.Graphics.Effects
 {
     public class MoveTo : Effect
@@ -11,6 +13,8 @@ namespace PeterDoStuff.Graphics.Effects
         {
             Anchor = anchor;
         }
+
+        public Model Offset = new();
         
         public Model Anchor;
 
@@ -18,8 +22,12 @@ namespace PeterDoStuff.Graphics.Effects
         {
             Models.ForEach(m =>
             {
-                m.X = Anchor.X;
-                m.Y = Anchor.Y;
+                var rad = Anchor.Deg.DegToRad();
+                var dx = Anchor.Scale * (Offset.X * Math.Cos(rad) - Offset.Y * Math.Sin(rad));
+                var dy = Anchor.Scale * (Offset.X * Math.Sin(rad) + Offset.Y * Math.Cos(rad));
+
+                m.X = Anchor.X + dx;
+                m.Y = Anchor.Y + dy;
             });
         }
     }
