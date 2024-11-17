@@ -7,7 +7,7 @@
 
         public Line()
         {
-            Models.AddRange([Start, End]);
+            Add(Start, End);
         }
 
         public Line Set(double startX, double startY, double endX, double endY)

@@ -2,7 +2,7 @@
 {
     public class Chain : CompositeModel
     {
-        public List<Model> Joints = [];
+        public List<Model> Joints => Models;
 
         public Chain(int jointCount, double jointDistance, Func<Model> jointModel)
             : this(jointCount, jointDistance, _ => jointModel())
@@ -14,8 +14,7 @@
             for (int i = 0; i < jointCount; i++)
             {
                 var joint = jointModel(i);
-                Joints.Add(joint);
-                Models.Add(joint);
+                Add(joint);
 
                 if (i > 0)
                 {

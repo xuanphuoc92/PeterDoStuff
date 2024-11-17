@@ -18,17 +18,5 @@
             Mouse = new();
             Add(Mouse);
         }
-
-        public Canvas AddAndStyle(Model model)
-        {
-            model.Style = Style.Clone();
-            return Add(model);
-        }
-
-        public Canvas Add(Model model)
-        {
-            Models.Add(model);
-            return this;
-        }
     }
 }

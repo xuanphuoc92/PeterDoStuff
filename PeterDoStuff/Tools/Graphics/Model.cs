@@ -7,7 +7,15 @@ namespace PeterDoStuff.Tools.Graphics
         public double X, Y, Z;
         public double Degrees = 0;
         public double Scale = 1;
-        public string SvgTransform => $"translate({X},{Y}) rotate({Degrees}) scale({Scale})";
+
+        public Model? Parent = null;
+        public double FinalX => (Parent?.X ?? 0) + X;
+        public double FinalY => (Parent?.Y ?? 0) + Y;
+        public double FinalDegrees => (Parent?.Degrees ?? 0) + Degrees;
+        public double FinalScale => (Parent?.Scale ?? 1) * Scale;
+
+
+        public string SvgTransform => $"translate({FinalX},{FinalY}) rotate({FinalDegrees}) scale({FinalScale})";
 
         public List<Effect> Effects = [];
         public virtual async Task Resolve(DateTime? now = null)

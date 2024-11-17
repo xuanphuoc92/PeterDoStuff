@@ -2,7 +2,7 @@
 {
     public class Polygon : CompositeModel
     {
-        public List<Model> Points = [];
+        public List<Model> Points => Models;
 
         public Polygon(double x1, double y1, double x2, double y2, double x3, double y3, params double[] points)
         {
@@ -20,8 +20,7 @@
         private void AddPoint(double x, double y)
         {
             var point = new Model() { X = x, Y = y };
-            Points.Add(point);
-            Models.Add(point);
+            Add(point);
         }
     }
 }

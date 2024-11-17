@@ -12,5 +12,21 @@
                 tasks.Add(model.Resolve(now));
             await Task.WhenAll(tasks);
         }
+
+        public void AddAndStyle(params Model[] models)
+        {
+            foreach (var model in models)
+                model.Style = Style.Clone();
+            Add(models);
+        }
+
+        public void Add(params Model[] models)
+        {
+            foreach (var model in models)
+            {
+                model.Parent = this;
+            }
+            Models.AddRange(models);
+        }
     }
 }

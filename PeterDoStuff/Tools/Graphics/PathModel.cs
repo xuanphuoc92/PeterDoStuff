@@ -43,7 +43,7 @@
         private Model AddPoint(double x, double y)
         {
             var point = new Model() { X = x, Y = y, Z = this.Z };
-            Models.Add(point);
+            Add(point);
             return point;
         }
     }
