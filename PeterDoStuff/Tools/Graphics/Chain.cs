@@ -18,7 +18,9 @@
 
                 if (i > 0)
                 {
-                    joint.AddEffect(new DistanceConstraint(Joints[i - 1], jointDistance, jointDistance));
+                    Model anchor = Joints[i - 1];
+                    joint.AddEffect(new PointTo(anchor));
+                    joint.AddEffect(new DistanceConstraint(anchor, jointDistance, jointDistance));
                 }
             }
         }
