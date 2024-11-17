@@ -23,6 +23,10 @@
 {
     <PolygonSvg Model="polygon" />
 }
+@if (Model is SmoothCurve smoothCurve)
+{
+    <SmoothCurveSvg Model="smoothCurve" />
+}
 @if (Model is CompositeModel composite)
 {
     foreach (var model in composite.Models)

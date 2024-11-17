@@ -1,0 +1,46 @@
+﻿@using PeterDoStuff.Extensions
+@using PeterDoStuff.Tools.Graphics
+@using System.Text
+
+<path d="@D"
+      stroke="@Model.Style.StrokeColor" stroke-dasharray="@Model.Style.StrokeDashArray"
+      stroke-opacity="@Model.Style.StrokeOpacity"
+      stroke-width="@Model.Style.StrokeWidth"
+      fill="@Model.Style.FillColor"
+      fill-opacity="@Model.Style.FillOpacity" />
+
+@code {
+    [Parameter]
+    public SmoothCurve Model { get; set; }
+
+    private string D
+    {
+        get
+        {
+            if (Model.Models.Count < 2) return ""; // Need at least 2 points
+
+            var sb = new StringBuilder();
+            sb.Append($"M {Model.Models[0].FinalX} {Model.Models[0].FinalY} ");
+
+            for (int i = 0; i < Model.Models.Count - 1; i++)
+            {
+                // Handle endpoints
+                var p0 = i == 0 ? Model.Models[i] : Model.Models[i - 1];
+                var p1 = Model.Models[i];
+                var p2 = Model.Models[i + 1];
+                var p3 = i + 2 < Model.Models.Count ? Model.Models[i + 2] : Model.Models[i + 1];
+
+                // Calculate control points
+                var c1x = p1.FinalX + (p2.FinalX - p0.FinalX) / 6.0;
+                var c1y = p1.FinalY + (p2.FinalY - p0.FinalY) / 6.0;
+                var c2x = p2.FinalX - (p3.FinalX - p1.FinalX) / 6.0;
+                var c2y = p2.FinalY - (p3.FinalY - p1.FinalY) / 6.0;
+
+                // Add cubic Bézier curve
+                sb.Append($"C {c1x} {c1y}, {c2x} {c2y}, {p2.FinalX} {p2.FinalY} ");
+            }
+
+            return sb.ToString().Trim();
+        }
+    }
+}

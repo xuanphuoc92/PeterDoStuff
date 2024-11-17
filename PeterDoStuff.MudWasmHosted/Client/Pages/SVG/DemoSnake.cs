@@ -18,17 +18,16 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
             head.AddEffect(new Follow(Mouse) { Velocity = 1000, SlowRange = 100 });
         }
 
-        private PathModel CreateLine(Chain chain)
+        private SmoothCurve CreateLine(Chain chain)
         {
-            var pathModel = new PathModel(0, 0);
+            var pathModel = new SmoothCurve();
             pathModel.Style = Style.Clone();
             pathModel.Style.StrokeWidth = 2;
             pathModel.Style.FillOpacity = 0;
-            pathModel.Models[0].References.Add(chain.Joints[0]);
 
-            for (int i = 1; i < chain.Joints.Count; i++)
+            for (int i = 0; i < chain.Joints.Count; i++)
             {
-                pathModel.LineTo(0, 0);
+                pathModel.CurveTo(new Model());
                 pathModel.Models.Last().References.Add(chain.Joints[i]);
             }
             return pathModel;
