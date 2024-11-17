@@ -9,7 +9,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
             Name = "Snake";
 
             var chain = new Chain(24, 15, CreateJoint);
-            Add(chain);
+            // Add(chain);
 
             var spineLine = CreateLine(chain);
             Add(spineLine);
@@ -20,17 +20,16 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
 
         private SmoothCurve CreateLine(Chain chain)
         {
-            var pathModel = new SmoothCurve();
-            pathModel.Style = Style.Clone();
-            pathModel.Style.StrokeWidth = 2;
-            pathModel.Style.FillOpacity = 0;
+            var curve = new SmoothCurve();
+            curve.Style = Style.Clone();
+            curve.Style.StrokeWidth = 2;
+            curve.Style.FillOpacity = 0;
 
             for (int i = 0; i < chain.Joints.Count; i++)
             {
-                pathModel.CurveTo(new Model());
-                pathModel.Models.Last().References.Add(chain.Joints[i]);
+                curve.CurveTo(chain.Joints[i]);                
             }
-            return pathModel;
+            return curve;
         }
 
         private CompositeModel CreateJoint(int index)
