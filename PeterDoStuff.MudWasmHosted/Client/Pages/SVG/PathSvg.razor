@@ -18,7 +18,7 @@
         {
             var d = "";
             foreach (var command in Model.Commands)
-                d += command.Command + " " + command.Points.Select(p => $"{p.X} {p.Y}").Join(" ");
+                d += command.Command + " " + command.Points.Select(p => $"{p.FinalX} {p.FinalY}").Join(" ");
             return d;
         }
     }
