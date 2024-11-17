@@ -22,6 +22,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.SVG
             var jointShape = new Circle(64 / 4);
             jointShape.Style = Style.Clone();
             jointShape.Style.StrokeWidth = 2;
+            jointShape.Style.StrokeOpacity = 0.2;
             jointShape.Style.FillOpacity = 0;
 
             joint.Add(jointShape);
