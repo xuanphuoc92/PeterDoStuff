@@ -56,5 +56,12 @@ namespace PeterDoStuff.Test.Graphics
             var circle = new CircleModel(10);
             circle.SvgTransform.Should().Be("translate(0,0) rotate(0) scale(1)");
         }
+
+        [TestMethod]
+        public void _05_Polygon()
+        {
+            var polygon = new PolygonModel(0, 0, 1, 0, 1, 1, 0, 1);
+            polygon.Points.Should().HaveCount(4);
+        }
     }
 }
