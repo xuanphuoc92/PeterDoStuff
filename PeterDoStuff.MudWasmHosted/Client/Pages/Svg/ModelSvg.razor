@@ -9,6 +9,10 @@
 {
     <CircleSvg Model="@circle" />
 }
+@if (Model is PolygonModel polygon)
+{
+    <PolygonSvg Model="@polygon" />
+}
 
 @code {
     [Parameter]
