@@ -1,4 +1,5 @@
 ﻿@page "/svg"
+@using PeterDoStuff.Graphics
 
 <PlaygroundTitle Page="svg" />
 
@@ -20,6 +21,90 @@
     </MudListItem>
 </MudList>
 
-@code {
+<MudCheckBox @bind-Value="showAll">Gallery</MudCheckBox>
 
+@if (showAll)
+{
+    <MudButton StartIcon="@Icons.Material.Filled.ArrowBackIos" OnClick="Prev">Prev</MudButton>
+    <MudButton EndIcon="@Icons.Material.Filled.ArrowForwardIos" OnClick="Next">Next</MudButton>
+
+    <MudDivider Class="my-4" />
+
+    <MudGrid>
+        @for (int i = pageStart; i < Math.Min(pageStart + pageItems, gallery.Canvases.Length); i++)
+        {
+            var demo = gallery.Canvases[i];
+            <MudItem xs="12" md="4">
+                <MudText Class="mb-2">@demo.Name</MudText>
+                <CanvasSvg Canvas="demo" />
+            </MudItem>
+        }
+    </MudGrid>
+}
+else
+{
+    <MudRadioGroup @bind-Value="canvas">
+        <MudGrid Spacing="0">
+            @for (int i = 0; i < gallery.Canvases.Length; i++)
+            {
+                var demo = gallery.Canvases[i];
+                <MudItem xs="4" md="2">
+                    <MudRadio Value="@demo" Color="Color.Primary">@demo.Name</MudRadio>
+                </MudItem>
+            }
+        </MudGrid>
+    </MudRadioGroup>
+
+    <MudDivider Class="my-4" />
+
+    <CanvasSvg Canvas="canvas" />
+}
+
+@code {
+    private Gallery gallery;
+    private CanvasModel canvas;
+    private bool showAll;
+    int pageStart = 0;
+    int pageItems = 6;
+
+    private void Prev()
+    {
+        if (pageStart <= 0)
+            return;
+        pageStart -= pageItems;
+    }
+
+    private void Next()
+    {
+        if (pageStart + pageItems >= gallery.Canvases.Length)
+            return;
+        pageStart += pageItems;
+    }
+
+    Style style = new Style()
+    {
+        StrokeColor = Colors.DeepPurple.Accent3,
+        StrokeWidth = 4,
+        FillColor = Colors.DeepPurple.Accent3,
+        FillOpacity = 0.2
+    };
+    private Timer timer;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        gallery = new(style);
+        canvas = gallery.Canvases.Last();
+        timer = new (Tick, null, 0, 10);
+    }
+
+    private void Tick(object? _ = null)
+    {
+        if (showAll)
+            foreach (var demo in gallery.Canvases)
+                InvokeAsync(() => demo.Resolve());
+        else
+            InvokeAsync(() => canvas.Resolve());
+        InvokeAsync(StateHasChanged);
+    }
 }

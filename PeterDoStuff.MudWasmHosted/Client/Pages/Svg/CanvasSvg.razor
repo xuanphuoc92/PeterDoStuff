@@ -1,0 +1,14 @@
+﻿@using PeterDoStuff.Graphics
+
+<svg width="@Canvas.Rect.Width" height="@Canvas.Rect.Height">
+    @for (int i = 0; i < Canvas.Children.Count(); i++)
+    {
+        var model = Canvas.Children[i];
+        <ModelSvg Model="@model"/>
+    }
+</svg>
+
+@code {
+    [Parameter]
+    public CanvasModel Canvas { get; set; }
+}

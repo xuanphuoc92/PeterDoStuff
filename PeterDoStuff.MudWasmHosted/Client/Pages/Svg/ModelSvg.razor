@@ -1,0 +1,16 @@
+﻿@using PeterDoStuff.Graphics
+@using PeterDoStuff.Graphics.Models
+
+@if (Model is RectangleModel rectangle)
+{
+    <RectangleSvg Model="@rectangle" />
+}
+@if (Model is CircleModel circle)
+{
+    <CircleSvg Model="@circle" />
+}
+
+@code {
+    [Parameter]
+    public Model Model { get; set; }  
+}
