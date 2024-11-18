@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using PeterDoStuff.Graphics;
+using PeterDoStuff.Graphics.Models;
 
 namespace PeterDoStuff.Test.Graphics
 {
@@ -44,6 +45,9 @@ namespace PeterDoStuff.Test.Graphics
             canvas.Rect.Width.Should().Be(400);
             canvas.Rect.Height.Should().Be(600);
             canvas.Rect.Style.StrokeWidth.Should().Be(2);
+
+            canvas = new CanvasModel(400, 600, customStyle, new CircleModel(10));
+            canvas.Mouse.Should().BeOfType(typeof(CircleModel));
         }
     }
 }
