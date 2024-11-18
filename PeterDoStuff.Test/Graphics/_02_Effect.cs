@@ -127,5 +127,15 @@ namespace PeterDoStuff.Test.Graphics
             model.Resolve();
             model.Deg.Should().BeLessThan(0);
         }
+
+        [TestMethod]
+        public void _07_ManualResolve()
+        {
+            var model = new Model();
+            var moveTo = new MoveTo(100, 200);
+            moveTo.Resolve(model);
+            model.X.Should().Be(100);
+            model.Y.Should().Be(200);
+        }
     }
 }
