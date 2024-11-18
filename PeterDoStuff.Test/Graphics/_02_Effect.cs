@@ -111,5 +111,21 @@ namespace PeterDoStuff.Test.Graphics
             model.Resolve();
             model.Deg.Should().Be(-180);
         }
+
+        [TestMethod]
+        public async Task _06_Rotating()
+        {
+            var model = new Model();
+            model.Apply(new Rotating(TimeSpan.FromMilliseconds(100)));
+            
+            model.Deg.Should().Be(0);
+            model.Resolve();
+            model.Deg.Should().Be(0);
+            model.Resolve();
+            model.Deg.Should().BeGreaterThan(0);
+            await Task.Delay(50);
+            model.Resolve();
+            model.Deg.Should().BeLessThan(0);
+        }
     }
 }
