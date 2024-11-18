@@ -5,6 +5,8 @@
         public double X, Y, Z, Deg;
         public double Scale = 1;
 
+        public string SvgTransform => $"translate({X},{Y}) rotate({Deg}) scale({Scale})";
+
         public Style Style = new();
         
         public List<Effect> Effects = [];

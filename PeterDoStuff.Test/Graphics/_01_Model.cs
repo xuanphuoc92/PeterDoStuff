@@ -49,5 +49,12 @@ namespace PeterDoStuff.Test.Graphics
             canvas = new CanvasModel(400, 600, customStyle, new CircleModel(10));
             canvas.Mouse.Should().BeOfType(typeof(CircleModel));
         }
+
+        [TestMethod]
+        public void _04_Transform()
+        {
+            var circle = new CircleModel(10);
+            circle.SvgTransform.Should().Be("translate(0,0) rotate(0) scale(1)");
+        }
     }
 }
