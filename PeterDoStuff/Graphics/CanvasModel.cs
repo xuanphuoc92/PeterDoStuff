@@ -4,8 +4,10 @@ namespace PeterDoStuff.Graphics
 {
     public class CanvasModel : CompositeModel
     {
+        public string Name = "";
         public RectangleModel Rect;
         public Model Mouse = new();
+
         public CanvasModel(double width, double height, Style? style = null, Model? mouse = null)
         {
             if (style != null)
