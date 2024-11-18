@@ -15,7 +15,7 @@ namespace PeterDoStuff.Test.Graphics
             circle.X.Should().Be(0);
             circle.Y.Should().Be(0);
 
-            circle.Apply(new MoveTo(new Model() { X = 100, Y = 200 }));
+            circle.Apply(new MoveTo(100, 200));
             circle.X.Should().Be(0);
             circle.Y.Should().Be(0);
 
@@ -30,7 +30,7 @@ namespace PeterDoStuff.Test.Graphics
             var canvas = new CanvasModel(300, 300);
 
             var circle = new CircleModel(10);
-            circle.Apply(new MoveTo(new Model() { X = 100, Y = 200 }));
+            circle.Apply(new MoveTo(100, 200));
             canvas.Add(circle);
 
             circle.X.Should().Be(0);
@@ -48,7 +48,7 @@ namespace PeterDoStuff.Test.Graphics
             circle.X.Should().Be(0);
             circle.Y.Should().Be(0);
 
-            circle.Apply(new MoveTo(new Model() { X = 100, Y = 200 }) { Enabled = false });
+            circle.Apply(new MoveTo(100, 200) { Enabled = false });
             circle.X.Should().Be(0);
             circle.Y.Should().Be(0);
 
