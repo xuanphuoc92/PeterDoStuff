@@ -56,5 +56,23 @@ namespace PeterDoStuff.Test.Graphics
             circle.X.Should().Be(0);
             circle.Y.Should().Be(0);
         }
+
+        [TestMethod]
+        public void _04_Moving()
+        {
+            var circle = new CircleModel(10);
+            circle.X.Should().Be(0);
+            circle.Y.Should().Be(0);
+
+            circle.Apply(new Moving(1, 1));
+            circle.Resolve();
+            circle.X.Should().Be(0);
+            circle.Y.Should().Be(0);
+
+            circle.Resolve();
+            circle.X.Should().BeGreaterThan(0);
+            circle.Y.Should().BeGreaterThan(0);
+            circle.X.Should().Be(circle.Y);
+        }
     }
 }
