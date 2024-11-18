@@ -74,5 +74,42 @@ namespace PeterDoStuff.Test.Graphics
             circle.Y.Should().BeGreaterThan(0);
             circle.X.Should().Be(circle.Y);
         }
+
+        [TestMethod]
+        public void _05_RotateTo()
+        {
+            var model = new Model();
+            var anchor = new Model();
+            model.Apply(new RotateTo(anchor));
+
+            model.Deg.Should().Be(0);
+
+            model.Resolve();
+            model.Deg.Should().Be(0);
+
+            (anchor.X, anchor.Y) = (1, 0);
+            model.Resolve();
+            model.Deg.Should().Be(0);
+
+            (anchor.X, anchor.Y) = (1, 1);
+            model.Resolve();
+            model.Deg.Should().Be(45);
+
+            (anchor.X, anchor.Y) = (0, 1);
+            model.Resolve();
+            model.Deg.Should().Be(90);
+
+            (anchor.X, anchor.Y) = (1, -1);
+            model.Resolve();
+            model.Deg.Should().Be(-45);
+
+            (anchor.X, anchor.Y) = (-1, -1);
+            model.Resolve();
+            model.Deg.Should().Be(-135);
+
+            (anchor.X, anchor.Y) = (-1, 0);
+            model.Resolve();
+            model.Deg.Should().Be(-180);
+        }
     }
 }
