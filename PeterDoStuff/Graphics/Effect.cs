@@ -11,16 +11,9 @@
             if (Enabled == false)
                 return;
 
-            Tick(now);
-            UpdateTick(now);
+            Tick();
         }
 
-        private DateTime? LastTick;
-        private void UpdateTick(DateTime now)
-        {
-            LastTick = now;
-        }
-
-        public abstract void Tick(DateTime now);
+        public abstract void Tick();
     }
 }

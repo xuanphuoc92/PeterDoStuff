@@ -5,7 +5,7 @@ namespace PeterDoStuff.Graphics.Effects
     {
         public Model Anchor = anchor;
 
-        public override void Tick(DateTime now)
+        public override void Tick()
         {
             Models.ForEach(m =>
             {
