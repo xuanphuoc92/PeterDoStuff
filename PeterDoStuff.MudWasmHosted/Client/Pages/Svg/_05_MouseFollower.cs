@@ -10,16 +10,13 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
         {
             Name = "Mouse Follower";
 
-            double size = 15;
-            var polygon = new PolygonModel(size * 2, 0, size * -1, size, 0, 0, size * -1, size * -1);
-            polygon.X = 150;
-            polygon.Y = 150;
+            var arrow = new Arrow(15, 150, 150);
 
             var follow = new Follow(Mouse, 250);
             follow.SlowRange = 100;
-            polygon.Apply(follow);
+            arrow.Apply(follow);
 
-            AddAndStyle(polygon);
+            AddAndStyle(arrow);
         }
     }
 

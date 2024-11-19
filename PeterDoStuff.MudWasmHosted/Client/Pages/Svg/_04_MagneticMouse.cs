@@ -18,17 +18,14 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
             anchor.Y = 150;
             AddAndStyle(anchor);
 
-            double size = 15;
-            var polygon = new PolygonModel(size * 2, 0, size * -1, size, 0, 0, size * -1, size * -1);
-            polygon.X = 150;
-            polygon.Y = 150;
-            polygon.Apply(new RotateTo(Mouse) { Range = 5 });
-            polygon.Apply(new MoveTo(Mouse));
-            polygon.Apply(new DistanceConstraint(anchor, 50));
-            AddAndStyle(polygon);
+            var arrow = new Arrow(15, 150, 150);
+            arrow.Apply(new RotateTo(Mouse) { Range = 5 });
+            arrow.Apply(new MoveTo(Mouse));
+            arrow.Apply(new DistanceConstraint(anchor, 50));
+            AddAndStyle(arrow);
 
             var decor = new CircleModel(2);
-            var moveTo = new MoveTo(polygon);
+            var moveTo = new MoveTo(arrow);
             moveTo.Offset.X = 40;
             decor.Apply(moveTo);
             AddAndStyle(decor);

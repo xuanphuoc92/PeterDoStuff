@@ -17,20 +17,20 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
             {
                 for (int y = 50; y <= 250; y += 50)
                 {
-                    var polygon = CreatePolygon(x, y);
-                    polygon.Apply(new RotateTo(Mouse));
-                    AddAndStyle(polygon);
+                    var arrow = new Arrow(10, x, y);
+                    arrow.Apply(new RotateTo(Mouse));
+                    AddAndStyle(arrow);
                 }
             }
         }
+    }
 
-        private PolygonModel CreatePolygon(double x, double y)
+    public class Arrow : PolygonModel
+    {
+        public Arrow(double size, double x = 0, double y = 0) :
+            base(size * 2, 0, size * -1, size, 0, 0, size * -1, size * -1)
         {
-            double size = 10;
-            var polygon = new PolygonModel(size * 2, 0, size * -1, size, 0, 0, size * -1, size * -1);
-            polygon.X = x;
-            polygon.Y = y;
-            return polygon;
+            X = x; Y = y;
         }
     }
 }
