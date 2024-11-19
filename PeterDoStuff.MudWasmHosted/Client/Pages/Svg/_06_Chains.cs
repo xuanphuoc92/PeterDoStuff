@@ -14,13 +14,16 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
             Mouse.X = 150;
             Mouse.Y = 150;
 
-            var chain1 = new Chain(10, 20, ArrowJoint);
-            chain1.Head.Apply(new Follow(Mouse, 500));
-            Add(chain1);
+            var chain = new Chain(10, 20, ArrowJoint);
+            chain.Head.Apply(new Follow(Mouse, 500));
+            Add(chain);
 
-            var chain2 = new Chain(10, 20, CircleJoint);
-            chain2.Head.Apply(new Follow(Mouse, 500));
-            Add(chain2);
+            for (int i = 0; i < 10; i++)
+            {
+                var circle = CircleJoint(i);
+                circle.Apply(new MoveTo(chain.Joints[i]));
+                Add(circle);
+            }
         }
 
         private Arrow ArrowJoint(int i)
