@@ -32,7 +32,7 @@
     <MudDivider Class="my-4" />
 
     <MudGrid>
-        @for (int i = pageStart; i < Math.Min(pageStart + pageItems, gallery.Canvases.Length); i++)
+        @for (int i = pageStart; i < Math.Min(pageStart + pageItems, gallery.Canvases.Count); i++)
         {
             var demo = gallery.Canvases[i];
             <MudItem xs="12" md="4">
@@ -46,7 +46,7 @@ else
 {
     <MudRadioGroup @bind-Value="canvas">
         <MudGrid Spacing="0">
-            @for (int i = 0; i < gallery.Canvases.Length; i++)
+            @for (int i = 0; i < gallery.Canvases.Count; i++)
             {
                 var demo = gallery.Canvases[i];
                 <MudItem xs="4" md="2">
@@ -77,7 +77,7 @@ else
 
     private void Next()
     {
-        if (pageStart + pageItems >= gallery.Canvases.Length)
+        if (pageStart + pageItems >= gallery.Canvases.Count)
             return;
         pageStart += pageItems;
     }
@@ -101,8 +101,10 @@ else
 
     private void Reset()
     {
+        int currentIndex = gallery.Canvases.IndexOf(canvas);
         gallery = new(style);
-        canvas = gallery.Canvases.Last();        
+        canvas = gallery.Canvases[currentIndex];
+        InvokeAsync(StateHasChanged);
     }
 
     private void Tick(object? _ = null)

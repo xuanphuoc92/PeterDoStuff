@@ -19,28 +19,27 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
             Add(chain1);
 
             var chain2 = new Chain(10, 20, CircleJoint);
-            chain2.Head.Apply(new Follow(Mouse, 250));
+            chain2.Head.Apply(new Follow(Mouse, 500));
             Add(chain2);
         }
 
         private Arrow ArrowJoint(int i)
         {
-            var arrow = new Arrow(10, 50, 50);
+            var arrow = new Arrow(7.5 + i*0.25, 50, 50);
             arrow.Style = Style.Clone();
             arrow.Style.StrokeWidth = 2;
-            arrow.Style.StrokeOpacity *= 0.5 + (i * 0.05);
-            arrow.Style.FillOpacity *= 0.5 + (i * 0.05);
+            arrow.Style.FillOpacity = 1;
             return arrow;
         }
 
         private CircleModel CircleJoint(int i)
         {
             var circle = new CircleModel(20 - 2*i);
-            (circle.X, circle.Y) = (250, 250);
+            (circle.X, circle.Y) = (50, 50);
             circle.Style = Style.Clone();
-            circle.Style.StrokeWidth = 2;
-            circle.Style.StrokeOpacity *= 1 - (i * 0.05);
-            circle.Style.FillOpacity *= 1 - (i * 0.05);
+            circle.Style.StrokeWidth = i > 5 ? 0 : 2;
+            circle.Style.StrokeOpacity = i > 5 ? 0 : 1;
+            circle.Style.FillOpacity = i > 5 ? 0 : 1;
             return circle;
         }
     }
@@ -69,41 +68,41 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
                 }
             }
         }
+    }
 
-        public class ChainConstraint(Model anchor, double distance) : Effect
+    public class ChainConstraint(Model anchor, double distance) : Effect
+    {
+        public Model Anchor = anchor;
+        public double Distance = distance;
+
+        public override void Tick()
         {
-            public Model Anchor = anchor;
-            public double Distance = distance;
-
-            public override void Tick()
+            Models.ForEach(model =>
             {
-                Models.ForEach(model =>
-                {
-                    var moveTo = new MoveTo(Anchor); // Move the model next to Anchor
-                    moveTo.Offset.X = -Distance; // The model keep a distance behind the Anchor
-                    moveTo.Offset.Deg = model.Deg - Anchor.Deg; // Rotate the offset to match with the direction Model is pointing to Anchor
-                    moveTo.Resolve(model); // Update the position
-                });
-            }
+                var moveTo = new MoveTo(Anchor); // Move the model next to Anchor
+                moveTo.Offset.X = -Distance; // The model keep a distance behind the Anchor
+                moveTo.Offset.Deg = model.Deg - Anchor.Deg; // Rotate the offset to match with the direction Model is pointing to Anchor
+                moveTo.Resolve(model); // Update the position
+            });
         }
+    }
 
-        public class AngleConstraint(Model anchor, double angle) : Effect 
+    public class AngleConstraint(Model anchor, double angle) : Effect
+    {
+        public Model Anchor = anchor;
+        public double Angle = angle;
+
+        public override void Tick()
         {
-            public Model Anchor = anchor;
-            public double Angle = angle;
-
-            public override void Tick()
+            Models.ForEach(m =>
             {
-                Models.ForEach(m =>
+                var angleDiff = (Anchor.Deg - m.Deg).Cap(-180, 180);
+                var absDiff = Math.Abs(angleDiff);
+                if (absDiff > Angle)
                 {
-                    var angleDiff = (Anchor.Deg - m.Deg).Cap(-180, 180);
-                    var absDiff = Math.Abs(angleDiff);
-                    if (absDiff > Angle)
-                    {
-                        m.Deg = Anchor.Deg - (angleDiff / absDiff * Angle);
-                    }
-                });
-            }
+                    m.Deg = Anchor.Deg - (angleDiff / absDiff * Angle);
+                }
+            });
         }
     }
 }

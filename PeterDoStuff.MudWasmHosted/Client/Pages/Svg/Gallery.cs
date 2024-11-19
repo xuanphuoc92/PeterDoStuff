@@ -5,7 +5,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
 {
     public class Gallery(Style style)
     {
-        public CanvasModel[] Canvases = [
+        public List<CanvasModel> Canvases = [
             new _01_BouncingBalls(style, new CircleModel(10)),
             new _02_DistanceConstraint(style),
             new _03_MagneticField(style),
