@@ -1,4 +1,5 @@
-﻿using PeterDoStuff.Graphics;
+﻿using PeterDoStuff.Extensions;
+using PeterDoStuff.Graphics;
 using PeterDoStuff.Graphics.Effects;
 using PeterDoStuff.Graphics.Models;
 
@@ -50,7 +51,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
 
         public Model Head => Joints.First();
 
-        public Chain(int jointCount, double jointDistance, Func<int, Model> jointCreate)
+        public Chain(int jointCount, double jointDistance, Func<int, Model> jointCreate, double? angleConstraint = null)
         {
             for (int i = 0 ; i < jointCount; i++)
             {
@@ -61,6 +62,8 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
                 {
                     var anchor = Joints[i - 1];
                     joint.Apply(new RotateTo(anchor));
+                    if (angleConstraint != null)
+                        joint.Apply(new AngleConstraint(anchor, angleConstraint.Value));
                     //joint.Apply(new DistanceConstraint(anchor, jointDistance));
                     joint.Apply(new ChainConstraint(anchor, jointDistance));
                 }
@@ -80,6 +83,25 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
                     moveTo.Offset.X = -Distance; // The model keep a distance behind the Anchor
                     moveTo.Offset.Deg = model.Deg - Anchor.Deg; // Rotate the offset to match with the direction Model is pointing to Anchor
                     moveTo.Resolve(model); // Update the position
+                });
+            }
+        }
+
+        public class AngleConstraint(Model anchor, double angle) : Effect 
+        {
+            public Model Anchor = anchor;
+            public double Angle = angle;
+
+            public override void Tick()
+            {
+                Models.ForEach(m =>
+                {
+                    var angleDiff = (Anchor.Deg - m.Deg).Cap(-180, 180);
+                    var absDiff = Math.Abs(angleDiff);
+                    if (absDiff > Angle)
+                    {
+                        m.Deg = Anchor.Deg - (angleDiff / absDiff * Angle);
+                    }
                 });
             }
         }
