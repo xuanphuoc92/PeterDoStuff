@@ -5,15 +5,18 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
 {
     public class _02_DistanceConstraint : CanvasModel
     {
-        public _02_DistanceConstraint(Style? style = null) : base(300, 300, style, new CircleModel(50))
+        public _02_DistanceConstraint(Style? style = null) : base(300, 300, style)
         {
             Name = "Distance Constraint";
 
-            Mouse.Style.StrokeOpacity *= 0.5;
-            Mouse.Style.FillOpacity *= 0.1;
+            var pointer = new CircleModel(50);
+            AddAndStyle(pointer);
+            pointer.Style.StrokeOpacity *= 0.5;
+            pointer.Style.FillOpacity *= 0.1;
+            pointer.Apply(new Follow(Mouse, 250));
 
             var circle = new CircleModel(10);
-            circle.Apply(new DistanceConstraint(Mouse, 50));
+            circle.Apply(new DistanceConstraint(pointer, 50));
             AddAndStyle(circle);
         }
     }

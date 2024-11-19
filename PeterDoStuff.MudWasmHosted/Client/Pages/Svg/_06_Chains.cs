@@ -15,11 +15,11 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
             Mouse.Y = 150;
 
             var chain1 = new Chain(10, 20, ArrowJoint);
-            chain1.Head.Apply(new Follow(Mouse, 500) { SlowRange = 100, StopRange = 5, MergeRange = 2 });
+            chain1.Head.Apply(new Follow(Mouse, 500));
             Add(chain1);
 
             var chain2 = new Chain(10, 20, CircleJoint);
-            chain2.Head.Apply(new Follow(Mouse, 250) { SlowRange = 50, StopRange = 5, MergeRange = 2 });
+            chain2.Head.Apply(new Follow(Mouse, 250));
             Add(chain2);
         }
 

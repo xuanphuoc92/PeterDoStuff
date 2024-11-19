@@ -6,12 +6,15 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
 {
     public class _04_MagneticMouse : CanvasModel
     {
-        public _04_MagneticMouse(Style? style = null) : base(300, 300, style, new CircleModel(10))
+        public _04_MagneticMouse(Style? style = null) : base(300, 300, style)
         {
             Name = "Magnetic Mouse";
 
-            Mouse.Style.StrokeOpacity *= 0.5;
-            Mouse.Style.FillOpacity *= 0.5;
+            var pointer = new CircleModel(10);
+            AddAndStyle(pointer);
+            pointer.Style.StrokeOpacity *= 0.5;
+            pointer.Style.FillOpacity *= 0.5;
+            pointer.Apply(new Follow(Mouse, 250));
 
             var anchor = new CircleModel(50);
             anchor.X = 150;
@@ -19,8 +22,8 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
             AddAndStyle(anchor);
 
             var arrow = new Arrow(15, 150, 150);
-            arrow.Apply(new RotateTo(Mouse) { Range = 5 });
-            arrow.Apply(new MoveTo(Mouse));
+            arrow.Apply(new RotateTo(pointer) { Range = 5 });
+            arrow.Apply(new MoveTo(pointer));
             arrow.Apply(new DistanceConstraint(anchor, 50));
             AddAndStyle(arrow);
 

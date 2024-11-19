@@ -6,19 +6,22 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
 {
     public class _03_MagneticField : CanvasModel
     {
-        public _03_MagneticField(Style? style = null) : base(300, 300, style, new CircleModel(10))
+        public _03_MagneticField(Style? style = null) : base(300, 300, style)
         {
             Name = "Magnetic Field";
 
-            Mouse.Style.StrokeOpacity *= 0.5;
-            Mouse.Style.FillOpacity *= 0.5;
+            var pointer = new CircleModel(10);
+            AddAndStyle(pointer);
+            pointer.Style.StrokeOpacity *= 0.5;
+            pointer.Style.FillOpacity *= 0.5;
+            pointer.Apply(new Follow(Mouse, 250));
 
             for (int x = 50; x <= 250; x += 50)
             {
                 for (int y = 50; y <= 250; y += 50)
                 {
                     var arrow = new Arrow(10, x, y);
-                    arrow.Apply(new RotateTo(Mouse));
+                    arrow.Apply(new RotateTo(pointer));
                     AddAndStyle(arrow);
                 }
             }

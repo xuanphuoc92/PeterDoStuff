@@ -23,9 +23,9 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
     {
         public Model Anchor = anchor;
         public double V = v;
-        public double SlowRange = 1;
-        public double StopRange = 1;
-        public double MergeRange = 1;
+        public double SlowRange = v / 5;
+        public double StopRange = 5;
+        public double MergeRange = 2;
 
         public override void Tick()
         {
