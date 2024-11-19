@@ -13,6 +13,14 @@
 {
     <PolygonSvg Model="@polygon" />
 }
+@if (Model is CompositeModel compositeModel)
+{
+    for (int i = 0; i < compositeModel.Children.Count; i++)
+    {
+        var model = compositeModel.Children[i];
+        <ModelSvg Model="@model" />
+    }
+}
 
 @code {
     [Parameter]

@@ -1,0 +1,69 @@
+﻿using PeterDoStuff.Graphics;
+using PeterDoStuff.Graphics.Effects;
+using PeterDoStuff.Graphics.Models;
+
+namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
+{
+    public class _06_Chains : CanvasModel
+    {
+        public _06_Chains(Style? style = null) : base(300, 300, style)
+        {
+            Name = "Chains";
+
+            Mouse.X = 150;
+            Mouse.Y = 150;
+
+            var chain1 = new Chain(10, 20, ArrowJoint);
+            chain1.Head.Apply(new Follow(Mouse, 500) { SlowRange = 100, StopRange = 5, MergeRange = 2 });
+            Add(chain1);
+
+            var chain2 = new Chain(10, 20, CircleJoint);
+            chain2.Head.Apply(new Follow(Mouse, 250) { SlowRange = 50, StopRange = 5, MergeRange = 2 });
+            Add(chain2);
+        }
+
+        private Arrow ArrowJoint(int i)
+        {
+            var arrow = new Arrow(10, 50, 50);
+            arrow.Style = Style.Clone();
+            arrow.Style.StrokeWidth = 2;
+            arrow.Style.StrokeOpacity *= 0.5 + (i * 0.05);
+            arrow.Style.FillOpacity *= 0.5 + (i * 0.05);
+            return arrow;
+        }
+
+        private CircleModel CircleJoint(int i)
+        {
+            var circle = new CircleModel(20 - 2*i);
+            (circle.X, circle.Y) = (250, 250);
+            circle.Style = Style.Clone();
+            circle.Style.StrokeWidth = 2;
+            circle.Style.StrokeOpacity *= 1 - (i * 0.05);
+            circle.Style.FillOpacity *= 1 - (i * 0.05);
+            return circle;
+        }
+    }
+
+    public class Chain : CompositeModel
+    {
+        public List<Model> Joints => Children;
+
+        public Model Head => Joints.First();
+
+        public Chain(int jointCount, double jointDistance, Func<int, Model> jointCreate)
+        {
+            for (int i = 0 ; i < jointCount; i++)
+            {
+                var joint = jointCreate(i);
+                Add(joint);
+
+                if (i > 0)
+                {
+                    var anchor = Joints[i - 1];
+                    joint.Apply(new RotateTo(anchor));
+                    joint.Apply(new DistanceConstraint(anchor, jointDistance));
+                }
+            }
+        }
+    }
+}
