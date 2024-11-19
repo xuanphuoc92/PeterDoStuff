@@ -10,6 +10,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
             new _02_DistanceConstraint(style),
             new _03_MagneticField(style),
             new _04_MagneticMouse(style),
+            new _05_MouseFollower(style),
         ];
     }
 
