@@ -12,7 +12,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
             new _04_MagneticMouse(style),
             new _05_MouseFollower(style),
             new _06_Chains(style),
-            new _07_Snake(style),
+            new _07_AngleConstraint(style),
         ];
     }
 
