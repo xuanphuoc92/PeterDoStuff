@@ -1,6 +1,5 @@
 ﻿using PeterDoStuff.Graphics;
 using PeterDoStuff.Graphics.Effects;
-using PeterDoStuff.Graphics.Models;
 
 namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
 {
@@ -45,13 +44,13 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
                     model.X += deltaX;
                     model.Y += deltaY;
 
-                    var rotateTo = new RotateTo(anchor);                    
+                    var rotateTo = new RotateTo(Anchor);                    
                     rotateTo.Resolve(model);
                 }
 
                 if (d <= MergeRange)
                 {
-                    var moveTo = new MoveTo(anchor);
+                    var moveTo = new MoveTo(Anchor);
                     moveTo.Resolve(model);
                 }    
             });
