@@ -61,8 +61,26 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
                 {
                     var anchor = Joints[i - 1];
                     joint.Apply(new RotateTo(anchor));
-                    joint.Apply(new DistanceConstraint(anchor, jointDistance));
+                    //joint.Apply(new DistanceConstraint(anchor, jointDistance));
+                    joint.Apply(new ChainConstraint(anchor, jointDistance));
                 }
+            }
+        }
+
+        public class ChainConstraint(Model anchor, double distance) : Effect
+        {
+            public Model Anchor = anchor;
+            public double Distance = distance;
+
+            public override void Tick()
+            {
+                Models.ForEach(model =>
+                {
+                    var moveTo = new MoveTo(Anchor); // Move the model next to Anchor
+                    moveTo.Offset.X = -Distance; // The model keep a distance behind the Anchor
+                    moveTo.Offset.Deg = model.Deg - Anchor.Deg; // Rotate the offset to match with the direction Model is pointing to Anchor
+                    moveTo.Resolve(model); // Update the position
+                });
             }
         }
     }

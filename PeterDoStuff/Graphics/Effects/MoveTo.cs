@@ -22,7 +22,7 @@ namespace PeterDoStuff.Graphics.Effects
         {
             Models.ForEach(m =>
             {
-                var rad = Anchor.Deg.DegToRad();
+                var rad = (Anchor.Deg + Offset.Deg).DegToRad();
                 var dx = Anchor.Scale * (Offset.X * Math.Cos(rad) - Offset.Y * Math.Sin(rad));
                 var dy = Anchor.Scale * (Offset.X * Math.Sin(rad) + Offset.Y * Math.Cos(rad));
 
