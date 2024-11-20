@@ -57,10 +57,11 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
 
             // Connect back to head
             curve.CurveTo(headPoint);
+            curve.Close();
 
             AddAndStyle(curve);
             curve.Style.StrokeWidth = 1;
-            curve.Style.FillOpacity = 0.2;
+            curve.Style.FillOpacity = 1;
 
             // Draw eyes
             CreateEye(spine.Joints[1], -45);            
@@ -72,6 +73,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
             var eye = new CircleModel(4);
             AddAndStyle(eye);
             eye.Style.StrokeWidth = 0;
+            eye.Style.FillColor = eye.Style.StrokeColor;
             eye.Style.FillOpacity = 1;
             var stickTo = new MoveTo(joint);
             var i = 1;
