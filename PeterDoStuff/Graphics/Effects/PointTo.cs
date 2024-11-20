@@ -20,15 +20,12 @@ namespace PeterDoStuff.Graphics.Effects
 
         public override void Tick()
         {
-            foreach (var model in Models)
-            {
-                var dx = Anchor.X - model.X;
-                var dy = Anchor.Y - model.Y;
-                var d = Math.Sqrt(dx * dx + dy * dy);
+            var dx = Anchor.X - Model.X;
+            var dy = Anchor.Y - Model.Y;
+            var d = Math.Sqrt(dx * dx + dy * dy);
 
-                if (d > Range)
-                    model.Deg = Math.Atan2(dy, dx).RadToDeg().Cap(-180, 180);
-            }
+            if (d > Range)
+                Model.Deg = Math.Atan2(dy, dx).RadToDeg().Cap(-180, 180);
         }
     }
 }

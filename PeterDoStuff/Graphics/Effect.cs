@@ -2,7 +2,7 @@
 {
     public abstract class Effect
     {
-        public List<Model> Models = [];
+        public Model Model;
 
         public bool Enabled = true;
 
@@ -24,9 +24,9 @@
 
     public static class EffectExtensions
     {
-        public static void Resolve(this Effect effect, params Model[] models)
+        public static void Resolve(this Effect effect, Model model)
         {
-            effect.Models.AddRange(models);
+            effect.Model = model;
             effect.Resolve(DateTime.Now);
         }
     }

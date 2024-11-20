@@ -24,18 +24,15 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
         
         public override void Tick()
         {
-            Models.ForEach(m =>
-            {
-                var dx = Anchor.X - m.X;
-                var dy = Anchor.Y - m.Y;
-                var d = Math.Sqrt(dx * dx + dy * dy);
+            var dx = Anchor.X - Model.X;
+            var dy = Anchor.Y - Model.Y;
+            var d = Math.Sqrt(dx * dx + dy * dy);
 
-                if (d > MaxDistance)
-                {
-                    m.X = Anchor.X - MaxDistance * dx / d;
-                    m.Y = Anchor.Y - MaxDistance * dy / d;
-                }
-            });
+            if (d > MaxDistance)
+            {
+                Model.X = Anchor.X - MaxDistance * dx / d;
+                Model.Y = Anchor.Y - MaxDistance * dy / d;
+            }
         }
     }
 }

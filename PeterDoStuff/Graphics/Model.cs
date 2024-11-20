@@ -12,7 +12,7 @@
         public List<Effect> Effects = [];
         public void Apply(Effect effect)
         {
-            effect.Models.Add(this);
+            effect.Model = this;
             Effects.Add(effect);
         }
 

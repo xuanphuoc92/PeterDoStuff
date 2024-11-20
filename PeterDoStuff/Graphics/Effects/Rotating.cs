@@ -18,10 +18,7 @@ namespace PeterDoStuff.Graphics.Effects
         public override void Tick()
         {
             var dDeg = DegPerSec * TimeFromLastTick.TotalSeconds;
-            Models.ForEach(m =>
-            {
-                m.Deg = (m.Deg + dDeg).Cap(-180, 180);
-            });
+            Model.Deg = (Model.Deg + dDeg).Cap(-180, 180);
         }
     }
 }

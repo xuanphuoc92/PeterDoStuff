@@ -29,31 +29,28 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
 
         public override void Tick()
         {
-            Models.ForEach(model =>
+            var dx = Anchor.X - Model.X;
+            var dy = Anchor.Y - Model.Y;
+            var d = Math.Sqrt(dx * dx + dy * dy);
+
+            if (d > StopRange)
             {
-                var dx = Anchor.X - model.X;
-                var dy = Anchor.Y - model.Y;
-                var d = Math.Sqrt(dx * dx + dy * dy);
+                var delta = TimeFromLastTick.TotalSeconds * Math.Min(V, d / SlowRange * V);
+                var deltaX = delta / d * dx;
+                var deltaY = delta / d * dy;
 
-                if (d > StopRange)
-                {
-                    var delta = TimeFromLastTick.TotalSeconds * Math.Min(V, d / SlowRange * V);
-                    var deltaX = delta / d * dx;
-                    var deltaY = delta / d * dy;
+                Model.X += deltaX;
+                Model.Y += deltaY;
 
-                    model.X += deltaX;
-                    model.Y += deltaY;
+                var pointTo = new PointTo(Anchor);
+                pointTo.Resolve(Model);
+            }
 
-                    var pointTo = new PointTo(Anchor);                    
-                    pointTo.Resolve(model);
-                }
-
-                if (d <= MergeRange)
-                {
-                    var stickTo = new StickTo(Anchor);
-                    stickTo.Resolve(model);
-                }    
-            });
+            if (d <= MergeRange)
+            {
+                var stickTo = new StickTo(Anchor);
+                stickTo.Resolve(Model);
+            }
         }
     }
 }

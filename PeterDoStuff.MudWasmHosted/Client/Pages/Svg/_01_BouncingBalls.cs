@@ -38,26 +38,23 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
 
             public override void Tick()
             {
-                Models.ForEach(m =>
-                {
-                    if (m.X < MinX || m.X > MaxX)
-                        Moving.Vx *= -1;
+                if (Model.X < MinX || Model.X > MaxX)
+                    Moving.Vx *= -1;
 
-                    if (m.Y < MinY || m.Y > MaxY)
-                        Moving.Vy *= -1;
+                if (Model.Y < MinY || Model.Y > MaxY)
+                    Moving.Vy *= -1;
 
-                    if (m.X < MinX)
-                        m.X = MinX;
+                if (Model.X < MinX)
+                    Model.X = MinX;
 
-                    if (m.X > MaxX)
-                        m.X = MaxX;
+                if (Model.X > MaxX)
+                    Model.X = MaxX;
 
-                    if (m.Y < MinY)
-                        m.Y = MinY;
+                if (Model.Y < MinY)
+                    Model.Y = MinY;
 
-                    if (m.Y > MaxY)
-                        m.Y = MaxY;
-                });
+                if (Model.Y > MaxY)
+                    Model.Y = MaxY;
             }
         }
     }

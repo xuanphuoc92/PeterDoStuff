@@ -20,15 +20,12 @@ namespace PeterDoStuff.Graphics.Effects
 
         public override void Tick()
         {
-            Models.ForEach(m =>
-            {
-                var rad = (Anchor.Deg + Offset.Deg).DegToRad();
-                var dx = Anchor.Scale * (Offset.X * Math.Cos(rad) - Offset.Y * Math.Sin(rad));
-                var dy = Anchor.Scale * (Offset.X * Math.Sin(rad) + Offset.Y * Math.Cos(rad));
+            var rad = (Anchor.Deg + Offset.Deg).DegToRad();
+            var dx = Anchor.Scale * (Offset.X * Math.Cos(rad) - Offset.Y * Math.Sin(rad));
+            var dy = Anchor.Scale * (Offset.X * Math.Sin(rad) + Offset.Y * Math.Cos(rad));
 
-                m.X = Anchor.X + dx;
-                m.Y = Anchor.Y + dy;
-            });
+            Model.X = Anchor.X + dx;
+            Model.Y = Anchor.Y + dy;
         }
     }
 }

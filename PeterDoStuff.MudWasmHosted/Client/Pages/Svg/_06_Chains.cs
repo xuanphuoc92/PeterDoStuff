@@ -81,13 +81,10 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
 
         public override void Tick()
         {
-            Models.ForEach(model =>
-            {
-                var stickTo = new StickTo(Anchor); // Move the model next to Anchor
-                stickTo.Offset.X = -Distance; // The model keep a distance behind the Anchor
-                stickTo.Offset.Deg = model.Deg - Anchor.Deg; // Rotate the offset to match with the direction Model is pointing to Anchor
-                stickTo.Resolve(model); // Update the position
-            });
+            var stickTo = new StickTo(Anchor); // Move the model next to Anchor
+            stickTo.Offset.X = -Distance; // The model keep a distance behind the Anchor
+            stickTo.Offset.Deg = Model.Deg - Anchor.Deg; // Rotate the offset to match with the direction Model is pointing to Anchor
+            stickTo.Resolve(Model); // Update the position
         }
     }
 
@@ -98,15 +95,12 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
 
         public override void Tick()
         {
-            Models.ForEach(m =>
+            var angleDiff = (Anchor.Deg - Model.Deg).Cap(-180, 180);
+            var absDiff = Math.Abs(angleDiff);
+            if (absDiff > Angle)
             {
-                var angleDiff = (Anchor.Deg - m.Deg).Cap(-180, 180);
-                var absDiff = Math.Abs(angleDiff);
-                if (absDiff > Angle)
-                {
-                    m.Deg = Anchor.Deg - (angleDiff / absDiff * Angle);
-                }
-            });
+                Model.Deg = Anchor.Deg - (angleDiff / absDiff * Angle);
+            }
         }
     }
 }

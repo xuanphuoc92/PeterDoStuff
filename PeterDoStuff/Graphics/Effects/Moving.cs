@@ -9,11 +9,8 @@
             var dx = Vx * TimeFromLastTick.TotalSeconds;
             var dy = Vy * TimeFromLastTick.TotalSeconds;
 
-            Models.ForEach(m =>
-            {
-                m.X += dx;
-                m.Y += dy;
-            });
+            Model.X += dx;
+            Model.Y += dy;
         }
     }
 }
