@@ -37,6 +37,11 @@
                 sb.Append($"C {c1x} {c1y}, {c2x} {c2y}, {p2.X} {p2.Y} ");
             }
 
+            if (Model.IsClosed)
+            {
+                sb.Append($"Z");
+            }
+
             return sb.ToString().Trim();
         }
     }

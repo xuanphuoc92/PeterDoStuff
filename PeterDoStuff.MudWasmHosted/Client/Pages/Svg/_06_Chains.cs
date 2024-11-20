@@ -1,4 +1,5 @@
-﻿using PeterDoStuff.Extensions;
+﻿using MudBlazor;
+using PeterDoStuff.Extensions;
 using PeterDoStuff.Graphics;
 using PeterDoStuff.Graphics.Effects;
 using PeterDoStuff.Graphics.Models;
@@ -31,6 +32,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
             var arrow = new Arrow(7.5 + i*0.25, 50, 50);
             arrow.Style = Style.Clone();
             arrow.Style.StrokeWidth = 2;
+            arrow.Style.FillColor = Colors.DeepPurple.Darken4;
             arrow.Style.FillOpacity = 1;
             return arrow;
         }
@@ -42,6 +44,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
             circle.Style = Style.Clone();
             circle.Style.StrokeWidth = i > 5 ? 0 : 2;
             circle.Style.StrokeOpacity = i > 5 ? 0 : 1;
+            circle.Style.FillColor = Colors.DeepPurple.Darken4;
             circle.Style.FillOpacity = i > 5 ? 0 : 1;
             return circle;
         }
