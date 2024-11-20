@@ -10,7 +10,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
             Name = "Angle Constraint";
 
             var spine = new Chain(24, 15, i => CreateJoint(i), 45);
-            spine.Head.Apply(new Follow(Mouse, 250) { SlowRange = 50, StopRange = 5, MergeRange = 2 });
+            spine.Head.Apply(new Follow(Mouse, 250));
             Add(spine);
         }
 

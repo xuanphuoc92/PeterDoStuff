@@ -1,5 +1,6 @@
 ﻿@using PeterDoStuff.Graphics
 @using PeterDoStuff.Graphics.Models
+@using PeterDoStuff.MudWasmHosted.Client.Pages.Svg
 
 @if (Model is RectangleModel rectangle)
 {
@@ -12,6 +13,10 @@
 @if (Model is PolygonModel polygon)
 {
     <PolygonSvg Model="@polygon" />
+}
+@if (Model is CurveModel curve)
+{
+    <CurveSvg Model="@curve" />
 }
 @if (Model is CompositeModel compositeModel)
 {
