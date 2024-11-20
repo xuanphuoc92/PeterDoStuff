@@ -18,7 +18,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
             var curve = new CurveModel();
 
             var headPoint = new Model();            
-            var stickToHead = new MoveTo(spine.Head);
+            var stickToHead = new StickTo(spine.Head);
             stickToHead.Offset.X = GetBodySize(0);
             headPoint.Apply(stickToHead);
             curve.CurveTo(headPoint);
@@ -28,17 +28,17 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
             {
                 var leftPoint = new Model();
                 var joint = spine.Joints[i];
-                var moveTo = new MoveTo(joint);
-                moveTo.Offset.X = GetBodySize(i);
-                moveTo.Offset.Deg = -GetBodyAngle(i);
-                leftPoint.Apply(moveTo);
+                var stickTo = new StickTo(joint);
+                stickTo.Offset.X = GetBodySize(i);
+                stickTo.Offset.Deg = -GetBodyAngle(i);
+                leftPoint.Apply(stickTo);
                 curve.CurveTo(leftPoint);
             }
 
             // Connect tail
             var tailPoint = new Model();
             var tailJoint = spine.Joints.Last();
-            var stickToTail = new MoveTo(tailJoint);
+            var stickToTail = new StickTo(tailJoint);
             stickToTail.Offset.X = -4;
             tailPoint.Apply(stickToTail);
             curve.CurveTo(tailPoint);
@@ -48,10 +48,10 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
             {
                 var rightPoint = new Model();
                 var joint = spine.Joints[i];
-                var moveTo = new MoveTo(joint);
-                moveTo.Offset.X = GetBodySize(i);
-                moveTo.Offset.Deg = GetBodyAngle(i);
-                rightPoint.Apply(moveTo);
+                var stickTo = new StickTo(joint);
+                stickTo.Offset.X = GetBodySize(i);
+                stickTo.Offset.Deg = GetBodyAngle(i);
+                rightPoint.Apply(stickTo);
                 curve.CurveTo(rightPoint);
             }
 
@@ -75,7 +75,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
             eye.Style.StrokeWidth = 0;
             eye.Style.FillColor = eye.Style.StrokeColor;
             eye.Style.FillOpacity = 1;
-            var stickTo = new MoveTo(joint);
+            var stickTo = new StickTo(joint);
             var i = 1;
             stickTo.Offset.X = (16 - i * 0.5) - 2.5;
             stickTo.Offset.Deg = angle;

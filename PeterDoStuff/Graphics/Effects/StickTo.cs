@@ -3,13 +3,13 @@ using PeterDoStuff.Extensions;
 
 namespace PeterDoStuff.Graphics.Effects
 {
-    public class MoveTo : Effect
+    public class StickTo : Effect
     {
-        public MoveTo(double x, double y) : this(new Model() { X = x, Y = y })
+        public StickTo(double x, double y) : this(new Model() { X = x, Y = y })
         {
         }
 
-        public MoveTo(Model anchor)
+        public StickTo(Model anchor)
         {
             Anchor = anchor;
         }

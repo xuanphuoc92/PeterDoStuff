@@ -44,14 +44,14 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
                     model.X += deltaX;
                     model.Y += deltaY;
 
-                    var rotateTo = new RotateTo(Anchor);                    
-                    rotateTo.Resolve(model);
+                    var pointTo = new PointTo(Anchor);                    
+                    pointTo.Resolve(model);
                 }
 
                 if (d <= MergeRange)
                 {
-                    var moveTo = new MoveTo(Anchor);
-                    moveTo.Resolve(model);
+                    var stickTo = new StickTo(Anchor);
+                    stickTo.Resolve(model);
                 }    
             });
         }

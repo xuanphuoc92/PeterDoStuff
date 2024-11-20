@@ -22,15 +22,15 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
             AddAndStyle(anchor);
 
             var arrow = new Arrow(15, 150, 150);
-            arrow.Apply(new RotateTo(pointer) { Range = 5 });
-            arrow.Apply(new MoveTo(pointer));
+            arrow.Apply(new PointTo(pointer) { Range = 5 });
+            arrow.Apply(new StickTo(pointer));
             arrow.Apply(new DistanceConstraint(anchor, 50));
             AddAndStyle(arrow);
 
             var decor = new CircleModel(2);
-            var moveTo = new MoveTo(arrow);
-            moveTo.Offset.X = 40;
-            decor.Apply(moveTo);
+            var stickTo = new StickTo(arrow);
+            stickTo.Offset.X = 40;
+            decor.Apply(stickTo);
             AddAndStyle(decor);
         }
     }

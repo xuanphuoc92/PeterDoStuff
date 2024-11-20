@@ -21,7 +21,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
                 for (int y = 50; y <= 250; y += 50)
                 {
                     var arrow = new Arrow(10, x, y);
-                    arrow.Apply(new RotateTo(pointer));
+                    arrow.Apply(new PointTo(pointer));
                     AddAndStyle(arrow);
                 }
             }

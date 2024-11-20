@@ -22,7 +22,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
             for (int i = 0; i < 10; i++)
             {
                 var circle = CircleJoint(i);
-                circle.Apply(new MoveTo(chain.Joints[i]));
+                circle.Apply(new StickTo(chain.Joints[i]));
                 Add(circle);
             }
         }
@@ -64,7 +64,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
                 if (i > 0)
                 {
                     var anchor = Joints[i - 1];
-                    joint.Apply(new RotateTo(anchor));
+                    joint.Apply(new PointTo(anchor));
                     if (angleConstraint != null)
                         joint.Apply(new AngleConstraint(anchor, angleConstraint.Value));
                     //joint.Apply(new DistanceConstraint(anchor, jointDistance));
@@ -83,10 +83,10 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
         {
             Models.ForEach(model =>
             {
-                var moveTo = new MoveTo(Anchor); // Move the model next to Anchor
-                moveTo.Offset.X = -Distance; // The model keep a distance behind the Anchor
-                moveTo.Offset.Deg = model.Deg - Anchor.Deg; // Rotate the offset to match with the direction Model is pointing to Anchor
-                moveTo.Resolve(model); // Update the position
+                var stickTo = new StickTo(Anchor); // Move the model next to Anchor
+                stickTo.Offset.X = -Distance; // The model keep a distance behind the Anchor
+                stickTo.Offset.Deg = model.Deg - Anchor.Deg; // Rotate the offset to match with the direction Model is pointing to Anchor
+                stickTo.Resolve(model); // Update the position
             });
         }
     }

@@ -2,9 +2,9 @@
 
 namespace PeterDoStuff.Graphics.Effects
 {
-    public class RotateTo : Effect
+    public class PointTo : Effect
     {
-        public RotateTo(Model anchor)
+        public PointTo(Model anchor)
         {
             Anchor = anchor;
         }

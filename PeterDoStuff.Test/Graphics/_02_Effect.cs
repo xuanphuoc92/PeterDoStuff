@@ -15,7 +15,7 @@ namespace PeterDoStuff.Test.Graphics
             circle.X.Should().Be(0);
             circle.Y.Should().Be(0);
 
-            circle.Apply(new MoveTo(100, 200));
+            circle.Apply(new StickTo(100, 200));
             circle.X.Should().Be(0);
             circle.Y.Should().Be(0);
 
@@ -30,7 +30,7 @@ namespace PeterDoStuff.Test.Graphics
             var canvas = new CanvasModel(300, 300);
 
             var circle = new CircleModel(10);
-            circle.Apply(new MoveTo(100, 200));
+            circle.Apply(new StickTo(100, 200));
             canvas.Add(circle);
 
             circle.X.Should().Be(0);
@@ -48,7 +48,7 @@ namespace PeterDoStuff.Test.Graphics
             circle.X.Should().Be(0);
             circle.Y.Should().Be(0);
 
-            circle.Apply(new MoveTo(100, 200) { Enabled = false });
+            circle.Apply(new StickTo(100, 200) { Enabled = false });
             circle.X.Should().Be(0);
             circle.Y.Should().Be(0);
 
@@ -76,11 +76,11 @@ namespace PeterDoStuff.Test.Graphics
         }
 
         [TestMethod]
-        public void _05_RotateTo()
+        public void _05_PointTo()
         {
             var model = new Model();
             var anchor = new Model();
-            model.Apply(new RotateTo(anchor));
+            model.Apply(new PointTo(anchor));
 
             model.Deg.Should().Be(0);
 
@@ -132,8 +132,8 @@ namespace PeterDoStuff.Test.Graphics
         public void _07_ManualResolve()
         {
             var model = new Model();
-            var moveTo = new MoveTo(100, 200);
-            moveTo.Resolve(model);
+            var stickTo = new StickTo(100, 200);
+            stickTo.Resolve(model);
             model.X.Should().Be(100);
             model.Y.Should().Be(200);
         }
@@ -147,23 +147,23 @@ namespace PeterDoStuff.Test.Graphics
             anchor.X = 100;
             anchor.Y = 200;
 
-            MoveTo moveTo = new MoveTo(anchor);
-            moveTo.Offset.X = 1;
-            moveTo.Offset.Y = 1;
+            StickTo stickTo = new StickTo(anchor);
+            stickTo.Offset.X = 1;
+            stickTo.Offset.Y = 1;
 
-            model.Apply(moveTo);
+            model.Apply(stickTo);
             model.Resolve();
             model.X.Should().Be(101);
             model.Y.Should().Be(201);
 
             anchor.Deg = 90;
-            model.Apply(moveTo);
+            model.Apply(stickTo);
             model.Resolve();
             model.X.Should().Be(99);
             model.Y.Should().Be(201);
 
             anchor.Deg = 180;
-            model.Apply(moveTo);
+            model.Apply(stickTo);
             model.Resolve();
             model.X.Should().Be(99);
             model.Y.Should().Be(199);
