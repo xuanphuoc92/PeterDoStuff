@@ -165,16 +165,16 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
 
             public override void Tick()
             {
-                var baseSize = Size * (JointIndex - StartIndex) * (JointIndex - StartIndex);
+                var baseSize = Size * (JointIndex - StartIndex + 1) * (JointIndex - StartIndex);
 
                 var midIndex = Spine.Joints.Count / 2;
                 var headToMid = (Spine.Head.Deg - Spine.Joints[midIndex].Deg).Cap(-180, 180);
                 var midToTail = (Spine.Joints[midIndex].Deg - Spine.Tail.Deg).Cap(-180, 180);
-                var turnSize = (headToMid + midToTail) / 180 * 8 * Size;
+                var turnSize = (headToMid + midToTail) / 180 * 1.5 * baseSize;
 
                 var joint = Spine.Joints[JointIndex];
                 var stickTo = new StickTo(joint);
-                stickTo.Offset.Y = baseSize + turnSize;
+                stickTo.Offset.Y = turnSize;
                 stickTo.Resolve(Model);
             }
         }
