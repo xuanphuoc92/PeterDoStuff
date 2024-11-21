@@ -30,6 +30,14 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
 
             var body = new CurveModel();
 
+            // Head:
+            body.CurveTo(
+                anchor: spine.Head,
+                offset: new Model() { X = GetBodyWidth(0), Deg = 0 });
+            body.CurveTo(
+                anchor: spine.Head,
+                offset: new Model() { X = GetBodyWidth(0), Deg = -30 });
+
             // Left side:
             for (int i = 0; i < bodyWidth.Length - 2; i++)
             {
@@ -49,16 +57,13 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
                     offset: new Model() { X = GetBodyWidth(i), Deg = 90 });
             }
 
-            // Head:
+            // Back to Head:
             body.CurveTo(
                 anchor: spine.Head,
                 offset: new Model() { X = GetBodyWidth(0), Deg = 30 });
             body.CurveTo(
                 anchor: spine.Head,
                 offset: new Model() { X = GetBodyWidth(0), Deg = 0 });
-            body.CurveTo(
-                anchor: spine.Head,
-                offset: new Model() { X = GetBodyWidth(0), Deg = -30 });
             body.Close();
 
             AddAndStyle(body);
