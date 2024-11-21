@@ -30,28 +30,19 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
             CreateSideFin(spine, 7, ventralFinX, ventralFinY, 90, -45);
 
             var caudalFin = new CurveModel();
-            var headTailDiff = (spine.Tail.Deg - spine.Head.Deg).Cap(-180, 180);
             var startCaudalIndex = bodyWidth.Length - 2;
             var endCaudalIndex = spine.Joints.Count - 1;
             for (int i = startCaudalIndex; i <= endCaudalIndex; i++)
             {
-                caudalFin.CurveTo(
-                    anchor: spine.Joints[i],
-                    offset: new Model() 
-                    { 
-                        Y = scale * caudalFinSize * (i - startCaudalIndex) * (i - startCaudalIndex),
-                    }
-                    );
+                var caudalFinPoint = new Model();
+                caudalFinPoint.Apply(new CaudalFinEffect(spine, i, startCaudalIndex, scale * caudalFinSize));
+                caudalFin.CurveTo(caudalFinPoint);
             }
             for (int i = endCaudalIndex; i >= startCaudalIndex; i--)
             {
-                caudalFin.CurveTo(
-                    anchor: spine.Joints[i],
-                    offset: new Model()
-                    {
-                        Y = scale * -caudalFinSize * (i - startCaudalIndex) * (i - startCaudalIndex),
-                    }
-                    );
+                var caudalFinPoint = new Model();
+                caudalFinPoint.Apply(new CaudalFinEffect(spine, i, startCaudalIndex, -scale * caudalFinSize));
+                caudalFin.CurveTo(caudalFinPoint);
             }
             AddAndStyle(caudalFin);
             caudalFin.Style.StrokeWidth = 1;
@@ -164,6 +155,29 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
         private double GetJointDistance() => jointDistance * scale;
         private double GetBodyWidth(int i) => i < bodyWidth.Length ? bodyWidth[i] * scale : 0;
         private double GetEyeSize() => eyeSize * scale;
+
+        private class CaudalFinEffect(Chain spine, int jointIndex, int startCaudalIndex, double finSize) : Effect
+        {
+            public Chain Spine = spine;
+            public int JointIndex = jointIndex;
+            public int StartIndex = startCaudalIndex;
+            public double Size = finSize;
+
+            public override void Tick()
+            {
+                var baseSize = Size * (JointIndex - StartIndex) * (JointIndex - StartIndex);
+
+                var midIndex = Spine.Joints.Count / 2;
+                var headToMid = (Spine.Head.Deg - Spine.Joints[midIndex].Deg).Cap(-180, 180);
+                var midToTail = (Spine.Joints[midIndex].Deg - Spine.Tail.Deg).Cap(-180, 180);
+                var turnSize = (headToMid + midToTail) / 180 * 8 * Size;
+
+                var joint = Spine.Joints[JointIndex];
+                var stickTo = new StickTo(joint);
+                stickTo.Offset.Y = baseSize + turnSize;
+                stickTo.Resolve(Model);
+            }
+        }
     }
 
     public class EllipseModel(double rx, double ry) : Model
