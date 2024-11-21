@@ -1,4 +1,5 @@
-﻿using PeterDoStuff.Graphics;
+﻿using PeterDoStuff.Extensions;
+using PeterDoStuff.Graphics;
 using PeterDoStuff.Graphics.Effects;
 using PeterDoStuff.Graphics.Models;
 
@@ -28,6 +29,34 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
             CreateSideFin(spine, 7, ventralFinX, ventralFinY, -90, 45);
             CreateSideFin(spine, 7, ventralFinX, ventralFinY, 90, -45);
 
+            var caudalFin = new CurveModel();
+            var headTailDiff = (spine.Tail.Deg - spine.Head.Deg).Cap(-180, 180);
+            var startCaudalIndex = bodyWidth.Length - 2;
+            var endCaudalIndex = spine.Joints.Count - 1;
+            for (int i = startCaudalIndex; i <= endCaudalIndex; i++)
+            {
+                caudalFin.CurveTo(
+                    anchor: spine.Joints[i],
+                    offset: new Model() 
+                    { 
+                        Y = scale * caudalFinSize * (i - startCaudalIndex) * (i - startCaudalIndex),
+                    }
+                    );
+            }
+            for (int i = endCaudalIndex; i >= startCaudalIndex; i--)
+            {
+                caudalFin.CurveTo(
+                    anchor: spine.Joints[i],
+                    offset: new Model()
+                    {
+                        Y = scale * -caudalFinSize * (i - startCaudalIndex) * (i - startCaudalIndex),
+                    }
+                    );
+            }
+            AddAndStyle(caudalFin);
+            caudalFin.Style.StrokeWidth = 1;
+            caudalFin.Style.FillColor = caudalFin.Style.StrokeColor;
+
             var body = new CurveModel();
 
             // Head:
@@ -39,7 +68,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
                 offset: new Model() { X = GetBodyWidth(0), Deg = -30 });
 
             // Left side:
-            for (int i = 0; i < bodyWidth.Length - 2; i++)
+            for (int i = 0; i <= bodyWidth.Length - 1; i++)
             {
                 body.CurveTo(
                     anchor: spine.Joints[i],
@@ -47,10 +76,10 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
             }
 
             // Tail:
-            body.CurveTo(spine.Joints[bodyWidth.Length - 3]);
+            body.CurveTo(spine.Joints[bodyWidth.Length - 1]);
 
             // Right side:
-            for (int i = bodyWidth.Length - 3; i >= 0; i--)
+            for (int i = bodyWidth.Length - 1; i >= 0; i--)
             {
                 body.CurveTo(
                     anchor: spine.Joints[i],
@@ -130,6 +159,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
         private double ventralFinX = 96;
         private double ventralFinY = 32;
         private double eyeSize = 20;
+        private double caudalFinSize = 1.5;
 
         private double GetJointDistance() => jointDistance * scale;
         private double GetBodyWidth(int i) => i < bodyWidth.Length ? bodyWidth[i] * scale : 0;
