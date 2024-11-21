@@ -69,6 +69,10 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
             AddAndStyle(body);
             body.Style.StrokeWidth = 1;
             body.Style.FillOpacity = 1;
+
+            // Draw eyes
+            CreateEye(spine.Joints[0], -90);
+            CreateEye(spine.Joints[0], 90);
         }
 
         private void CreatePectoralFin(Model finJoint, double stickAngle, Model finAnchor, double pointAngle)
@@ -88,6 +92,25 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
 
             AddAndStyle(fin);
             fin.Style.StrokeWidth = 1;
+            fin.Style.FillColor = fin.Style.StrokeColor;
+            fin.Style.FillOpacity = 0.2;
+        }
+
+        private CircleModel CreateEye(Model joint, double angle)
+        {
+            var eye = new CircleModel(GetEyeSize());
+            AddAndStyle(eye);
+            eye.Style.StrokeWidth = 0;
+            eye.Style.FillColor = eye.Style.StrokeColor;
+            eye.Style.FillOpacity = 1;
+
+            var stickTo = new StickTo(joint);
+            var i = 0;
+            stickTo.Offset.X = (bodyWidth[i] - 18) * scale;
+            stickTo.Offset.Deg = angle;
+            eye.Apply(stickTo);
+
+            return eye;
         }
 
         private CircleModel JointOutline(int i)
@@ -104,12 +127,13 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
         private double scale = 0.3;
         private double pectoralFinX = 160;
         private double pectoralFinY = 64;
+        private double eyeSize = 20;
 
         private double GetJointDistance() => jointDistance * scale;
         private double GetBodyWidth(int i) => i < bodyWidth.Length ? bodyWidth[i] * scale : 0;
-
         private double GetPectorialFinX() => pectoralFinX * scale / 2;
         private double GetPectorialFinY() => pectoralFinY * scale / 2;
+        private double GetEyeSize() => eyeSize * scale;
     }
 
     public class EllipseModel(double rx, double ry) : Model
