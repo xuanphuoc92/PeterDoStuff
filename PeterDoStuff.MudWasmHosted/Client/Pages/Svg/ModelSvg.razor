@@ -22,6 +22,10 @@
 {
     <EllipseSvg Model="@ellipse" />
 }
+@if (Model is PathModel path)
+{
+    <PathSvg Model="@path" />
+}
 @if (Model is CompositeModel compositeModel)
 {
     for (int i = 0; i < compositeModel.Children.Count; i++)

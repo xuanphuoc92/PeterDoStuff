@@ -93,6 +93,25 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
             // Draw eyes
             CreateEye(spine.Joints[0], -90);
             CreateEye(spine.Joints[0], 90);
+
+            // Dorsal fin:
+            var dorsalFin = new PathModel();
+            dorsalFin.MoveTo(spine.Joints[4]);
+            dorsalFin.CurveTo(spine.Joints[5], spine.Joints[6], spine.Joints[7]);
+
+            var dorsalFinPoint1 = new Model();
+            dorsalFinPoint1.Apply(new DorsalFinEffect(spine, 6, -scale * dorsalFinSize));
+            var dorsalFinPoint2 = new Model();
+            dorsalFinPoint2.Apply(new DorsalFinEffect(spine, 5, -scale * dorsalFinSize));
+            Add(dorsalFinPoint1);
+            Add(dorsalFinPoint2);
+
+            dorsalFin.CurveTo(dorsalFinPoint1, dorsalFinPoint2, spine.Joints[4]);
+
+            AddAndStyle(dorsalFin);
+            dorsalFin.Style.StrokeWidth = 1;
+            dorsalFin.Style.FillColor = dorsalFin.Style.StrokeColor;
+            dorsalFin.Style.FillOpacity = 0.2;
         }
 
         private void CreateSideFin(Chain spine, int jointIndex, double finX, double finY, double stickAngle, double pointAngle)
@@ -151,6 +170,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
         private double ventralFinY = 32;
         private double eyeSize = 20;
         private double caudalFinSize = 1.5;
+        private double dorsalFinSize = 24;
 
         private double GetJointDistance() => jointDistance * scale;
         private double GetBodyWidth(int i) => i < bodyWidth.Length ? bodyWidth[i] * scale : 0;
@@ -178,10 +198,50 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
                 stickTo.Resolve(Model);
             }
         }
+
+        private class DorsalFinEffect(Chain spine, int jointIndex, double finSize) : Effect
+        {
+            public Chain Spine = spine;
+            public int JointIndex = jointIndex;
+            public double Size = finSize;
+
+            public override void Tick()
+            {
+                var joint = Spine.Joints[JointIndex];
+                var angleControlJoint = Spine.Joints[JointIndex + 1];
+                var headToJoint = (Spine.Head.Deg - angleControlJoint.Deg).Cap(-180, 180);
+
+                var stickTo = new StickTo(joint);
+                stickTo.Offset.Y = Size * headToJoint / 180 * 1.5;
+                stickTo.Resolve(Model);
+            }
+        }
+
     }
 
     public class EllipseModel(double rx, double ry) : Model
     {
         public double Rx = rx, Ry = ry;
+    }
+
+    public class PathModel : Model
+    {
+        public List<Command> Commands = [];
+
+        public void MoveTo(Model p)
+        {
+            Commands.Add(new Command() { Name = "M", Points = [p] });
+        }
+
+        public void CurveTo(Model c1, Model c2, Model p)
+        {
+            Commands.Add(new Command() { Name = "C", Points = [c1, c2, p] });
+        }
+
+        public class Command
+        {
+            public string Name;
+            public List<Model> Points = [];
+        }
     }
 }
