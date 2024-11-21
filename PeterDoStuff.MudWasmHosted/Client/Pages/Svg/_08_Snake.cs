@@ -16,43 +16,31 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
             Add(spine);
 
             var curve = new CurveModel();
-
-            var headPoint = new Model();            
-            var stickToHead = new StickTo(spine.Head);
-            stickToHead.Offset.X = GetBodySize(0);
-            headPoint.Apply(stickToHead);
-            curve.CurveTo(headPoint);
+            
+            // Start and record the Head Point to later connect back
+            var headPoint = curve.CurveTo(
+                anchor: spine.Head, 
+                offset: new Model() { X = GetBodySize(0) });
 
             // Draw left side
             for (int i = 0; i < spine.Joints.Count; i++)
             {
-                var leftPoint = new Model();
-                var joint = spine.Joints[i];
-                var stickTo = new StickTo(joint);
-                stickTo.Offset.X = GetBodySize(i);
-                stickTo.Offset.Deg = -GetBodyAngle(i);
-                leftPoint.Apply(stickTo);
-                curve.CurveTo(leftPoint);
+                curve.CurveTo(
+                    anchor: spine.Joints[i], 
+                    offset: new Model() { X = GetBodySize(i), Deg = -GetBodyAngle(i) });
             }
 
             // Connect tail
-            var tailPoint = new Model();
-            var tailJoint = spine.Joints.Last();
-            var stickToTail = new StickTo(tailJoint);
-            stickToTail.Offset.X = -4;
-            tailPoint.Apply(stickToTail);
-            curve.CurveTo(tailPoint);
+            curve.CurveTo(
+                anchor: spine.Tail,
+                offset: new Model() { X = -4 });
 
             // Draw right side
             for (int  i = spine.Joints.Count - 1; i >= 0; i--)
             {
-                var rightPoint = new Model();
-                var joint = spine.Joints[i];
-                var stickTo = new StickTo(joint);
-                stickTo.Offset.X = GetBodySize(i);
-                stickTo.Offset.Deg = GetBodyAngle(i);
-                rightPoint.Apply(stickTo);
-                curve.CurveTo(rightPoint);
+                curve.CurveTo(
+                    anchor: spine.Joints[i],
+                    offset: new Model() { X = GetBodySize(i), Deg = GetBodyAngle(i) });
             }
 
             // Connect back to head
@@ -75,11 +63,13 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
             eye.Style.StrokeWidth = 0;
             eye.Style.FillColor = eye.Style.StrokeColor;
             eye.Style.FillOpacity = 1;
+
             var stickTo = new StickTo(joint);
             var i = 1;
             stickTo.Offset.X = (16 - i * 0.5) - 2.5;
             stickTo.Offset.Deg = angle;
             eye.Apply(stickTo);
+
             return eye;
         }
 
@@ -96,34 +86,32 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
                 return 60;
             return 90;
         }
-
-        //private Model CreateSpine(int i)
-        //{
-        //    var joint = new CircleModel(GetBodySize(i));
-        //    joint.Style = Style.Clone();
-        //    joint.Style.StrokeWidth = 2;
-        //    joint.Style.StrokeOpacity = 0.2;
-        //    joint.Style.FillOpacity = 0;
-        //    return joint;
-        //}
     }
 
     public class CurveModel : CompositeModel
     {
         public List<Model> Points => Children;
 
-        public CurveModel CurveTo(Model point)
+        public Model CurveTo(Model anchor, Model offset)
+        {
+            var stickTo = new StickTo(anchor);
+            stickTo.Offset = offset;
+            var point = new Model();
+            point.Apply(stickTo);
+            return CurveTo(point);
+        }
+
+        public Model CurveTo(Model point)
         {
             Add(point);
-            return this;
+            return point;
         }
 
         public bool IsClosed = false;
 
-        public CurveModel Close()
+        public void Close()
         {
             IsClosed = true;
-            return this;
         }
     }
 }

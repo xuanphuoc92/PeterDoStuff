@@ -53,6 +53,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
         public List<Model> Joints => Children;
 
         public Model Head => Joints.First();
+        public Model Tail => Joints.Last();
 
         public Chain(int jointCount, double jointDistance, Func<int, Model> jointCreate, double? angleConstraint = null)
         {
