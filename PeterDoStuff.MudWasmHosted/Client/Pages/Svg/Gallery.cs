@@ -14,6 +14,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
             new _06_Chains(style),
             new _07_AngleConstraint(style),
             new _08_Snake(style),
+            new _09_Fish(style),
         ];
     }
 
