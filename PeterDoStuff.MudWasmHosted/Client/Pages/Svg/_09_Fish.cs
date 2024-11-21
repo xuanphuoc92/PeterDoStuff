@@ -20,13 +20,13 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
             spine.Head.Apply(new Follow(Mouse, 250));
             Add(spine);
 
-            // Pectorial Fins (side fins)
-            var pectorialFinJoint = spine.Joints[3];
-            var pectorialFinAnchor = spine.Joints[2];
-            // Left Fin
-            CreatePectoralFin(pectorialFinJoint, -60, pectorialFinAnchor, 45);
-            // Right Fin
-            CreatePectoralFin(pectorialFinJoint, 60, pectorialFinAnchor, -45);
+            // Pectorial Fins
+            CreateSideFin(spine, 3, pectoralFinX, pectoralFinY, -60, 45);
+            CreateSideFin(spine, 3, pectoralFinX, pectoralFinY, 60, -45);
+
+            // Ventral Fins
+            CreateSideFin(spine, 7, ventralFinX, ventralFinY, -90, 45);
+            CreateSideFin(spine, 7, ventralFinX, ventralFinY, 90, -45);
 
             var body = new CurveModel();
 
@@ -47,7 +47,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
             }
 
             // Tail:
-            body.CurveTo(spine.Joints[bodyWidth.Length - 1]);
+            body.CurveTo(spine.Joints[bodyWidth.Length - 3]);
 
             // Right side:
             for (int i = bodyWidth.Length - 3; i >= 0; i--)
@@ -75,20 +75,20 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
             CreateEye(spine.Joints[0], 90);
         }
 
-        private void CreatePectoralFin(Model finJoint, double stickAngle, Model finAnchor, double pointAngle)
+        private void CreateSideFin(Chain spine, int jointIndex, double finX, double finY, double stickAngle, double pointAngle)
         {
             var fin = new EllipseModel(
-                rx: GetPectorialFinX(),
-                ry: GetPectorialFinY());
+                rx: finX * scale / 2,
+                ry: finY * scale / 2);
 
-            var stickLeftFin = new StickTo(finJoint);
-            stickLeftFin.Offset.X = GetBodyWidth(3);
-            stickLeftFin.Offset.Deg = stickAngle;
-            fin.Apply(stickLeftFin);
+            var stickTo = new StickTo(spine.Joints[jointIndex]);
+            stickTo.Offset.X = GetBodyWidth(jointIndex);
+            stickTo.Offset.Deg = stickAngle;
+            fin.Apply(stickTo);
 
-            var pointLeftFin = new PointTo(finAnchor, PointMode.Mirrow);
-            pointLeftFin.Offset.Deg = pointAngle;
-            fin.Apply(pointLeftFin);
+            var pointTo = new PointTo(spine.Joints[jointIndex - 1], PointMode.Mirrow);
+            pointTo.Offset.Deg = pointAngle;
+            fin.Apply(pointTo);
 
             AddAndStyle(fin);
             fin.Style.StrokeWidth = 1;
@@ -127,12 +127,12 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
         private double scale = 0.3;
         private double pectoralFinX = 160;
         private double pectoralFinY = 64;
+        private double ventralFinX = 96;
+        private double ventralFinY = 32;
         private double eyeSize = 20;
 
         private double GetJointDistance() => jointDistance * scale;
         private double GetBodyWidth(int i) => i < bodyWidth.Length ? bodyWidth[i] * scale : 0;
-        private double GetPectorialFinX() => pectoralFinX * scale / 2;
-        private double GetPectorialFinY() => pectoralFinY * scale / 2;
         private double GetEyeSize() => eyeSize * scale;
     }
 
