@@ -218,30 +218,4 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
         }
 
     }
-
-    public class EllipseModel(double rx, double ry) : Model
-    {
-        public double Rx = rx, Ry = ry;
-    }
-
-    public class PathModel : Model
-    {
-        public List<Command> Commands = [];
-
-        public void MoveTo(Model p)
-        {
-            Commands.Add(new Command() { Name = "M", Points = [p] });
-        }
-
-        public void CurveTo(Model c1, Model c2, Model p)
-        {
-            Commands.Add(new Command() { Name = "C", Points = [c1, c2, p] });
-        }
-
-        public class Command
-        {
-            public string Name;
-            public List<Model> Points = [];
-        }
-    }
 }

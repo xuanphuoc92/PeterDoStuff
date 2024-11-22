@@ -81,5 +81,22 @@ namespace PeterDoStuff.Test.Graphics
             curve.IsClosed.Should().BeTrue();
             curve.Points.Should().HaveCount(2);
         }
+
+        [TestMethod]
+        public void _07_Ellipse()
+        {
+            var ellipse = new EllipseModel(120, 60);
+            ellipse.Rx.Should().Be(120);
+            ellipse.Ry.Should().Be(60);
+        }
+
+        [TestMethod]
+        public void _08_Path()
+        {
+            var path = new PathModel();
+            path.MoveTo(new Model());
+            path.CurveTo(new Model(), new Model(), new Model());
+            path.Commands.Should().HaveCount(2);
+        }
     }
 }
