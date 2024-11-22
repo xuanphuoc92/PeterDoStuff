@@ -1,4 +1,5 @@
 ﻿using PeterDoStuff.Graphics;
+using PeterDoStuff.Graphics.Effects;
 using PeterDoStuff.Graphics.Models;
 
 namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg

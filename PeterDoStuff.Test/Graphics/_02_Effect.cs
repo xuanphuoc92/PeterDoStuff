@@ -177,5 +177,38 @@ namespace PeterDoStuff.Test.Graphics
             model.X.Should().Be(99);
             model.Y.Should().Be(199);
         }
+
+        [TestMethod]
+        public void _09_Follow()
+        {
+            var model = new Model();
+            
+            var anchor = new Model();
+            anchor.X = 1000;
+            anchor.Y = 1000;
+
+            var follow = new Follow(anchor, 100);
+            model.Apply(follow);
+            
+            // First tick, not moving
+            model.Resolve();
+            model.X.Should().Be(0);
+            model.Y.Should().Be(0);
+            model.Deg.Should().Be(45);
+
+            // Second tick, moving
+            model.Resolve();
+            model.X.Should().BeGreaterThan(0);
+            model.Y.Should().BeGreaterThan(0);
+            model.Deg.Should().Be(45);
+
+            // In merge range, merged
+            model.X = 999;
+            model.Y = 999;
+            model.Resolve();
+            model.X.Should().Be(1000);
+            model.Y.Should().Be(1000);
+            model.Deg.Should().Be(45);
+        }
     }
 }
