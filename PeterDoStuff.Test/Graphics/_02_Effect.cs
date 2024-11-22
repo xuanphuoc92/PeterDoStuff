@@ -110,6 +110,15 @@ namespace PeterDoStuff.Test.Graphics
             (anchor.X, anchor.Y) = (-1, 0);
             model.Resolve();
             model.Deg.Should().Be(-180);
+
+            model.Effects.Clear();
+            model.Apply(new PointTo(anchor, PointMode.Copy));
+            model.Resolve();
+            model.Deg.Should().Be(0);
+
+            anchor.Deg = 45;
+            model.Resolve();
+            model.Deg.Should().Be(45);
         }
 
         [TestMethod]

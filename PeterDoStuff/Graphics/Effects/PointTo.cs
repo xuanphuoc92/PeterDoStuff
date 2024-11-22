@@ -43,6 +43,6 @@ namespace PeterDoStuff.Graphics.Effects
     public enum PointMode
     {
         Toward = 0,
-        Mirrow = 1,
+        Copy = 1,
     }
 }

@@ -125,7 +125,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
             stickTo.Offset.Deg = stickAngle;
             fin.Apply(stickTo);
 
-            var pointTo = new PointTo(spine.Joints[jointIndex - 1], PointMode.Mirrow);
+            var pointTo = new PointTo(spine.Joints[jointIndex - 1], PointMode.Copy);
             pointTo.Offset.Deg = pointAngle;
             fin.Apply(pointTo);
 
