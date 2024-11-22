@@ -63,5 +63,23 @@ namespace PeterDoStuff.Test.Graphics
             var polygon = new PolygonModel(0, 0, 1, 0, 1, 1, 0, 1);
             polygon.Points.Should().HaveCount(4);
         }
+
+        [TestMethod]
+        public void _06_Curve()
+        {
+            var curve = new CurveModel();
+            curve.Points.Should().BeEmpty();
+
+            curve.CurveTo(new Model());
+            curve.Points.Should().HaveCount(1);
+
+            curve.CurveTo(new Model(), new Model());
+            curve.Points.Should().HaveCount(2);
+
+            curve.IsClosed.Should().BeFalse();
+            curve.Close();
+            curve.IsClosed.Should().BeTrue();
+            curve.Points.Should().HaveCount(2);
+        }
     }
 }
