@@ -21,7 +21,6 @@ namespace PeterDoStuff.MudWasmHosted.Client
 
         public static readonly List<PlaygroundItem> Items = new List<PlaygroundItem>()
         {
-            new(PlaygroundGroup.Demos, "docTemplate", @Icons.Custom.FileFormats.FileImage, "Template", "This page demonstrates template rendering."),
             new(PlaygroundGroup.Tools, "schemaTools", Icons.Material.Filled.Schema, "Schema Tools", "This page demonstrates the tools for schema designing."),
             new(PlaygroundGroup.Demos, "svg", @Icons.Custom.Uncategorized.Fish, "SVG", "This page demonstrates SVG rendering and animations."),
             new(PlaygroundGroup.Demos, "whatsapp", Icons.Custom.Brands.WhatsApp, "Chat on WhatsApp", "This page demonstrates WhatsApp How to use click to chat."),
@@ -39,7 +38,8 @@ namespace PeterDoStuff.MudWasmHosted.Client
             new(PlaygroundGroup.Games, "gameOfLife", Icons.Material.Filled.CrueltyFree, "Conway's Game of Life", "This is playground for Conway's Game of Life. Limitted size: 30x30."),
             new(PlaygroundGroup.Games, "mineSweeper", Icons.Material.Filled.BrightnessHigh, "Minesweeper", "Just a basic minesweeper game."),
             new(PlaygroundGroup.Games, "matchFinder", Icons.Material.Filled.Search, "Match Finder", "Just a basic match finder game."),
-            new(PlaygroundGroup.Tools, "fileScanner", Icons.Material.Filled.InsertDriveFile, "File Scanner", "Select your zip file to scan for statistics.")
+            new(PlaygroundGroup.Tools, "fileScanner", Icons.Material.Filled.InsertDriveFile, "File Scanner", "Select your zip file to scan for statistics."),
+            new(PlaygroundGroup.Demos, "docTemplate", @Icons.Custom.FileFormats.FileImage, "Template", "This page demonstrates template rendering."),
         };
     }
 
