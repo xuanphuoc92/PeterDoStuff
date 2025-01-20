@@ -393,3 +393,17 @@ window.updateMousePosition = function (canvasRef, dotNetObject, updateMouseMetho
         }
     });
 };
+
+function clearLayoutStyle() {
+    // Remove the MudBlazor CSS link
+    const mudBlazorCss = document.querySelector('link[href*="_content/MudBlazor/MudBlazor.min.css"]');
+    if (mudBlazorCss) {
+        mudBlazorCss.remove();
+    }
+
+    // Remove the Blazor error UI div
+    const blazorErrorUi = document.getElementById('blazor-error-ui');
+    if (blazorErrorUi) {
+        blazorErrorUi.remove();
+    }
+}

@@ -1,10 +1,15 @@
 ﻿@page "/doc"
 @layout EmptyLayout
+@inject IJSRuntime JSRuntime
 
 <h3>DocPage</h3>
 
 <p>Hello, world!</p>
 
 @code {
-
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+            await JSRuntime.InvokeVoidAsync("clearLayoutStyle");
+    }
 }
