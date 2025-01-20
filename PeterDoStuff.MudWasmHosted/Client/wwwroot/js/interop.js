@@ -407,3 +407,10 @@ function clearLayoutStyle() {
         blazorErrorUi.remove();
     }
 }
+
+function renderHtml(containerId, htmlContent) {
+    const container = document.getElementById(containerId);
+    if (container) {
+        container.innerHTML = htmlContent;
+    }
+}

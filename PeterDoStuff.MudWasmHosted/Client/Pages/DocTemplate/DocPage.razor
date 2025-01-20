@@ -2,14 +2,15 @@
 @layout EmptyLayout
 @inject IJSRuntime JSRuntime
 
-<h3>DocPage</h3>
-
-<p>Hello, world!</p>
+<div id="preview-container"></div>
 
 @code {
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
+        {
             await JSRuntime.InvokeVoidAsync("clearLayoutStyle");
+            await JSRuntime.InvokeVoidAsync("renderHtml", "preview-container", DocTemplateController.SampleHtml);
+        }
     }
 }
