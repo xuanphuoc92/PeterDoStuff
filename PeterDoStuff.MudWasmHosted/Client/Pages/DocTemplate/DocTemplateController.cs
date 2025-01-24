@@ -1,7 +1,101 @@
-﻿namespace PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate
+﻿using AngleSharp.Dom;
+using PeterDoStuff.Extensions;
+
+namespace PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate
 {
     public class DocTemplateController
     {
+        public class Resume
+        {
+            public Entity Person { get; set; } = new();
+
+            public string Location { get; set; }
+
+            public string PhoneLabel { get; set; } = "Phone";
+            public string PhoneNumber { get; set; }
+
+            public string Fluency { get; set; }
+            public string Email { get; set; }
+
+            public Link LinkedIn { get; set; } = new();
+            public Link GitHub { get; set; } = new();
+
+            public List<(string, Link)> OtherLinks { get; set; } = [];
+
+            public string AboutMe { get; set; }
+            public string[] AboutMeParagraphs => AboutMe?.Split("\n").Select(p => p.Trim()).Where(p => p.IsNullOrEmpty() == false).ToArray() ?? [];
+
+            public List<Experience> Experiences { get; set; } = [];
+
+            public List<Education> Educations { get; set; } = [];
+
+            public Dictionary<int, string> SkillLevels { get; set; } = new()
+            {
+                { 1, "Familiar" },
+                { 2, "Proficient" },
+                { 3, "Skilled" },
+                { 4, "Expert" },
+                { 5, "Master" },
+            };
+
+            public List<Skill> Skills { get; set; } = [];
+
+            public List<(string,List<Skill>)> SkillByGroup => Skills
+                .GroupBy(skill => skill.Group)
+                .Select(group => (group.Key, group.OrderByDescending(skill => skill.Level).ToList()))
+                .ToList();
+        }
+
+        public enum PhotoType
+        {
+            None, Url, Base64
+        }
+
+        public class Link
+        {
+            public string Url { get; set; }
+            public string Text { get; set; }
+        }
+
+        public class Experience
+        {
+            public Entity Company { get; set; } = new();
+            public List<ExperienceItem> Items {get;set;}
+        }
+
+        public class ExperienceItem
+        {
+            public string Position { get; set; }
+            public DateTime From { get; set; }
+            public DateTime? To { get; set; }
+            public string Description { get; set; }
+            public string[] DescriptionParagraphs => Description?.Split("\n").Select(p => p.Trim()).Where(p => p.IsNullOrEmpty() == false).ToArray() ?? [];
+        }
+
+        public class Education
+        {
+            public Entity Institution { get; set; } = new();
+            public string Description { get; set; }
+            public DateTime From { get; set; }
+            public DateTime? To { get; set; }
+        }
+
+        public class Entity
+        {
+            public string Name { get; set; }
+
+            public PhotoType PhotoType { get; set; }
+            public string PhotoUrl { get; set; }
+            public string PhotoBase64 { get; set; }
+        }
+
+        public class Skill
+        {
+            public string Group { get; set; }
+            public string Name { get; set; }
+            public int Level { get; set; }
+        }
+
         public const string SampleHtml = @"
 <!DOCTYPE html>
 <html>
