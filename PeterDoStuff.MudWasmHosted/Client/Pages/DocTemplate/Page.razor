@@ -43,6 +43,7 @@
         </MudItem>
     </MudGrid>
     <MudTextField Label="Email" @bind-Value="model.Email" For="@(() => model.Email)" />
+    <LinkControl Label="LinkedIn" Link="@model.LinkedIn" Icon="@Icons.Custom.Brands.LinkedIn" />
 </EditForm>
 
 @code {
