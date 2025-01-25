@@ -44,6 +44,12 @@
     </MudGrid>
     <MudTextField Label="Email" @bind-Value="model.Email" For="@(() => model.Email)" />
     <LinkControl Label="LinkedIn" Link="@model.LinkedIn" Icon="@Icons.Custom.Brands.LinkedIn" />
+    <LinkControl Label="GitHub" Link="@model.GitHub" Icon="@Icons.Custom.Brands.GitHub" />
+    <MudButton OnClick="AddOtherLink">Add Link</MudButton>
+    @foreach (var otherLink in model.OtherLinks)
+    {
+        <LinkControl Label="@otherLink.Label" Link="@otherLink.Link" LabelEditable="true" />
+    }
 </EditForm>
 
 @code {
@@ -66,5 +72,11 @@
         using StreamReader reader = new StreamReader(inputFileStream, Encoding.UTF8);
         string json = reader.ReadToEnd();
         model = json.FromJson<Resume>();
+    }
+
+    private void AddOtherLink()
+    {
+        (string Label, Link Link) otherLink = ("", new Link());
+        model.OtherLinks.Add(otherLink);
     }
 }

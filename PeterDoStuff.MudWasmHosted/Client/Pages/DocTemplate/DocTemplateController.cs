@@ -21,7 +21,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate
             public Link LinkedIn { get; set; } = new();
             public Link GitHub { get; set; } = new();
 
-            public List<(string, Link)> OtherLinks { get; set; } = [];
+            public List<(string Label, Link Link)> OtherLinks { get; set; } = [];
 
             public string AboutMe { get; set; }
             public string[] AboutMeParagraphs => AboutMe?.Split("\n").Select(p => p.Trim()).Where(p => p.IsNullOrEmpty() == false).ToArray() ?? [];
