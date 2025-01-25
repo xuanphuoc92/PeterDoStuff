@@ -18,10 +18,10 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate
             
             public string Email { get; set; }
 
-            public Link LinkedIn { get; set; } = new();
-            public Link GitHub { get; set; } = new();
+            public Link LinkedIn { get; set; } = new() { Label = nameof(LinkedIn) };
+            public Link GitHub { get; set; } = new() { Label = nameof(GitHub) };
 
-            public List<(string Label, Link Link)> OtherLinks { get; set; } = [];
+            public List<Link> OtherLinks { get; set; } = [];
 
             public string AboutMe { get; set; }
             public string[] AboutMeParagraphs => AboutMe?.Split("\n").Select(p => p.Trim()).Where(p => p.IsNullOrEmpty() == false).ToArray() ?? [];
@@ -54,6 +54,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate
 
         public class Link
         {
+            public string Label { get; set; }
             public string Url { get; set; }
             public string Text { get; set; }
         }

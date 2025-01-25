@@ -43,12 +43,22 @@
         </MudItem>
     </MudGrid>
     <MudTextField Label="Email" @bind-Value="model.Email" For="@(() => model.Email)" />
-    <LinkControl Label="LinkedIn" Link="@model.LinkedIn" Icon="@Icons.Custom.Brands.LinkedIn" />
-    <LinkControl Label="GitHub" Link="@model.GitHub" Icon="@Icons.Custom.Brands.GitHub" />
+    <MudGrid>
+        <LinkControl Link="@model.LinkedIn" Icon="@Icons.Custom.Brands.LinkedIn" />
+    </MudGrid>
+    <MudGrid>
+        <LinkControl Link="@model.GitHub" Icon="@Icons.Custom.Brands.GitHub" />
+    </MudGrid>
     <MudButton OnClick="AddOtherLink">Add Link</MudButton>
-    @foreach (var otherLink in model.OtherLinks)
+    @for(int i = 0; i < model.OtherLinks.Count; i++)
     {
-        <LinkControl Label="@otherLink.Label" Link="@otherLink.Link" LabelEditable="true" />
+        var otherLink = model.OtherLinks[i];
+        <MudGrid>
+            <MudItem xs="1">
+                <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete" OnClick="() => RemoveOtherLink(otherLink)"></MudIconButton>
+            </MudItem>
+            <LinkControl LabelWidth="1" Link="@otherLink" />
+        </MudGrid>
     }
 </EditForm>
 
@@ -76,7 +86,11 @@
 
     private void AddOtherLink()
     {
-        (string Label, Link Link) otherLink = ("", new Link());
-        model.OtherLinks.Add(otherLink);
+        model.OtherLinks.Add(new Link());
+    }
+
+    private void RemoveOtherLink(Link otherLink)
+    {
+        model.OtherLinks.Remove(otherLink);
     }
 }

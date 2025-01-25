@@ -1,18 +1,17 @@
 ﻿@using static PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate.DocTemplateController
 
-<MudGrid>
-    <MudItem xs="2" sm="2">
-        <MudTextField @bind-Value="Label" For="@(() => Label)" Disabled="@(!LabelEditable)" />
-    </MudItem>
-    <MudItem xs="10" sm="5">
-        <MudTextField Label="@Label" AdornmentIcon="@Icon" Adornment="Adornment.Start"
-            @bind-Value="Link.Url" For="@(() => Link.Url)" />
-    </MudItem>
-    <MudItem xs="12" sm="5">
-        <MudTextField AdornmentIcon="@Icons.Material.Filled.FontDownload" Adornment="Adornment.Start"
-            @bind-Value="Link.Text" For="@(() => Link.Text)" />
-    </MudItem>
-</MudGrid>
+<MudItem xs="@LabelWidth" sm="@LabelWidth">
+    <MudTextField 
+        @bind-Value="Link.Label" For="@(() => Link.Label)" />
+</MudItem>
+<MudItem xs="10" sm="5">
+    <MudTextField AdornmentIcon="@Icon" Adornment="Adornment.Start"
+        @bind-Value="Link.Url" For="@(() => Link.Url)" />
+</MudItem>
+<MudItem xs="12" sm="5">
+    <MudTextField AdornmentIcon="@Icons.Material.Filled.FontDownload" Adornment="Adornment.Start"
+        @bind-Value="Link.Text" For="@(() => Link.Text)" />
+</MudItem>
 
 
 @code {
@@ -20,10 +19,7 @@
     public Link Link { get; set; }
 
     [Parameter]
-    public string Label { get; set; }
-
-    [Parameter]
-    public bool LabelEditable { get; set; } = false;
+    public int LabelWidth { get; set; } = 2;
 
     [Parameter]
     public string Icon { get; set; } = Icons.Material.Filled.Link;
