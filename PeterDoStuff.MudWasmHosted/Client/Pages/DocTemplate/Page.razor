@@ -103,13 +103,50 @@
                         </MudItem>
                     </MudGrid>
                 }
-                <MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.AddCircleOutline"
+                <MudIconButton Variant="Variant.Filled" Color="Color.Primary" Icon="@Icons.Material.Filled.Add"
                     OnClick="() => experience.Items.Add(new())" />
             </MudItem>
         </MudGrid>
     }
     <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.AddCircleOutline" 
         OnClick="() => model.Experiences.Add(new())">Experience</MudButton>
+
+    <MudText Class="mt-4">Education</MudText>
+    @for (int i = 0; i < model.Educations.Count; i++)
+    {
+        var education = model.Educations[i];
+        <MudGrid>
+            <MudItem xs="1">
+                <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete"
+                               OnClick="() => model.Educations.Remove(education)"></MudIconButton>
+            </MudItem>
+            <MudItem xs="11">
+                <MudGrid>
+                    <MudItem xs="12" sm="12">
+                        <EntityControl Entity="@education.Institution" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudTextField Variant="Variant.Outlined" Label="Degree"
+                            Lines="3"
+                            @bind-Value="education.Degree" For="@(() => education.Degree)" />
+                    </MudItem>
+                    <MudItem xs="6" sm="3">
+                        <MudDatePicker Variant="Variant.Outlined" Label="From" @bind-Date="education.From" />
+                    </MudItem>
+                    <MudItem xs="6" sm="3">
+                        <MudDatePicker Variant="Variant.Outlined" Label="To" @bind-Date="education.To" />
+                    </MudItem>
+                    <MudItem xs="12" sm="12">
+                        <MudTextField Variant="Variant.Outlined" Label="Description"
+                            Lines="5"
+                            @bind-Value="education.Description" For="@(() => education.Description)" />
+                    </MudItem>
+                </MudGrid>
+            </MudItem>
+        </MudGrid>
+    }
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.AddCircleOutline"
+        OnClick="() => model.Educations.Add(new())">Education</MudButton>
 </EditForm>
 
 @code {

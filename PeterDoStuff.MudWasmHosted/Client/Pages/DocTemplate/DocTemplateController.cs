@@ -77,8 +77,9 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate
         public class Education
         {
             public Entity Institution { get; set; } = new();
+            public string Degree { get; set; }
             public string Description { get; set; }
-            public DateTime From { get; set; }
+            public DateTime? From { get; set; }
             public DateTime? To { get; set; }
         }
 
