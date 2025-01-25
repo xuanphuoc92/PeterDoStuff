@@ -13,10 +13,16 @@
     OnClick="DownloadJson">
     Download JSON
 </MudButton>
-<MudButton Variant="Variant.Filled" Color="Color.Primary"
-    StartIcon="@Icons.Material.Filled.Upload">
-    Upload JSON
-</MudButton>
+
+<MudFileUpload T="IBrowserFile" FilesChanged="UploadJson">
+    <ButtonTemplate>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary"
+            StartIcon="@Icons.Material.Filled.Upload"
+            for="@context.Id" HtmlTag="label">
+            Upload JSON
+        </MudButton>
+    </ButtonTemplate>
+</MudFileUpload>
 
 <EditForm Model="@model">
     <EntityControl Entity="@model.Person" />
@@ -32,5 +38,15 @@
             Encoding.UTF8.GetBytes(model.ToJson(beautify: true)));
         using var streamRef = new DotNetStreamReference(stream: csvFileStream);
         await JS.InvokeVoidAsync("downloadFileFromStream", fileName.Trim(), streamRef);
+    }
+
+    private async Task UploadJson(IBrowserFile file)
+    {
+        using MemoryStream inputFileStream = new MemoryStream();
+        await file.OpenReadStream(file.Size).CopyToAsync(inputFileStream);
+        inputFileStream.Position = 0;
+        using StreamReader reader = new StreamReader(inputFileStream, Encoding.UTF8);
+        string json = reader.ReadToEnd();
+        model = json.FromJson<Resume>();
     }
 }
