@@ -1,4 +1,6 @@
-﻿using FluentAssertions;
+﻿using ApprovalTests.Reporters;
+using FluentAssertions;
+using FluentAssertions.Extensions;
 using PeterDoStuff.Extensions;
 using PeterDoStuff.Test.Extensions;
 using System;
@@ -69,6 +71,41 @@ namespace PeterDoStuff.Test.Extensions_Test
 
             input = null;
             input.IsNullOrEmpty().Should().BeTrue();
+        }
+
+        private class TestModel
+        {
+            public string Name { get; set; } = "Apple";
+            public DateTime From { get; set; } = 31.January(2020);
+        }
+
+        [TestMethod]
+        [UseReporter(typeof(DiffReporter))]
+        public void _06_ToJson()
+        {
+            var model = new TestModel();
+            var result = model.ToJson();
+            result += "\n";
+            result += model.ToJson(beautify: true);
+            result.Verify();
+        }
+
+        [TestMethod]
+        public void _07_FromJson()
+        {
+            var model = new TestModel();
+            model.Name = "Orange";
+            model.From = 28.February(2020);
+
+            static void Assert(string json)
+            {
+                var deserializedModel = json.FromJson<TestModel>();
+                deserializedModel.Name.Should().Be("Orange");
+                deserializedModel.From.Should().Be(28.February(2020));
+            }
+
+            Assert(model.ToJson());
+            Assert(model.ToJson(beautify: true));
         }
     }
 }
