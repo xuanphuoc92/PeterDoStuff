@@ -5,6 +5,15 @@
 
 @* <iframe srcdoc="@DocTemplateController.SampleHtml" style="width:100%; height:35cm; border:none;"></iframe> *@
 
+<MudButton Variant="Variant.Filled" Color="Color.Primary"
+    StartIcon="@Icons.Material.Filled.Download">
+    Download JSON
+</MudButton>
+<MudButton Variant="Variant.Filled" Color="Color.Primary"
+    StartIcon="@Icons.Material.Filled.Upload">
+    Upload JSON
+</MudButton>
+
 <EditForm Model="@model">
     <EntityControl Entity="@model.Person" />
 </EditForm>
