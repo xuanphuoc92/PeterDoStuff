@@ -60,6 +60,9 @@
             <LinkControl LabelWidth="1" Link="@otherLink" />
         </MudGrid>
     }
+    <MudTextField Label="AboutMe" 
+        Lines="10"
+        @bind-Value="model.AboutMe" For="@(() => model.AboutMe)" />
 </EditForm>
 
 @code {
