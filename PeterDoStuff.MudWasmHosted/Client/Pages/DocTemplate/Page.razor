@@ -91,10 +91,15 @@
                                 @bind-Value="item.Position" For="@(() => item.Position)" />
                         </MudItem>
                         <MudItem xs="6" sm="3">
-                            <MudDatePicker Label="From" @bind-Date="item.From" />
+                            <MudDatePicker Variant="Variant.Outlined" Label="From" @bind-Date="item.From" />
                         </MudItem>
                         <MudItem xs="6" sm="3">
-                            <MudDatePicker Label="To" @bind-Date="item.To" />
+                            <MudDatePicker Variant="Variant.Outlined" Label="To" @bind-Date="item.To" />
+                        </MudItem>
+                        <MudItem xs="12">
+                            <MudTextField Variant="Variant.Outlined" Label="Description"
+                                Lines="5"
+                                @bind-Value="item.Description" For="@(() => item.Description)" />
                         </MudItem>
                     </MudGrid>
                 }
