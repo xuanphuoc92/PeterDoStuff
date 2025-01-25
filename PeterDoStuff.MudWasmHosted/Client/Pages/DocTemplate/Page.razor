@@ -147,6 +147,22 @@
     }
     <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.AddCircleOutline"
         OnClick="() => model.Educations.Add(new())">Education</MudButton>
+
+    <MudText Class="mt-4">Skill Levels</MudText>
+    @for (int i = 1; i <= model.SkillLevels.Keys.Max(); i++)
+    {
+        var level = i;
+        var description = model.SkillLevels[level];
+        <MudGrid>
+            <MudItem xs="12" sm="3">
+                <MudRating SelectedValue="@level" Disabled="true" />
+            </MudItem>
+            <MudItem xs="12" sm="9">
+                <MudTextField Variant="Variant.Outlined" Label="Description"
+                    @bind-Value="model.SkillLevels[level]" For="@(() => description)" />
+            </MudItem>
+        </MudGrid>
+    }
 </EditForm>
 
 @code {
