@@ -35,16 +35,11 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate
                 { 1, "Familiar" },
                 { 2, "Proficient" },
                 { 3, "Skilled" },
-                { 4, "Expert" },
-                { 5, "Master" },
+                //{ 4, "Expert" },
+                //{ 5, "Master" },
             };
 
             public List<Skill> Skills { get; set; } = [];
-
-            public List<(string,List<Skill>)> SkillByGroup => Skills
-                .GroupBy(skill => skill.Group)
-                .Select(group => (group.Key, group.OrderByDescending(skill => skill.Level).ToList()))
-                .ToList();
         }
 
         public enum PhotoType
@@ -97,7 +92,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate
         {
             public string Group { get; set; }
             public string Name { get; set; }
-            public int Level { get; set; }
+            public int Level { get; set; } = 3;
         }
 
         public const string SampleHtml = @"

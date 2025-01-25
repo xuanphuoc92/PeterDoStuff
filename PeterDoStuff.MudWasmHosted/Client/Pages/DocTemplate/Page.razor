@@ -155,7 +155,7 @@
         var description = model.SkillLevels[level];
         <MudGrid>
             <MudItem xs="12" sm="3">
-                <MudRating SelectedValue="@level" Disabled="true" />
+                <MudRating SelectedValue="@level" ReadOnly="true" />
             </MudItem>
             <MudItem xs="12" sm="9">
                 <MudTextField Variant="Variant.Outlined" Label="Description"
@@ -163,6 +163,30 @@
             </MudItem>
         </MudGrid>
     }
+
+    <MudText Class="mt-4">Skills</MudText>
+    @for (int i = 0; i < model.Skills.Count; i++)
+    {
+        var level = i;
+        var skill = model.Skills[i];
+        <MudGrid>
+            <MudItem xs="12" sm="1">
+                <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete"
+                               OnClick="() => model.Skills.Remove(skill)"></MudIconButton>
+            </MudItem>
+            <MudItem xs="6" sm="2">
+                <MudTextField Variant="Variant.Outlined" Label="Group"
+                    @bind-Value="skill.Group" For="@(() => skill.Group)" />
+            </MudItem>
+            <MudItem xs="6" sm="9">
+                <MudTextField Variant="Variant.Outlined" Label="Name"
+                    @bind-Value="skill.Name" For="@(() => skill.Name)" />
+                <MudRating @bind-SelectedValue="skill.Level" MaxValue="3" />
+            </MudItem>
+        </MudGrid>
+    }
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.AddCircleOutline"
+        OnClick="() => model.Skills.Add(new())">Skill</MudButton>
 </EditForm>
 
 @code {
