@@ -1,0 +1,8 @@
+﻿@using static PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate.DocTemplateController
+
+<MudTextField Label="Name" @bind-Value="Entity.Name" For="@(() => Entity.Name)" />
+
+@code {
+    [Parameter]
+    public Entity Entity { get; set; }
+}

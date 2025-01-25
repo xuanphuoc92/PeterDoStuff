@@ -1,8 +1,14 @@
 ﻿@page "/docTemplate"
+@using static PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate.DocTemplateController
 
 <PlaygroundTitle Page="docTemplate" />
 
-<iframe srcdoc="@DocTemplateController.SampleHtml" style="width:100%; height:35cm; border:none;"></iframe>
+@* <iframe srcdoc="@DocTemplateController.SampleHtml" style="width:100%; height:35cm; border:none;"></iframe> *@
+
+<EditForm Model="@model">
+    <EntityControl Entity="@model.Person" />
+</EditForm>
 
 @code {
+    private Resume model = new();
 }

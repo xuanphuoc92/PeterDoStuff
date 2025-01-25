@@ -1,5 +1,4 @@
-﻿using AngleSharp.Dom;
-using PeterDoStuff.Extensions;
+﻿using PeterDoStuff.Extensions;
 
 namespace PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate
 {
