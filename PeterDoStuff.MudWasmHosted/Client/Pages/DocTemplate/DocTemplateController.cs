@@ -85,6 +85,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate
 
             public PhotoType PhotoType { get; set; }
             public string PhotoUrl { get; set; }
+            public string PhotoImageType { get; set; } = "image/jpeg";
             public string PhotoBase64 { get; set; }
         }
 
