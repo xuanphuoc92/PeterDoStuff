@@ -1,7 +1,7 @@
 ﻿@using PeterDoStuff.Extensions
 @using static PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate.DocTemplateController
 
-<MudTextField Label="Name" @bind-Value="Entity.Name" For="@(() => Entity.Name)" />
+<MudTextField Variant="Variant.Outlined" Label="Name" @bind-Value="Entity.Name" For="@(() => Entity.Name)" />
 
 <MudText>Photo:</MudText>
 <MudRadioGroup @bind-Value="Entity.PhotoType">
@@ -12,7 +12,7 @@
 
 @if (Entity.PhotoType == PhotoType.Url)
 {
-    <MudTextField Label="Url" 
+    <MudTextField Variant="Variant.Outlined" Label="Url" 
         @bind-Value="Entity.PhotoUrl" For="@(() => Entity.PhotoUrl)" />
     @if (Entity.PhotoUrl.IsNullOrEmpty() == false)
     {
@@ -22,9 +22,9 @@
 
 @if (Entity.PhotoType == PhotoType.Base64)
 {
-    <MudTextField Label="Image Type"
+    <MudTextField Variant="Variant.Outlined" Label="Image Type"
         @bind-Value="Entity.PhotoImageType" For="@(() => Entity.PhotoImageType)" />
-    <MudTextField Label="Base64"
+    <MudTextField Variant="Variant.Outlined" Label="Base64"
         Lines="5"
         @bind-Value="Entity.PhotoBase64" For="@(() => Entity.PhotoBase64)" />
     @if (Entity.PhotoBase64.IsNullOrEmpty() == false)
