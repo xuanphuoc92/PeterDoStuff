@@ -26,6 +26,23 @@
 
 <EditForm Model="@model">
     <EntityControl Entity="@model.Person" />
+    <MudDivider/>
+    <MudTextField Label="Location" @bind-Value="model.Location" For="@(() => model.Location)" />
+    <MudGrid>
+        <MudItem xs="6" sm="2">
+            <MudTextField @bind-Value="model.PhoneLabel" For="@(() => model.PhoneLabel)" />
+        </MudItem>
+        <MudItem xs="6" sm="10">
+            <MudTextField @bind-Value="model.PhoneNumber" For="@(() => model.PhoneNumber)" />
+        </MudItem>
+        <MudItem xs="6" sm="2">
+            <MudTextField @bind-Value="model.FluencyLabel" For="@(() => model.FluencyLabel)" />
+        </MudItem>
+        <MudItem xs="6" sm="10">
+            <MudTextField @bind-Value="model.Fluency" For="@(() => model.Fluency)" />
+        </MudItem>
+    </MudGrid>
+    <MudTextField Label="Email" @bind-Value="model.Email" For="@(() => model.Email)" />
 </EditForm>
 
 @code {

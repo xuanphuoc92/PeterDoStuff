@@ -13,7 +13,9 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate
             public string PhoneLabel { get; set; } = "Phone";
             public string PhoneNumber { get; set; }
 
+            public string FluencyLabel { get; set; } = "Fluency";
             public string Fluency { get; set; }
+            
             public string Email { get; set; }
 
             public Link LinkedIn { get; set; } = new();
