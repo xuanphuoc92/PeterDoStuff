@@ -68,7 +68,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate
         public class ExperienceItem
         {
             public string Position { get; set; }
-            public DateTime From { get; set; }
+            public DateTime? From { get; set; }
             public DateTime? To { get; set; }
             public string Description { get; set; }
             public string[] DescriptionParagraphs => Description?.Split("\n").Select(p => p.Trim()).Where(p => p.IsNullOrEmpty() == false).ToArray() ?? [];

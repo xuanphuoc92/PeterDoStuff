@@ -86,11 +86,16 @@
                             <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete"
                                 OnClick="() => experience.Items.Remove(item)"></MudIconButton>
                         </MudItem>
-                        <MudItem xs="11">
+                        <MudItem xs="11" sm="5">
                             <MudTextField Variant="Variant.Outlined" Label="Position"
                                 @bind-Value="item.Position" For="@(() => item.Position)" />
                         </MudItem>
-
+                        <MudItem xs="6" sm="3">
+                            <MudDatePicker Label="From" @bind-Date="item.From" />
+                        </MudItem>
+                        <MudItem xs="6" sm="3">
+                            <MudDatePicker Label="To" @bind-Date="item.To" />
+                        </MudItem>
                     </MudGrid>
                 }
                 <MudButton Color="Color.Primary" StartIcon="@Icons.Material.Filled.AddCircleOutline"
