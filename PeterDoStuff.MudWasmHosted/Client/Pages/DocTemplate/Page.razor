@@ -26,7 +26,7 @@
 
 <EditForm Model="@model">
     <EntityControl Entity="@model.Person" />
-    <MudDivider/>
+    <MudDivider Class="my-4"/>
     <MudTextField Variant="Variant.Outlined" Label="Location" @bind-Value="model.Location" For="@(() => model.Location)" />
     <MudGrid>
         <MudItem xs="6" sm="2">
@@ -49,21 +49,57 @@
     <MudGrid>
         <LinkControl Link="@model.GitHub" Icon="@Icons.Custom.Brands.GitHub" />
     </MudGrid>
-    <MudText>Other Links</MudText>
+    <MudText Class="mt-4">Other Links</MudText>
     @for(int i = 0; i < model.OtherLinks.Count; i++)
     {
         var otherLink = model.OtherLinks[i];
         <MudGrid>
             <MudItem xs="1">
-                <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete" OnClick="() => RemoveOtherLink(otherLink)"></MudIconButton>
+                <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete"
+                    OnClick="() => model.OtherLinks.Remove(otherLink)"></MudIconButton>
             </MudItem>
             <LinkControl LabelWidth="1" Link="@otherLink" />
         </MudGrid>
     }
-    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.AddCircleOutline" OnClick="AddOtherLink">Link</MudButton>
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.AddCircleOutline"
+        OnClick="() => model.OtherLinks.Add(new())">Link</MudButton>
     <MudTextField Variant="Variant.Outlined" Label="AboutMe" 
         Lines="10"
         @bind-Value="model.AboutMe" For="@(() => model.AboutMe)" />
+    
+    <MudText Class="mt-4">Experiences</MudText>
+    @for (int i = 0; i < model.Experiences.Count; i++)
+    {
+        var experience = model.Experiences[i];
+        <MudGrid>
+            <MudItem xs="1">
+                <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete"
+                    OnClick="() => model.Experiences.Remove(experience)"></MudIconButton>
+            </MudItem>
+            <MudItem xs="11">
+                <EntityControl Entity="@experience.Company" />
+                @for (int j = 0; j < experience.Items.Count; j++)
+                {
+                    var item = experience.Items[j];
+                    <MudGrid>
+                        <MudItem xs="1">
+                            <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete"
+                                OnClick="() => experience.Items.Remove(item)"></MudIconButton>
+                        </MudItem>
+                        <MudItem xs="11">
+                            <MudTextField Variant="Variant.Outlined" Label="Position"
+                                @bind-Value="item.Position" For="@(() => item.Position)" />
+                        </MudItem>
+
+                    </MudGrid>
+                }
+                <MudButton Color="Color.Primary" StartIcon="@Icons.Material.Filled.AddCircleOutline"
+                    OnClick="() => experience.Items.Add(new())"></MudButton>
+            </MudItem>
+        </MudGrid>
+    }
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.AddCircleOutline" 
+        OnClick="() => model.Experiences.Add(new())">Experience</MudButton>
 </EditForm>
 
 @code {
@@ -86,15 +122,5 @@
         using StreamReader reader = new StreamReader(inputFileStream, Encoding.UTF8);
         string json = reader.ReadToEnd();
         model = json.FromJson<Resume>();
-    }
-
-    private void AddOtherLink()
-    {
-        model.OtherLinks.Add(new Link());
-    }
-
-    private void RemoveOtherLink(Link otherLink)
-    {
-        model.OtherLinks.Remove(otherLink);
     }
 }

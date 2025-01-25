@@ -62,7 +62,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate
         public class Experience
         {
             public Entity Company { get; set; } = new();
-            public List<ExperienceItem> Items {get;set;}
+            public List<ExperienceItem> Items { get; set; } = [];
         }
 
         public class ExperienceItem
