@@ -109,7 +109,7 @@
         @foreach (var paragraphRef in Model.AboutMe.ToParagraphs())
         {
             var paragraph = paragraphRef;
-            <p>@paragraph</p>
+            <p>@((MarkupString)paragraph.RenderWithBold())</p>
         }
         <MudDivider Class="my-2" />
         <h2 class="d-flex align-center flex-grow-1 gap-4">
@@ -132,7 +132,7 @@
                         @foreach (var paragraphRef in item.Description.ToParagraphs())
                         {
                             var paragraph = paragraphRef;
-                            <li>@paragraph</li>
+                            <li>@((MarkupString)paragraph.RenderWithBold())</li>
                         }
                     </ul>
                 </p>
@@ -156,7 +156,7 @@
                     @foreach (var paragraphRef in education.Description.ToParagraphs())
                     {
                         var paragraph = paragraphRef;
-                        <li>@paragraph</li>
+                        <li>@((MarkupString)paragraph.RenderWithBold())</li>
                     }
                 </ul>
             </p>

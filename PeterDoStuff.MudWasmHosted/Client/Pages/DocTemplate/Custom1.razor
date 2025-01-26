@@ -234,7 +234,7 @@
                         @foreach (var paragraphRef in Model.AboutMe.ToParagraphs())
                         {
                             var paragraph = paragraphRef;
-                            <p>@paragraph</p>
+                        <p>@((MarkupString)paragraph.RenderWithBold())</p>
                         }
                     </div>
                 </div>
@@ -274,7 +274,7 @@
                                             @foreach (var paragraphRef in item.Description.ToParagraphs())
                                             {
                                                 var paragraph = paragraphRef;
-                                                <li>@paragraph</li>
+                                                <li>@((MarkupString)paragraph.RenderWithBold())</li>
                                             }
                                         </ul>
                                     </p>
@@ -326,7 +326,7 @@
                                         @foreach (var paragraphRef in education.Description.ToParagraphs())
                                         {
                                             var paragraph = paragraphRef;
-                                            <li>@paragraph</li>
+                                            <li>@((MarkupString)paragraph.RenderWithBold())</li>
                                         }
                                     </ul>
                                 </p>

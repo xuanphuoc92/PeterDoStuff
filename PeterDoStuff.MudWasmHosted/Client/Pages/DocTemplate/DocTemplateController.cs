@@ -1,4 +1,5 @@
 ﻿using PeterDoStuff.Extensions;
+using System.Text.RegularExpressions;
 
 namespace PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate
 {
@@ -18,8 +19,22 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate
             ? $"data:{entity.PhotoImageType};base64,{entity.PhotoBase64}"
             : entity.PhotoUrl;
 
-        public static string ToOneLine(this string input)
+        public static string? ToOneLine(this string input)
             => input?.Replace("\n", " ").Replace("\r", "");
+
+        public static string RenderWithBold(this string input)
+        {
+            if (string.IsNullOrEmpty(input))
+                return input;
+
+            // Replace **text** with <strong>text</strong>
+            var safeInput = Regex.Replace(input, @"\*\*(.+?)\*\*", "<strong>$1</strong>");
+
+            // Encode other HTML to prevent XSS
+            return System.Net.WebUtility.HtmlEncode(safeInput)
+                .Replace("&lt;strong&gt;", "<strong>")
+                .Replace("&lt;/strong&gt;", "</strong>");
+        }
     }
 
     public class DocTemplateController
