@@ -45,12 +45,17 @@
         }
 
         p {
-            padding-block-end: 0.5em;
+            padding-block-end: 1em;
         }
 
         ul {
             list-style-type: disc;
             margin-left: 1em;
+        }
+
+        a {
+            color: darkblue;
+            text-decoration: underline;
         }
 
     </style>
@@ -96,7 +101,8 @@
                 <span>|</span>
             }
         </div>
-        <h2 class="d-flex align-center flex-grow-1 gap-4 mt-2">
+        <MudDivider Class="my-2"/>
+        <h2 class="d-flex align-center flex-grow-1 gap-4">
             <MudIcon Icon="@Icons.Material.Filled.Person" Size="Size.Small" />
             About me
         </h2>
@@ -105,7 +111,8 @@
             var paragraph = paragraphRef;
             <p>@paragraph</p>
         }
-        <h2 class="d-flex align-center flex-grow-1 gap-4 mt-2">
+        <MudDivider Class="my-2" />
+        <h2 class="d-flex align-center flex-grow-1 gap-4">
             <MudIcon Icon="@Icons.Material.Filled.Work" Size="Size.Small" />
             Experience
         </h2>
@@ -120,16 +127,19 @@
                     <h4>@item.Position</h4>
                     <div class="sub">@item.From.MonthYearOrPresent() - @item.To.MonthYearOrPresent()</div>
                 </div>
-                <ul>
-                    @foreach (var paragraphRef in item.Description.ToParagraphs())
-                    {
-                        var paragraph = paragraphRef;
-                        <li>@paragraph</li>
-                    }
-                </ul>
+                <p>
+                    <ul>
+                        @foreach (var paragraphRef in item.Description.ToParagraphs())
+                        {
+                            var paragraph = paragraphRef;
+                            <li>@paragraph</li>
+                        }
+                    </ul>
+                </p>
             }
         }
-        <h2 class="d-flex align-center flex-grow-1 gap-4 mt-2">
+        <MudDivider Class="my-2" />
+        <h2 class="d-flex align-center flex-grow-1 gap-4">
             <MudIcon Icon="@Icons.Material.Filled.School" Size="Size.Small" />
             Education
         </h2>
@@ -151,7 +161,8 @@
                 </ul>
             </p>
         }
-        <h2 class="d-flex align-center flex-grow-1 gap-4 mt-2">
+        <MudDivider Class="my-2" />
+        <h2 class="d-flex align-center flex-grow-1 gap-4">
             <MudIcon Icon="@Icons.Material.Filled.Build" Size="Size.Small" />
             Skills
         </h2>
@@ -174,7 +185,7 @@
                             {
                                 <span>, </span>
                             }
-                            if (skill.Level > 1)
+                            if (skill.Level > 2)
                             {
                                 <b>@skill.Name</b>
                             }
