@@ -17,6 +17,9 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate
             => entity.PhotoType == DocTemplateController.PhotoType.Base64
             ? $"data:{entity.PhotoImageType};base64,{entity.PhotoBase64}"
             : entity.PhotoUrl;
+
+        public static string ToOneLine(this string input)
+            => input?.Replace("\n", " ").Replace("\r", "");
     }
 
     public class DocTemplateController

@@ -19,19 +19,20 @@
         }
 
         h2 {
-            font-size: 1.5em;
-        }
-
-        h3 {
             font-size: 1.25em;
         }
 
-        h4 {
+        h3 {
             font-size: 1.10em;
         }
 
-        .sub {
+        h4 {
             font-size: 1em;
+        }
+
+        .sub {
+            font-size: 0.9em;
+            font-style: italic;
         }
 
         page {
@@ -41,6 +42,15 @@
             margin-bottom: 0.5cm;
             width: 21cm;
             height: 29.7cm;;
+        }
+
+        p {
+            padding-block-end: 0.5em;
+        }
+
+        ul {
+            list-style-type: disc;
+            margin-left: 1em;
         }
 
     </style>
@@ -86,120 +96,61 @@
                 <span>|</span>
             }
         </div>
-            <hr/>
-            <div class="body">
-                <div class="section">
-                    <div class="sectionTitle">
-                        <h2>
-                            <i class="fa fa-user"></i>
-                            About me
-                        </h2>
-                    </div>
-                    <div class="sectionItem">
-                        @foreach (var paragraphRef in Model.AboutMe.ToParagraphs())
-                        {
-                            var paragraph = paragraphRef;
-                            <p>@paragraph</p>
-                        }
-                    </div>
+        <h2 class="d-flex align-center flex-grow-1 gap-4 mt-2">
+            <MudIcon Icon="@Icons.Material.Filled.Person" Size="Size.Small" />
+            About me
+        </h2>
+        @foreach (var paragraphRef in Model.AboutMe.ToParagraphs())
+        {
+            var paragraph = paragraphRef;
+            <p>@paragraph</p>
+        }
+        <h2 class="d-flex align-center flex-grow-1 gap-4 mt-2">
+            <MudIcon Icon="@Icons.Material.Filled.Work" Size="Size.Small" />
+            Experience
+        </h2>
+        @foreach (var experienceRef in Model.Experiences)
+        {
+            var experience = experienceRef;
+            <h3>@experience.Company.Name</h3>
+            @foreach (var experienceItemRef in experience.Items)
+            {
+                var item = experienceItemRef;
+                <div class="d-flex justify-space-between flex-grow-1 gap-4">
+                    <h4>@item.Position</h4>
+                    <div class="sub">@item.From.MonthYearOrPresent() - @item.To.MonthYearOrPresent()</div>
                 </div>
+                <ul>
+                    @foreach (var paragraphRef in item.Description.ToParagraphs())
+                    {
+                        var paragraph = paragraphRef;
+                        <li>@paragraph</li>
+                    }
+                </ul>
+            }
+        }
+        <h2 class="d-flex align-center flex-grow-1 gap-4 mt-2">
+            <MudIcon Icon="@Icons.Material.Filled.School" Size="Size.Small" />
+            Education
+        </h2>
+        @foreach (var educationRef in Model.Educations)
+        {
+            var education = educationRef;
+            <h3>@education.Institution.Name</h3>
+            <div class="d-flex justify-space-between flex-grow-1 gap-4">
+                <h4>@education.Degree.ToOneLine()</h4>
+                <div class="sub">@education.From.MonthYearOrPresent() - @education.To.MonthYearOrPresent()</div>
             </div>
-            <hr/>
-            <div class="body">
-                <div class="section">
-                    <div class="sectionTitle">
-                        <h2>
-                            <i class="fa fa-suitcase"></i>
-                            Experience
-                        </h2>
-                    </div>
-                    <div class="entitySection">
-                        @foreach (var experienceRef in Model.Experiences)
-                        {
-                            var experience = experienceRef;
-                            <div class="entityAvatar">
-                                @if (experience.Company.PhotoType != PhotoType.None)
-                                {
-                                    <img width="50" src="@experience.Company.PhotoSrc()" />
-                                }
-                                else
-                                {
-                                    <i class="fa fa-suitcase"></i>
-                                }
-                            </div>
-                            <div class="sectionItem">
-                                <h3>@experience.Company.Name</h3>
-                                @foreach (var experienceItemRef in experience.Items)
-                                {
-                                    var item = experienceItemRef;
-                                    <h4>@item.Position</h4>
-                                    <div class="sub">@item.From.MonthYearOrPresent() - @item.To.MonthYearOrPresent()</div>
-                                    <p>
-                                        <ul>
-                                            @foreach (var paragraphRef in item.Description.ToParagraphs())
-                                            {
-                                                var paragraph = paragraphRef;
-                                                <li>@paragraph</li>
-                                            }
-                                        </ul>
-                                    </p>
-                                }
-                            </div>  
-                        }
-                    </div>
-                </div>
-                <div class="section">
-                    <div class="sectionTitle">
-                        <h2>
-                            <i class="fa fa-graduation-cap"></i>
-                            Education
-                        </h2>
-                    </div>
-                    <div class="entitySection">
-                        @foreach (var educationRef in Model.Educations)
-                        {
-                            var education = educationRef ;
-                            <div class="entityAvatar">
-                                @if (education.Institution.PhotoType != PhotoType.None)
-                                {
-                                    <img width="50" src="@education.Institution.PhotoSrc()" />
-                                }
-                                else
-                                {
-                                    <i class="fa fa-graduation-cap"></i>
-                                }
-                            </div>
-                            <div class="sectionItem">
-                                <h3>@education.Institution.Name</h3>
-                                <h4>
-                                    @{
-                                        var degreeParagraphs = education.Degree.ToParagraphs();
-                                    }
-                                    @for (int i = 0; i < degreeParagraphs.Length; i++)
-                                    {                                        
-                                        var paragraph = degreeParagraphs[i];
-                                        @if (i > 0)
-                                        {
-                                            <br />
-                                        }
-                                        @paragraph
-                                    }
-                                </h4>
-                                <div class="sub">@education.From.MonthYearOrPresent() - @education.To.MonthYearOrPresent()</div>
-                                <p>
-                                    <ul>
-                                        @foreach (var paragraphRef in education.Description.ToParagraphs())
-                                        {
-                                            var paragraph = paragraphRef;
-                                            <li>@paragraph</li>
-                                        }
-                                    </ul>
-                                </p>
-                            </div>
-                        }
-                    </div>
-                </div>
-            </div>
+            <p>
+                <ul>
+                    @foreach (var paragraphRef in education.Description.ToParagraphs())
+                    {
+                        var paragraph = paragraphRef;
+                        <li>@paragraph</li>
+                    }
+                </ul>
+            </p>
+        }
             <hr/>
             <div class="section">
                 <div class="sectionTitle">
