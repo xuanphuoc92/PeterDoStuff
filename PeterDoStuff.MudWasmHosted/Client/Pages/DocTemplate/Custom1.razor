@@ -130,10 +130,18 @@
     <body>
         <page size="A4">
             <div class="header">
-                <div class="avatar" >
-                    <img width="150px"
-                    src="https://media.licdn.com/dms/image/v2/D5603AQH7MIFQCAHkog/profile-displayphoto-shrink_800_800/B56ZQdU7y7GsAg-/0/1735658815028?e=1742428800&v=beta&t=4a_diiWwXw2AN1NTRR-tHetGEx9AAgt9fO5VmO7AAGc" />
-                </div>
+                @if (Model.Person.PhotoType == PhotoType.Url)
+                {
+                    <div class="avatar">
+                        <img width="150" src="@Model.Person.PhotoUrl" />
+                    </div>
+                }
+                @if (Model.Person.PhotoType == PhotoType.Base64)
+                {
+                    <div class="avatar">
+                        <img width="150" src="@($"data:{Model.Person.PhotoImageType};base64,{Model.Person.PhotoBase64}")" />
+                    </div>
+                }
                 <div class="title"><h1>@Model.Person.Name</h1></div>
                 <div class="subtitle">
                     <div class="subtitleItem">
