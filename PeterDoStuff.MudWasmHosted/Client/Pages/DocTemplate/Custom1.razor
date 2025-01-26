@@ -278,16 +278,45 @@
                             Education
                         </h2>
                     </div>
-                    <div class="sectionItem">
-                        <h3>Master of Computing,<br/>Computer Science</h3>
-                        <div>National University of Singapore</div>
-                        <div class="sub">Jan 2020 - Jan 2022</div>
-                    </div>
-                    <div class="sectionItem">
-                        <h3>Bachelor's degree,<br/>Information Engineering & Media</h3>
-                        <div>Nanyang Technological University Singapore</div>
-                        <div class="sub">Jun 2010 - Jun 2014</div>
-                    </div>
+                    @foreach (var educationRef in Model.Educations)
+                    {
+                        var education = educationRef ;
+                        <div class="entitySection">
+                            @if (education.Institution.PhotoType != PhotoType.None)
+                            {
+                                <div class="entityAvatar">
+                                    <img width="50" src="@education.Institution.PhotoSrc()" />
+                                </div>
+                            }
+                            <div class="sectionItem">
+                                <h3>@education.Institution.Name</h3>
+                                <h4>
+                                    @{
+                                        var degreeParagraphs = education.Degree.ToParagraphs();
+                                    }
+                                    @for (int i = 0; i < degreeParagraphs.Length; i++)
+                                    {                                        
+                                        var paragraph = degreeParagraphs[i];
+                                        @if (i > 0)
+                                        {
+                                            <br />
+                                        }
+                                        @paragraph
+                                    }
+                                </h4>
+                                <div class="sub">@education.From.MonthYearOrPresent() - @education.To.MonthYearOrPresent()</div>
+                                <p>
+                                    <ul>
+                                        @foreach (var paragraphRef in education.Description.ToParagraphs())
+                                        {
+                                            var paragraph = paragraphRef;
+                                            <li>@paragraph</li>
+                                        }
+                                    </ul>
+                                </p>
+                            </div>
+                        </div>
+                    }
                 </div>
             </div>
             <hr/>
