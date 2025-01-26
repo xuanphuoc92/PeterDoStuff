@@ -240,16 +240,16 @@
                             Experience
                         </h2>
                     </div>
-                    @foreach (var experienceRef in Model.Experiences)
-                    {
-                        var experience = experienceRef;
-                        <div class="entitySection">
-                            @if (experience.Company.PhotoType != PhotoType.None)
-                            {
-                                <div class="entityAvatar">
+                    <div class="entitySection">
+                        @foreach (var experienceRef in Model.Experiences)
+                        {
+                            var experience = experienceRef;
+                            <div class="entityAvatar">
+                                @if (experience.Company.PhotoType != PhotoType.None)
+                                {
                                     <img width="50" src="@experience.Company.PhotoSrc()" />
-                                </div>
-                            }
+                                }
+                            </div>
                             <div class="sectionItem">
                                 <h3>@experience.Company.Name</h3>
                                 @foreach (var experienceItemRef in experience.Items)
@@ -267,9 +267,9 @@
                                         </ul>
                                     </p>
                                 }
-                            </div>
-                        </div>
-                    }
+                            </div>  
+                        }
+                    </div>
                 </div>
                 <div class="section">
                     <div class="sectionTitle">
@@ -278,16 +278,16 @@
                             Education
                         </h2>
                     </div>
-                    @foreach (var educationRef in Model.Educations)
-                    {
-                        var education = educationRef ;
-                        <div class="entitySection">
-                            @if (education.Institution.PhotoType != PhotoType.None)
-                            {
-                                <div class="entityAvatar">
+                    <div class="entitySection">
+                        @foreach (var educationRef in Model.Educations)
+                        {
+                            var education = educationRef ;
+                            <div class="entityAvatar">
+                                @if (education.Institution.PhotoType != PhotoType.None)
+                                {
                                     <img width="50" src="@education.Institution.PhotoSrc()" />
-                                </div>
-                            }
+                                }
+                            </div>
                             <div class="sectionItem">
                                 <h3>@education.Institution.Name</h3>
                                 <h4>
@@ -315,8 +315,8 @@
                                     </ul>
                                 </p>
                             </div>
-                        </div>
-                    }
+                        }
+                    </div>
                 </div>
             </div>
             <hr/>
