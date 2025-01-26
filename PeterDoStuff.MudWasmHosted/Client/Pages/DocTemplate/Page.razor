@@ -27,6 +27,13 @@
             </ButtonTemplate>
         </MudFileUpload>
     </MudItem>
+    <MudItem xs="6" sm="3">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.ColorLens"
+                   OnClick="OpenCustom1">
+            Open Custom 1
+        </MudButton>
+    </MudItem>
 </MudGrid>
 
 
@@ -216,5 +223,15 @@
         using StreamReader reader = new StreamReader(inputFileStream, Encoding.UTF8);
         string json = reader.ReadToEnd();
         model = json.FromJson<Resume>();
+    }
+
+    private async Task OpenCustom1()
+    {
+        // Save the model in sessionStorage
+        await JS.InvokeVoidAsync("sessionStorage.setItem", "resumeModel", model.ToJson());
+
+        // Open the new tab
+        var url = "/docTemplate/custom1";
+        await JS.InvokeVoidAsync("window.open", url, "_blank");
     }
 }

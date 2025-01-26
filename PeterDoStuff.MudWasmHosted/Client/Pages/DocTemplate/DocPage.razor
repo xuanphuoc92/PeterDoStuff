@@ -1,4 +1,5 @@
-﻿@page "/doc"
+﻿@page "/docTemplate/custom1"
+@using PeterDoStuff.Extensions
 @using static PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate.DocTemplateController
 @layout EmptyLayout
 @inject IJSRuntime JSRuntime
@@ -402,4 +403,15 @@
 
     [Parameter]
     public Resume Model { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Retrieve the serialized model from sessionStorage
+        var json = await JSRuntime.InvokeAsync<string>("sessionStorage.getItem", "resumeModel");
+
+        if (!string.IsNullOrWhiteSpace(json))
+        {
+            Model = json.FromJson<Resume>();
+        }
+    }
 }
