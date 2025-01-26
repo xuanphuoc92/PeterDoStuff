@@ -8,21 +8,28 @@
 
 @* <iframe srcdoc="@DocTemplateController.SampleHtml" style="width:100%; height:35cm; border:none;"></iframe> *@
 
-<MudButton Variant="Variant.Filled" Color="Color.Primary"
-    StartIcon="@Icons.Material.Filled.Download"
-    OnClick="DownloadJson">
-    Download JSON
-</MudButton>
-
-<MudFileUpload T="IBrowserFile" FilesChanged="UploadJson">
-    <ButtonTemplate>
+<MudGrid>
+    <MudItem xs="6" sm="3">
         <MudButton Variant="Variant.Filled" Color="Color.Primary"
-            StartIcon="@Icons.Material.Filled.Upload"
-            for="@context.Id" HtmlTag="label">
-            Upload JSON
+                   StartIcon="@Icons.Material.Filled.Download"
+                   OnClick="DownloadJson">
+            Download JSON
         </MudButton>
-    </ButtonTemplate>
-</MudFileUpload>
+    </MudItem>
+    <MudItem xs="6" sm="3">
+        <MudFileUpload T="IBrowserFile" FilesChanged="UploadJson" Class="ma-0">
+            <ButtonTemplate>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                           StartIcon="@Icons.Material.Filled.Upload"
+                           for="@context.Id" HtmlTag="label">
+                    Upload JSON
+                </MudButton>
+            </ButtonTemplate>
+        </MudFileUpload>
+    </MudItem>
+</MudGrid>
+
+
 
 <EditForm Model="@model">
     <EntityControl Entity="@model.Person" />
