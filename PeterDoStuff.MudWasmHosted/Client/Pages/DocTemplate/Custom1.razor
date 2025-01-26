@@ -119,7 +119,8 @@
 
             .skillGrid {
                 display: grid;
-                grid-template-columns: 40% 40% 20%
+                grid-template-columns: 75px auto;
+                padding-block-end: 0.5em;
             }
 
             hr {
@@ -340,119 +341,25 @@
                         Skills
                     </h2>
                 </div>
-
-                <h3>Languages</h3>
-                <div class="skillGrid">
-                    <div class="sectionItem">
-                        <h4>
-                            <i class="fa fa-solid fa-star"> </i>
-                            <i class="fa fa-solid fa-star"> </i>
-                            <i class="fa fa-solid fa-star"> </i>
-                            Skilled 
-                        </h4>
-                        <div>C#, SQL (focus: MS-SQL, PostgreSQL, SQLite)</div>
+                @foreach (var groupRef in Model.Skills.GroupBy(skill => skill.Group))
+                {
+                    var group = groupRef;
+                    <h3>@group.Key</h3>
+                    <div class="skillGrid">
+                        @foreach (var levelGroupRef in group.GroupBy(skill => skill.Level).OrderByDescending(g => g.Key))
+                        {
+                            var levelGroup = levelGroupRef;
+                            var level = levelGroup.Key;
+                            <h4>
+                                @for (int i = 0; i < level; i++)
+                                {
+                                    <i class="fa fa-solid fa-star"> </i>
+                                }
+                            </h4>
+                            <div>@levelGroup.Select(skill => skill.Name).Join(", ")</div>
+                        }
                     </div>
-                    <div class="sectionItem">
-                        <h4>
-                            <i class="fa fa-solid fa-star"> </i>
-                            <i class="fa fa-solid fa-star"> </i>
-                            Proficient 
-                        </h4>
-                        <div>HTML, CSS</div>
-                    </div>
-                    <div class="sectionItem">
-                        <h4>
-                            <i class="fa fa-solid fa-star"> </i>
-                            Familiar
-                        </h4>
-                        <div>Java, Python, JavaScript</div>
-                    </div>
-                </div>
-
-                <h3>Frameworks and Libraries</h3>
-                <div class="skillGrid">
-                    <div class="sectionItem">
-                        <h4>
-                            <i class="fa fa-solid fa-star"> </i>
-                            <i class="fa fa-solid fa-star"> </i>
-                            <i class="fa fa-solid fa-star"> </i>
-                            Skilled  
-                        </h4>
-                        <div>Blazor, Web Assembly, .NET Core, Dapper</div>
-                    </div>
-                    <div class="sectionItem">
-                        <h4>
-                            <i class="fa fa-solid fa-star"> </i>
-                            <i class="fa fa-solid fa-star"> </i>
-                            Proficient
-                        </h4>
-                        <div>.NET Standard, .NET Framework</div>
-                    </div>
-                    <div class="sectionItem">
-                        <h4>
-                            <i class="fa fa-solid fa-star"> </i>
-                            Familiar
-                        </h4>
-                        <div>EF Core</div>
-                    </div>
-                </div>
-
-                <h3>Tools and Platforms</h3>
-                <div class="skillGrid">
-                    <div class="sectionItem">
-                        <h4>
-                            <i class="fa fa-solid fa-star"> </i>
-                            <i class="fa fa-solid fa-star"> </i>
-                            <i class="fa fa-solid fa-star"> </i>
-                            Skilled 
-                        </h4>
-                        <div>Git, SQL Management Studio, pgAdmin</div>
-                    </div>
-                    <div class="sectionItem">
-                        <h4>
-                            <i class="fa fa-solid fa-star"> </i>
-                            <i class="fa fa-solid fa-star"> </i>
-                            Proficient
-                        </h4>
-                        <div>GitHub, GitLab, Trello, SonarQube</div>
-                    </div>
-                    <div class="sectionItem">
-                        <h4>
-                            <i class="fa fa-solid fa-star"> </i>
-                            Familiar
-                        </h4>
-                        <div>Azure, AWS</div>
-                    </div>
-                </div>
-
-                <h3>Generic Skills and Domains</h3>
-                <div class="skillGrid">
-                    <div class="sectionItem">
-                        <h4>
-                            <i class="fa fa-solid fa-star"> </i>
-                            <i class="fa fa-solid fa-star"> </i>
-                            <i class="fa fa-solid fa-star"> </i>
-                            Skilled
-                        </h4>
-                        <div>Test Driven Development (TDD), Refactoring, Estimating</div>
-                    </div>
-                    <div class="sectionItem">
-                        <h4>
-                            <i class="fa fa-solid fa-star"> </i>
-                            <i class="fa fa-solid fa-star"> </i>
-                            Proficient 
-                        </h4>
-                        <div>Security Hardening, Impact Analysis, Documenting, Cryptography</div>
-                    </div>
-                    <div class="sectionItem">
-                        <h4>
-                            <i class="fa fa-solid fa-star"> </i>
-                            Familiar
-                        </h4>
-                        <div>Scrum, Procurement</div>
-                    </div>
-                </div>
-
+                }
             </div>
         </page>
     </body>
