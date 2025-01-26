@@ -139,6 +139,11 @@
             .entityAvatar img {
                 width: 30px;
             }
+
+            .entityAvatar i {
+                font-size: 1.5em;
+                color: #BBBBBB;
+            }
         </style>
     </head>
     <body>
@@ -249,6 +254,10 @@
                                 {
                                     <img width="50" src="@experience.Company.PhotoSrc()" />
                                 }
+                                else
+                                {
+                                    <i class="fa fa-suitcase"></i>
+                                }
                             </div>
                             <div class="sectionItem">
                                 <h3>@experience.Company.Name</h3>
@@ -286,6 +295,10 @@
                                 @if (education.Institution.PhotoType != PhotoType.None)
                                 {
                                     <img width="50" src="@education.Institution.PhotoSrc()" />
+                                }
+                                else
+                                {
+                                    <i class="fa fa-graduation-cap"></i>
                                 }
                             </div>
                             <div class="sectionItem">
