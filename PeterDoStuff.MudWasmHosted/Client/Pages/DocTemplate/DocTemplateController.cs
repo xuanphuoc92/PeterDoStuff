@@ -12,6 +12,11 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate
 
         public static string MonthYearOrPresent(this DateTime? dateTime)
             => dateTime?.ToString("MMM yyyy") ?? "present";
+
+        public static string PhotoSrc(this DocTemplateController.Entity entity)
+            => entity.PhotoType == DocTemplateController.PhotoType.Base64
+            ? $"data:{entity.PhotoImageType};base64,{entity.PhotoBase64}"
+            : entity.PhotoUrl;
     }
 
     public class DocTemplateController

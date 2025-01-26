@@ -28,12 +28,13 @@
 
             h3 {
                 font-size: 1em;
+                margin-block-start: 0;
                 margin-block-end: 0;
             }
 
             h4 {
                 font-size: 0.95em;
-                margin-block-start: 0em;
+                margin-block-start: 0;
                 margin-block-end: 0;
             }
 
@@ -125,21 +126,28 @@
                 margin-block-start: 0em;
                 margin-block-end: 0em;
             }
+
+            .entitySection {
+                display: grid;
+                grid-template-columns: auto auto;
+            }
+
+            .entityAvatar {
+                padding-right: 0.2em;
+            }
+
+            .entityAvatar img {
+                width: 30px;
+            }
         </style>
     </head>
     <body>
         <page size="A4">
             <div class="header">
-                @if (Model.Person.PhotoType == PhotoType.Url)
+                @if (Model.Person.PhotoType != PhotoType.None)
                 {
                     <div class="avatar">
-                        <img width="150" src="@Model.Person.PhotoUrl" />
-                    </div>
-                }
-                @if (Model.Person.PhotoType == PhotoType.Base64)
-                {
-                    <div class="avatar">
-                        <img width="150" src="@($"data:{Model.Person.PhotoImageType};base64,{Model.Person.PhotoBase64}")" />
+                        <img width="150" src="@Model.Person.PhotoSrc()" />
                     </div>
                 }
                 <div class="title"><h1>@Model.Person.Name</h1></div>
@@ -235,23 +243,31 @@
                     @foreach (var experienceRef in Model.Experiences)
                     {
                         var experience = experienceRef;
-                        <div class="sectionItem">
-                            <h3>@experience.Company.Name</h3>
-                            @foreach (var experienceItemRef in experience.Items)
+                        <div class="entitySection">
+                            @if (experience.Company.PhotoType != PhotoType.None)
                             {
-                                var item = experienceItemRef;
-                                <h4>@item.Position</h4>
-                                <div class="sub">@item.From.MonthYearOrPresent() - @item.To.MonthYearOrPresent()</div>
-                                <p>
-                                    <ul>
-                                        @foreach (var paragraphRef in item.Description.ToParagraphs())
-                                        {
-                                            var paragraph = paragraphRef;
-                                            <li>@paragraph</li>
-                                        }
-                                    </ul>
-                                </p>
+                                <div class="entityAvatar">
+                                    <img width="50" src="@experience.Company.PhotoSrc()" />
+                                </div>
                             }
+                            <div class="sectionItem">
+                                <h3>@experience.Company.Name</h3>
+                                @foreach (var experienceItemRef in experience.Items)
+                                {
+                                    var item = experienceItemRef;
+                                    <h4>@item.Position</h4>
+                                    <div class="sub">@item.From.MonthYearOrPresent() - @item.To.MonthYearOrPresent()</div>
+                                    <p>
+                                        <ul>
+                                            @foreach (var paragraphRef in item.Description.ToParagraphs())
+                                            {
+                                                var paragraph = paragraphRef;
+                                                <li>@paragraph</li>
+                                            }
+                                        </ul>
+                                    </p>
+                                }
+                            </div>
                         </div>
                     }
                 </div>
