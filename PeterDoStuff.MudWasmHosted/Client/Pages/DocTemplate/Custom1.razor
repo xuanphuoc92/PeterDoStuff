@@ -32,8 +32,8 @@
             }
 
             h4 {
-                font-size: 0.85em;
-                margin-block-start: 0.5em;
+                font-size: 0.95em;
+                margin-block-start: 0em;
                 margin-block-end: 0;
             }
 
@@ -215,9 +215,11 @@
                         </h2>
                     </div>
                     <div class="sectionItem">
-                        <p>An easy-going software engineer whose interests spread in wide areas from the back-end to the front-end, though you can say I'm deeper in the back-end side, like Database, Domain Implementation, and Testing.</p>
-                        <p>Most comfortable with C#, since I tend to swing between Object-Oriented and Functional paradigms (and C#, especially newer ones, caters both pretty well). Usually struggle with JavaScript, so I tend to minimize its exposure (until I have to) by playing with Blazor Web Assembly and its frameworks (e.g. MudBlazor).</p>
-                        <p>Spend free time with building Proof-of-Concepts in portfolio,  exploring Generative AI,  writing Fantasy Novel, and gaming.</p>
+                        @foreach (var paragraphRef in Model.AboutMe.ToParagraphs())
+                        {
+                            var paragraph = paragraphRef;
+                            <p>@paragraph</p>
+                        }
                     </div>
                 </div>
             </div>
@@ -230,34 +232,28 @@
                             Experience
                         </h2>
                     </div>
-                    <div class="sectionItem">
-                        <h3>Anacle Systems Ltd<br/>Software Engineer</h3>
-                        <div class="sub">Jun 2014 - present</div>
-                        <p>
-                            <ul>
-                                <li>
-                                    Technical Lead: Maintain live projects, overseeing their operations while minimizing disruptions.
-                                </li>
-                                <li>
-                                    Developer: Develop new products, features, and tools. Supporting wide range of activities, including consulting, estimating, implementing, testing, and deploying.
-                                </li>
-                                <li>
-                                    Maintainer: Investigate and replicate bugs, vulnerabilities, slowness; then implement appropriate fixes, hardenings, optimization.
-                                </li>
-                            </ul>
-                        </p>
-                    </div>
-                    <div class="sectionItem">
-                        <h3>CNBC Asia<br/>Advertising Sales and Operation Internship - Graphics</h3>
-                        <div class="sub">Jan 2013 - Jun 2013</div>
-                        <p>
-                            <ul>
-                                <li>
-                                    Intern: Support Creative Solution team during the production for advertising clients, including creating presentation, storyboard, and concept treatments.
-                                </li>
-                            </ul>
-                        </p>
-                    </div>
+                    @foreach (var experienceRef in Model.Experiences)
+                    {
+                        var experience = experienceRef;
+                        <div class="sectionItem">
+                            <h3>@experience.Company.Name</h3>
+                            @foreach (var experienceItemRef in experience.Items)
+                            {
+                                var item = experienceItemRef;
+                                <h4>@item.Position</h4>
+                                <div class="sub">@item.From.MonthYearOrPresent() - @item.To.MonthYearOrPresent()</div>
+                                <p>
+                                    <ul>
+                                        @foreach (var paragraphRef in item.Description.ToParagraphs())
+                                        {
+                                            var paragraph = paragraphRef;
+                                            <li>@paragraph</li>
+                                        }
+                                    </ul>
+                                </p>
+                            }
+                        </div>
+                    }
                 </div>
                 <div class="section">
                     <div class="sectionTitle">

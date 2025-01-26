@@ -9,6 +9,9 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate
 
         public static string TextOrUrl(this DocTemplateController.Link link)
             => link.Text.IsNullOrEmpty() ? link.Url : link.Text;
+
+        public static string MonthYearOrPresent(this DateTime? dateTime)
+            => dateTime?.ToString("MMM yyyy") ?? "present";
     }
 
     public class DocTemplateController
