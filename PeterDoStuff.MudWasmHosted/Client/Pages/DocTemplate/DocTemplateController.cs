@@ -2,6 +2,12 @@
 
 namespace PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate
 {
+    internal static class TemplateExtensions
+    {
+        public static string[] ToParagraphs(this string input)
+            => input?.Split("\n").Select(p => p.Trim()).Where(p => p.IsNullOrEmpty() == false).ToArray() ?? [];
+    }
+
     public class DocTemplateController
     {
         public class Resume
@@ -24,7 +30,6 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate
             public List<Link> OtherLinks { get; set; } = [];
 
             public string AboutMe { get; set; }
-            public string[] AboutMeParagraphs => AboutMe?.Split("\n").Select(p => p.Trim()).Where(p => p.IsNullOrEmpty() == false).ToArray() ?? [];
 
             public List<Experience> Experiences { get; set; } = [];
 
@@ -66,7 +71,6 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate
             public DateTime? From { get; set; }
             public DateTime? To { get; set; }
             public string Description { get; set; }
-            public string[] DescriptionParagraphs => Description?.Split("\n").Select(p => p.Trim()).Where(p => p.IsNullOrEmpty() == false).ToArray() ?? [];
         }
 
         public class Education
