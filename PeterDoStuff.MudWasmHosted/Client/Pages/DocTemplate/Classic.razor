@@ -151,36 +151,44 @@
                 </ul>
             </p>
         }
-            <hr/>
-            <div class="section">
-                <div class="sectionTitle">
-                    <h2>
-                        <i class="fa fa-solid fa-wrench"> </i>
-                        Skills
-                    </h2>
-                </div>
-                @foreach (var groupRef in Model.Skills.GroupBy(skill => skill.Group))
-                {
-                    var group = groupRef;
-                    <h3>@group.Key</h3>
-                    <div class="skillGrid">
-                        @foreach (var levelGroupRef in group.GroupBy(skill => skill.Level).OrderByDescending(g => g.Key))
+        <h2 class="d-flex align-center flex-grow-1 gap-4 mt-2">
+            <MudIcon Icon="@Icons.Material.Filled.Build" Size="Size.Small" />
+            Skills
+        </h2>
+        @foreach (var groupRef in Model.Skills.GroupBy(skill => skill.Group))
+        {
+            var group = groupRef;
+            <MudGrid>
+                <MudItem xs="4">
+                    <h3>@group.Key:</h3>
+                </MudItem>
+                <MudItem xs="8">
+                    <div>
+                        @{
+                            var skills = group.OrderByDescending(skill => skill.Level).ToList();
+                        }
+                        @for (int i = 0; i < skills.Count; i++)
                         {
-                            var levelGroup = levelGroupRef;
-                            var level = levelGroup.Key;
-                            <h4>
-                                @for (int i = 0; i < level; i++)
-                                {
-                                    <i class="fa fa-solid fa-star"> </i>
-                                }
-                            </h4>
-                            <div>@levelGroup.Select(skill => skill.Name).Join(", ")</div>
+                            var skill = skills[i];
+                            if (i > 0)
+                            {
+                                <span>, </span>
+                            }
+                            if (skill.Level > 1)
+                            {
+                                <b>@skill.Name</b>
+                            }
+                            else
+                            {
+                                @skill.Name
+                            }
                         }
                     </div>
-                }
-            </div>
-        </page>
-    </body>
+                </MudItem>
+            </MudGrid>
+        }
+    </page>
+</body>
 </html>
 
 @code {
