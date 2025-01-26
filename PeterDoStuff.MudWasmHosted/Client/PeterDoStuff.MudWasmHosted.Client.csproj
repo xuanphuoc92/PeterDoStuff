@@ -11,6 +11,7 @@
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.3" PrivateAssets="all" />
 		<PackageReference Include="MudBlazor" Version="6.19.1" />
 		<PackageReference Include="SmartComponents.AspNetCore.Components" Version="0.1.0-preview10146" />
+		<PackageReference Include="System.Text.Json" Version="8.0.5" />
 	</ItemGroup>
 
 	<ItemGroup>
