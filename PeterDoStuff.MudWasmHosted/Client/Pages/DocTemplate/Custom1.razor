@@ -150,55 +150,59 @@
                             Location:
                         </span>
                         <span>
-                            Singapore
+                            @Model.Location
                         </span>
                     </div>
                     <div class="subtitleItem">
                         <i class="fa fa-phone contactIcon" aria-hidden="true"></i>
                         <span>
-                            WhatsApp / Phone:
+                            @Model.PhoneLabel:
                         </span>
                         <span>
-                            +65 94839893
+                            @Model.PhoneNumber
                         </span>
                     </div>
                     <div class="subtitleItem">
                         <i class="fa fa-language" aria-hidden="true"></i>
                         <span>
-                            Linguistics:
+                            @Model.FluencyLabel:
                         </span>
                         <span>
-                            English, Vietnamese
+                            @Model.Fluency
                         </span>
                     </div>
                     <div class="subtitleItem">
                         <i class="fa fa-envelope contactIcon" aria-hidden="true"></i>
                         <span>Email:</span>
-                        <a href="mailto:xuanphuoc92@gmail.com">
-                            xuanphuoc92@gmail.com
+                        <a href="@($"mailto:{Model.Email}")">
+                            @Model.Email
                         </a>
                     </div>
                     <div class="subtitleItem">
                         <i class="fa fa-linkedin-square contactIcon" aria-hidden="true"></i>
-                        <span>LinkedIn:</span>
-                        <a href="https://www.linkedin.com/in/peter-vo-43bb1337/">
-                            in/peter-vo-43bb1337
+                        <span>@Model.LinkedIn.Label:</span>
+                        <a href="@Model.LinkedIn.Url">
+                            @Model.LinkedIn.TextOrUrl()
                         </a>
                     </div>
                     <div class="subtitleItem">
                         <i class="fa fa-github contactIcon" aria-hidden="true"></i>
-                        <span>GitHub:</span>
-                        <a href="https://github.com/xuanphuoc92/PeterDoStuff" >
-                            xuanphuoc92/PeterDoStuff
+                        <span>@Model.GitHub.Label:</span>
+                        <a href="@Model.GitHub.Url">
+                            @Model.GitHub.TextOrUrl()
                         </a>
                     </div>
-                    <div class="subtitleItem">
-                        <i class="fa fa-globe contactIcon white" aria-hidden="true"></i>
-                        <span>Azure WebApp:</span>
-                        <a href="https://peter-do-stuff.azurewebsites.net/">
-                            peter-do-stuff.azurewebsites.net
-                        </a>
-                    </div>
+                    @for (int i = 0; i < Model.OtherLinks.Count; i++)
+                    {
+                        var otherLink = Model.OtherLinks[i];
+                        <div class="subtitleItem">
+                            <i class="fa fa-globe contactIcon white" aria-hidden="true"></i>
+                            <span>@otherLink.Label:</span>
+                            <a href="@otherLink.Url">
+                                @otherLink.TextOrUrl()
+                            </a>
+                        </div>
+                    }
                 </div>
             </div>
             <hr/>
