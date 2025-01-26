@@ -9,14 +9,14 @@
 @* <iframe srcdoc="@DocTemplateController.SampleHtml" style="width:100%; height:35cm; border:none;"></iframe> *@
 
 <MudGrid>
-    <MudItem xs="6" sm="3">
+    <MudItem xs="6" sm="2">
         <MudButton Variant="Variant.Filled" Color="Color.Primary"
                    StartIcon="@Icons.Material.Filled.Download"
                    OnClick="DownloadJson">
             Download JSON
         </MudButton>
     </MudItem>
-    <MudItem xs="6" sm="3">
+    <MudItem xs="6" sm="2">
         <MudFileUpload T="IBrowserFile" FilesChanged="UploadJson" Class="ma-0">
             <ButtonTemplate>
                 <MudButton Variant="Variant.Filled" Color="Color.Primary"
@@ -27,11 +27,16 @@
             </ButtonTemplate>
         </MudFileUpload>
     </MudItem>
-    <MudItem xs="6" sm="3">
+    <MudItem xs="12" sm="8">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.ColorLens"
+                   OnClick="OpenClassic">
+            Classic
+        </MudButton>
         <MudButton Variant="Variant.Filled" Color="Color.Primary"
                    StartIcon="@Icons.Material.Filled.ColorLens"
                    OnClick="OpenCustom1">
-            Open Custom 1
+            Custom 1
         </MudButton>
     </MudItem>
 </MudGrid>
@@ -225,13 +230,16 @@
         model = json.FromJson<Resume>();
     }
 
-    private async Task OpenCustom1()
+    private Task OpenCustom1() => OpenTemplate("custom1");
+    private Task OpenClassic() => OpenTemplate("classic");
+
+    private async Task OpenTemplate(string templatePage)
     {
         // Save the model in sessionStorage
         await JS.InvokeVoidAsync("sessionStorage.setItem", "resumeModel", model.ToJson());
 
         // Open the new tab
-        var url = "/docTemplate/custom1";
+        var url = $"/docTemplate/{templatePage}";
         await JS.InvokeVoidAsync("window.open", url, "_blank");
     }
 }
