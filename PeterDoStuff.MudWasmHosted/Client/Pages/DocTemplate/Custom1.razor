@@ -153,6 +153,27 @@
         ul {
             list-style-type: disc;
         }
+
+        .header-icon {
+            font-size: 1em;
+            justify-self: flex-end;
+            margin-right: 1em;
+        }
+
+        .title-icon {
+            font-size: 1.25em;
+            margin-right: 0.35em;
+            margin-left: 0.3em;
+        }
+
+        .placeholder-icon {
+            font-size: 2em;
+            color: #AAAAAA;
+        }
+
+        .star-icon {
+            font-size: 1em;
+        }
     </style>
 </head>
 <body>
@@ -167,7 +188,7 @@
             <div class="title"><h1>@Model.Person.Name</h1></div>
             <div class="subtitle">
                 <div class="subtitleItem">
-                    <i class="fa fa-map-marker contactIcon" aria-hidden="true"></i>
+                    <MudIcon Icon="@Icons.Material.Filled.LocationOn" Class="header-icon" />
                     <span>
                         Location:
                     </span>
@@ -176,7 +197,7 @@
                     </span>
                 </div>
                 <div class="subtitleItem">
-                    <i class="fa fa-phone contactIcon" aria-hidden="true"></i>
+                    <MudIcon Icon="@Icons.Custom.Brands.WhatsApp" Class="header-icon" />
                     <span>
                         @Model.PhoneLabel:
                     </span>
@@ -185,7 +206,7 @@
                     </span>
                 </div>
                 <div class="subtitleItem">
-                    <i class="fa fa-language" aria-hidden="true"></i>
+                    <MudIcon Icon="@Icons.Material.Filled.Language" Class="header-icon" />
                     <span>
                         @Model.FluencyLabel:
                     </span>
@@ -194,21 +215,21 @@
                     </span>
                 </div>
                 <div class="subtitleItem">
-                    <i class="fa fa-envelope contactIcon" aria-hidden="true"></i>
+                    <MudIcon Icon="@Icons.Material.Filled.Email" Class="header-icon" />
                     <span>Email:</span>
                     <a href="@($"mailto:{Model.Email}")">
                         @Model.Email
                     </a>
                 </div>
                 <div class="subtitleItem">
-                    <i class="fa fa-linkedin-square contactIcon" aria-hidden="true"></i>
+                    <MudIcon Icon="@Icons.Custom.Brands.LinkedIn" Class="header-icon" />
                     <span>@Model.LinkedIn.Label:</span>
                     <a href="@Model.LinkedIn.Url">
                         @Model.LinkedIn.TextOrUrl()
                     </a>
                 </div>
                 <div class="subtitleItem">
-                    <i class="fa fa-github contactIcon" aria-hidden="true"></i>
+                    <MudIcon Icon="@Icons.Custom.Brands.GitHub" Class="header-icon" />
                     <span>@Model.GitHub.Label:</span>
                     <a href="@Model.GitHub.Url">
                         @Model.GitHub.TextOrUrl()
@@ -218,7 +239,7 @@
                 {
                     var otherLink = Model.OtherLinks[i];
                     <div class="subtitleItem">
-                        <i class="fa fa-globe contactIcon white" aria-hidden="true"></i>
+                        <MudIcon Icon="@Icons.Custom.Brands.MicrosoftAzure" Class="header-icon" />
                         <span>@otherLink.Label:</span>
                         <a href="@otherLink.Url">
                             @otherLink.TextOrUrl()
@@ -232,7 +253,7 @@
             <div class="section">
                 <div class="sectionTitle">
                     <h2>
-                        <i class="fa fa-user"></i>
+                        <MudIcon Icon="@Icons.Material.Filled.Person" Class="title-icon" />
                         About me
                     </h2>
                 </div>
@@ -250,7 +271,7 @@
             <div class="section">
                 <div class="sectionTitle">
                     <h2>
-                        <i class="fa fa-suitcase"></i>
+                        <MudIcon Icon="@Icons.Material.Filled.Work" Class="title-icon" />
                         Experience
                     </h2>
                 </div>
@@ -265,7 +286,7 @@
                             }
                             else
                             {
-                                <i class="fa fa-suitcase"></i>
+                                <MudIcon Icon="@Icons.Material.Filled.Work" Class="placeholder-icon" />
                             }
                         </div>
                         <div class="sectionItem">
@@ -292,7 +313,7 @@
             <div class="section">
                 <div class="sectionTitle">
                     <h2>
-                        <i class="fa fa-graduation-cap"></i>
+                        <MudIcon Icon="@Icons.Material.Filled.School" Class="title-icon" />
                         Education
                     </h2>
                 </div>
@@ -307,7 +328,7 @@
                             }
                             else
                             {
-                                <i class="fa fa-graduation-cap"></i>
+                                <MudIcon Icon="@Icons.Material.Filled.School" Class="placeholder-icon" />
                             }
                         </div>
                         <div class="sectionItem">
@@ -345,7 +366,7 @@
         <div class="section">
             <div class="sectionTitle">
                 <h2>
-                    <i class="fa fa-solid fa-wrench"> </i>
+                    <MudIcon Icon="@Icons.Material.Filled.Build" Class="title-icon" />
                     Skills
                 </h2>
             </div>
@@ -361,7 +382,7 @@
                         <h4>
                             @for (int i = 0; i < level; i++)
                             {
-                                <i class="fa fa-solid fa-star"> </i>
+                                <MudIcon Icon="@Icons.Material.Filled.Star" Class="star-icon" />
                             }
                         </h4>
                         <div>@levelGroup.Select(skill => skill.Name).Join(", ")</div>
