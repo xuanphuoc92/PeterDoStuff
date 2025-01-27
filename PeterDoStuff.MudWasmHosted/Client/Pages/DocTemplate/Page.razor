@@ -81,11 +81,15 @@
     {
         var otherLink = model.OtherLinks[i];
         <MudGrid>
-            <MudItem xs="12" md="1">
+            <MudItem xs="12" md="2">
                 <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete"
-                    OnClick="() => model.OtherLinks.Remove(otherLink)"></MudIconButton>
+                               OnClick="() => model.OtherLinks.Remove(otherLink)"></MudIconButton>
+                <MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.ArrowCircleUp"
+                               OnClick="() => model.OtherLinks.MoveUp(otherLink)"></MudIconButton>
+                <MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.ArrowCircleDown"
+                               OnClick="() => model.OtherLinks.MoveDown(otherLink)"></MudIconButton>
             </MudItem>
-            <MudItem xs="12" md="11">
+            <MudItem xs="12" md="10">
                 <LinkControl Link="@otherLink" />
             </MudItem>
         </MudGrid>
