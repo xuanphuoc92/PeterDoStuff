@@ -74,20 +74,18 @@
         </MudItem>
     </MudGrid>
     <MudTextField Variant="Variant.Outlined" Label="Email" @bind-Value="model.Email" For="@(() => model.Email)" />
-    <LinkControl Link="@model.LinkedIn" Icon="@Icons.Custom.Brands.LinkedIn" />
-    <LinkControl Link="@model.GitHub" Icon="@Icons.Custom.Brands.GitHub" />
-    <MudText Class="mt-4">Other Links</MudText>
-    @for(int i = 0; i < model.OtherLinks.Count; i++)
+    <MudText Class="mt-4">Links</MudText>
+    @for(int i = 0; i < model.Links.Count; i++)
     {
-        var otherLink = model.OtherLinks[i];
+        var otherLink = model.Links[i];
         <MudGrid>
             <MudItem xs="12" md="2">
                 <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete"
-                               OnClick="() => model.OtherLinks.Remove(otherLink)"></MudIconButton>
+                               OnClick="() => model.Links.Remove(otherLink)"></MudIconButton>
                 <MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.ArrowCircleUp"
-                               OnClick="() => model.OtherLinks.MoveUp(otherLink)"></MudIconButton>
+                               OnClick="() => model.Links.MoveUp(otherLink)"></MudIconButton>
                 <MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.ArrowCircleDown"
-                               OnClick="() => model.OtherLinks.MoveDown(otherLink)"></MudIconButton>
+                               OnClick="() => model.Links.MoveDown(otherLink)"></MudIconButton>
             </MudItem>
             <MudItem xs="12" md="10">
                 <LinkControl Link="@otherLink" />
@@ -95,7 +93,7 @@
         </MudGrid>
     }
     <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.AddCircleOutline"
-        OnClick="() => model.OtherLinks.Add(new())">Link</MudButton>
+               OnClick="() => model.Links.Add(new())">Link</MudButton>
     <MudTextField Variant="Variant.Outlined" Label="AboutMe" 
         Lines="10"
         @bind-Value="model.AboutMe" For="@(() => model.AboutMe)" />

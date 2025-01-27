@@ -77,7 +77,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate
             public Link LinkedIn { get; set; } = new() { Label = nameof(LinkedIn) };
             public Link GitHub { get; set; } = new() { Label = nameof(GitHub) };
 
-            public List<Link> OtherLinks { get; set; } = [];
+            public List<Link> Links { get; set; } = [];
 
             public string AboutMe { get; set; }
 

@@ -217,28 +217,14 @@
                         @Model.Email
                     </a>
                 </div>
-                <div class="subtitleItem">
-                    <MudIcon Icon="@Icons.Custom.Brands.LinkedIn" Class="header-icon" />
-                    <span>@Model.LinkedIn.Label:</span>
-                    <a href="@Model.LinkedIn.Url">
-                        @Model.LinkedIn.TextOrUrl()
-                    </a>
-                </div>
-                <div class="subtitleItem">
-                    <MudIcon Icon="@Icons.Custom.Brands.GitHub" Class="header-icon" />
-                    <span>@Model.GitHub.Label:</span>
-                    <a href="@Model.GitHub.Url">
-                        @Model.GitHub.TextOrUrl()
-                    </a>
-                </div>
-                @for (int i = 0; i < Model.OtherLinks.Count; i++)
+                @for (int i = 0; i < Model.Links.Count; i++)
                 {
-                    var otherLink = Model.OtherLinks[i];
+                    var link = Model.Links[i];
                     <div class="subtitleItem">
-                        <MudIcon Icon="@Icons.Custom.Brands.MicrosoftAzure" Class="header-icon" />
-                        <span>@otherLink.Label:</span>
-                        <a href="@otherLink.Url">
-                            @otherLink.TextOrUrl()
+                        <MudIcon Icon="@LinkIcons.GetDictionary()[link.Icon]" Class="header-icon" />
+                        <span>@link.Label:</span>
+                        <a href="@link.Url">
+                            @link.TextOrUrl()
                         </a>
                     </div>
                 }
