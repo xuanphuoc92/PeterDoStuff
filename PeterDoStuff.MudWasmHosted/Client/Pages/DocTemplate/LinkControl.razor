@@ -1,25 +1,24 @@
 ﻿@using static PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate.DocTemplateController
 
-<MudItem xs="@LabelWidth" sm="@LabelWidth">
-    <MudTextField Variant="Variant.Outlined" 
-        @bind-Value="Link.Label" For="@(() => Link.Label)" />
-</MudItem>
-<MudItem xs="10" sm="5">
-    <MudTextField Variant="Variant.Outlined" AdornmentIcon="@Icon" Adornment="Adornment.Start"
-        @bind-Value="Link.Url" For="@(() => Link.Url)" />
-</MudItem>
-<MudItem xs="12" sm="5">
-    <MudTextField Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.FontDownload" Adornment="Adornment.Start"
-        @bind-Value="Link.Text" For="@(() => Link.Text)" />
-</MudItem>
+<MudGrid>
+    <MudItem xs="12" md="2">
+        <MudTextField Variant="Variant.Outlined"
+                      @bind-Value="Link.Label" For="@(() => Link.Label)" />
+    </MudItem>
+    <MudItem xs="6" md="5">
+        <MudTextField Variant="Variant.Outlined" AdornmentIcon="@Icon" Adornment="Adornment.Start"
+                      @bind-Value="Link.Url" For="@(() => Link.Url)" />
+    </MudItem>
+    <MudItem xs="6" md="5">
+        <MudTextField Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.FontDownload" Adornment="Adornment.Start"
+                      @bind-Value="Link.Text" For="@(() => Link.Text)" />
+    </MudItem>
+</MudGrid>
 
 
 @code {
     [Parameter]
     public Link Link { get; set; }
-
-    [Parameter]
-    public int LabelWidth { get; set; } = 2;
 
     [Parameter]
     public string Icon { get; set; } = Icons.Material.Filled.Link;

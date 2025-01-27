@@ -74,22 +74,20 @@
         </MudItem>
     </MudGrid>
     <MudTextField Variant="Variant.Outlined" Label="Email" @bind-Value="model.Email" For="@(() => model.Email)" />
-    <MudGrid>
-        <LinkControl Link="@model.LinkedIn" Icon="@Icons.Custom.Brands.LinkedIn" />
-    </MudGrid>
-    <MudGrid>
-        <LinkControl Link="@model.GitHub" Icon="@Icons.Custom.Brands.GitHub" />
-    </MudGrid>
+    <LinkControl Link="@model.LinkedIn" Icon="@Icons.Custom.Brands.LinkedIn" />
+    <LinkControl Link="@model.GitHub" Icon="@Icons.Custom.Brands.GitHub" />
     <MudText Class="mt-4">Other Links</MudText>
     @for(int i = 0; i < model.OtherLinks.Count; i++)
     {
         var otherLink = model.OtherLinks[i];
         <MudGrid>
-            <MudItem xs="1">
+            <MudItem xs="12" md="1">
                 <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete"
                     OnClick="() => model.OtherLinks.Remove(otherLink)"></MudIconButton>
             </MudItem>
-            <LinkControl LabelWidth="1" Link="@otherLink" />
+            <MudItem xs="12" md="11">
+                <LinkControl Link="@otherLink" />
+            </MudItem>
         </MudGrid>
     }
     <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.AddCircleOutline"
