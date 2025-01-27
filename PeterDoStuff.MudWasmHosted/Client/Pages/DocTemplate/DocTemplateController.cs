@@ -1,4 +1,5 @@
-﻿using PeterDoStuff.Extensions;
+﻿using MudBlazor;
+using PeterDoStuff.Extensions;
 using System.Text.RegularExpressions;
 
 namespace PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate
@@ -86,6 +87,16 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate
             public string Label { get; set; }
             public string Url { get; set; }
             public string Text { get; set; }
+            public string Icon { get; set; } = nameof(LinkIcons.Default);
+        }
+
+        public class LinkIcons
+        {
+            public const string Default = Icons.Material.Filled.Link;
+            public const string LinkedIn = Icons.Custom.Brands.LinkedIn;
+            public const string GitHub = Icons.Custom.Brands.GitHub;
+            public const string Azure = Icons.Custom.Brands.MicrosoftAzure;
+            public const string Instagram = Icons.Custom.Brands.Instagram;
         }
 
         public class Experience
