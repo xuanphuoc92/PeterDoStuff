@@ -112,6 +112,16 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate
 
         public class LinkIcons
         {
+            private static Dictionary<string, string> _iconDict = null;
+            public static Dictionary<string, string> GetDictionary()
+            {
+                _iconDict ??= typeof(LinkIcons)
+                        ?.GetFields(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public)
+                        ?.ToDictionary(fi => fi.Name, fi => fi.GetValue(null)?.ToString() ?? "")
+                        ?? [];
+                return _iconDict;
+            }
+
             public const string Default = Icons.Material.Filled.Link;
             public const string LinkedIn = Icons.Custom.Brands.LinkedIn;
             public const string GitHub = Icons.Custom.Brands.GitHub;
