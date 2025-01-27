@@ -8,372 +8,378 @@
 
 <!DOCTYPE html>
 <html>
-    <head>
-        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-        
-        <style>
-            body {
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                color: #555555;
-                font-size: 0.85em;
-            }
+<head>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #555555;
+            font-size: 0.85em;
+        }
 
-            h1 {
-                font-size: 2em;
-                margin-block-start: 0.25em;
-                margin-block-end: 0em;
-            }
+        h1 {
+            font-size: 2em;
+            margin-block-start: 0.25em;
+            margin-block-end: 0em;
+        }
 
-            h2 {
-                font-size: 1.2em;
-            }
+        h2 {
+            font-size: 1.2em;
+        }
 
-            h3 {
-                font-size: 1em;
-                margin-block-start: 0;
-                margin-block-end: 0;
-            }
+        h3 {
+            font-size: 1em;
+            margin-block-start: 0;
+            margin-block-end: 0;
+        }
 
-            h4 {
-                font-size: 0.95em;
-                margin-block-start: 0;
-                margin-block-end: 0;
-            }
+        h4 {
+            font-size: 0.95em;
+            margin-block-start: 0;
+            margin-block-end: 0;
+        }
 
-            .sub {
-                font-size: 0.8em;
-            }
+        .sub {
+            font-size: 0.8em;
+        }
 
-            page {
-                background: white;
-                display: block;
-                margin: 0 auto;
-                margin-bottom: 0.5cm;
-                width: 21cm;
-                height: 29.7cm;;
-            }
+        page {
+            background: white;
+            display: block;
+            margin: 0 auto;
+            margin-bottom: 0.5cm;
+            width: 21cm;
+            height: 29.7cm;;
+        }
 
-            .header {
-                display: grid;
-                grid-template-columns: auto auto;
-                background-color: #333333;
-                color: #BBBBBB;
-            }
+        .header {
+            display: grid;
+            grid-template-columns: auto auto;
+            background-color: #333333;
+            color: #BBBBBB;
+        }
 
-            .header a {
-                color: #BBBBBB;
-            }
+        .header a {
+            color: #BBBBBB;
+        }
 
-            .avatar {
-                margin: 25px;
-                grid-area: 1 / 2 / 3 / 2
-            }
+        .avatar {
+            margin: 25px;
+            grid-area: 1 / 2 / 3 / 2
+        }
 
-            .avatar img {
-                width: 150px;
-                height: 150px;
-                border-radius: 50%;
-                border: 0.15cm solid #777777;
-                object-fit: cover;
-                object-position: 50% 50%;
-            }
+        .avatar img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 0.15cm solid #777777;
+            object-fit: cover;
+            object-position: 50% 50%;
+        }
 
-            .title, .sectionTitle {
-                font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-            }
+        .title, .sectionTitle {
+            font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        }
 
-            .title {
-                justify-self: center;
-            }
+        .title {
+            justify-self: center;
+        }
             
-            .subtitle {
-                margin: 20px;
-            }
+        .subtitle {
+            margin: 20px;
+        }
             
-            .subtitleItem {
-                display: grid;
-                grid-template-columns: 40px 150px auto;
-                align-items: center;
-            }
+        .subtitleItem {
+            display: grid;
+            grid-template-columns: 40px 150px auto;
+            align-items: center;
+        }
             
-            .fa {
-                justify-self: center;
-                margin-right: 0.1em;
-            }
+        .fa {
+            justify-self: center;
+            margin-right: 0.1em;
+        }
 
-            .body {
-                display: grid;
-                grid-template-columns: auto auto;
-            }
+        .body {
+            display: grid;
+            grid-template-columns: auto auto;
+        }
 
-            .section {
-                padding-left: 1em;
-                padding-right: 1em;
-            }
+        .section {
+            padding-left: 1em;
+            padding-right: 1em;
+        }
 
-            .sectionItem {
-                margin-right: 0.2em;
-            }
+        .sectionItem {
+            margin-right: 0.2em;
+        }
 
-            ul {
-                padding-inline-start: 1em;
-            }
+        ul {
+            padding-inline-start: 1em;
+        }
 
-            .skillGrid {
-                display: grid;
-                grid-template-columns: 75px auto;
-                padding-block-end: 0.5em;
-            }
+        .skillGrid {
+            display: grid;
+            grid-template-columns: 75px auto;
+            padding-block-end: 0.5em;
+        }
 
-            hr {
-                margin-block-start: 0em;
-                margin-block-end: 0em;
-            }
+        hr {
+            margin-block-start: 0em;
+            margin-block-end: 0em;
+        }
 
-            .entitySection {
-                display: grid;
-                grid-template-columns: auto auto;
-            }
+        .entitySection {
+            display: grid;
+            grid-template-columns: auto auto;
+        }
 
-            .entityAvatar {
-                padding-right: 0.2em;
-            }
+        .entityAvatar {
+            padding-right: 0.2em;
+        }
 
-            .entityAvatar img {
-                width: 30px;
-            }
+        .entityAvatar img {
+            width: 30px;
+        }
 
-            .entityAvatar i {
-                font-size: 1.5em;
-                color: #BBBBBB;
+        .entityAvatar i {
+            font-size: 1.5em;
+            color: #BBBBBB;
+        }
+
+        p {
+            margin-block-end: 1em;
+        }
+
+        ul {
+            list-style-type: disc;
+        }
+    </style>
+</head>
+<body>
+    <page size="A4">
+        <div class="header">
+            @if (Model.Person.PhotoType != PhotoType.None)
+            {
+                <div class="avatar">
+                    <img width="150" src="@Model.Person.PhotoSrc()" />
+                </div>
             }
-        </style>
-    </head>
-    <body>
-        <page size="A4">
-            <div class="header">
-                @if (Model.Person.PhotoType != PhotoType.None)
+            <div class="title"><h1>@Model.Person.Name</h1></div>
+            <div class="subtitle">
+                <div class="subtitleItem">
+                    <i class="fa fa-map-marker contactIcon" aria-hidden="true"></i>
+                    <span>
+                        Location:
+                    </span>
+                    <span>
+                        @Model.Location
+                    </span>
+                </div>
+                <div class="subtitleItem">
+                    <i class="fa fa-phone contactIcon" aria-hidden="true"></i>
+                    <span>
+                        @Model.PhoneLabel:
+                    </span>
+                    <span>
+                        @Model.PhoneNumber
+                    </span>
+                </div>
+                <div class="subtitleItem">
+                    <i class="fa fa-language" aria-hidden="true"></i>
+                    <span>
+                        @Model.FluencyLabel:
+                    </span>
+                    <span>
+                        @Model.Fluency
+                    </span>
+                </div>
+                <div class="subtitleItem">
+                    <i class="fa fa-envelope contactIcon" aria-hidden="true"></i>
+                    <span>Email:</span>
+                    <a href="@($"mailto:{Model.Email}")">
+                        @Model.Email
+                    </a>
+                </div>
+                <div class="subtitleItem">
+                    <i class="fa fa-linkedin-square contactIcon" aria-hidden="true"></i>
+                    <span>@Model.LinkedIn.Label:</span>
+                    <a href="@Model.LinkedIn.Url">
+                        @Model.LinkedIn.TextOrUrl()
+                    </a>
+                </div>
+                <div class="subtitleItem">
+                    <i class="fa fa-github contactIcon" aria-hidden="true"></i>
+                    <span>@Model.GitHub.Label:</span>
+                    <a href="@Model.GitHub.Url">
+                        @Model.GitHub.TextOrUrl()
+                    </a>
+                </div>
+                @for (int i = 0; i < Model.OtherLinks.Count; i++)
                 {
-                    <div class="avatar">
-                        <img width="150" src="@Model.Person.PhotoSrc()" />
+                    var otherLink = Model.OtherLinks[i];
+                    <div class="subtitleItem">
+                        <i class="fa fa-globe contactIcon white" aria-hidden="true"></i>
+                        <span>@otherLink.Label:</span>
+                        <a href="@otherLink.Url">
+                            @otherLink.TextOrUrl()
+                        </a>
                     </div>
                 }
-                <div class="title"><h1>@Model.Person.Name</h1></div>
-                <div class="subtitle">
-                    <div class="subtitleItem">
-                        <i class="fa fa-map-marker contactIcon" aria-hidden="true"></i>
-                        <span>
-                            Location:
-                        </span>
-                        <span>
-                            @Model.Location
-                        </span>
-                    </div>
-                    <div class="subtitleItem">
-                        <i class="fa fa-phone contactIcon" aria-hidden="true"></i>
-                        <span>
-                            @Model.PhoneLabel:
-                        </span>
-                        <span>
-                            @Model.PhoneNumber
-                        </span>
-                    </div>
-                    <div class="subtitleItem">
-                        <i class="fa fa-language" aria-hidden="true"></i>
-                        <span>
-                            @Model.FluencyLabel:
-                        </span>
-                        <span>
-                            @Model.Fluency
-                        </span>
-                    </div>
-                    <div class="subtitleItem">
-                        <i class="fa fa-envelope contactIcon" aria-hidden="true"></i>
-                        <span>Email:</span>
-                        <a href="@($"mailto:{Model.Email}")">
-                            @Model.Email
-                        </a>
-                    </div>
-                    <div class="subtitleItem">
-                        <i class="fa fa-linkedin-square contactIcon" aria-hidden="true"></i>
-                        <span>@Model.LinkedIn.Label:</span>
-                        <a href="@Model.LinkedIn.Url">
-                            @Model.LinkedIn.TextOrUrl()
-                        </a>
-                    </div>
-                    <div class="subtitleItem">
-                        <i class="fa fa-github contactIcon" aria-hidden="true"></i>
-                        <span>@Model.GitHub.Label:</span>
-                        <a href="@Model.GitHub.Url">
-                            @Model.GitHub.TextOrUrl()
-                        </a>
-                    </div>
-                    @for (int i = 0; i < Model.OtherLinks.Count; i++)
+            </div>
+        </div>
+        <MudDivider Class="mb-2"/>
+        <div class="body">
+            <div class="section">
+                <div class="sectionTitle">
+                    <h2>
+                        <i class="fa fa-user"></i>
+                        About me
+                    </h2>
+                </div>
+                <div class="sectionItem">
+                    @foreach (var paragraphRef in Model.AboutMe.ToParagraphs())
                     {
-                        var otherLink = Model.OtherLinks[i];
-                        <div class="subtitleItem">
-                            <i class="fa fa-globe contactIcon white" aria-hidden="true"></i>
-                            <span>@otherLink.Label:</span>
-                            <a href="@otherLink.Url">
-                                @otherLink.TextOrUrl()
-                            </a>
-                        </div>
+                        var paragraph = paragraphRef;
+                    <p>@((MarkupString)paragraph.RenderWithBold())</p>
                     }
                 </div>
             </div>
-            <hr/>
-            <div class="body">
-                <div class="section">
-                    <div class="sectionTitle">
-                        <h2>
-                            <i class="fa fa-user"></i>
-                            About me
-                        </h2>
-                    </div>
-                    <div class="sectionItem">
-                        @foreach (var paragraphRef in Model.AboutMe.ToParagraphs())
-                        {
-                            var paragraph = paragraphRef;
-                        <p>@((MarkupString)paragraph.RenderWithBold())</p>
-                        }
-                    </div>
+        </div>
+        <MudDivider Class="mb-2" />
+        <div class="body">
+            <div class="section">
+                <div class="sectionTitle">
+                    <h2>
+                        <i class="fa fa-suitcase"></i>
+                        Experience
+                    </h2>
                 </div>
-            </div>
-            <hr/>
-            <div class="body">
-                <div class="section">
-                    <div class="sectionTitle">
-                        <h2>
-                            <i class="fa fa-suitcase"></i>
-                            Experience
-                        </h2>
-                    </div>
-                    <div class="entitySection">
-                        @foreach (var experienceRef in Model.Experiences)
-                        {
-                            var experience = experienceRef;
-                            <div class="entityAvatar">
-                                @if (experience.Company.PhotoType != PhotoType.None)
-                                {
-                                    <img width="50" src="@experience.Company.PhotoSrc()" />
-                                }
-                                else
-                                {
-                                    <i class="fa fa-suitcase"></i>
-                                }
-                            </div>
-                            <div class="sectionItem">
-                                <h3>@experience.Company.Name</h3>
-                                @foreach (var experienceItemRef in experience.Items)
-                                {
-                                    var item = experienceItemRef;
-                                    <h4>@item.Position</h4>
-                                    <div class="sub">@item.From.MonthYearOrPresent() - @item.To.MonthYearOrPresent()</div>
-                                    <p>
-                                        <ul>
-                                            @foreach (var paragraphRef in item.Description.ToParagraphs())
-                                            {
-                                                var paragraph = paragraphRef;
-                                                <li>@((MarkupString)paragraph.RenderWithBold())</li>
-                                            }
-                                        </ul>
-                                    </p>
-                                }
-                            </div>  
-                        }
-                    </div>
-                </div>
-                <div class="section">
-                    <div class="sectionTitle">
-                        <h2>
-                            <i class="fa fa-graduation-cap"></i>
-                            Education
-                        </h2>
-                    </div>
-                    <div class="entitySection">
-                        @foreach (var educationRef in Model.Educations)
-                        {
-                            var education = educationRef ;
-                            <div class="entityAvatar">
-                                @if (education.Institution.PhotoType != PhotoType.None)
-                                {
-                                    <img width="50" src="@education.Institution.PhotoSrc()" />
-                                }
-                                else
-                                {
-                                    <i class="fa fa-graduation-cap"></i>
-                                }
-                            </div>
-                            <div class="sectionItem">
-                                <h3>@education.Institution.Name</h3>
-                                <h4>
-                                    @{
-                                        var degreeParagraphs = education.Degree.ToParagraphs();
-                                    }
-                                    @for (int i = 0; i < degreeParagraphs.Length; i++)
-                                    {                                        
-                                        var paragraph = degreeParagraphs[i];
-                                        @if (i > 0)
-                                        {
-                                            <br />
-                                        }
-                                        @paragraph
-                                    }
-                                </h4>
-                                <div class="sub">@education.From.MonthYearOrPresent() - @education.To.MonthYearOrPresent()</div>
+                <div class="entitySection">
+                    @foreach (var experienceRef in Model.Experiences)
+                    {
+                        var experience = experienceRef;
+                        <div class="entityAvatar">
+                            @if (experience.Company.PhotoType != PhotoType.None)
+                            {
+                                <img width="50" src="@experience.Company.PhotoSrc()" />
+                            }
+                            else
+                            {
+                                <i class="fa fa-suitcase"></i>
+                            }
+                        </div>
+                        <div class="sectionItem">
+                            <h3>@experience.Company.Name</h3>
+                            @foreach (var experienceItemRef in experience.Items)
+                            {
+                                var item = experienceItemRef;
+                                <h4>@item.Position</h4>
+                                <div class="sub">@item.From.MonthYearOrPresent() - @item.To.MonthYearOrPresent()</div>
                                 <p>
                                     <ul>
-                                        @foreach (var paragraphRef in education.Description.ToParagraphs())
+                                        @foreach (var paragraphRef in item.Description.ToParagraphs())
                                         {
                                             var paragraph = paragraphRef;
                                             <li>@((MarkupString)paragraph.RenderWithBold())</li>
                                         }
                                     </ul>
                                 </p>
-                            </div>
-                        }
-                    </div>
+                            }
+                        </div>  
+                    }
                 </div>
             </div>
-            <hr/>
             <div class="section">
                 <div class="sectionTitle">
                     <h2>
-                        <i class="fa fa-solid fa-wrench"> </i>
-                        Skills
+                        <i class="fa fa-graduation-cap"></i>
+                        Education
                     </h2>
                 </div>
-                @foreach (var groupRef in Model.Skills.GroupBy(skill => skill.Group))
-                {
-                    var group = groupRef;
-                    <h3>@group.Key</h3>
-                    <div class="skillGrid">
-                        @foreach (var levelGroupRef in group.GroupBy(skill => skill.Level).OrderByDescending(g => g.Key))
-                        {
-                            var levelGroup = levelGroupRef;
-                            var level = levelGroup.Key;
+                <div class="entitySection">
+                    @foreach (var educationRef in Model.Educations)
+                    {
+                        var education = educationRef ;
+                        <div class="entityAvatar">
+                            @if (education.Institution.PhotoType != PhotoType.None)
+                            {
+                                <img width="50" src="@education.Institution.PhotoSrc()" />
+                            }
+                            else
+                            {
+                                <i class="fa fa-graduation-cap"></i>
+                            }
+                        </div>
+                        <div class="sectionItem">
+                            <h3>@education.Institution.Name</h3>
                             <h4>
-                                @for (int i = 0; i < level; i++)
-                                {
-                                    <i class="fa fa-solid fa-star"> </i>
+                                @{
+                                    var degreeParagraphs = education.Degree.ToParagraphs();
+                                }
+                                @for (int i = 0; i < degreeParagraphs.Length; i++)
+                                {                                        
+                                    var paragraph = degreeParagraphs[i];
+                                    @if (i > 0)
+                                    {
+                                        <br />
+                                    }
+                                    @paragraph
                                 }
                             </h4>
-                            <div>@levelGroup.Select(skill => skill.Name).Join(", ")</div>
-                        }
-                    </div>
-                }
+                            <div class="sub">@education.From.MonthYearOrPresent() - @education.To.MonthYearOrPresent()</div>
+                            <p>
+                                <ul>
+                                    @foreach (var paragraphRef in education.Description.ToParagraphs())
+                                    {
+                                        var paragraph = paragraphRef;
+                                        <li>@((MarkupString)paragraph.RenderWithBold())</li>
+                                    }
+                                </ul>
+                            </p>
+                        </div>
+                    }
+                </div>
             </div>
-        </page>
-    </body>
+        </div>
+        <MudDivider Class="mb-2" />
+        <div class="section">
+            <div class="sectionTitle">
+                <h2>
+                    <i class="fa fa-solid fa-wrench"> </i>
+                    Skills
+                </h2>
+            </div>
+            @foreach (var groupRef in Model.Skills.GroupBy(skill => skill.Group))
+            {
+                var group = groupRef;
+                <h3>@group.Key</h3>
+                <div class="skillGrid">
+                    @foreach (var levelGroupRef in group.GroupBy(skill => skill.Level).OrderByDescending(g => g.Key))
+                    {
+                        var levelGroup = levelGroupRef;
+                        var level = levelGroup.Key;
+                        <h4>
+                            @for (int i = 0; i < level; i++)
+                            {
+                                <i class="fa fa-solid fa-star"> </i>
+                            }
+                        </h4>
+                        <div>@levelGroup.Select(skill => skill.Name).Join(", ")</div>
+                    }
+                </div>
+            }
+        </div>
+    </page>
+</body>
 </html>
 
 @code {
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
-        {
-            await JSRuntime.InvokeVoidAsync("clearLayoutStyle");
-        }
+        // if (firstRender)
+        // {
+        //     await JSRuntime.InvokeVoidAsync("clearLayoutStyle");
+        // }
     }
 
     [Parameter]
