@@ -149,7 +149,7 @@
 
         .skillGrid {
             display: grid;
-            grid-template-columns: 75px auto;
+            grid-template-columns: 50px 75px auto;
             padding-block-end: 0.5em;
         }
 
@@ -381,6 +381,7 @@
                                 <MudIcon Icon="@Icons.Material.Filled.Star" Class="star-icon" />
                             }
                         </h4>
+                        <div class="sub">(@Model.SkillLevels[level])</div>
                         <div>@levelGroup.Select(skill => skill.Name).Join(", ")</div>
                     }
                 </div>
