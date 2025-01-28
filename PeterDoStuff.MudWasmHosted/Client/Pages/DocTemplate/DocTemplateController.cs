@@ -56,6 +56,12 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate
             list.RemoveAt(currentIndex);
             list.Insert(currentIndex + 1, item);
         }
+
+        public static Dictionary<string, string> GenerateIconDictionary(this Type iconClassType)
+            => iconClassType
+            ?.GetFields(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public)
+            ?.ToDictionary(fi => fi.Name, fi => fi.GetValue(null)?.ToString() ?? "")
+            ?? [];
     }
 
     public class DocTemplateController
@@ -64,25 +70,34 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate
         {
             public Entity Person { get; set; } = new();
 
+            public string LocationIcon { get; set; } = nameof(GeneralIcons.Location);
+            public string LocationLabel { get; set; } = "Location";
             public string Location { get; set; }
 
+            public string PhoneIcon { get; set; } = nameof(GeneralIcons.Phone);
             public string PhoneLabel { get; set; } = "Phone";
             public string PhoneNumber { get; set; }
 
+            public string FluencyIcon { get; set; } = nameof(GeneralIcons.Language);
             public string FluencyLabel { get; set; } = "Fluency";
             public string Fluency { get; set; }
-            
-            public string Email { get; set; }
 
-            public Link LinkedIn { get; set; } = new() { Label = nameof(LinkedIn) };
-            public Link GitHub { get; set; } = new() { Label = nameof(GitHub) };
+            public string EmailIcon { get; set; } = nameof(GeneralIcons.Email);
+            public string EmailLabel { get; set; }
+            public string Email { get; set; }
 
             public List<Link> Links { get; set; } = [];
 
+            public string AboutMeIcon { get; set; } = nameof(GeneralIcons.Person);
+            public string AboutMeLabel { get; set; } = "About Me";
             public string AboutMe { get; set; }
 
+            public string ExperiencesIcon { get; set; } = nameof(GeneralIcons.Work);
+            public string ExperiencesLabel { get; set; } = "Experience";
             public List<Experience> Experiences { get; set; } = [];
 
+            public string EducationsIcon { get; set; } = nameof(GeneralIcons.School);
+            public string EducationsLabel { get; set; } = "Education";
             public List<Education> Educations { get; set; } = [];
 
             public Dictionary<int, string> SkillLevels { get; set; } = new()
@@ -90,10 +105,10 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate
                 { 1, "Familiar" },
                 { 2, "Proficient" },
                 { 3, "Skilled" },
-                //{ 4, "Expert" },
-                //{ 5, "Master" },
             };
 
+            public string SkillsIcon { get; set; } = nameof(GeneralIcons.Build);
+            public string SkillsLabel { get; set; } = "Skills";
             public List<Skill> Skills { get; set; } = [];
         }
 
@@ -115,10 +130,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate
             private static Dictionary<string, string> _iconDict = null;
             public static Dictionary<string, string> GetDictionary()
             {
-                _iconDict ??= typeof(LinkIcons)
-                        ?.GetFields(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public)
-                        ?.ToDictionary(fi => fi.Name, fi => fi.GetValue(null)?.ToString() ?? "")
-                        ?? [];
+                _iconDict ??= typeof(LinkIcons).GenerateIconDictionary();
                 return _iconDict;
             }
 
@@ -127,6 +139,26 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate
             public const string GitHub = Icons.Custom.Brands.GitHub;
             public const string Azure = Icons.Custom.Brands.MicrosoftAzure;
             public const string Instagram = Icons.Custom.Brands.Instagram;
+        }
+
+        public class GeneralIcons
+        {
+            private static Dictionary<string, string> _iconDict = null;
+            public static Dictionary<string, string> GetDictionary()
+            {
+                _iconDict ??= typeof(LinkIcons).GenerateIconDictionary();
+                return _iconDict;
+            }
+
+            public const string Location = Icons.Material.Filled.LocationOn;
+            public const string Phone = Icons.Material.Filled.Phone;
+            public const string WhatsApp = Icons.Custom.Brands.WhatsApp;
+            public const string Language = Icons.Material.Filled.Language;
+            public const string Email = Icons.Material.Filled.Email;
+            public const string Person = Icons.Material.Filled.Person;
+            public const string Work = Icons.Material.Filled.Work;
+            public const string School = Icons.Material.Filled.School;
+            public const string Build = Icons.Material.Filled.Build;
         }
 
         public class Experience
