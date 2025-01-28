@@ -27,10 +27,10 @@
 </MudList>
 
 <MudCheckBox @bind-Value="showAll">Gallery</MudCheckBox>
-<MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="Reset" StartIcon="@Icons.Material.Filled.Replay">Reset</MudButton>
 
 @if (showAll)
 {
+    <MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="Reset" StartIcon="@Icons.Material.Filled.Replay">Reset</MudButton>
     <MudButton StartIcon="@Icons.Material.Filled.ArrowBackIos" OnClick="Prev">Prev</MudButton>
     <MudButton EndIcon="@Icons.Material.Filled.ArrowForwardIos" OnClick="Next">Next</MudButton>
 
@@ -48,24 +48,13 @@
     </MudGrid>
 }
 else
-{
-    @* <MudRadioGroup @bind-Value="canvas">
-        <MudGrid Spacing="0">
-            @for (int i = 0; i < gallery.Canvases.Count; i++)
-            {
-                var demo = gallery.Canvases[i];
-                <MudItem xs="4" md="2">
-                    <MudRadio Value="@demo" Color="Color.Primary">@demo.Name</MudRadio>
-                </MudItem>
-            }
-        </MudGrid>
-    </MudRadioGroup>
-
-    <MudDivider Class="my-4" />
-
-    <CanvasSvg Canvas="canvas" /> *@
-    
-    <MudButton OnClick="Test">Open Canvas</MudButton>
+{    
+    @for (int i = 0; i < gallery.CanvasFactories.Count; i++)
+    {
+        var factory = gallery.CanvasFactories[i];
+        var demo = gallery.Canvases[i];
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => OpenCanvasDialog(factory)">@demo.Name</MudButton>
+    }
 
     <MudDialog @bind-IsVisible="_dialogVisible" Options="_dialogOptions">
         <DialogContent>
@@ -111,11 +100,11 @@ else
         await base.OnAfterRenderAsync(firstRender);
     }
 
-    private async Task Test()
+    private void OpenCanvasDialog(Func<Style, CanvasModel> factory)
     {
         _dialogVisible = true;
-        _dialogCanvas = new _09_Fish(style, _width - 100, _height - 100);
-        await InvokeAsync(StateHasChanged);
+        _dialogCanvas = factory(style);
+        InvokeAsync(StateHasChanged);
     }
 
     private Gallery gallery;
