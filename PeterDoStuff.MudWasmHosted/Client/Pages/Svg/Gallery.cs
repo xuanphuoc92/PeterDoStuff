@@ -3,18 +3,27 @@ using PeterDoStuff.Graphics.Models;
 
 namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
 {
-    public class Gallery(Style style)
+    public class Gallery
     {
-        public List<CanvasModel> Canvases = [
-            new _01_BouncingBalls(style, new CircleModel(10)),
-            new _02_DistanceConstraint(style),
-            new _03_MagneticField(style),
-            new _04_MagneticMouse(style),
-            new _05_MouseFollower(style),
-            new _06_Chains(style),
-            new _07_AngleConstraint(style),
-            new _08_Snake(style),
-            new _09_Fish(style),
+        public List<CanvasModel> Canvases = [];
+
+        public Gallery(Style style)
+        {
+            Canvases = CanvasFactories
+                .Select(fact => fact(style))
+                .ToList();
+        }
+
+        public List<Func<Style, CanvasModel>> CanvasFactories = [
+            style => new _01_BouncingBalls(style, new CircleModel(10)),
+            style => new _02_DistanceConstraint(style),
+            style => new _03_MagneticField(style),
+            style => new _04_MagneticMouse(style),
+            style => new _05_MouseFollower(style),
+            style => new _06_Chains(style),
+            style => new _07_AngleConstraint(style),
+            style => new _08_Snake(style),
+            style => new _09_Fish(style),
         ];
     }
 
