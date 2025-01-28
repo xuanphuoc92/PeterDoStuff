@@ -53,7 +53,7 @@ else
     {
         var factory = gallery.CanvasFactories[i];
         var demo = gallery.Canvases[i];
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => OpenCanvasDialog(factory)">@demo.Name</MudButton>
+        <MudButton Class="ma-1" Variant="Variant.Filled" Color="Color.Primary" OnClick="() => OpenCanvasDialog(factory)">@demo.Name</MudButton>
     }
 
     <MudDialog @bind-IsVisible="_dialogVisible" Options="_dialogOptions">
