@@ -184,16 +184,16 @@
             <div class="title"><h1>@Model.Person.Name</h1></div>
             <div class="subtitle">
                 <div class="subtitleItem">
-                    <MudIcon Icon="@Icons.Material.Filled.LocationOn" Class="header-icon" />
+                    <MudIcon Icon="@GeneralIcons.GetDictionary()[Model.LocationIcon]" Class="header-icon" />
                     <span>
-                        Location:
+                        @Model.LocationLabel:
                     </span>
                     <span>
                         @Model.Location
                     </span>
                 </div>
                 <div class="subtitleItem">
-                    <MudIcon Icon="@Icons.Custom.Brands.WhatsApp" Class="header-icon" />
+                    <MudIcon Icon="@GeneralIcons.GetDictionary()[Model.PhoneIcon]" Class="header-icon" />
                     <span>
                         @Model.PhoneLabel:
                     </span>
@@ -202,7 +202,7 @@
                     </span>
                 </div>
                 <div class="subtitleItem">
-                    <MudIcon Icon="@Icons.Material.Filled.Language" Class="header-icon" />
+                    <MudIcon Icon="@GeneralIcons.GetDictionary()[Model.FluencyIcon]" Class="header-icon" />
                     <span>
                         @Model.FluencyLabel:
                     </span>
@@ -211,8 +211,8 @@
                     </span>
                 </div>
                 <div class="subtitleItem">
-                    <MudIcon Icon="@Icons.Material.Filled.Email" Class="header-icon" />
-                    <span>Email:</span>
+                    <MudIcon Icon="@GeneralIcons.GetDictionary()[Model.EmailIcon]" Class="header-icon" />
+                    <span>@Model.EmailLabel:</span>
                     <a href="@($"mailto:{Model.Email}")">
                         @Model.Email
                     </a>
@@ -235,8 +235,8 @@
             <div class="section">
                 <div class="sectionTitle">
                     <h2>
-                        <MudIcon Icon="@Icons.Material.Filled.Person" Class="title-icon" />
-                        About me
+                        <MudIcon Icon="@GeneralIcons.GetDictionary()[Model.AboutMeIcon]" Class="title-icon" />
+                        @Model.AboutMeLabel
                     </h2>
                 </div>
                 <div class="sectionItem">
@@ -253,8 +253,8 @@
             <div class="section">
                 <div class="sectionTitle">
                     <h2>
-                        <MudIcon Icon="@Icons.Material.Filled.Work" Class="title-icon" />
-                        Experience
+                        <MudIcon Icon="@GeneralIcons.GetDictionary()[Model.ExperiencesIcon]" Class="title-icon" />
+                        @Model.ExperiencesLabel
                     </h2>
                 </div>
                 <div class="entitySection">
@@ -295,8 +295,8 @@
             <div class="section">
                 <div class="sectionTitle">
                     <h2>
-                        <MudIcon Icon="@Icons.Material.Filled.School" Class="title-icon" />
-                        Education
+                        <MudIcon Icon="@GeneralIcons.GetDictionary()[Model.EducationsIcon]" Class="title-icon" />
+                        @Model.EducationsLabel
                     </h2>
                 </div>
                 <div class="entitySection">
@@ -348,8 +348,8 @@
         <div class="section">
             <div class="sectionTitle">
                 <h2>
-                    <MudIcon Icon="@Icons.Material.Filled.Build" Class="title-icon" />
-                    Skills
+                    <MudIcon Icon="@GeneralIcons.GetDictionary()[Model.SkillsIcon]" Class="title-icon" />
+                    @Model.SkillsLabel
                 </h2>
             </div>
             @foreach (var groupRef in Model.Skills.GroupBy(skill => skill.Group))
