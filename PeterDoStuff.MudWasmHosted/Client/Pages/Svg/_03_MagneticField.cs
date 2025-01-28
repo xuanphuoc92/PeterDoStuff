@@ -1,4 +1,5 @@
-﻿using PeterDoStuff.Graphics;
+﻿using MudBlazor;
+using PeterDoStuff.Graphics;
 using PeterDoStuff.Graphics.Effects;
 using PeterDoStuff.Graphics.Models;
 
@@ -6,7 +7,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
 {
     public class _03_MagneticField : CanvasModel
     {
-        public _03_MagneticField(Style? style = null) : base(300, 300, style)
+        public _03_MagneticField(int width, int height, Style? style = null) : base(width, height, style)
         {
             Name = "Magnetic Field";
 

@@ -10,20 +10,20 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
         public Gallery(Style style)
         {
             Canvases = CanvasFactories
-                .Select(fact => fact(style))
+                .Select(fact => fact(300, 300, style))
                 .ToList();
         }
 
-        public List<Func<Style, CanvasModel>> CanvasFactories = [
-            style => new _01_BouncingBalls(style, new CircleModel(10)),
-            style => new _02_DistanceConstraint(style),
-            style => new _03_MagneticField(style),
-            style => new _04_MagneticMouse(style),
-            style => new _05_MouseFollower(style),
-            style => new _06_Chains(style),
-            style => new _07_AngleConstraint(style),
-            style => new _08_Snake(style),
-            style => new _09_Fish(style),
+        public List<Func<int, int, Style, CanvasModel>> CanvasFactories = [
+            (width, height, style) => new _01_BouncingBalls(width, height, style, new CircleModel(10)),
+            (width, height, style) => new _02_DistanceConstraint(width, height, style),
+            (width, height, style) => new _03_MagneticField(width, height, style),
+            (width, height, style) => new _04_MagneticMouse(width, height, style),
+            (width, height, style) => new _05_MouseFollower(width, height, style),
+            (width, height, style) => new _06_Chains(width, height, style),
+            (width, height, style) => new _07_AngleConstraint(width, height, style),
+            (width, height, style) => new _08_Snake(width, height, style),
+            (width, height, style) => new _09_Fish(width, height, style),
         ];
     }
 

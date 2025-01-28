@@ -8,7 +8,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
 {
     public class _06_Chains : CanvasModel
     {
-        public _06_Chains(Style? style = null) : base(300, 300, style)
+        public _06_Chains(int width, int height, Style? style = null) : base(width, height, style)
         {
             Name = "Chains";
 

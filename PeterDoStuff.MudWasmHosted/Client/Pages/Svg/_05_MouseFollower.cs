@@ -5,7 +5,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
 {
     public class _05_MouseFollower : CanvasModel
     {
-        public _05_MouseFollower(Style? style = null, Model? mouse = null) : base(300, 300, style, mouse)
+        public _05_MouseFollower(int width, int height, Style? style = null, Model? mouse = null) : base(width, height, style, mouse)
         {
             Name = "Mouse Follower";
 

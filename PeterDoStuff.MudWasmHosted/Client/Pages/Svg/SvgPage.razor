@@ -100,10 +100,10 @@ else
         await base.OnAfterRenderAsync(firstRender);
     }
 
-    private void OpenCanvasDialog(Func<Style, CanvasModel> factory)
+    private void OpenCanvasDialog(Func<int, int, Style, CanvasModel> factory)
     {
         _dialogVisible = true;
-        _dialogCanvas = factory(style);
+        _dialogCanvas = factory(_width - 100, _height -100, style);
         InvokeAsync(StateHasChanged);
     }
 

@@ -1,4 +1,5 @@
-﻿using PeterDoStuff.Graphics;
+﻿using MudBlazor;
+using PeterDoStuff.Graphics;
 using PeterDoStuff.Graphics.Effects;
 using PeterDoStuff.Graphics.Models;
 
@@ -6,7 +7,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
 {
     public class _01_BouncingBalls : CanvasModel
     {
-        public _01_BouncingBalls(Style? style = null, Model? mouse = null) : base(300, 300, style, mouse)
+        public _01_BouncingBalls(int width, int height, Style? style = null, Model? mouse = null) : base(width, height, style, mouse)
         {
             Name = "Bouncing Balls";
 

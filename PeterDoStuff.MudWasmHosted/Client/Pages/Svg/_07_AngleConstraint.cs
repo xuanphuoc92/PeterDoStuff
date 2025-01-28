@@ -6,7 +6,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
 {
     public class _07_AngleConstraint : CanvasModel
     {
-        public _07_AngleConstraint(Style? style = null, Model? mouse = null) : base(300, 300, style, mouse)
+        public _07_AngleConstraint(int width, int height, Style? style = null, Model? mouse = null) : base(width, height, style, mouse)
         {
             Name = "Angle Constraint";
 

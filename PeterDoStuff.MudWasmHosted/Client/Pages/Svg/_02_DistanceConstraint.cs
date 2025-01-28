@@ -1,4 +1,5 @@
-﻿using PeterDoStuff.Graphics;
+﻿using MudBlazor;
+using PeterDoStuff.Graphics;
 using PeterDoStuff.Graphics.Effects;
 using PeterDoStuff.Graphics.Models;
 
@@ -6,7 +7,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
 {
     public class _02_DistanceConstraint : CanvasModel
     {
-        public _02_DistanceConstraint(Style? style = null) : base(300, 300, style)
+        public _02_DistanceConstraint(int width, int height, Style? style = null) : base(width, height, style)
         {
             Name = "Distance Constraint";
 

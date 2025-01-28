@@ -1,12 +1,13 @@
 ﻿using PeterDoStuff.Graphics;
 using PeterDoStuff.Graphics.Models;
 using PeterDoStuff.Graphics.Effects;
+using MudBlazor;
 
 namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
 {
     public class _04_MagneticMouse : CanvasModel
     {
-        public _04_MagneticMouse(Style? style = null) : base(300, 300, style)
+        public _04_MagneticMouse(int width, int height, Style? style = null) : base(width, height, style)
         {
             Name = "Magnetic Mouse";
 
@@ -17,8 +18,8 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
             pointer.Apply(new Follow(Mouse, 250));
 
             var anchor = new CircleModel(50);
-            anchor.X = 150;
-            anchor.Y = 150;
+            anchor.X = width / 2;
+            anchor.Y = height / 2;
             AddAndStyle(anchor);
 
             var arrow = new Arrow(15, 150, 150);

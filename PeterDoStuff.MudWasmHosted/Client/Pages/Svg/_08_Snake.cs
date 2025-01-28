@@ -6,7 +6,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
 {
     public class _08_Snake : CanvasModel
     {
-        public _08_Snake(Style? style = null, Model? mouse = null) : base(300, 300, style, mouse)
+        public _08_Snake(int width, int height, Style? style = null, Model? mouse = null) : base(width, height, style, mouse)
         {
             Name = "Snake";
 
