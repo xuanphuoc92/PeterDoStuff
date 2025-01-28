@@ -5,7 +5,6 @@
 @implements IBrowserViewportObserver
 @implements IAsyncDisposable
 
-
 <PlaygroundTitle Page="svg" />
 
 <MudText>
@@ -108,7 +107,7 @@ else
     }
 
     private Gallery gallery;
-    private CanvasModel canvas;
+    // private CanvasModel canvas;
     private bool showAll;
     int pageStart = 0;
     int pageItems = 6;
@@ -140,15 +139,15 @@ else
     {
         base.OnInitialized();
         gallery = new(style);
-        canvas = gallery.Canvases.Last();
+        // canvas = gallery.Canvases.Last();
         timer = new (Tick, null, 0, 10);
     }
 
     private void Reset()
     {
-        int currentIndex = gallery.Canvases.IndexOf(canvas);
+        // int currentIndex = gallery.Canvases.IndexOf(canvas);
         gallery = new(style);
-        canvas = gallery.Canvases[currentIndex];
+        // canvas = gallery.Canvases[currentIndex];
         InvokeAsync(StateHasChanged);
     }
 
@@ -157,11 +156,10 @@ else
         if (showAll)
             foreach (var demo in gallery.Canvases)
                 InvokeAsync(() => demo.Resolve());
-        else
+        else if (_dialogCanvas != null)
         {
-            InvokeAsync(() => canvas.Resolve());
-            if (_dialogCanvas != null)
-                InvokeAsync(() => _dialogCanvas.Resolve());
+            // InvokeAsync(() => canvas.Resolve());
+            InvokeAsync(() => _dialogCanvas.Resolve());
         }
         InvokeAsync(StateHasChanged);
     }
