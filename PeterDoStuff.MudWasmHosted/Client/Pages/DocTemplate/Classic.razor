@@ -67,13 +67,13 @@
         </div>
         <div class="d-flex justify-center align-center flex-grow-1 gap-4">
             |
-            <MudIcon Icon="@Icons.Material.Filled.LocationOn" Size="Size.Small" /> @Model.Location
+            <MudIcon Icon="@GeneralIcons.GetDictionary()[Model.LocationIcon]" Size="Size.Small" /> @Model.Location
             |
-            <MudIcon Icon="@Icons.Custom.Brands.WhatsApp" Size="Size.Small" /> @Model.PhoneNumber
+            <MudIcon Icon="@GeneralIcons.GetDictionary()[Model.PhoneIcon]" Size="Size.Small" /> @Model.PhoneNumber
             |
-            <MudIcon Icon="@Icons.Material.Filled.Language" Size="Size.Small" /> @Model.Fluency
+            <MudIcon Icon="@GeneralIcons.GetDictionary()[Model.FluencyIcon]" Size="Size.Small" /> @Model.Fluency
             |
-            <MudIcon Icon="@Icons.Material.Filled.Email" Size="Size.Small" /> 
+            <MudIcon Icon="@GeneralIcons.GetDictionary()[Model.EmailIcon]" Size="Size.Small" />
             <a href="@($"mailto:{Model.Email}")">
                 @Model.Email
             </a>
@@ -93,8 +93,8 @@
         </div>
         <MudDivider Class="my-2"/>
         <h2 class="d-flex align-center flex-grow-1 gap-4">
-            <MudIcon Icon="@Icons.Material.Filled.Person" Size="Size.Small" />
-            About me
+            <MudIcon Icon="@GeneralIcons.GetDictionary()[Model.AboutMeIcon]" Size="Size.Small" />
+            @Model.AboutMeLabel
         </h2>
         @foreach (var paragraphRef in Model.AboutMe.ToParagraphs())
         {
@@ -103,8 +103,8 @@
         }
         <MudDivider Class="my-2" />
         <h2 class="d-flex align-center flex-grow-1 gap-4">
-            <MudIcon Icon="@Icons.Material.Filled.Work" Size="Size.Small" />
-            Experience
+            <MudIcon Icon="@GeneralIcons.GetDictionary()[Model.ExperiencesIcon]" Size="Size.Small" />
+            @Model.ExperiencesLabel
         </h2>
         @foreach (var experienceRef in Model.Experiences)
         {
@@ -130,8 +130,8 @@
         }
         <MudDivider Class="my-2" />
         <h2 class="d-flex align-center flex-grow-1 gap-4">
-            <MudIcon Icon="@Icons.Material.Filled.School" Size="Size.Small" />
-            Education
+            <MudIcon Icon="@GeneralIcons.GetDictionary()[Model.EducationsIcon]" Size="Size.Small" />
+            @Model.EducationsLabel
         </h2>
         @foreach (var educationRef in Model.Educations)
         {
@@ -153,8 +153,8 @@
         }
         <MudDivider Class="my-2" />
         <h2 class="d-flex align-center flex-grow-1 gap-4">
-            <MudIcon Icon="@Icons.Material.Filled.Build" Size="Size.Small" />
-            Skills
+            <MudIcon Icon="@GeneralIcons.GetDictionary()[Model.SkillsIcon]" Size="Size.Small" />
+            @Model.SkillsLabel
         </h2>
         @foreach (var groupRef in Model.Skills.GroupBy(skill => skill.Group))
         {
