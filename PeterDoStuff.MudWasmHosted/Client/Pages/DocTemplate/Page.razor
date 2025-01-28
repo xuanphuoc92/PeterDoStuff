@@ -29,6 +29,11 @@
                     </MudButton>
                 </ButtonTemplate>
             </MudFileUpload>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.CleaningServices"
+                       OnClick="ClearProfile">
+                Clear Profile
+            </MudButton>
         </div>
     </MudItem>
     <MudItem xs="12" md="6">
@@ -117,7 +122,8 @@
             </MudItem>
         </MudGrid>
     }
-    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.AddCircleOutline"
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-2"
+               StartIcon="@Icons.Material.Filled.AddCircleOutline"
                OnClick="() => model.Links.Add(new())">Link</MudButton>
 
     <MudGrid>
@@ -176,12 +182,14 @@
                         </MudItem>
                     </MudGrid>
                 }
-                <MudIconButton Variant="Variant.Filled" Color="Color.Primary" Icon="@Icons.Material.Filled.Add"
+                <MudIconButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-2"
+                    Icon="@Icons.Material.Filled.Add"
                     OnClick="() => experience.Items.Add(new())" />
             </MudItem>
         </MudGrid>
     }
-    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.AddCircleOutline" 
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-2"
+        StartIcon="@Icons.Material.Filled.AddCircleOutline" 
         OnClick="() => model.Experiences.Add(new())">Experience</MudButton>
 
     <MudGrid>
@@ -226,7 +234,8 @@
             </MudItem>
         </MudGrid>
     }
-    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.AddCircleOutline"
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-2"
+        StartIcon="@Icons.Material.Filled.AddCircleOutline"
         OnClick="() => model.Educations.Add(new())">Education</MudButton>
 
     <MudText Class="mt-4">Skill Levels</MudText>
@@ -273,7 +282,8 @@
             </MudItem>
         </MudGrid>
     }
-    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.AddCircleOutline"
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-2"
+        StartIcon="@Icons.Material.Filled.AddCircleOutline"
         OnClick="() => model.Skills.Add(new())">Skill</MudButton>
 </EditForm>
 
@@ -297,6 +307,11 @@
         using StreamReader reader = new StreamReader(inputFileStream, Encoding.UTF8);
         string json = reader.ReadToEnd();
         model = json.FromJson<Resume>();
+    }
+
+    private void ClearProfile()
+    {
+        model = new();
     }
 
     private Task OpenCustom1() => OpenTemplate("custom1");
