@@ -6,16 +6,7 @@
                       @bind-Value="Link.Label" For="@(() => Link.Label)" />
     </MudItem>
     <MudItem xs="6" md="2">
-        <MudSelect Variant="Variant.Outlined" @bind-Value="Link.Icon">
-            @foreach (var kv in LinkIcons.GetDictionary())
-            {
-                var key = kv.Key;
-                var value = kv.Value;
-                <MudSelectItem Value="key">
-                    <MudIcon Icon="@value" />
-                </MudSelectItem>
-            }
-        </MudSelect>
+        <IconSelectControl @bind-Value="Link.Icon" IconDictionary="LinkIcons.GetDictionary()"/>
     </MudItem>
     <MudItem xs="6" md="4">
         <MudTextField Variant="Variant.Outlined"

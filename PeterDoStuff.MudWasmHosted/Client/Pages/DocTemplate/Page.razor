@@ -119,11 +119,28 @@
     }
     <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.AddCircleOutline"
                OnClick="() => model.Links.Add(new())">Link</MudButton>
-    <MudTextField Variant="Variant.Outlined" Label="AboutMe" 
-        Lines="10"
-        @bind-Value="model.AboutMe" For="@(() => model.AboutMe)" />
+
+    <MudGrid>
+        <MudItem xs="3" md="1">
+            <IconSelectControl @bind-Value="model.AboutMeIcon" IconDictionary="GeneralIcons.GetDictionary()" />
+        </MudItem>
+        <MudItem xs="9" md="2">
+            <MudTextField Variant="Variant.Outlined" @bind-Value="model.AboutMeLabel" For="@(() => model.AboutMeLabel)" />
+        </MudItem>
+        <MudItem xs="12" md="9">
+            <MudTextField Variant="Variant.Outlined" Label="AboutMe-Value"
+                          Lines="10"
+                          @bind-Value="model.AboutMe" For="@(() => model.AboutMe)" />
+        </MudItem>
+
+        <MudItem xs="3" md="1">
+            <IconSelectControl @bind-Value="model.ExperiencesIcon" IconDictionary="GeneralIcons.GetDictionary()" />
+        </MudItem>
+        <MudItem xs="9" md="11">
+            <MudTextField Variant="Variant.Outlined" @bind-Value="model.ExperiencesLabel" For="@(() => model.ExperiencesLabel)" />
+        </MudItem>
+    </MudGrid>
     
-    <MudText Class="mt-4">Experiences</MudText>
     @for (int i = 0; i < model.Experiences.Count; i++)
     {
         var experience = model.Experiences[i];
@@ -167,7 +184,15 @@
     <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.AddCircleOutline" 
         OnClick="() => model.Experiences.Add(new())">Experience</MudButton>
 
-    <MudText Class="mt-4">Education</MudText>
+    <MudGrid>
+        <MudItem xs="3" md="1">
+            <IconSelectControl @bind-Value="model.EducationsIcon" IconDictionary="GeneralIcons.GetDictionary()" />
+        </MudItem>
+        <MudItem xs="9" md="11">
+            <MudTextField Variant="Variant.Outlined" @bind-Value="model.EducationsLabel" For="@(() => model.EducationsLabel)" />
+        </MudItem>
+    </MudGrid>
+
     @for (int i = 0; i < model.Educations.Count; i++)
     {
         var education = model.Educations[i];
@@ -220,7 +245,14 @@
         </MudGrid>
     }
 
-    <MudText Class="mt-4">Skills</MudText>
+    <MudGrid>
+        <MudItem xs="3" md="1">
+            <IconSelectControl @bind-Value="model.SkillsIcon" IconDictionary="GeneralIcons.GetDictionary()" />
+        </MudItem>
+        <MudItem xs="9" md="11">
+            <MudTextField Variant="Variant.Outlined" @bind-Value="model.SkillsLabel" For="@(() => model.SkillsLabel)" />
+        </MudItem>
+    </MudGrid>
     @for (int i = 0; i < model.Skills.Count; i++)
     {
         var level = i;
