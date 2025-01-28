@@ -83,7 +83,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate
             public string Fluency { get; set; }
 
             public string EmailIcon { get; set; } = nameof(GeneralIcons.Email);
-            public string EmailLabel { get; set; }
+            public string EmailLabel { get; set; } = "Email";
             public string Email { get; set; }
 
             public List<Link> Links { get; set; } = [];
@@ -146,7 +146,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate
             private static Dictionary<string, string> _iconDict = null;
             public static Dictionary<string, string> GetDictionary()
             {
-                _iconDict ??= typeof(LinkIcons).GenerateIconDictionary();
+                _iconDict ??= typeof(GeneralIcons).GenerateIconDictionary();
                 return _iconDict;
             }
 

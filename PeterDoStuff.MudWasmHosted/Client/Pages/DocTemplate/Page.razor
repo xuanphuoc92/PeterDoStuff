@@ -58,37 +58,62 @@
 <EditForm Model="@model">
     <EntityControl Entity="@model.Person" />
     <MudDivider Class="my-4"/>
-    <MudTextField Variant="Variant.Outlined" Label="Location" @bind-Value="model.Location" For="@(() => model.Location)" />
     <MudGrid>
-        <MudItem xs="6" sm="2">
+        <MudItem xs="3" md="1">
+            <IconSelectControl @bind-Value="model.LocationIcon" IconDictionary="GeneralIcons.GetDictionary()" />
+        </MudItem>
+        <MudItem xs="9" md="2">
+            <MudTextField Variant="Variant.Outlined" @bind-Value="model.LocationLabel" For="@(() => model.LocationLabel)" />
+        </MudItem>
+        <MudItem xs="12" md="9">
+            <MudTextField Variant="Variant.Outlined" @bind-Value="model.Location" For="@(() => model.Location)" />
+        </MudItem>
+
+        <MudItem xs="3" md="1">
+            <IconSelectControl @bind-Value="model.PhoneIcon" IconDictionary="GeneralIcons.GetDictionary()" />
+        </MudItem>
+        <MudItem xs="9" md="2">
             <MudTextField Variant="Variant.Outlined" @bind-Value="model.PhoneLabel" For="@(() => model.PhoneLabel)" />
         </MudItem>
-        <MudItem xs="6" sm="10">
+        <MudItem xs="12" md="9">
             <MudTextField Variant="Variant.Outlined" @bind-Value="model.PhoneNumber" For="@(() => model.PhoneNumber)" />
         </MudItem>
-        <MudItem xs="6" sm="2">
+
+        <MudItem xs="3" md="1">
+            <IconSelectControl @bind-Value="model.FluencyIcon" IconDictionary="GeneralIcons.GetDictionary()" />
+        </MudItem>
+        <MudItem xs="9" md="2">
             <MudTextField Variant="Variant.Outlined" @bind-Value="model.FluencyLabel" For="@(() => model.FluencyLabel)" />
         </MudItem>
-        <MudItem xs="6" sm="10">
+        <MudItem xs="12" md="9">
             <MudTextField Variant="Variant.Outlined" @bind-Value="model.Fluency" For="@(() => model.Fluency)" />
         </MudItem>
+
+        <MudItem xs="3" md="1">
+            <IconSelectControl @bind-Value="model.EmailIcon" IconDictionary="GeneralIcons.GetDictionary()" />
+        </MudItem>
+        <MudItem xs="9" md="2">
+            <MudTextField Variant="Variant.Outlined" @bind-Value="model.EmailLabel" For="@(() => model.EmailLabel)" />
+        </MudItem>
+        <MudItem xs="12" md="9">
+            <MudTextField Variant="Variant.Outlined" @bind-Value="model.Email" For="@(() => model.Email)" />
+        </MudItem>
     </MudGrid>
-    <MudTextField Variant="Variant.Outlined" Label="Email" @bind-Value="model.Email" For="@(() => model.Email)" />
     <MudText Class="mt-4">Links</MudText>
     @for(int i = 0; i < model.Links.Count; i++)
     {
-        var otherLink = model.Links[i];
+        var link = model.Links[i];
         <MudGrid>
             <MudItem xs="12" md="2">
                 <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete"
-                               OnClick="() => model.Links.Remove(otherLink)"></MudIconButton>
+                               OnClick="() => model.Links.Remove(link)"></MudIconButton>
                 <MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.ArrowCircleUp"
-                               OnClick="() => model.Links.MoveUp(otherLink)"></MudIconButton>
+                               OnClick="() => model.Links.MoveUp(link)"></MudIconButton>
                 <MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.ArrowCircleDown"
-                               OnClick="() => model.Links.MoveDown(otherLink)"></MudIconButton>
+                               OnClick="() => model.Links.MoveDown(link)"></MudIconButton>
             </MudItem>
             <MudItem xs="12" md="10">
-                <LinkControl Link="@otherLink" />
+                <LinkControl Link="@link" />
             </MudItem>
         </MudGrid>
     }
