@@ -3,7 +3,9 @@
 @using static PeterDoStuff.MudWasmHosted.Client.Pages.Estimator.Controller
 
 <PlaygroundTitle Page="estimator" />
-
+<MudScrollToTop>
+    <MudFab Color="Color.Tertiary" StartIcon="@Icons.Material.Filled.ArrowCircleUp" />
+</MudScrollToTop>
 <EditForm Model="@Project">
     <MudGrid>
         <MudItem xs="12">
