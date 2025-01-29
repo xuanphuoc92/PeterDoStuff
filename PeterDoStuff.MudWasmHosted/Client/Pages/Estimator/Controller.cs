@@ -30,6 +30,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
 
             public FixedEstimate FixedEstimate { get; set; } = new();
             public ThreePointEstimate ThreePointEstimate { get; set; } = new();
+            public PercentageEstimate PercentageEstimate { get; set; } = new();
         }
 
         public enum EstimateType 
@@ -48,6 +49,12 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
             public decimal Best { get; set; }
             public decimal Likely { get; set; }
             public decimal Worst { get; set; }
+        }
+
+        public class PercentageEstimate
+        {
+            public decimal Percentage { get; set; }
+            public int GroupIndex { get; set; } = -1;
         }
     }
 }

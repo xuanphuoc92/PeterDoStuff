@@ -40,7 +40,7 @@
                             <MudTextField Label="Task Description" Lines="3" Variant="Variant.Outlined" @bind-Value="task.Description" For="@(() => task.Description)"></MudTextField>
                         </MudItem>
                         <MudItem xs="12">
-                            <MudSelect Variant="Variant.Outlined" @bind-Value="task.EstimateType">
+                            <MudSelect Variant="Variant.Outlined" Label="Estimate Type" @bind-Value="task.EstimateType">
                                 @for (int k = 0; k < EstimateTypes.Length; k++)
                                 {
                                     var value = EstimateTypes[k];
@@ -70,6 +70,30 @@
                             </MudItem>
                             <MudItem xs="4">
                                 <MudNumericField @bind-Value="task.ThreePointEstimate.Worst" Label="Worst (b)" Variant="Variant.Outlined" Step=".5M" />
+                            </MudItem>
+                        }
+                        @if (task.EstimateType == EstimateType.Percentage)
+                        {
+                            <MudItem xs="3">
+                                <MudNumericField @bind-Value="task.PercentageEstimate.Percentage" Variant="Variant.Outlined" Step="5M" />
+                            </MudItem>
+                            <MudItem xs="3" Class="d-flex align-center">
+                                <MudText>% of</MudText>
+                            </MudItem>
+                            <MudItem xs="6">
+                                <MudSelect Variant="Variant.Outlined" @bind-Value="task.PercentageEstimate.GroupIndex"> 
+                                    <MudSelectItem Value="-1">
+                                        <MudText>None</MudText>
+                                    </MudSelectItem>
+                                    @for (int k = 0; k < Project.Groups.Count; k++)
+                                    {
+                                        var value = k;
+                                        var group = Project.Groups[k];
+                                        <MudSelectItem Value="value">
+                                            <MudText>@group.Name</MudText>
+                                        </MudSelectItem>
+                                    }
+                                </MudSelect>
                             </MudItem>
                         }
                     }
