@@ -21,6 +21,7 @@ namespace PeterDoStuff.MudWasmHosted.Client
 
         public static readonly List<PlaygroundItem> Items = new List<PlaygroundItem>()
         {
+            new(PlaygroundGroup.Tools, "estimator", Icons.Material.Filled.Balance, "Estimator", "This page demonstrates the tools to support Estimating."),
             new(PlaygroundGroup.Tools, "schemaTools", Icons.Material.Filled.Schema, "Schema Tools", "This page demonstrates the tools for schema designing."),
             new(PlaygroundGroup.Demos, "svg", @Icons.Custom.Uncategorized.Fish, "SVG", "This page demonstrates SVG rendering and animations."),
             new(PlaygroundGroup.Demos, "whatsapp", Icons.Custom.Brands.WhatsApp, "Chat on WhatsApp", "This page demonstrates WhatsApp How to use click to chat."),
