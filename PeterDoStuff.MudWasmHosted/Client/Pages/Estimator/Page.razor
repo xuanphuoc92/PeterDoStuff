@@ -6,111 +6,143 @@
 <MudScrollToTop>
     <MudFab Color="Color.Tertiary" StartIcon="@Icons.Material.Filled.ArrowCircleUp" />
 </MudScrollToTop>
-<EditForm Model="@Project">
-    <MudGrid>
-        <MudItem xs="12">
-            <MudTextField Label="Project Name" Variant="Variant.Outlined" @bind-Value="Project.Name" For="@(() => Project.Name)"></MudTextField>
-        </MudItem>
-        @for (int i = 0; i < Project.Groups.Count; i++)
-        {
-            var groupIndex = i;
-            var group = Project.Groups[i];
-            <MudItem xs="12" md="1">
-                <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete"
-                               OnClick="() => Project.Groups.Remove(group)"></MudIconButton>
+
+<MudButton Variant="Variant.Filled" OnClick="SwitchMode">
+    @(ViewMode ? "Edit" : "Calculate")
+</MudButton>
+
+@if (ViewMode)
+{
+    <MudText Typo="Typo.h5">@Project.Name</MudText>
+    @for (int i = 0; i < Project.Groups.Count; i++)
+    {
+        var group = Project.Groups[i];
+        <MudText Typo="Typo.h6">
+            @group.Name
+        </MudText>
+        <MudTable Items="group.Tasks" Hover="true" Breakpoint="Breakpoint.Xs">
+            <HeaderContent>
+                <MudTh>Task</MudTh>
+                <MudTh>Average (E)</MudTh>
+                <MudTh>Standard Deviation (SD)</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Task">@context.Description</MudTd>
+                <MudTd DataLabel="Average (E)">@context.ExpectedAverage</MudTd>
+                <MudTd DataLabel="Error (SD)">@context.StandardDeviation</MudTd>
+            </RowTemplate>
+        </MudTable>
+    }
+}
+else
+{
+    <EditForm Model="@Project">
+        <MudGrid>
+            <MudItem xs="12">
+                <MudTextField Label="Project Name" Variant="Variant.Outlined" @bind-Value="Project.Name" For="@(() => Project.Name)"></MudTextField>
             </MudItem>
-            <MudItem xs="12" md="11">
-                <MudGrid>
-                    <MudItem xs="12">
-                        <MudTextField Label="Group Name" Variant="Variant.Outlined" @bind-Value="group.Name" For="@(() => group.Name)"></MudTextField>
-                    </MudItem>
-                    @for (int j = 0; j < group.Tasks.Count; j++)
-                    {
-                        var task = group.Tasks[j];
-                        <MudItem xs="6" md="3">
-                            <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete"
-                                           OnClick="() => group.Tasks.Remove(task)"></MudIconButton>
-                            <MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.ArrowCircleUp"
-                                           OnClick="() => group.Tasks.MoveUp(task)"></MudIconButton>
-                            <MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.ArrowCircleDown"
-                                           OnClick="() => group.Tasks.MoveDown(task)"></MudIconButton>
-                        </MudItem>
-                        <MudItem xs="6" md="9">
-                            <MudTextField Label="Task Description" Lines="3" Variant="Variant.Outlined" @bind-Value="task.Description" For="@(() => task.Description)"></MudTextField>
-                        </MudItem>
+            @for (int i = 0; i < Project.Groups.Count; i++)
+            {
+                var groupIndex = i;
+                var group = Project.Groups[i];
+                <MudItem xs="12" md="1">
+                    <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete"
+                                   OnClick="() => Project.Groups.Remove(group)"></MudIconButton>
+                </MudItem>
+                <MudItem xs="12" md="11">
+                    <MudGrid>
                         <MudItem xs="12">
-                            <MudSelect Variant="Variant.Outlined" Label="Estimate Type" @bind-Value="task.EstimateType">
-                                @{
-                                    var typesToSelect = groupIndex == 0 ? EstimateTypesWithoutPercentage : EstimateTypes;
-                                }
-                                @for (int k = 0; k < typesToSelect.Length; k++)
-                                {
-                                    var value = typesToSelect[k];
-                                    var text = value.ToString();
-                                    <MudSelectItem Value="value">
-                                        <MudText>@text</MudText>
-                                    </MudSelectItem>
-                                }
-                            </MudSelect>
+                            <MudTextField Label="Group Name" Variant="Variant.Outlined" @bind-Value="group.Name" For="@(() => group.Name)"></MudTextField>
                         </MudItem>
-                        @if (task.EstimateType == EstimateType.Fixed)
+                        @for (int j = 0; j < group.Tasks.Count; j++)
                         {
-                            <MudItem xs="6">
-                                <MudNumericField @bind-Value="task.FixedEstimate.Value" Label="Value" Variant="Variant.Outlined" Step=".5M" />
+                            var task = group.Tasks[j];
+                            <MudItem xs="6" md="3">
+                                <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete"
+                                               OnClick="() => group.Tasks.Remove(task)"></MudIconButton>
+                                <MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.ArrowCircleUp"
+                                               OnClick="() => group.Tasks.MoveUp(task)"></MudIconButton>
+                                <MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.ArrowCircleDown"
+                                               OnClick="() => group.Tasks.MoveDown(task)"></MudIconButton>
                             </MudItem>
-                            <MudItem xs="6">
-                                <MudNumericField @bind-Value="task.FixedEstimate.Error" Label="Error" Variant="Variant.Outlined" Step=".1M" />
+                            <MudItem xs="6" md="9">
+                                <MudTextField Label="Task Description" Lines="3" Variant="Variant.Outlined" @bind-Value="task.Description" For="@(() => task.Description)"></MudTextField>
                             </MudItem>
-                        }
-                        @if (task.EstimateType == EstimateType.ThreePoint)
-                        {
-                            <MudItem xs="4">
-                                <MudNumericField @bind-Value="task.ThreePointEstimate.Best" Label="Best (a)" Variant="Variant.Outlined" Step=".5M" />
-                            </MudItem>
-                            <MudItem xs="4">
-                                <MudNumericField @bind-Value="task.ThreePointEstimate.Likely" Label="Likely (m)" Variant="Variant.Outlined" Step=".5M" />
-                            </MudItem>
-                            <MudItem xs="4">
-                                <MudNumericField @bind-Value="task.ThreePointEstimate.Worst" Label="Worst (b)" Variant="Variant.Outlined" Step=".5M" />
-                            </MudItem>
-                        }
-                        @if (task.EstimateType == EstimateType.Percentage)
-                        {
-                            <MudItem xs="3">
-                                <MudNumericField @bind-Value="task.PercentageEstimate.Percentage" Variant="Variant.Outlined" Step="5M" />
-                            </MudItem>
-                            <MudItem xs="3" Class="d-flex align-center">
-                                <MudText>% of</MudText>
-                            </MudItem>
-                            <MudItem xs="6">
-                                <MudSelect Variant="Variant.Outlined" @bind-Value="task.PercentageEstimate.GroupIndex"> 
-                                    @for (int k = 0; k < groupIndex; k++)
+                            <MudItem xs="12">
+                                <MudSelect Variant="Variant.Outlined" Label="Estimate Type" @bind-Value="task.EstimateType">
+                                    @{
+                                        var typesToSelect = groupIndex == 0 ? EstimateTypesWithoutPercentage : EstimateTypes;
+                                    }
+                                    @for (int k = 0; k < typesToSelect.Length; k++)
                                     {
-                                        var value = k;
-                                        var group = Project.Groups[k];
+                                        var value = typesToSelect[k];
+                                        var text = value.ToString();
                                         <MudSelectItem Value="value">
-                                            <MudText>@group.Name</MudText>
+                                            <MudText>@text</MudText>
                                         </MudSelectItem>
                                     }
                                 </MudSelect>
                             </MudItem>
+                            @if (task.EstimateType == EstimateType.Fixed)
+                            {
+                                <MudItem xs="6">
+                                    <MudNumericField @bind-Value="task.FixedEstimate.Value" Label="Value" Variant="Variant.Outlined" Step=".5M" />
+                                </MudItem>
+                                <MudItem xs="6">
+                                    <MudNumericField @bind-Value="task.FixedEstimate.Error" Label="Error" Variant="Variant.Outlined" Step=".1M" />
+                                </MudItem>
+                            }
+                            @if (task.EstimateType == EstimateType.ThreePoint)
+                            {
+                                <MudItem xs="4">
+                                    <MudNumericField @bind-Value="task.ThreePointEstimate.Best" Label="Best (a)" Variant="Variant.Outlined" Step=".5M" />
+                                </MudItem>
+                                <MudItem xs="4">
+                                    <MudNumericField @bind-Value="task.ThreePointEstimate.Likely" Label="Likely (m)" Variant="Variant.Outlined" Step=".5M" />
+                                </MudItem>
+                                <MudItem xs="4">
+                                    <MudNumericField @bind-Value="task.ThreePointEstimate.Worst" Label="Worst (b)" Variant="Variant.Outlined" Step=".5M" />
+                                </MudItem>
+                            }
+                            @if (task.EstimateType == EstimateType.Percentage)
+                            {
+                                <MudItem xs="3">
+                                    <MudNumericField @bind-Value="task.PercentageEstimate.Percentage" Variant="Variant.Outlined" Step="5M" />
+                                </MudItem>
+                                <MudItem xs="3" Class="d-flex align-center">
+                                    <MudText>% of</MudText>
+                                </MudItem>
+                                <MudItem xs="6">
+                                    <MudSelect Variant="Variant.Outlined" @bind-Value="task.PercentageEstimate.GroupIndex">
+                                        @for (int k = 0; k < groupIndex; k++)
+                                        {
+                                            var value = k;
+                                            var group = Project.Groups[k];
+                                            <MudSelectItem Value="value">
+                                                <MudText>@group.Name</MudText>
+                                            </MudSelectItem>
+                                        }
+                                    </MudSelect>
+                                </MudItem>
+                            }
                         }
-                    }
-                    <MudItem xs="12">
-                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-2"
-                                   StartIcon="@Icons.Material.Filled.Add"
-                                   OnClick="() => group.Tasks.Add(new(group.Tasks.Count + 1))">Task</MudButton>
-                    </MudItem>
-                </MudGrid>
+                        <MudItem xs="12">
+                            <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-2"
+                                       StartIcon="@Icons.Material.Filled.Add"
+                                       OnClick="() => group.Tasks.Add(new(group.Tasks.Count + 1))">Task</MudButton>
+                        </MudItem>
+                    </MudGrid>
+                </MudItem>
+            }
+            <MudItem xs="12">
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-2"
+                           StartIcon="@Icons.Material.Filled.Add"
+                           OnClick="() => Project.Groups.Add(new(Project.Groups.Count + 1))">Group</MudButton>
             </MudItem>
-        }
-        <MudItem xs="12">
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-2"
-                       StartIcon="@Icons.Material.Filled.Add"
-                       OnClick="() => Project.Groups.Add(new(Project.Groups.Count + 1))">Group</MudButton>
-        </MudItem>
-    </MudGrid>    
-</EditForm>
+        </MudGrid>
+    </EditForm>
+}
+
 
 
 
@@ -121,8 +153,17 @@
         = Enum.GetValues(typeof(EstimateType)).Cast<EstimateType>()
         .ToArray();
 
-    private readonly EstimateType[] EstimateTypesWithoutPercentage 
+    private readonly EstimateType[] EstimateTypesWithoutPercentage
         = Enum.GetValues(typeof(EstimateType)).Cast<EstimateType>()
         .Where(et => et != EstimateType.Percentage)
         .ToArray();
+
+    private bool ViewMode = false;
+
+    private void SwitchMode()
+    {
+        ViewMode = !ViewMode;
+        if (ViewMode == true)
+            Project.Calculate(Project);
+    }
 }
