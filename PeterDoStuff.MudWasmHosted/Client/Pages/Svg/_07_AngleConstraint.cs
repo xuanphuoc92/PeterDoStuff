@@ -10,14 +10,15 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
         {
             Name = "Angle Constraint";
 
-            var spine = new Chain(24, 15, i => CreateJoint(i), 45);
+            var spine = new Chain(50, 15, i => CreateJoint(i), 45);
             spine.Head.Apply(new Follow(Mouse, 250));
             Add(spine);
         }
 
         private CircleModel CreateJoint(int i)
         {
-            var joint = new CircleModel(16 - i*0.5);
+            var size = 16 - (i * 0.24);
+            var joint = new CircleModel(size);
             joint.Style = Style.Clone();
             joint.Style.StrokeWidth = 2;
             //joint.Style.StrokeOpacity = 0.2;

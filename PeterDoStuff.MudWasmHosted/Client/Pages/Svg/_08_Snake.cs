@@ -10,7 +10,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
         {
             Name = "Snake";
 
-            var spine = new Chain(30, 15, _ => new Model(), 45);
+            var spine = new Chain(60, 15, _ => new Model(), 45);
             spine.Head.Apply(new Follow(Mouse, 250));
             Add(spine);
 
@@ -65,7 +65,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
 
             var stickTo = new StickTo(joint);
             var i = 1;
-            stickTo.Offset.X = (16 - i * 0.5) - 2.5;
+            stickTo.Offset.X = GetBodySize(i) - 2.5;
             stickTo.Offset.Deg = angle;
             eye.Apply(stickTo);
 
@@ -76,7 +76,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Svg
         {
             if (i == 0)
                 return 10;
-            return 16 - i * 0.5;
+            return 16 - i * 0.25;
         }
 
         private static double GetBodyAngle(int i)
