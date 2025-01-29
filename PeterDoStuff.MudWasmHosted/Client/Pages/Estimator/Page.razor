@@ -7,7 +7,7 @@
     <MudFab Color="Color.Tertiary" StartIcon="@Icons.Material.Filled.ArrowCircleUp" />
 </MudScrollToTop>
 
-<MudButton Variant="Variant.Filled" OnClick="SwitchMode">
+<MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="SwitchMode" Class="my-2">
     @(ViewMode ? "Edit" : "Calculate")
 </MudButton>
 
@@ -59,8 +59,11 @@ else
 {
     <EditForm Model="@Project">
         <MudGrid>
-            <MudItem xs="12">
+            <MudItem xs="6" md="9">
                 <MudTextField Label="Project Name" Variant="Variant.Outlined" @bind-Value="Project.Name" For="@(() => Project.Name)"></MudTextField>
+            </MudItem>
+            <MudItem xs="6" md="3">
+                <MudNumericField @bind-Value="Project.RoundStep" Label="Round By" Variant="Variant.Outlined" />
             </MudItem>
             @for (int i = 0; i < Project.Groups.Count; i++)
             {
