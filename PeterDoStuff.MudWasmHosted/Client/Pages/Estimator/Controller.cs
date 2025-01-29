@@ -29,17 +29,25 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
             public EstimateType EstimateType { get; set; } = EstimateType.Fixed;
 
             public FixedEstimate FixedEstimate { get; set; } = new();
+            public ThreePointEstimate ThreePointEstimate { get; set; } = new();
         }
 
         public enum EstimateType 
         {
-            Fixed, ThreePoint, PercentageReference
+            Fixed, ThreePoint, Percentage
         }
 
         public class FixedEstimate
         {
             public decimal Value { get; set; }
             public decimal Error { get; set; }
+        }
+
+        public class ThreePointEstimate
+        {
+            public decimal Best { get; set; }
+            public decimal Likely { get; set; }
+            public decimal Worst { get; set; }
         }
     }
 }

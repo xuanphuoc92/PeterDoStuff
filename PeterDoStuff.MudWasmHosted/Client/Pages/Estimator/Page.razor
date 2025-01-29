@@ -60,6 +60,18 @@
                                 <MudNumericField @bind-Value="task.FixedEstimate.Error" Label="Error" Variant="Variant.Outlined" Step=".1M" />
                             </MudItem>
                         }
+                        @if (task.EstimateType == EstimateType.ThreePoint)
+                        {
+                            <MudItem xs="4">
+                                <MudNumericField @bind-Value="task.ThreePointEstimate.Best" Label="Best (a)" Variant="Variant.Outlined" Step=".5M" />
+                            </MudItem>
+                            <MudItem xs="4">
+                                <MudNumericField @bind-Value="task.ThreePointEstimate.Likely" Label="Likely (m)" Variant="Variant.Outlined" Step=".5M" />
+                            </MudItem>
+                            <MudItem xs="4">
+                                <MudNumericField @bind-Value="task.ThreePointEstimate.Worst" Label="Worst (b)" Variant="Variant.Outlined" Step=".5M" />
+                            </MudItem>
+                        }
                     }
                     <MudItem xs="12">
                         <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-2"
