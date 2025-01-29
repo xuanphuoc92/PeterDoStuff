@@ -37,8 +37,29 @@
                                            OnClick="() => group.Tasks.MoveDown(task)"></MudIconButton>
                         </MudItem>
                         <MudItem xs="6" md="9">
-                            <MudTextField Label="Task Description" Variant="Variant.Outlined" @bind-Value="task.Description" For="@(() => task.Description)"></MudTextField>
+                            <MudTextField Label="Task Description" Lines="3" Variant="Variant.Outlined" @bind-Value="task.Description" For="@(() => task.Description)"></MudTextField>
                         </MudItem>
+                        <MudItem xs="12">
+                            <MudSelect Variant="Variant.Outlined" @bind-Value="task.EstimateType">
+                                @for (int k = 0; k < EstimateTypes.Length; k++)
+                                {
+                                    var value = EstimateTypes[k];
+                                    var text = value.ToString();
+                                    <MudSelectItem Value="value">
+                                        <MudText>@text</MudText>
+                                    </MudSelectItem>
+                                }
+                            </MudSelect>
+                        </MudItem>
+                        @if (task.EstimateType == EstimateType.Fixed)
+                        {
+                            <MudItem xs="6">
+                                <MudNumericField @bind-Value="task.FixedEstimate.Value" Label="Value" Variant="Variant.Outlined" Step=".5M" />
+                            </MudItem>
+                            <MudItem xs="6">
+                                <MudNumericField @bind-Value="task.FixedEstimate.Error" Label="Error" Variant="Variant.Outlined" Step=".1M" />
+                            </MudItem>
+                        }
                     }
                     <MudItem xs="12">
                         <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-2"
@@ -60,4 +81,6 @@
 
 @code {
     private Project Project = new();
+
+    private readonly EstimateType[] EstimateTypes = Enum.GetValues(typeof(EstimateType)).Cast<EstimateType>().ToArray();
 }

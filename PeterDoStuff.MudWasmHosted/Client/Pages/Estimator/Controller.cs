@@ -25,6 +25,21 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
         public class EstimateTask(int number)
         {
             public string Description { get; set; } = "Task " + number;
+
+            public EstimateType EstimateType { get; set; } = EstimateType.Fixed;
+
+            public FixedEstimate FixedEstimate { get; set; } = new();
+        }
+
+        public enum EstimateType 
+        {
+            Fixed, ThreePoint, PercentageReference
+        }
+
+        public class FixedEstimate
+        {
+            public decimal Value { get; set; }
+            public decimal Error { get; set; }
         }
     }
 }
