@@ -1,7 +1,14 @@
 ﻿@page "/estimator"
+@using static PeterDoStuff.MudWasmHosted.Client.Pages.Estimator.Controller
 
 <PlaygroundTitle Page="estimator" />
 
-@code {
+<EditForm Model="@Project">
+    <MudTextField Label="Name" Variant="Variant.Outlined" @bind-Value="Project.Name" For="@(() => Project.Name)" />
+</EditForm>
 
+
+
+@code {
+    private Project Project = new();
 }
