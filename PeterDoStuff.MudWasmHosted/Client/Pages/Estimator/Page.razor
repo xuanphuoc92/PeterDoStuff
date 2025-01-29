@@ -21,7 +21,31 @@
                                OnClick="() => Project.Groups.MoveDown(group)"></MudIconButton>
             </MudItem>
             <MudItem xs="12" md="10">
-                <MudTextField Label="Group Name" Variant="Variant.Outlined" @bind-Value="group.Name" For="@(() => group.Name)"></MudTextField>
+                <MudGrid>
+                    <MudItem xs="12">
+                        <MudTextField Label="Group Name" Variant="Variant.Outlined" @bind-Value="group.Name" For="@(() => group.Name)"></MudTextField>
+                    </MudItem>
+                    @for (int j = 0; j < group.Tasks.Count; j++)
+                    {
+                        var task = group.Tasks[j];
+                        <MudItem xs="6" md="3">
+                            <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete"
+                                           OnClick="() => group.Tasks.Remove(task)"></MudIconButton>
+                            <MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.ArrowCircleUp"
+                                           OnClick="() => group.Tasks.MoveUp(task)"></MudIconButton>
+                            <MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.ArrowCircleDown"
+                                           OnClick="() => group.Tasks.MoveDown(task)"></MudIconButton>
+                        </MudItem>
+                        <MudItem xs="6" md="9">
+                            <MudTextField Label="Task Description" Variant="Variant.Outlined" @bind-Value="task.Description" For="@(() => task.Description)"></MudTextField>
+                        </MudItem>
+                    }
+                    <MudItem xs="12">
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-2"
+                                   StartIcon="@Icons.Material.Filled.Add"
+                                   OnClick="() => group.Tasks.Add(new(group.Tasks.Count + 1))">Task</MudButton>
+                    </MudItem>
+                </MudGrid>
             </MudItem>
         }
         <MudItem xs="12">

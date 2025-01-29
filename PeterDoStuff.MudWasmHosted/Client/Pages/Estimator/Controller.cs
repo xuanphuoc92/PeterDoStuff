@@ -18,6 +18,13 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
         public class Group(int number)
         {
             public string Name { get; set; } = "Group " + number;
+
+            public List<EstimateTask> Tasks { get; set; } = [];
+        }
+
+        public class EstimateTask(int number)
+        {
+            public string Description { get; set; } = "Task " + number;
         }
     }
 }
