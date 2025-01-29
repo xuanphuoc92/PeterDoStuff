@@ -1,10 +1,35 @@
 ﻿@page "/estimator"
+@using PeterDoStuff.MudWasmHosted.Client.Extensions
 @using static PeterDoStuff.MudWasmHosted.Client.Pages.Estimator.Controller
 
 <PlaygroundTitle Page="estimator" />
 
 <EditForm Model="@Project">
-    <MudTextField Label="Name" Variant="Variant.Outlined" @bind-Value="Project.Name" For="@(() => Project.Name)" />
+    <MudGrid>
+        <MudItem xs="12">
+            <MudTextField Label="Project Name" Variant="Variant.Outlined" @bind-Value="Project.Name" For="@(() => Project.Name)"></MudTextField>
+        </MudItem>
+        @for (int i = 0; i < Project.Groups.Count; i++)
+        {
+            var group = Project.Groups[i];
+            <MudItem xs="12" md="2">
+                <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete"
+                               OnClick="() => Project.Groups.Remove(group)"></MudIconButton>
+                <MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.ArrowCircleUp"
+                               OnClick="() => Project.Groups.MoveUp(group)"></MudIconButton>
+                <MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.ArrowCircleDown"
+                               OnClick="() => Project.Groups.MoveDown(group)"></MudIconButton>
+            </MudItem>
+            <MudItem xs="12" md="10">
+                <MudTextField Label="Group Name" Variant="Variant.Outlined" @bind-Value="group.Name" For="@(() => group.Name)"></MudTextField>
+            </MudItem>
+        }
+        <MudItem xs="12">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-2"
+                       StartIcon="@Icons.Material.Filled.Add"
+                       OnClick="() => Project.Groups.Add(new(Project.Groups.Count + 1))">Group</MudButton>
+        </MudItem>
+    </MudGrid>    
 </EditForm>
 
 

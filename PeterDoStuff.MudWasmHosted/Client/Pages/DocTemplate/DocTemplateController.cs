@@ -37,26 +37,6 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate
                 .Replace("&lt;/strong&gt;", "</strong>");
         }
 
-        public static void MoveUp<T>(this List<T> list, T item)
-        {
-            int currentIndex = list.IndexOf(item);
-            if (currentIndex <= 0)
-                return;
-            
-            list.RemoveAt(currentIndex);
-            list.Insert(currentIndex - 1, item);
-        }
-
-        public static void MoveDown<T>(this List<T> list, T item)
-        {
-            int currentIndex = list.IndexOf(item);
-            if (currentIndex == list.Count - 1)
-                return;
-
-            list.RemoveAt(currentIndex);
-            list.Insert(currentIndex + 1, item);
-        }
-
         public static Dictionary<string, string> GenerateIconDictionary(this Type iconClassType)
             => iconClassType
             ?.GetFields(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public)
