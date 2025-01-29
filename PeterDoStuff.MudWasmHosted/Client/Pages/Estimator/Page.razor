@@ -23,11 +23,28 @@
         <MudTable Items="group.Tasks" Hover="true" Breakpoint="Breakpoint.Xs">
             <HeaderContent>
                 <MudTh>Task</MudTh>
+                <MudTh>Details</MudTh>
                 <MudTh>Average (E)</MudTh>
                 <MudTh>Standard Deviation (SD)</MudTh>
             </HeaderContent>
             <RowTemplate>
                 <MudTd DataLabel="Task">@context.Description</MudTd>
+                <MudTd DataLabel="Details">
+                    @if (context.EstimateType == EstimateType.Fixed)
+                    {
+                        <MudText>Fixed</MudText>
+                    }
+                    @if (context.EstimateType == EstimateType.ThreePoint)
+                    {
+                        <MudText>Best: @context.ThreePointEstimate.Best</MudText>
+                        <MudText>Likely: @context.ThreePointEstimate.Likely</MudText>
+                        <MudText>Worst: @context.ThreePointEstimate.Worst</MudText>
+                    }
+                    @if (context.EstimateType == EstimateType.Percentage)
+                    {
+                        <MudText>@($"{context.PercentageEstimate.Percentage}% of [{Project.Groups[context.PercentageEstimate.GroupIndex].Name}]")</MudText>
+                    }
+                </MudTd>
                 <MudTd DataLabel="Average (E)">@context.ExpectedAverage</MudTd>
                 <MudTd DataLabel="Error (SD)">@context.StandardDeviation</MudTd>
             </RowTemplate>
