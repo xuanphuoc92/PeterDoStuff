@@ -16,7 +16,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
     {
         public abstract class EstimateValue
         {
-            public decimal ExpectedAverage { get; set; }
+            public decimal Expectancy { get; set; }
             public decimal StandardDeviation { get; set; }
             public abstract void Calculate(Project project);
         }
@@ -29,7 +29,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
             public override void Calculate(Project project)
             {
                 Groups.ForEach(g => g.Calculate(project));
-                ExpectedAverage = Groups.Select(g => g.ExpectedAverage).CalculateE();
+                Expectancy = Groups.Select(g => g.Expectancy).CalculateE();
                 StandardDeviation = Groups.Select(g => g.StandardDeviation).CalculateSD();
             }
         }
@@ -43,7 +43,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
             public override void Calculate(Project project)
             {
                 Tasks.ForEach(g => g.Calculate(project));
-                ExpectedAverage = Tasks.Select(g => g.ExpectedAverage).CalculateE();
+                Expectancy = Tasks.Select(g => g.Expectancy).CalculateE();
                 StandardDeviation = Tasks.Select(g => g.StandardDeviation).CalculateSD();
             }
         }
@@ -69,7 +69,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
                 };
 
                 value.Calculate(project);
-                ExpectedAverage = value.ExpectedAverage;
+                Expectancy = value.Expectancy;
                 StandardDeviation = value.StandardDeviation;
             }
         }
@@ -86,7 +86,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
 
             public override void Calculate(Project project)
             {
-                ExpectedAverage = Value;
+                Expectancy = Value;
                 StandardDeviation = Error;
             }
         }
@@ -99,7 +99,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
 
             public override void Calculate(Project project)
             {
-                ExpectedAverage = (Best + 4 * Likely + Worst) / 6;
+                Expectancy = (Best + 4 * Likely + Worst) / 6;
                 StandardDeviation = (Worst - Best) / 6;
             }
         }
@@ -112,7 +112,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
             public override void Calculate(Project project)
             {
                 var group = project.Groups[GroupIndex];
-                ExpectedAverage = group.ExpectedAverage * Percentage;
+                Expectancy = group.Expectancy * Percentage;
                 StandardDeviation = group.StandardDeviation * Percentage;
             }
         }

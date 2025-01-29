@@ -14,18 +14,24 @@
 @if (ViewMode)
 {
     <MudText Typo="Typo.h5">@Project.Name</MudText>
+    <MudText>
+        Average (E): @Project.Expectancy | Error (SD) : @Project.StandardDeviation
+    </MudText>
     @for (int i = 0; i < Project.Groups.Count; i++)
     {
         var group = Project.Groups[i];
         <MudText Typo="Typo.h6">
             @group.Name
         </MudText>
+        <MudText>
+            Average (E): @group.Expectancy | Error (SD) : @group.StandardDeviation
+        </MudText>
         <MudTable Items="group.Tasks" Hover="true" Breakpoint="Breakpoint.Xs">
             <HeaderContent>
                 <MudTh>Task</MudTh>
                 <MudTh>Details</MudTh>
                 <MudTh>Average (E)</MudTh>
-                <MudTh>Standard Deviation (SD)</MudTh>
+                <MudTh>Error (SD)</MudTh>
             </HeaderContent>
             <RowTemplate>
                 <MudTd DataLabel="Task">@context.Description</MudTd>
@@ -36,16 +42,14 @@
                     }
                     @if (context.EstimateType == EstimateType.ThreePoint)
                     {
-                        <MudText>Best: @context.ThreePointEstimate.Best</MudText>
-                        <MudText>Likely: @context.ThreePointEstimate.Likely</MudText>
-                        <MudText>Worst: @context.ThreePointEstimate.Worst</MudText>
+                        <MudText>Best: @context.ThreePointEstimate.Best | Likely: @context.ThreePointEstimate.Likely | Worst: @context.ThreePointEstimate.Worst</MudText>
                     }
                     @if (context.EstimateType == EstimateType.Percentage)
                     {
                         <MudText>@($"{context.PercentageEstimate.Percentage}% of [{Project.Groups[context.PercentageEstimate.GroupIndex].Name}]")</MudText>
                     }
                 </MudTd>
-                <MudTd DataLabel="Average (E)">@context.ExpectedAverage</MudTd>
+                <MudTd DataLabel="Average (E)">@context.Expectancy</MudTd>
                 <MudTd DataLabel="Error (SD)">@context.StandardDeviation</MudTd>
             </RowTemplate>
         </MudTable>
