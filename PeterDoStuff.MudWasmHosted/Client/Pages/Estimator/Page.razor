@@ -54,6 +54,7 @@
         <MudTd>
             <MudMenu Size="Size.Small" Color="Color.Primary" Icon="@Icons.Material.Filled.KeyboardArrowDown">
                 <MudMenuItem IconSize="Size.Small" Icon="@Icons.Material.Filled.Add" IconColor="Color.Success" OnClick="() => NewProject.AddTask(groupIndex)">Add Task</MudMenuItem>
+                <MudMenuItem IconSize="Size.Small" Icon="@Icons.Material.Filled.Edit" IconColor="Color.Primary" OnClick="() => OpenRenameGroup(groupIndex)">Rename Group</MudMenuItem>
                 <MudMenuItem IconSize="Size.Small" Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" OnClick="() => NewProject.DeleteGroup(groupIndex)">Remove Group</MudMenuItem>
             </MudMenu>
         </MudTd>
@@ -160,6 +161,12 @@
     OnClick="() => NewProject.AddGroup()">
     Add Group
 </MudButton>
+
+<MudDialog @bind-IsVisible="_groupRenameDialog" Options="_groupRenameDialogOptions">
+    <DialogContent>
+        <MudTextField @bind-Value="NewProject.Groups[_groupIndexToRename]" Variant="Variant.Outlined" Label="Group Name" />
+    </DialogContent>
+</MudDialog>
 
 <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="SwitchMode" Class="my-2">
     @(ViewMode ? "Edit" : "Calculate")
@@ -372,6 +379,15 @@ else
     private void RowEditCommit(object rowObject)
     {
         NewProject.CalculateTasks();
+    }
+
+    private bool _groupRenameDialog = false;
+    private readonly DialogOptions _groupRenameDialogOptions = new() { FullWidth = true, CloseButton = true };
+    private int _groupIndexToRename = -1;
+    private void OpenRenameGroup(int groupIndex)
+    {
+        _groupIndexToRename = groupIndex;
+        _groupRenameDialog = true;
     }
 
     private readonly EstimateType[] EstimateTypes 
