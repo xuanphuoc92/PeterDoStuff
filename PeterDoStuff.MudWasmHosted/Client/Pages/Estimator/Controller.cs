@@ -39,8 +39,8 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
             public override void Calculate(Project project)
             {
                 Groups.ForEach(g => g.Calculate(project));
-                ExpectedValue = Groups.Select(g => g.ExpectedValue).CalculateE().RoundBy(project.RoundStep);
-                StandardDeviation = Groups.Select(g => g.StandardDeviation).CalculateSD().RoundBy(project.RoundStep);
+                ExpectedValue = Groups.Select(g => g.ExpectedValue).CalculateE();
+                StandardDeviation = Groups.Select(g => g.StandardDeviation).CalculateSD();
             }
         }
 
@@ -53,8 +53,8 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
             public override void Calculate(Project project)
             {
                 Tasks.ForEach(g => g.Calculate(project));
-                ExpectedValue = Tasks.Select(g => g.ExpectedValue).CalculateE().RoundBy(project.RoundStep);
-                StandardDeviation = Tasks.Select(g => g.StandardDeviation).CalculateSD().RoundBy(project.RoundStep);
+                ExpectedValue = Tasks.Select(g => g.ExpectedValue).CalculateE();
+                StandardDeviation = Tasks.Select(g => g.StandardDeviation).CalculateSD();
             }
         }
 
@@ -96,8 +96,8 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
 
             public override void Calculate(Project project)
             {
-                ExpectedValue = Value.RoundBy(project.RoundStep);
-                StandardDeviation = Error.RoundBy(project.RoundStep);
+                ExpectedValue = Value;
+                StandardDeviation = Error;
             }
         }
 
@@ -110,9 +110,9 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
             public override void Calculate(Project project)
             {
                 ExpectedValue = (Best + 4 * Likely + Worst) / 6;
-                ExpectedValue = ExpectedValue.RoundBy(project.RoundStep);
+                //ExpectedValue = ExpectedValue.RoundBy(project.RoundStep);
                 StandardDeviation = (Worst - Best) / 6;
-                StandardDeviation = StandardDeviation.RoundBy(project.RoundStep);
+                //StandardDeviation = StandardDeviation.RoundBy(project.RoundStep);
             }
         }
 
@@ -125,9 +125,9 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
             {
                 var group = project.Groups[GroupIndex];
                 ExpectedValue = group.ExpectedValue * Percentage;
-                ExpectedValue = ExpectedValue.RoundBy(project.RoundStep);
+                //ExpectedValue = ExpectedValue.RoundBy(project.RoundStep);
                 StandardDeviation = group.StandardDeviation * Percentage;
-                StandardDeviation = StandardDeviation.RoundBy(project.RoundStep);
+                //StandardDeviation = StandardDeviation.RoundBy(project.RoundStep);
             }
         }
     }

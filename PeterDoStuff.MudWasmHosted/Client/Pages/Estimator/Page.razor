@@ -15,7 +15,7 @@
 {
     <MudText Typo="Typo.h5">@Project.Name</MudText>
     <MudText>
-        Average (E): @Project.ExpectedValue | Error (SD) : @Project.StandardDeviation
+        Average (E): @Project.ExpectedValue.RoundBy(0.01M) | Error (SD) : @Project.StandardDeviation.RoundBy(0.01M)
     </MudText>
     @for (int i = 0; i < Project.Groups.Count; i++)
     {
@@ -24,7 +24,7 @@
             @group.Name
         </MudText>
         <MudText>
-            Average (E): @group.ExpectedValue | Error (SD) : @group.StandardDeviation
+            Average (E): @group.ExpectedValue.RoundBy(0.01M) | Error (SD) : @group.StandardDeviation.RoundBy(0.01M)
         </MudText>
         <MudTable Items="group.Tasks" Hover="true" Breakpoint="Breakpoint.Xs">
             <HeaderContent>
@@ -49,8 +49,8 @@
                         <MudText>@($"{context.PercentageEstimate.Percentage}% of [{Project.Groups[context.PercentageEstimate.GroupIndex].Name}]")</MudText>
                     }
                 </MudTd>
-                <MudTd DataLabel="Average (E)">@context.ExpectedValue</MudTd>
-                <MudTd DataLabel="Error (SD)">@context.StandardDeviation</MudTd>
+                <MudTd DataLabel="Average (E)">@context.ExpectedValue.RoundBy(0.01M)</MudTd>
+                <MudTd DataLabel="Error (SD)">@context.StandardDeviation.RoundBy(0.01M)</MudTd>
             </RowTemplate>
         </MudTable>
     }
