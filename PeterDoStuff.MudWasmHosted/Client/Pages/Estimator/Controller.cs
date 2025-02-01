@@ -473,6 +473,9 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
                 Tasks.Remove(task);
             }
 
+            public decimal ExpectedValue { get; set; }
+            public decimal StandardDeviation { get; set; }
+
             public NewProject CalculateTasks()
             {
                 foreach (var task in Tasks)
@@ -485,11 +488,24 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
                     if (task.Type == EstimateType.Percentage)
                     {
                         var groupTasks = Tasks.Where(t => t.GroupIndex == task.PercentageByGroupIndex);
-                        task.ExpectedValue = groupTasks.Select(t => t.ExpectedValue).CalculateE();
-                        task.StandardDeviation = groupTasks.Select(t => t.StandardDeviation).CalculateSD();
+                        task.ExpectedValue = groupTasks.Select(t => t.ExpectedValue).CalculateE() * task.Percentage / 100;
+                        task.StandardDeviation = groupTasks.Select(t => t.StandardDeviation).CalculateSD() * task.Percentage / 100;
                     }
                 }
+
+                ExpectedValue = Tasks.Select(t => t.ExpectedValue).CalculateE();
+                StandardDeviation = Tasks.Select(t => t.StandardDeviation).CalculateSD();
                 return this;
+            }
+
+            public string ConfidenceInterval(decimal confidenceInteval)
+            {
+                var sdFactor = ConfidenceIntervalMaps[confidenceInteval];
+                var e = ExpectedValue;
+                var sd = StandardDeviation;
+                var from = e - sdFactor * sd;
+                var to = e + sdFactor * sd;
+                return $"{from.RoundBy(0.01M)} - {to.RoundBy(0.01M)}";
             }
         }
 
