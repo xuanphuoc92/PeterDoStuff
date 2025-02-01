@@ -249,7 +249,7 @@
     }
 
     private bool _taskEditDialog = false;
-    private readonly DialogOptions _taskEditDialogOptions = new() { FullWidth = true, CloseButton = false };
+    private readonly DialogOptions _taskEditDialogOptions = new() { FullWidth = true, CloseButton = false, CloseOnEscapeKey = false, DisableBackdropClick = true };
     private EstimateTask _taskEdit;
     private void OpenEditTask(EstimateTask taskEdit)
     {
