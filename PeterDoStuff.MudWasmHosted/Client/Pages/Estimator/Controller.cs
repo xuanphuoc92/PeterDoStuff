@@ -326,5 +326,195 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
                 //StandardDeviation = StandardDeviation.RoundBy(project.RoundStep);
             }
         }
+
+        public static NewProject SampleNewProject()
+        {
+
+            return new NewProject()
+            {
+                Groups = [
+                    "Implementation",
+                    "Testing and Refining",
+                    "Analysis and Documentation",
+                    "Deliveries"
+                ],
+                Tasks = [
+                    new NewTask()
+                    {
+                        GroupIndex = 0,
+                        Name = "Create entity tables and columns in Domain",
+                        Type = EstimateType.ThreePoint,
+                        Best = 0.5M,
+                        Likely = 1,
+                        Worst = 3
+                    },
+                    new NewTask()
+                    {
+                        GroupIndex = 0,
+                        Name = "Implement automated services",
+                        Type = EstimateType.ThreePoint,
+                        Best = 1,
+                        Likely = 2,
+                        Worst = 5
+                    },
+                    new NewTask()
+                    {
+                        GroupIndex = 0,
+                        Name = "Create entity tables and columns in Domain",
+                        Type = EstimateType.ThreePoint,
+                        Best = 0.5M,
+                        Likely = 1,
+                        Worst = 3
+                    },
+                    new NewTask()
+                    {
+                        GroupIndex = 1,
+                        Name = "Development Testing",
+                        Type = EstimateType.Percentage,
+                        Percentage = 10,
+                        PercentageByGroupIndex = 0,
+                    },
+                    new NewTask()
+                    {
+                        GroupIndex = 1,
+                        Name = "User Acceptance Feedback Refining",
+                        Type = EstimateType.ThreePoint,
+                        Best = 1,
+                        Likely = 2,
+                        Worst = 5,
+                    },
+                    new NewTask()
+                    {
+                        GroupIndex = 2,
+                        Name = "Requirement Analysis and Documentation",
+                        Type = EstimateType.Percentage,
+                        Percentage = 10,
+                        PercentageByGroupIndex = 0,
+                    },
+                    new NewTask()
+                    {
+                        GroupIndex = 2,
+                        Name = "User Acceptance Test Sheet",
+                        Type = EstimateType.ThreePoint,
+                        Best = 0.5M,
+                        Likely = 1,
+                        Worst = 3,
+                    },
+                    new NewTask()
+                    {
+                        GroupIndex = 3,
+                        Name = "STG Delivery",
+                        Type = EstimateType.Fixed,
+                        ExpectedValue = 1,
+                        StandardDeviation = 0
+                    },
+                    new NewTask()
+                    {
+                        GroupIndex = 3,
+                        Name = "PRD Delivery",
+                        Type = EstimateType.Fixed,
+                        ExpectedValue = 0.5M,
+                        StandardDeviation = 0
+                    },
+                ]
+            };
+        }
+
+        public class NewProject
+        {
+            public string Name { get; set; }
+            public List<string> Groups { get; set; } = [];
+            public List<NewTask> Tasks { get; set; } = [];
+
+            public void AddGroup()
+            {
+                var groupName = "Group " + (Groups.Count + 1);
+                Groups.Add(groupName);
+            }
+
+            public void DeleteGroup(int groupIndex)
+            {
+                DeleteTasksByGroup(groupIndex);
+                DecreaseGroupIndexInTasks(groupIndex);
+                Groups.RemoveAt(groupIndex);
+            }
+
+            private void DecreaseGroupIndexInTasks(int groupIndex)
+            {
+                Tasks
+                    .Where(t => t.GroupIndex > groupIndex)
+                    .ToList()
+                    .ForEach(t => t.GroupIndex--);
+            }
+
+            private void DeleteTasksByGroup(int groupIndex)
+            {
+                var from = Tasks.FirstOrDefault(t => t.GroupIndex == groupIndex);
+                var to = Tasks.LastOrDefault(t => t.GroupIndex == groupIndex);
+                if (from == null || to == null) return;
+
+                var fromIndex = Tasks.IndexOf(from);
+                var toIndex = Tasks.IndexOf(to);
+                Tasks.RemoveRange(fromIndex, toIndex - fromIndex + 1);
+            }
+
+            public void AddTask(int groupIndex)
+            {
+                var task = new NewTask();
+                task.GroupIndex = groupIndex;
+                var taskCount = Tasks.Count(t => t.GroupIndex == groupIndex);
+                task.Name = "Task " + (taskCount + 1);
+                Tasks.Add(task);
+                Tasks = Tasks.OrderBy(t => t.GroupIndex).ToList();
+            }
+
+            public void DeleteTask(NewTask task)
+            {
+                Tasks.Remove(task);
+            }
+
+            public NewProject CalculateTasks()
+            {
+                foreach (var task in Tasks)
+                {
+                    if (task.Type == EstimateType.ThreePoint)
+                    {
+                        task.ExpectedValue = (task.Best + 4 * task.Likely + task.Worst) / 6;
+                        task.StandardDeviation = (task.Worst - task.Best) / 6;
+                    }
+                    if (task.Type == EstimateType.Percentage)
+                    {
+                        var groupTasks = Tasks.Where(t => t.GroupIndex == task.PercentageByGroupIndex);
+                        task.ExpectedValue = groupTasks.Select(t => t.ExpectedValue).CalculateE();
+                        task.StandardDeviation = groupTasks.Select(t => t.StandardDeviation).CalculateSD();
+                    }
+                }
+                return this;
+            }
+        }
+
+        public class NewTask
+        {
+            public int GroupIndex { get; set; }
+            public string Name { get; set; }
+            public EstimateType Type { get; set; }
+            public decimal ExpectedValue { get; set; }
+            public decimal StandardDeviation { get; set; }
+            public decimal Best { get; set; }
+            public decimal Likely { get; set; }
+            public decimal Worst { get; set; }
+            public decimal Percentage { get; set; }
+            public int PercentageByGroupIndex { get; set; }
+
+            public string ConfidenceInterval(decimal confidenceInteval)
+            {
+                var sdFactor = ConfidenceIntervalMaps[confidenceInteval];
+                var e = ExpectedValue;
+                var sd = StandardDeviation;
+                var from = e - sdFactor * sd;
+                var to = e + sdFactor * sd;
+                return $"{from.RoundBy(0.01M)} - {to.RoundBy(0.01M)}";
+            }
+        }
     }
 }

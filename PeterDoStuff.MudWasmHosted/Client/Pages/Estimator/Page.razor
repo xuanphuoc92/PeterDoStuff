@@ -10,6 +10,59 @@
     <MudFab Color="Color.Tertiary" StartIcon="@Icons.Material.Filled.ArrowCircleUp" />
 </MudScrollToTop>
 
+@{
+    var sdFactor = ConfidenceIntervalMaps[ConfidenceInterval];
+}
+
+<MudTable Items="NewProject.Tasks" Breakpoint="Breakpoint.Xs" Dense="true"
+    GroupBy="_groupDefinition"
+    GroupHeaderStyle="background-color:var(--mud-palette-background-gray)"
+    GroupFooterClass="mb-4">
+    <HeaderContent>
+        <MudTh>Task</MudTh>
+        <MudTh>Average (E)</MudTh>
+        <MudTh>Error (SD)</MudTh>
+        <MudTh>@($"{ConfidenceInterval}% Confidence Interval")</MudTh>
+    </HeaderContent>
+    <GroupHeaderTemplate>
+        @{
+            var groupName = NewProject.Groups[(int)context.Key];
+            var groupTasks = NewProject.Tasks.Where(t => t.GroupIndex == (int)context.Key);
+            var groupExpectedValue = groupTasks.Select(t => t.ExpectedValue).CalculateE();
+            var groupStandardDeviation = groupTasks.Select(t => t.StandardDeviation).CalculateSD();
+            
+            var from = groupExpectedValue - sdFactor * groupStandardDeviation;
+            var to = groupExpectedValue + sdFactor * groupStandardDeviation;
+            var groupCI = $"{from.RoundBy(0.01M)} - {to.RoundBy(0.01M)}";
+        }
+        <MudTd DataLabel="Group" Class="mud-table-cell-custom-group">
+            <MudText Color="Color.Primary">@groupName</MudText>
+        </MudTd>
+        <MudTd DataLabel="Average (E)" Class="mud-table-cell-custom-group">
+            <MudText Color="Color.Primary">@groupExpectedValue.RoundBy(0.01M)</MudText>
+        </MudTd>
+        <MudTd DataLabel="Error (SD)" Class="mud-table-cell-custom-group">
+                <MudText Color="Color.Primary">@groupStandardDeviation.RoundBy(0.01M)</MudText>
+        </MudTd>
+        <MudTd DataLabel="@($"{ConfidenceInterval}% Confidence Interval")" Class="mud-table-cell-custom-group">
+            <MudText Color="Color.Primary">@groupCI</MudText>
+        </MudTd>
+    </GroupHeaderTemplate>
+    <RowTemplate>
+        <MudTd DataLabel="Task">
+            @context.Name
+        </MudTd>
+        <MudTd DataLabel="Average (E)">@context.ExpectedValue.RoundBy(0.01M)</MudTd>
+        <MudTd DataLabel="Error (SD)">@context.StandardDeviation.RoundBy(0.01M)</MudTd>
+        <MudTd DataLabel="@($"{ConfidenceInterval}% Confidence Interval")">
+            @context.ConfidenceInterval(ConfidenceInterval)
+        </MudTd>
+    </RowTemplate>
+    <FooterContent>
+
+    </FooterContent>
+</MudTable>
+
 <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="SwitchMode" Class="my-2">
     @(ViewMode ? "Edit" : "Calculate")
 </MudButton>
@@ -205,7 +258,17 @@ else
 }
 
 @code {
+    private TableGroupDefinition<NewTask> _groupDefinition = new()
+    {
+        GroupName = "Group",
+        Indentation = false,
+        Expandable = true,
+        IsInitiallyExpanded = true,
+        Selector = (e) => e.GroupIndex
+    };
+
     private Project Project = Controller.SampleProject();
+    private NewProject NewProject = Controller.SampleNewProject().CalculateTasks();
 
     private readonly EstimateType[] EstimateTypes 
         = Enum.GetValues(typeof(EstimateType)).Cast<EstimateType>()
