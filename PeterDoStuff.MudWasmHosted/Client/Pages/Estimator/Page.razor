@@ -18,17 +18,20 @@
     GroupBy="_groupDefinition"
     GroupHeaderStyle="background-color:var(--mud-palette-background-gray)"
     GroupFooterClass="mb-4"
+    IsEditRowSwitchingBlocked="true"
     RowEditCommit="RowEditCommit">
     <HeaderContent>
         <MudTh>Task</MudTh>
         <MudTh>Average (E)</MudTh>
         <MudTh>Error (SD)</MudTh>
         <MudTh>@($"{ConfidenceInterval}% Confidence Interval")</MudTh>
+        <MudTh></MudTh>
     </HeaderContent>
     <GroupHeaderTemplate>
         @{
-            var groupName = NewProject.Groups[(int)context.Key];
-            var groupTasks = NewProject.Tasks.Where(t => t.GroupIndex == (int)context.Key);
+            var groupIndex = (int)context.Key;
+            var groupName = NewProject.Groups[groupIndex];
+            var groupTasks = NewProject.Tasks.Where(t => t.GroupIndex == groupIndex);
             var groupExpectedValue = groupTasks.Select(t => t.ExpectedValue).CalculateE();
             var groupStandardDeviation = groupTasks.Select(t => t.StandardDeviation).CalculateSD();
             
@@ -48,19 +51,31 @@
         <MudTd DataLabel="@($"{ConfidenceInterval}% Confidence Interval")" Class="mud-table-cell-custom-group">
             <MudText Color="Color.Primary">@groupCI</MudText>
         </MudTd>
+        <MudTd>
+            <MudMenu Size="Size.Small" Color="Color.Primary" Icon="@Icons.Material.Filled.KeyboardArrowDown">
+                <MudMenuItem IconSize="Size.Small" Icon="@Icons.Material.Filled.Add" IconColor="Color.Success" OnClick="() => NewProject.AddTask(groupIndex)">Add Task</MudMenuItem>
+                <MudMenuItem IconSize="Size.Small" Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" OnClick="() => NewProject.DeleteGroup(groupIndex)">Remove Group</MudMenuItem>
+            </MudMenu>
+        </MudTd>
     </GroupHeaderTemplate>
     <RowTemplate>
         <MudTd DataLabel="Task">
-            @context.Name
+            <MudText>@context.Name</MudText>
+            <MudText Typo="Typo.caption">@context.Caption(NewProject)</MudText>
         </MudTd>
         <MudTd DataLabel="Average (E)">@context.ExpectedValue.RoundBy(0.01M)</MudTd>
         <MudTd DataLabel="Error (SD)">@context.StandardDeviation.RoundBy(0.01M)</MudTd>
         <MudTd DataLabel="@($"{ConfidenceInterval}% Confidence Interval")">
             @context.ConfidenceInterval(ConfidenceInterval)
         </MudTd>
+        <MudTd>
+            <MudMenu Size="Size.Small" Icon="@Icons.Material.Filled.KeyboardArrowDown">
+                <MudMenuItem IconSize="Size.Small" Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" OnClick="() => NewProject.DeleteTask(context)">Remove Task</MudMenuItem>
+            </MudMenu>
+        </MudTd>
     </RowTemplate>
     <RowEditingTemplate>
-        <MudTd colspan="3">
+        <MudTd colspan="4">
             <MudGrid>
                 <MudItem xs="12">
                     <MudTextField @bind-Value="context.Name" Variant="Variant.Outlined" Label="Task" />
@@ -137,6 +152,14 @@
         </MudTd>
     </FooterContent>
 </MudTable>
+
+<MudButton 
+    Variant="Variant.Filled"
+    StartIcon="@Icons.Material.Filled.Add" 
+    Color="Color.Primary"
+    OnClick="() => NewProject.AddGroup()">
+    Add Group
+</MudButton>
 
 <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="SwitchMode" Class="my-2">
     @(ViewMode ? "Edit" : "Calculate")

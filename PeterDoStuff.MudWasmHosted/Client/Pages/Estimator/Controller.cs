@@ -360,7 +360,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
                     new NewTask()
                     {
                         GroupIndex = 0,
-                        Name = "Create entity tables and columns in Domain",
+                        Name = "Create UI Controls",
                         Type = EstimateType.ThreePoint,
                         Best = 0.5M,
                         Likely = 1,
@@ -437,6 +437,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
                 DeleteTasksByGroup(groupIndex);
                 DecreaseGroupIndexInTasks(groupIndex);
                 Groups.RemoveAt(groupIndex);
+                CalculateTasks();
             }
 
             private void DecreaseGroupIndexInTasks(int groupIndex)
@@ -530,6 +531,20 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
                 var from = e - sdFactor * sd;
                 var to = e + sdFactor * sd;
                 return $"{from.RoundBy(0.01M)} - {to.RoundBy(0.01M)}";
+            }
+
+            public string Caption(NewProject project)
+            {
+                if (Type == EstimateType.Fixed)
+                    return "Fixed";
+
+                if (Type == EstimateType.ThreePoint)
+                    return $"Best: {Best} | Likely: {Likely} | Worst: {Worst}";
+
+                if (Type == EstimateType.Percentage)
+                    return $"{Percentage}% of [{project.Groups[PercentageByGroupIndex]}]";
+
+                throw new NotImplementedException();
             }
         }
     }
