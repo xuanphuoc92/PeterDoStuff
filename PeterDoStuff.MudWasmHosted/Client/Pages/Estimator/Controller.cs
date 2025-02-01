@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
-using MudBlazor;
-using static PeterDoStuff.MudWasmHosted.Client.Pages.Estimator.Controller;
+﻿using static PeterDoStuff.MudWasmHosted.Client.Pages.Estimator.Controller;
 
 namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
 {
@@ -95,11 +93,11 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
                 return new Project()
                 {
                     Groups = [
-                        new Group(1)
+                        new Group()
                         {
                             Name = "Implementation",
                             Tasks = [
-                                new EstimateTask(1)
+                                new EstimateTask()
                                 {
                                     Description = "Create entity tables and columns in Domain",
                                     EstimateType = EstimateType.ThreePoint,
@@ -110,7 +108,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
                                         Worst = 3
                                     }
                                 },
-                                new EstimateTask(1)
+                                new EstimateTask()
                                 {
                                     Description = "Implement functional services",
                                     EstimateType = EstimateType.ThreePoint,
@@ -121,7 +119,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
                                         Worst = 5
                                     }
                                 },
-                                new EstimateTask(1)
+                                new EstimateTask()
                                 {
                                     Description = "Create UI controls",
                                     EstimateType = EstimateType.ThreePoint,
@@ -134,11 +132,11 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
                                 },
                             ]
                         },
-                        new Group(2)
+                        new Group()
                         {
                             Name = "Testing and Refining",
                             Tasks = [
-                                new EstimateTask(1)
+                                new EstimateTask()
                                 {
                                     Description = "Development Testing",
                                     EstimateType = EstimateType.Percentage,
@@ -148,7 +146,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
                                         GroupIndex = 0,
                                     }
                                 },
-                                new EstimateTask(2)
+                                new EstimateTask()
                                 {
                                     Description = "User Acceptance Feedback Refining",
                                     EstimateType = EstimateType.ThreePoint,
@@ -161,11 +159,11 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
                                 },
                             ]
                         },
-                        new Group(3)
+                        new Group()
                         {
                             Name = "Analysis and Documentation",
                             Tasks = [
-                                new EstimateTask(1)
+                                new EstimateTask()
                                 {
                                     Description = "Requirement Analysis and Documentation",
                                     EstimateType = EstimateType.Percentage,
@@ -175,7 +173,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
                                         GroupIndex = 0,
                                     }
                                 },
-                                new EstimateTask(2)
+                                new EstimateTask()
                                 {
                                     Description = "User Acceptance Test Sheet",
                                     EstimateType = EstimateType.ThreePoint,
@@ -188,11 +186,11 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
                                 },
                             ]
                         },
-                        new Group(4)
+                        new Group()
                         {
                             Name = "Deployment",
                             Tasks = [
-                                new EstimateTask(1)
+                                new EstimateTask()
                                 {
                                     Description = "UAT Deployment",
                                     EstimateType = EstimateType.Fixed,
@@ -201,7 +199,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
                                         Value = 1M, Error = 0M
                                     }
                                 },
-                                new EstimateTask(2)
+                                new EstimateTask()
                                 {
                                     Description = "PRD Deployment",
                                     EstimateType = EstimateType.Fixed,
@@ -218,9 +216,13 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
             }
         }
 
-        public class Group(int number) : EstimateValue
+        public class Group: EstimateValue
         {
-            public string Name { get; set; } = "Group " + number;
+            public Group() { }
+
+            public Group(int number) { Name = "Group " + number; }
+
+            public string Name { get; set; }
 
             public List<EstimateTask> Tasks { get; set; } = [];
 
@@ -232,9 +234,13 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
             }
         }
 
-        public class EstimateTask(int number) : EstimateValue
+        public class EstimateTask : EstimateValue
         {
-            public string Description { get; set; } = "Task " + number;
+            public EstimateTask() { }
+
+            public EstimateTask(int number) { Description = "Task " + number; }
+
+            public string Description { get; set; }
 
             public EstimateType EstimateType { get; set; } = EstimateType.Fixed;
 

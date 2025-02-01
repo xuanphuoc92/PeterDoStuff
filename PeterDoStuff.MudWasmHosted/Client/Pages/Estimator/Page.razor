@@ -1,6 +1,9 @@
 ﻿@page "/estimator"
+@using PeterDoStuff.Extensions
 @using PeterDoStuff.MudWasmHosted.Client.Extensions
+@using System.Text
 @using static PeterDoStuff.MudWasmHosted.Client.Pages.Estimator.Controller
+@inject IJSRuntime JS
 
 <PlaygroundTitle Page="estimator" />
 <MudScrollToTop>
@@ -64,6 +67,33 @@
 }
 else
 {
+    <div>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.Download"
+                   OnClick="DownloadJson">
+            Save Project
+        </MudButton>
+        <MudFileUpload T="IBrowserFile" FilesChanged="UploadJson" Class="ma-0 d-inline pa-1">
+            <ButtonTemplate>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                           StartIcon="@Icons.Material.Filled.Upload"
+                           for="@context.Id" HtmlTag="label">
+                    Load Project
+                </MudButton>
+            </ButtonTemplate>
+        </MudFileUpload>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.CleaningServices"
+                   OnClick="SampleProject">
+            Sample Project
+        </MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.CleaningServices"
+                   OnClick="ClearProject">
+            Empty Project
+        </MudButton>
+    </div>
+
     <EditForm Model="@Project">
         <MudGrid>
             <MudItem xs="6" md="9">
@@ -196,4 +226,34 @@ else
     }
 
     private decimal ConfidenceInterval = 95;
+
+    private async Task DownloadJson()
+    {
+        string fileName = (Project.Name ?? "") + " - Estimates.json";
+        using MemoryStream csvFileStream = new MemoryStream(
+            Encoding.UTF8.GetBytes(Project.ToJson(beautify: true)));
+        using var streamRef = new DotNetStreamReference(stream: csvFileStream);
+        await JS.InvokeVoidAsync("downloadFileFromStream", fileName.Trim(), streamRef);
+    }
+
+    private async Task UploadJson(IBrowserFile file)
+    {
+        using MemoryStream inputFileStream = new MemoryStream();
+        await file.OpenReadStream(file.Size).CopyToAsync(inputFileStream);
+        inputFileStream.Position = 0;
+        using StreamReader reader = new StreamReader(inputFileStream, Encoding.UTF8);
+        string json = reader.ReadToEnd();
+        Project = json.FromJson<Project>();
+    }
+
+
+    private void SampleProject()
+    {
+        Project = Project.SampleProject();
+    }
+
+    private void ClearProject()
+    {
+        Project = new();
+    }
 }
