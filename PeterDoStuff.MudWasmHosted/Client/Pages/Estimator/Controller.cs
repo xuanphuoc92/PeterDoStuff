@@ -1,4 +1,6 @@
-﻿using static PeterDoStuff.MudWasmHosted.Client.Pages.Estimator.Controller;
+﻿using Microsoft.EntityFrameworkCore.Metadata;
+using MudBlazor;
+using static PeterDoStuff.MudWasmHosted.Client.Pages.Estimator.Controller;
 
 namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
 {
@@ -94,6 +96,20 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
             public FixedEstimate FixedEstimate { get; set; } = new();
             public ThreePointEstimate ThreePointEstimate { get; set; } = new();
             public PercentageEstimate PercentageEstimate { get; set; } = new();
+
+            public string Caption(Project project)
+            {
+                if (EstimateType == EstimateType.Fixed)
+                    return "Fixed";
+                    
+                if (EstimateType == EstimateType.ThreePoint)
+                    return $"Best: {ThreePointEstimate.Best} | Likely: {ThreePointEstimate.Likely} | Worst: {ThreePointEstimate.Worst}";
+
+                if (EstimateType == EstimateType.Percentage)
+                    return $"{PercentageEstimate.Percentage}% of [{project.Groups[PercentageEstimate.GroupIndex].Name}]";
+
+                throw new NotImplementedException();
+            }
 
             public override void Calculate(Project project)
             {

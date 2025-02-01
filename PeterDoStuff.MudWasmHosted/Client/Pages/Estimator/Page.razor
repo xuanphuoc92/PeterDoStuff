@@ -36,18 +36,9 @@
                 @if (context.Task != null)
                 {
                     <MudText Typo="typo" Color="color">@context.Task.Description</MudText>
-                    @if (context.Task.EstimateType == EstimateType.Fixed)
-                    {
-                        <MudText Typo="Typo.caption">Fixed</MudText>
-                    }
-                    @if (context.Task.EstimateType == EstimateType.ThreePoint)
-                    {
-                        <MudText Typo="Typo.caption">Best: @context.Task.ThreePointEstimate.Best | Likely: @context.Task.ThreePointEstimate.Likely | Worst: @context.Task.ThreePointEstimate.Worst</MudText>
-                    }
-                    @if (context.Task.EstimateType == EstimateType.Percentage)
-                    {
-                        <MudText Typo="Typo.caption">@($"{context.Task.PercentageEstimate.Percentage}% of [{Project.Groups[context.Task.PercentageEstimate.GroupIndex].Name}]")</MudText>
-                    }
+                    <MudText Typo="Typo.caption" Color="Color.Primary">
+                        @context.Task.Caption(Project)
+                    </MudText>
                 }
             </MudTd>
             <MudTd DataLabel="Average (E)"><MudText Typo="typo" Color="color">@context.ExpectedValue</MudText></MudTd>
