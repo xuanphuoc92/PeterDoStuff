@@ -41,7 +41,7 @@
     </MudButton>
 </div>
 
-<MudGrid Class="mb-2">
+<MudGrid Class="my-2">
     <MudItem xs="6" md="9">
         <MudTextField @bind-Value="@Project.Name" Label="Project Name" Variant="Variant.Outlined"/>
     </MudItem>
@@ -54,9 +54,14 @@
             }
         </MudSelect>
     </MudItem>
+    <MudItem xs="12">
+        <MudButton Color="Color.Primary" Variant="Variant.Outlined" OnClick="() => _table.ExpandAllGroups()">Expand All</MudButton>
+        <MudButton Color="Color.Primary" Variant="Variant.Outlined" OnClick="() => _table.CollapseAllGroups()">Collapse All</MudButton>
+    </MudItem>
 </MudGrid>
 
-<MudTable Items="Project.Tasks" Breakpoint="Breakpoint.Xs" Dense="true"
+<MudTable @ref="_table"
+    Items="Project.Tasks" Breakpoint="Breakpoint.Xs" Dense="true"
     GroupBy="_groupDefinition"
     GroupFooterClass="mb-4">
     <HeaderContent>
@@ -229,6 +234,8 @@
 </MudDialog>
 
 @code {
+    private MudTable<EstimateTask> _table;
+
     private TableGroupDefinition<EstimateTask> _groupDefinition = new()
     {
         GroupName = "Group",
@@ -293,13 +300,13 @@
         inputFileStream.Position = 0;
         using StreamReader reader = new StreamReader(inputFileStream, Encoding.UTF8);
         string json = reader.ReadToEnd();
-        Project = json.FromJson<EstimateProject>();
+        Project = json.FromJson<EstimateProject>().CalculateTasks();
     }
 
 
     private void SampleProject()
     {
-        Project = Controller.SampleProject();
+        Project = Controller.SampleProject().CalculateTasks();
     }
 
     private void ClearProject()

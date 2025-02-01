@@ -132,7 +132,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
             {
                 var groupName = "Group " + (Groups.Count + 1);
                 Groups.Add(groupName);
-                AddTask(Groups.Count);
+                AddTask(Groups.Count - 1);
             }
 
             public void DeleteGroup(int groupIndex)
