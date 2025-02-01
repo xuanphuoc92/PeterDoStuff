@@ -42,6 +42,9 @@
 </div>
 
 <MudGrid Class="mb-2">
+    <MudItem xs="6" md="9">
+        <MudTextField @bind-Value="@Project.Name" Label="Project Name" Variant="Variant.Outlined"/>
+    </MudItem>
     <MudItem xs="6" md="3">
         <MudSelect @bind-Value="ConfidenceInterval" Variant="Variant.Outlined" Label="Confidence Interval">
             @foreach (var keyRef in ConfidenceIntervalMaps.Keys)

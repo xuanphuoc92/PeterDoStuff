@@ -33,6 +33,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
 
             return new EstimateProject()
             {
+                Name = "Sample Project",
                 Groups = [
                     "Implementation",
                     "Testing and Refining",
@@ -131,7 +132,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
             {
                 var groupName = "Group " + (Groups.Count + 1);
                 Groups.Add(groupName);
-                AddTask(Groups.Count );
+                AddTask(Groups.Count);
             }
 
             public void DeleteGroup(int groupIndex)
