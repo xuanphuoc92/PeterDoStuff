@@ -28,10 +28,10 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
             { 99.7M, 3 },
         };
 
-        public static NewProject SampleNewProject()
+        public static EstimateProject SampleProject()
         {
 
-            return new NewProject()
+            return new EstimateProject()
             {
                 Groups = [
                     "Implementation",
@@ -40,7 +40,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
                     "Deliveries"
                 ],
                 Tasks = [
-                    new NewTask()
+                    new EstimateTask()
                     {
                         GroupIndex = 0,
                         Name = "Create entity tables and columns in Domain",
@@ -49,7 +49,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
                         Likely = 1,
                         Worst = 3
                     },
-                    new NewTask()
+                    new EstimateTask()
                     {
                         GroupIndex = 0,
                         Name = "Implement automated services",
@@ -58,7 +58,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
                         Likely = 2,
                         Worst = 5
                     },
-                    new NewTask()
+                    new EstimateTask()
                     {
                         GroupIndex = 0,
                         Name = "Create UI Controls",
@@ -67,7 +67,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
                         Likely = 1,
                         Worst = 3
                     },
-                    new NewTask()
+                    new EstimateTask()
                     {
                         GroupIndex = 1,
                         Name = "Development Testing",
@@ -75,7 +75,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
                         Percentage = 10,
                         PercentageByGroupIndex = 0,
                     },
-                    new NewTask()
+                    new EstimateTask()
                     {
                         GroupIndex = 1,
                         Name = "User Acceptance Feedback Refining",
@@ -84,7 +84,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
                         Likely = 2,
                         Worst = 5,
                     },
-                    new NewTask()
+                    new EstimateTask()
                     {
                         GroupIndex = 2,
                         Name = "Requirement Analysis and Documentation",
@@ -92,7 +92,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
                         Percentage = 10,
                         PercentageByGroupIndex = 0,
                     },
-                    new NewTask()
+                    new EstimateTask()
                     {
                         GroupIndex = 2,
                         Name = "User Acceptance Test Sheet",
@@ -101,7 +101,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
                         Likely = 1,
                         Worst = 3,
                     },
-                    new NewTask()
+                    new EstimateTask()
                     {
                         GroupIndex = 3,
                         Name = "STG Delivery",
@@ -109,7 +109,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
                         ExpectedValue = 1,
                         StandardDeviation = 0
                     },
-                    new NewTask()
+                    new EstimateTask()
                     {
                         GroupIndex = 3,
                         Name = "PRD Delivery",
@@ -121,11 +121,11 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
             };
         }
 
-        public class NewProject
+        public class EstimateProject
         {
             public string Name { get; set; }
             public List<string> Groups { get; set; } = [];
-            public List<NewTask> Tasks { get; set; } = [];
+            public List<EstimateTask> Tasks { get; set; } = [];
 
             public void AddGroup()
             {
@@ -163,7 +163,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
 
             public void AddTask(int groupIndex)
             {
-                var task = new NewTask();
+                var task = new EstimateTask();
                 task.GroupIndex = groupIndex;
                 var taskCount = Tasks.Count(t => t.GroupIndex == groupIndex);
                 task.Name = "Task " + (taskCount + 1);
@@ -171,7 +171,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
                 Tasks = Tasks.OrderBy(t => t.GroupIndex).ToList();
             }
 
-            public void DeleteTask(NewTask task)
+            public void DeleteTask(EstimateTask task)
             {
                 Tasks.Remove(task);
             }
@@ -179,7 +179,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
             public decimal ExpectedValue { get; set; }
             public decimal StandardDeviation { get; set; }
 
-            public NewProject CalculateTasks()
+            public EstimateProject CalculateTasks()
             {
                 foreach (var task in Tasks)
                 {
@@ -212,7 +212,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
             }
         }
 
-        public class NewTask
+        public class EstimateTask
         {
             public int GroupIndex { get; set; }
             public string Name { get; set; }
@@ -235,7 +235,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
                 return $"{from.RoundBy(0.01M)} - {to.RoundBy(0.01M)}";
             }
 
-            public string Caption(NewProject project)
+            public string Caption(EstimateProject project)
             {
                 if (Type == EstimateType.Fixed)
                     return "Fixed";

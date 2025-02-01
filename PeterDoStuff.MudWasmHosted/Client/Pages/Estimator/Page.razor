@@ -53,7 +53,7 @@
     </MudItem>
 </MudGrid>
 
-<MudTable Items="NewProject.Tasks" Breakpoint="Breakpoint.Xs" Dense="true" B
+<MudTable Items="Project.Tasks" Breakpoint="Breakpoint.Xs" Dense="true" B
     GroupBy="_groupDefinition"
     GroupFooterClass="mb-4">
     <HeaderContent>
@@ -66,8 +66,8 @@
     <GroupHeaderTemplate>
         @{
             var groupIndex = (int)context.Key;
-            var groupName = NewProject.Groups[groupIndex];
-            var groupTasks = NewProject.Tasks.Where(t => t.GroupIndex == groupIndex);
+            var groupName = Project.Groups[groupIndex];
+            var groupTasks = Project.Tasks.Where(t => t.GroupIndex == groupIndex);
             var groupExpectedValue = groupTasks.Select(t => t.ExpectedValue).CalculateE();
             var groupStandardDeviation = groupTasks.Select(t => t.StandardDeviation).CalculateSD();
             
@@ -89,16 +89,16 @@
         </MudTd>
         <MudTd>
             <MudMenu Size="Size.Small" Color="Color.Primary" Icon="@Icons.Material.Filled.KeyboardArrowDown">
-                <MudMenuItem IconSize="Size.Small" Icon="@Icons.Material.Filled.Add" IconColor="Color.Success" OnClick="() => NewProject.AddTask(groupIndex)">Add Task</MudMenuItem>
+                <MudMenuItem IconSize="Size.Small" Icon="@Icons.Material.Filled.Add" IconColor="Color.Success" OnClick="() => Project.AddTask(groupIndex)">Add Task</MudMenuItem>
                 <MudMenuItem IconSize="Size.Small" Icon="@Icons.Material.Filled.Edit" IconColor="Color.Primary" OnClick="() => OpenRenameGroup(groupIndex)">Rename Group</MudMenuItem>
-                <MudMenuItem IconSize="Size.Small" Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" OnClick="() => NewProject.DeleteGroup(groupIndex)">Remove Group</MudMenuItem>
+                <MudMenuItem IconSize="Size.Small" Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" OnClick="() => Project.DeleteGroup(groupIndex)">Remove Group</MudMenuItem>
             </MudMenu>
         </MudTd>
     </GroupHeaderTemplate>
     <RowTemplate>
         <MudTd DataLabel="Task">
             <MudText>@context.Name</MudText>
-            <MudText Typo="Typo.caption">@context.Caption(NewProject)</MudText>
+            <MudText Typo="Typo.caption">@context.Caption(Project)</MudText>
         </MudTd>
         <MudTd DataLabel="Average (E)">@context.ExpectedValue.RoundBy(0.01M)</MudTd>
         <MudTd DataLabel="Error (SD)">@context.StandardDeviation.RoundBy(0.01M)</MudTd>
@@ -108,9 +108,9 @@
         <MudTd>
             <MudMenu Size="Size.Small" Icon="@Icons.Material.Filled.KeyboardArrowDown">
                 <MudMenuItem IconSize="Size.Small" Icon="@Icons.Material.Filled.Edit" OnClick="() => OpenEditTask(context)">Edit Task</MudMenuItem>
-                @if (NewProject.Tasks.Count(t => t.GroupIndex == context.GroupIndex) > 1)
+                @if (Project.Tasks.Count(t => t.GroupIndex == context.GroupIndex) > 1)
                 {
-                    <MudMenuItem IconSize="Size.Small" Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" OnClick="() => NewProject.DeleteTask(context)">Remove Task</MudMenuItem>
+                    <MudMenuItem IconSize="Size.Small" Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" OnClick="() => Project.DeleteTask(context)">Remove Task</MudMenuItem>
                 }
             </MudMenu>
         </MudTd>
@@ -120,13 +120,13 @@
             <MudText Color="summaryColor"><b>Summary:</b></MudText>
         </MudTd>
         <MudTd DataLabel="Average (E)">
-            <MudText Color="summaryColor">@NewProject.ExpectedValue.RoundBy(0.01M)</MudText>
+            <MudText Color="summaryColor">@Project.ExpectedValue.RoundBy(0.01M)</MudText>
         </MudTd>
         <MudTd DataLabel="Error (SD)">
-            <MudText Color="summaryColor">@NewProject.StandardDeviation.RoundBy(0.01M)</MudText>
+            <MudText Color="summaryColor">@Project.StandardDeviation.RoundBy(0.01M)</MudText>
         </MudTd>
         <MudTd DataLabel="@($"{ConfidenceInterval}% Confidence Interval")">
-            <MudText Color="summaryColor">@NewProject.ConfidenceInterval(ConfidenceInterval)</MudText>
+            <MudText Color="summaryColor">@Project.ConfidenceInterval(ConfidenceInterval)</MudText>
         </MudTd>
     </FooterContent>
 </MudTable>
@@ -135,13 +135,13 @@
     Variant="Variant.Filled"
     StartIcon="@Icons.Material.Filled.Add" 
     Color="Color.Primary"
-    OnClick="() => NewProject.AddGroup()">
+    OnClick="() => Project.AddGroup()">
     Add Group
 </MudButton>
 
 <MudDialog @bind-IsVisible="_groupRenameDialog" Options="_groupRenameDialogOptions">
     <DialogContent>
-        <MudTextField @bind-Value="NewProject.Groups[_groupIndexToRename]" Variant="Variant.Outlined" Label="Group Name" />
+        <MudTextField @bind-Value="Project.Groups[_groupIndexToRename]" Variant="Variant.Outlined" Label="Group Name" />
     </DialogContent>
 </MudDialog>
 
@@ -203,7 +203,7 @@
                     @for (int k = 0; k < context.GroupIndex; k++)
                     {
                         var value = k;
-                        var group = NewProject.Groups[k];
+                        var group = Project.Groups[k];
                         <MudSelectItem Value="value">
                             <MudText>@group</MudText>
                         </MudSelectItem>
@@ -216,7 +216,7 @@
 </MudDialog>
 
 @code {
-    private TableGroupDefinition<NewTask> _groupDefinition = new()
+    private TableGroupDefinition<EstimateTask> _groupDefinition = new()
     {
         GroupName = "Group",
         Indentation = false,
@@ -227,7 +227,7 @@
 
     private Color summaryColor = Color.Secondary;
 
-    private NewProject NewProject = Controller.SampleNewProject().CalculateTasks();
+    private EstimateProject Project = Controller.SampleProject().CalculateTasks();
 
     private bool _groupRenameDialog = false;
     private readonly DialogOptions _groupRenameDialogOptions = new() { FullWidth = true, CloseButton = true };
@@ -240,8 +240,8 @@
 
     private bool _taskEditDialog = false;
     private readonly DialogOptions _taskEditDialogOptions = new() { FullWidth = true, CloseButton = false };
-    private NewTask _taskEdit;
-    private void OpenEditTask(NewTask taskEdit)
+    private EstimateTask _taskEdit;
+    private void OpenEditTask(EstimateTask taskEdit)
     {
         _taskEdit = taskEdit;
         _taskEditDialog = true;
@@ -249,7 +249,7 @@
 
     private void TaskEditCommit()
     {
-        NewProject.CalculateTasks();
+        Project.CalculateTasks();
         _taskEditDialog = false;
     }
 
@@ -266,9 +266,9 @@
 
     private async Task DownloadJson()
     {
-        string fileName = (NewProject.Name ?? "") + " Estimates.json";
+        string fileName = (Project.Name ?? "") + " Estimates.json";
         using MemoryStream csvFileStream = new MemoryStream(
-            Encoding.UTF8.GetBytes(NewProject.ToJson(beautify: true)));
+            Encoding.UTF8.GetBytes(Project.ToJson(beautify: true)));
         using var streamRef = new DotNetStreamReference(stream: csvFileStream);
         await JS.InvokeVoidAsync("downloadFileFromStream", fileName.Trim(), streamRef);
     }
@@ -280,17 +280,17 @@
         inputFileStream.Position = 0;
         using StreamReader reader = new StreamReader(inputFileStream, Encoding.UTF8);
         string json = reader.ReadToEnd();
-        NewProject = json.FromJson<NewProject>();
+        Project = json.FromJson<EstimateProject>();
     }
 
 
     private void SampleProject()
     {
-        NewProject = Controller.SampleNewProject();
+        Project = Controller.SampleProject();
     }
 
     private void ClearProject()
     {
-        NewProject = new();
+        Project = new();
     }
 }
