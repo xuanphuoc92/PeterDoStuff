@@ -17,7 +17,8 @@
 <MudTable Items="NewProject.Tasks" Breakpoint="Breakpoint.Xs" Dense="true"
     GroupBy="_groupDefinition"
     GroupHeaderStyle="background-color:var(--mud-palette-background-gray)"
-    GroupFooterClass="mb-4">
+    GroupFooterClass="mb-4"
+    RowEditCommit="RowEditCommit">
     <HeaderContent>
         <MudTh>Task</MudTh>
         <MudTh>Average (E)</MudTh>
@@ -58,6 +59,69 @@
             @context.ConfidenceInterval(ConfidenceInterval)
         </MudTd>
     </RowTemplate>
+    <RowEditingTemplate>
+        <MudTd colspan="3">
+            <MudGrid>
+                <MudItem xs="12">
+                    <MudTextField @bind-Value="context.Name" Variant="Variant.Outlined" Label="Task" />
+                </MudItem>
+                <MudItem xs="12" md="3">
+                    <MudSelect Variant="Variant.Outlined" Label="Estimate Type" @bind-Value="context.Type">
+                        @{
+                            var typesToSelect = context.GroupIndex == 0 ? EstimateTypesWithoutPercentage : EstimateTypes;
+                        }
+                        @for (int k = 0; k < typesToSelect.Length; k++)
+                        {
+                            var value = typesToSelect[k];
+                            var text = value.ToString();
+                            <MudSelectItem Value="value">
+                                <MudText>@text</MudText>
+                            </MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+                @if (context.Type == EstimateType.Fixed)
+                {
+                    <MudItem xs="6" md="4">
+                        <MudNumericField @bind-Value="context.ExpectedValue" Label="Value" Variant="Variant.Outlined" Step=".5M" />
+                    </MudItem>
+                    <MudItem xs="6" md="4">
+                        <MudNumericField @bind-Value="context.StandardDeviation" Label="Error" Variant="Variant.Outlined" Step=".1M" />
+                    </MudItem>
+                }
+                @if (context.Type == EstimateType.ThreePoint)
+                {
+                    <MudItem xs="4" md="3">
+                        <MudNumericField @bind-Value="context.Best" Label="Best (a)" Variant="Variant.Outlined" Step=".5M" />
+                    </MudItem>
+                    <MudItem xs="4" md="3">
+                        <MudNumericField @bind-Value="context.Likely" Label="Likely (m)" Variant="Variant.Outlined" Step=".5M" />
+                    </MudItem>
+                    <MudItem xs="4" md="3">
+                        <MudNumericField @bind-Value="context.Worst" Label="Worst (b)" Variant="Variant.Outlined" Step=".5M" />
+                    </MudItem>
+                }
+                @if (context.Type == EstimateType.Percentage)
+                {
+                    <MudItem xs="6" md="4">
+                        <MudNumericField @bind-Value="context.Percentage" Label="%" Variant="Variant.Outlined" Step="5M" />
+                    </MudItem>
+                    <MudItem xs="6" md="4">
+                        <MudSelect Label="Group" Variant="Variant.Outlined" @bind-Value="context.PercentageByGroupIndex">
+                            @for (int k = 0; k < context.GroupIndex; k++)
+                            {
+                                var value = k;
+                                var group = NewProject.Groups[k];
+                                <MudSelectItem Value="value">
+                                    <MudText>@group</MudText>
+                                </MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudItem>
+                }
+            </MudGrid>
+        </MudTd>
+    </RowEditingTemplate>
     <FooterContent>
 
     </FooterContent>
@@ -269,6 +333,10 @@ else
 
     private Project Project = Controller.SampleProject();
     private NewProject NewProject = Controller.SampleNewProject().CalculateTasks();
+    private void RowEditCommit(object rowObject)
+    {
+        NewProject.CalculateTasks();
+    }
 
     private readonly EstimateType[] EstimateTypes 
         = Enum.GetValues(typeof(EstimateType)).Cast<EstimateType>()
