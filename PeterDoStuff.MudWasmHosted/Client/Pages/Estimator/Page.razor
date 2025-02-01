@@ -96,7 +96,10 @@
         <MudTd>
             <MudMenu Size="Size.Small" Icon="@Icons.Material.Filled.KeyboardArrowDown">
                 <MudMenuItem IconSize="Size.Small" Icon="@Icons.Material.Filled.Edit" OnClick="() => OpenEditTask(context)">Edit Task</MudMenuItem>
-                <MudMenuItem IconSize="Size.Small" Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" OnClick="() => NewProject.DeleteTask(context)">Remove Task</MudMenuItem>
+                @if (NewProject.Tasks.Count(t => t.GroupIndex == context.GroupIndex) > 1)
+                {
+                    <MudMenuItem IconSize="Size.Small" Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" OnClick="() => NewProject.DeleteTask(context)">Remove Task</MudMenuItem>
+                }
             </MudMenu>
         </MudTd>
     </RowTemplate>
