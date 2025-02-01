@@ -89,6 +89,133 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
                 ExpectedValue = Groups.Select(g => g.ExpectedValue).CalculateE();
                 StandardDeviation = Groups.Select(g => g.StandardDeviation).CalculateSD();
             }
+
+            public static Project SampleProject()
+            {
+                return new Project()
+                {
+                    Groups = [
+                        new Group(1)
+                        {
+                            Name = "Implementation",
+                            Tasks = [
+                                new EstimateTask(1)
+                                {
+                                    Description = "Create entity tables and columns in Domain",
+                                    EstimateType = EstimateType.ThreePoint,
+                                    ThreePointEstimate = new ThreePointEstimate()
+                                    {
+                                        Best = 0.5M,
+                                        Likely = 1,
+                                        Worst = 3
+                                    }
+                                },
+                                new EstimateTask(1)
+                                {
+                                    Description = "Implement functional services",
+                                    EstimateType = EstimateType.ThreePoint,
+                                    ThreePointEstimate = new ThreePointEstimate()
+                                    {
+                                        Best = 1,
+                                        Likely = 2,
+                                        Worst = 5
+                                    }
+                                },
+                                new EstimateTask(1)
+                                {
+                                    Description = "Create UI controls",
+                                    EstimateType = EstimateType.ThreePoint,
+                                    ThreePointEstimate = new ThreePointEstimate()
+                                    {
+                                        Best = 0.5M,
+                                        Likely = 1,
+                                        Worst = 3
+                                    }
+                                },
+                            ]
+                        },
+                        new Group(2)
+                        {
+                            Name = "Testing and Refining",
+                            Tasks = [
+                                new EstimateTask(1)
+                                {
+                                    Description = "Development Testing",
+                                    EstimateType = EstimateType.Percentage,
+                                    PercentageEstimate = new PercentageEstimate()
+                                    {
+                                        Percentage = 10,
+                                        GroupIndex = 0,
+                                    }
+                                },
+                                new EstimateTask(2)
+                                {
+                                    Description = "User Acceptance Feedback Refining",
+                                    EstimateType = EstimateType.ThreePoint,
+                                    ThreePointEstimate = new ThreePointEstimate()
+                                    {
+                                        Best = 1,
+                                        Likely = 2,
+                                        Worst = 5
+                                    }
+                                },
+                            ]
+                        },
+                        new Group(3)
+                        {
+                            Name = "Analysis and Documentation",
+                            Tasks = [
+                                new EstimateTask(1)
+                                {
+                                    Description = "Requirement Analysis and Documentation",
+                                    EstimateType = EstimateType.Percentage,
+                                    PercentageEstimate = new PercentageEstimate()
+                                    {
+                                        Percentage = 10,
+                                        GroupIndex = 0,
+                                    }
+                                },
+                                new EstimateTask(2)
+                                {
+                                    Description = "User Acceptance Test Sheet",
+                                    EstimateType = EstimateType.ThreePoint,
+                                    ThreePointEstimate = new ThreePointEstimate()
+                                    {
+                                        Best = 0.5M,
+                                        Likely = 1,
+                                        Worst = 3
+                                    }
+                                },
+                            ]
+                        },
+                        new Group(4)
+                        {
+                            Name = "Deployment",
+                            Tasks = [
+                                new EstimateTask(1)
+                                {
+                                    Description = "UAT Deployment",
+                                    EstimateType = EstimateType.Fixed,
+                                    FixedEstimate = new FixedEstimate()
+                                    {
+                                        Value = 1M, Error = 0M
+                                    }
+                                },
+                                new EstimateTask(2)
+                                {
+                                    Description = "PRD Deployment",
+                                    EstimateType = EstimateType.Fixed,
+                                    FixedEstimate = new FixedEstimate()
+                                    {
+                                        Value = 0.5M,
+                                        Error = 0M
+                                    }
+                                },
+                            ]
+                        }
+                    ]
+                };
+            }
         }
 
         public class Group(int number) : EstimateValue
@@ -185,9 +312,9 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
             public override void Calculate(Project project)
             {
                 var group = project.Groups[GroupIndex];
-                ExpectedValue = group.ExpectedValue * Percentage;
+                ExpectedValue = group.ExpectedValue * Percentage / 100;
                 //ExpectedValue = ExpectedValue.RoundBy(project.RoundStep);
-                StandardDeviation = group.StandardDeviation * Percentage;
+                StandardDeviation = group.StandardDeviation * Percentage / 100;
                 //StandardDeviation = StandardDeviation.RoundBy(project.RoundStep);
             }
         }
