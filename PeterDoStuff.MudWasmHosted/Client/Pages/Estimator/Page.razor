@@ -13,11 +13,24 @@
 
 @if (ViewMode)
 {
-    <MudTable Items="Project.ToViewRows()">
+    <MudGrid Class="mb-2">
+        <MudItem xs="6" md="3">
+            <MudSelect @bind-Value="ConfidenceInterval" Variant="Variant.Outlined" Label="Confidence Interval">
+                @foreach (var keyRef in ConfidenceIntervalMaps.Keys)
+                {
+                    var key = keyRef;
+                    <MudSelectItem Value="key">@($"{key}%")</MudSelectItem>
+                }
+            </MudSelect>
+        </MudItem>
+    </MudGrid>
+    
+    <MudTable Items="Project.ToViewRows()" Breakpoint="Breakpoint.Xs">
         <HeaderContent>
             <MudTh></MudTh>
             <MudTh>Average (E)</MudTh>
             <MudTh>Error (SD)</MudTh>
+            <MudTh>@($"{ConfidenceInterval}% Confidence Interval")</MudTh>
         </HeaderContent>
         <RowTemplate>
             @{
@@ -43,6 +56,9 @@
             </MudTd>
             <MudTd DataLabel="Average (E)"><MudText Typo="typo" Color="color">@context.ExpectedValue</MudText></MudTd>
             <MudTd DataLabel="Error (SD)"><MudText Typo="typo" Color="color">@context.StandardDeviation</MudText></MudTd>
+            <MudTd DataLabel="@($"{ConfidenceInterval}% Confidence Interval")"><MudText Typo="typo" Color="color">
+                @context.ConfidenceInterval(ConfidenceInterval)
+            </MudText></MudTd>
         </RowTemplate>
     </MudTable>    
 }
@@ -158,9 +174,6 @@ else
     </EditForm>
 }
 
-
-
-
 @code {
     private Project Project = new();
 
@@ -181,4 +194,6 @@ else
         if (ViewMode == true)
             Project.Calculate(Project);
     }
+
+    private decimal ConfidenceInterval = 95;
 }

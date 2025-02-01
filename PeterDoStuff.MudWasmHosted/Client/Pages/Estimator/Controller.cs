@@ -48,8 +48,26 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
 
             public decimal ExpectedValue => EValue?.ExpectedValue.RoundBy(0.01M) ?? 0;
             public decimal StandardDeviation => EValue?.StandardDeviation.RoundBy(0.01M) ?? 0;
+
+            public string ConfidenceInterval(decimal confidenceInteval)
+            {
+                var sdFactor = ConfidenceIntervalMaps[confidenceInteval];
+                var e = ExpectedValue;
+                var sd = StandardDeviation;
+                var from = e - sdFactor * sd;
+                var to = e + sdFactor * sd;
+                return $"{from.RoundBy(0.01M)} - {to.RoundBy(0.01M)}";
+            }
         }
-        
+
+        public static readonly Dictionary<decimal, decimal> ConfidenceIntervalMaps = new()
+        {
+            { 68, 1 },
+            { 90, 1.645M },
+            { 95, 2 },
+            { 99.7M, 3 },
+        };
+
         public abstract class EstimateValue
         {
             public decimal ExpectedValue { get; set; }
