@@ -28,7 +28,7 @@
         </MudItem>
     </MudGrid>
     
-    <MudTable Items="Project.ToViewRows()" Breakpoint="Breakpoint.Xs">
+    <MudTable Items="Project.ToViewRows()" Breakpoint="Breakpoint.Xs" Dense="true">
         <HeaderContent>
             <MudTh></MudTh>
             <MudTh>Average (E)</MudTh>
@@ -96,12 +96,12 @@ else
 
     <EditForm Model="@Project">
         <MudGrid>
-            <MudItem xs="6" md="9">
+            <MudItem xs="12">
                 <MudTextField Label="Project Name" Variant="Variant.Outlined" @bind-Value="Project.Name" For="@(() => Project.Name)"></MudTextField>
             </MudItem>
-            <MudItem xs="6" md="3">
+            @* <MudItem xs="6" md="3">
                 <MudNumericField @bind-Value="Project.RoundStep" Label="Round By" Variant="Variant.Outlined" />
-            </MudItem>
+            </MudItem> *@
             @for (int i = 0; i < Project.Groups.Count; i++)
             {
                 var groupIndex = i;
@@ -205,7 +205,7 @@ else
 }
 
 @code {
-    private Project Project = Project.SampleProject();
+    private Project Project = Controller.SampleProject();
 
     private readonly EstimateType[] EstimateTypes 
         = Enum.GetValues(typeof(EstimateType)).Cast<EstimateType>()
@@ -249,7 +249,7 @@ else
 
     private void SampleProject()
     {
-        Project = Project.SampleProject();
+        Project = Controller.SampleProject();
     }
 
     private void ClearProject()

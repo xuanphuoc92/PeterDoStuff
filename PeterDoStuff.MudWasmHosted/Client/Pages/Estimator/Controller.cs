@@ -66,6 +66,135 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
             { 99.7M, 3 },
         };
 
+
+        public static Project SampleProject()
+        {
+            return new Project()
+            {
+                Groups = [
+                    new Group()
+                    {
+                        Name = "Implementation",
+                        Tasks = [
+                            new EstimateTask()
+                            {
+                                Description = "Create entity tables and columns in Domain",
+                                EstimateType = EstimateType.ThreePoint,
+                                ThreePointEstimate = new ThreePointEstimate()
+                                {
+                                    Best = 0.5M,
+                                    Likely = 1,
+                                    Worst = 3
+                                }
+                            },
+                            new EstimateTask()
+                            {
+                                Description = "Implement functional services",
+                                EstimateType = EstimateType.ThreePoint,
+                                ThreePointEstimate = new ThreePointEstimate()
+                                {
+                                    Best = 1,
+                                    Likely = 2,
+                                    Worst = 5
+                                }
+                            },
+                            new EstimateTask()
+                            {
+                                Description = "Create UI controls",
+                                EstimateType = EstimateType.ThreePoint,
+                                ThreePointEstimate = new ThreePointEstimate()
+                                {
+                                    Best = 0.5M,
+                                    Likely = 1,
+                                    Worst = 3
+                                }
+                            },
+                        ]
+                    },
+                    new Group()
+                    {
+                        Name = "Testing and Refining",
+                        Tasks = [
+                            new EstimateTask()
+                            {
+                                Description = "Development Testing",
+                                EstimateType = EstimateType.Percentage,
+                                PercentageEstimate = new PercentageEstimate()
+                                {
+                                    Percentage = 10,
+                                    GroupIndex = 0,
+                                }
+                            },
+                            new EstimateTask()
+                            {
+                                Description = "User Acceptance Feedback Refining",
+                                EstimateType = EstimateType.ThreePoint,
+                                ThreePointEstimate = new ThreePointEstimate()
+                                {
+                                    Best = 1,
+                                    Likely = 2,
+                                    Worst = 5
+                                }
+                            },
+                        ]
+                    },
+                    new Group()
+                    {
+                        Name = "Analysis and Documentation",
+                        Tasks = [
+                            new EstimateTask()
+                            {
+                                Description = "Requirement Analysis and Documentation",
+                                EstimateType = EstimateType.Percentage,
+                                PercentageEstimate = new PercentageEstimate()
+                                {
+                                    Percentage = 10,
+                                    GroupIndex = 0,
+                                }
+                            },
+                            new EstimateTask()
+                            {
+                                Description = "User Acceptance Test Sheet",
+                                EstimateType = EstimateType.ThreePoint,
+                                ThreePointEstimate = new ThreePointEstimate()
+                                {
+                                    Best = 0.5M,
+                                    Likely = 1,
+                                    Worst = 3
+                                }
+                            },
+                        ]
+                    },
+                    new Group()
+                    {
+                        Name = "Deployment",
+                        Tasks = [
+                            new EstimateTask()
+                            {
+                                Description = "UAT Deployment",
+                                EstimateType = EstimateType.Fixed,
+                                FixedEstimate = new FixedEstimate()
+                                {
+                                    Value = 1M,
+                                    Error = 0M
+                                }
+                            },
+                            new EstimateTask()
+                            {
+                                Description = "PRD Deployment",
+                                EstimateType = EstimateType.Fixed,
+                                FixedEstimate = new FixedEstimate()
+                                {
+                                    Value = 0.5M,
+                                    Error = 0M
+                                }
+                            },
+                        ]
+                    }
+                ]
+            };
+        }
+
         public abstract class EstimateValue
         {
             public decimal ExpectedValue { get; set; }
@@ -86,133 +215,6 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
                 Groups.ForEach(g => g.Calculate(project));
                 ExpectedValue = Groups.Select(g => g.ExpectedValue).CalculateE();
                 StandardDeviation = Groups.Select(g => g.StandardDeviation).CalculateSD();
-            }
-
-            public static Project SampleProject()
-            {
-                return new Project()
-                {
-                    Groups = [
-                        new Group()
-                        {
-                            Name = "Implementation",
-                            Tasks = [
-                                new EstimateTask()
-                                {
-                                    Description = "Create entity tables and columns in Domain",
-                                    EstimateType = EstimateType.ThreePoint,
-                                    ThreePointEstimate = new ThreePointEstimate()
-                                    {
-                                        Best = 0.5M,
-                                        Likely = 1,
-                                        Worst = 3
-                                    }
-                                },
-                                new EstimateTask()
-                                {
-                                    Description = "Implement functional services",
-                                    EstimateType = EstimateType.ThreePoint,
-                                    ThreePointEstimate = new ThreePointEstimate()
-                                    {
-                                        Best = 1,
-                                        Likely = 2,
-                                        Worst = 5
-                                    }
-                                },
-                                new EstimateTask()
-                                {
-                                    Description = "Create UI controls",
-                                    EstimateType = EstimateType.ThreePoint,
-                                    ThreePointEstimate = new ThreePointEstimate()
-                                    {
-                                        Best = 0.5M,
-                                        Likely = 1,
-                                        Worst = 3
-                                    }
-                                },
-                            ]
-                        },
-                        new Group()
-                        {
-                            Name = "Testing and Refining",
-                            Tasks = [
-                                new EstimateTask()
-                                {
-                                    Description = "Development Testing",
-                                    EstimateType = EstimateType.Percentage,
-                                    PercentageEstimate = new PercentageEstimate()
-                                    {
-                                        Percentage = 10,
-                                        GroupIndex = 0,
-                                    }
-                                },
-                                new EstimateTask()
-                                {
-                                    Description = "User Acceptance Feedback Refining",
-                                    EstimateType = EstimateType.ThreePoint,
-                                    ThreePointEstimate = new ThreePointEstimate()
-                                    {
-                                        Best = 1,
-                                        Likely = 2,
-                                        Worst = 5
-                                    }
-                                },
-                            ]
-                        },
-                        new Group()
-                        {
-                            Name = "Analysis and Documentation",
-                            Tasks = [
-                                new EstimateTask()
-                                {
-                                    Description = "Requirement Analysis and Documentation",
-                                    EstimateType = EstimateType.Percentage,
-                                    PercentageEstimate = new PercentageEstimate()
-                                    {
-                                        Percentage = 10,
-                                        GroupIndex = 0,
-                                    }
-                                },
-                                new EstimateTask()
-                                {
-                                    Description = "User Acceptance Test Sheet",
-                                    EstimateType = EstimateType.ThreePoint,
-                                    ThreePointEstimate = new ThreePointEstimate()
-                                    {
-                                        Best = 0.5M,
-                                        Likely = 1,
-                                        Worst = 3
-                                    }
-                                },
-                            ]
-                        },
-                        new Group()
-                        {
-                            Name = "Deployment",
-                            Tasks = [
-                                new EstimateTask()
-                                {
-                                    Description = "UAT Deployment",
-                                    EstimateType = EstimateType.Fixed,
-                                    FixedEstimate = new FixedEstimate()
-                                    {
-                                        Value = 1M, Error = 0M
-                                    }
-                                },
-                                new EstimateTask()
-                                {
-                                    Description = "PRD Deployment",
-                                    EstimateType = EstimateType.Fixed,
-                                    FixedEstimate = new FixedEstimate()
-                                    {
-                                        Value = 0.5M,
-                                        Error = 0M
-                                    }
-                                },
-                            ]
-                        }
-                    ]
-                };
             }
         }
 
