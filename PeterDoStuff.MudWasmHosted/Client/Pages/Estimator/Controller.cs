@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using static PeterDoStuff.MudWasmHosted.Client.Pages.Estimator.Controller;
+﻿using static PeterDoStuff.MudWasmHosted.Client.Pages.Estimator.Controller;
 
 namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
 {
@@ -17,10 +16,38 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
                 throw new ArgumentException("Step must be greater than zero.", nameof(step));
             return Math.Round(number / step) * step;
         }
+
+        public static List<ViewRow> ToViewRows(this Project project)
+        {
+            List<ViewRow> results = [];
+
+            results.Add(new ViewRow { Project = project });
+            foreach (var group in project.Groups)
+            {
+                results.Add(new ViewRow { Group = group });
+                foreach (var task in group.Tasks)
+                {
+                    results.Add(new ViewRow { Task = task });
+                }
+            }
+            return results;
+        }
     }
 
     public class Controller
     {
+        public class ViewRow
+        {
+            public Project? Project { get; set; } = null;
+            public Group? Group { get; set; } = null;
+            public EstimateTask? Task { get; set; } = null;
+
+            private EstimateValue? EValue => (EstimateValue)Project ?? (EstimateValue)Group ?? Task;
+
+            public decimal ExpectedValue => EValue?.ExpectedValue.RoundBy(0.01M) ?? 0;
+            public decimal StandardDeviation => EValue?.StandardDeviation.RoundBy(0.01M) ?? 0;
+        }
+        
         public abstract class EstimateValue
         {
             public decimal ExpectedValue { get; set; }
