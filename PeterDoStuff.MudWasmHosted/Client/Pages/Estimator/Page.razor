@@ -53,7 +53,7 @@
     </MudItem>
 </MudGrid>
 
-<MudTable Items="Project.Tasks" Breakpoint="Breakpoint.Xs" Dense="true" B
+<MudTable Items="Project.Tasks" Breakpoint="Breakpoint.Xs" Dense="true"
     GroupBy="_groupDefinition"
     GroupFooterClass="mb-4">
     <HeaderContent>
@@ -117,21 +117,31 @@
     </RowTemplate>
     <FooterContent>
         <MudTd>
-            <MudText Color="summaryColor"><b>Summary:</b></MudText>
+            <MudText Color="_summaryColor"><b>Summary:</b></MudText>
         </MudTd>
         <MudTd DataLabel="Average (E)">
-            <MudText Color="summaryColor">@Project.ExpectedValue.RoundBy(0.01M)</MudText>
+            <MudText Color="_summaryColor">@Project.ExpectedValue.RoundBy(0.01M)</MudText>
         </MudTd>
         <MudTd DataLabel="Error (SD)">
-            <MudText Color="summaryColor">@Project.StandardDeviation.RoundBy(0.01M)</MudText>
+            <MudText Color="_summaryColor">@Project.StandardDeviation.RoundBy(0.01M)</MudText>
         </MudTd>
         <MudTd DataLabel="@($"{ConfidenceInterval}% Confidence Interval")">
-            <MudText Color="summaryColor">@Project.ConfidenceInterval(ConfidenceInterval)</MudText>
+            <MudText Color="_summaryColor">@Project.ConfidenceInterval(ConfidenceInterval)</MudText>
         </MudTd>
     </FooterContent>
 </MudTable>
 
+<MudBreakpointProvider>
+    <MudHidden Breakpoint="Breakpoint.Xs" Invert="true">
+        <MudText Typo="Typo.h5" Color="_summaryColor">Summary:</MudText>
+        <MudText Color="_summaryColor"><b>Average (E):</b> @Project.ExpectedValue.RoundBy(0.01M)</MudText>
+        <MudText Color="_summaryColor"><b>Error (SD):</b> @Project.StandardDeviation.RoundBy(0.01M)</MudText>
+        <MudText Color="_summaryColor"><b>@($"{ConfidenceInterval}% Confidence Interval"):</b> @Project.ConfidenceInterval(ConfidenceInterval)</MudText>
+    </MudHidden>
+</MudBreakpointProvider>
+
 <MudButton 
+    Class="mt-2"
     Variant="Variant.Filled"
     StartIcon="@Icons.Material.Filled.Add" 
     Color="Color.Primary"
@@ -225,7 +235,7 @@
         Selector = (e) => e.GroupIndex
     };
 
-    private Color summaryColor = Color.Secondary;
+    private Color _summaryColor = Color.Secondary;
 
     private EstimateProject Project = Controller.SampleProject().CalculateTasks();
 
