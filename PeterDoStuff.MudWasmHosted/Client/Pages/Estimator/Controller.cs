@@ -174,7 +174,7 @@ To improve future Estimates, it is recommended to perform Retrospective after al
                 var (_, projectTo) = ConfidenceInterval(ContingencyConfidence, TotalRound);
                 sb.AppendLine($"| | **TOTAL** | **{ExpectedValue.RoundBy(TotalRound)}** | **{standardDeviation.RoundBy(TotalRound)}** | **{sdFactor * standardDeviation}** | **{projectTo}** |");
                 sb.AppendLine();
-                sb.AppendLine("- Total Standard Deviation Reduction = " + (sum - projectTo) + " Man-days");
+                sb.AppendLine("- Total Contingency Reduction = " + (sum - projectTo) + " Man-days");
                 sb.AppendLine();
                 sb.AppendLine("**Footnotes:**");
 
