@@ -66,9 +66,9 @@
     GroupFooterClass="mb-4">
     <HeaderContent>
         <MudTh>Task</MudTh>
-        <MudTh>Average (E)</MudTh>
-        <MudTh>Error (SD)</MudTh>
-        <MudTh>@($"{ConfidenceInterval}% Confidence Interval")</MudTh>
+        <MudTh>@ExpectedValueLabel</MudTh>
+        <MudTh>@StandardDeviationLabel</MudTh>
+        <MudTh>@ConfidenceIntervalLabel</MudTh>
         <MudTh></MudTh>
     </HeaderContent>
     <GroupHeaderTemplate>
@@ -86,13 +86,13 @@
         <MudTd DataLabel="Group" Class="mud-table-cell-custom-group">
             <MudText Color="Color.Primary">@groupName</MudText>
         </MudTd>
-        <MudTd DataLabel="Average (E)" Class="mud-table-cell-custom-group">
+        <MudTd DataLabel="@ExpectedValueLabel" Class="mud-table-cell-custom-group">
             <MudText Color="Color.Primary">@groupExpectedValue.RoundBy(0.01M)</MudText>
         </MudTd>
-        <MudTd DataLabel="Error (SD)" Class="mud-table-cell-custom-group">
+        <MudTd DataLabel="@StandardDeviationLabel" Class="mud-table-cell-custom-group">
                 <MudText Color="Color.Primary">@groupStandardDeviation.RoundBy(0.01M)</MudText>
         </MudTd>
-        <MudTd DataLabel="@($"{ConfidenceInterval}% Confidence Interval")" Class="mud-table-cell-custom-group">
+        <MudTd DataLabel="@ConfidenceIntervalLabel" Class="mud-table-cell-custom-group">
             <MudText Color="Color.Primary">@groupCI</MudText>
         </MudTd>
         <MudTd>
@@ -108,9 +108,9 @@
             <MudText>@context.Name</MudText>
             <MudText Typo="Typo.caption">@context.Caption(Project)</MudText>
         </MudTd>
-        <MudTd DataLabel="Average (E)">@context.ExpectedValue.RoundBy(0.01M)</MudTd>
-        <MudTd DataLabel="Error (SD)">@context.StandardDeviation.RoundBy(0.01M)</MudTd>
-        <MudTd DataLabel="@($"{ConfidenceInterval}% Confidence Interval")">
+        <MudTd DataLabel="@ExpectedValueLabel">@context.ExpectedValue.RoundBy(0.01M)</MudTd>
+        <MudTd DataLabel="@StandardDeviationLabel">@context.StandardDeviation.RoundBy(0.01M)</MudTd>
+        <MudTd DataLabel="@ConfidenceIntervalLabel">
             @context.ConfidenceInterval(ConfidenceInterval)
         </MudTd>
         <MudTd>
@@ -127,13 +127,13 @@
         <MudTd>
             <MudText Color="_summaryColor"><b>Summary:</b></MudText>
         </MudTd>
-        <MudTd DataLabel="Average (E)">
+        <MudTd DataLabel="@ExpectedValueLabel">
             <MudText Color="_summaryColor">@Project.ExpectedValue.RoundBy(0.01M)</MudText>
         </MudTd>
-        <MudTd DataLabel="Error (SD)">
+        <MudTd DataLabel="@StandardDeviationLabel">
             <MudText Color="_summaryColor">@Project.StandardDeviation.RoundBy(0.01M)</MudText>
         </MudTd>
-        <MudTd DataLabel="@($"{ConfidenceInterval}% Confidence Interval")">
+        <MudTd DataLabel="@ConfidenceIntervalLabel">
             <MudText Color="_summaryColor">@Project.ConfidenceInterval(ConfidenceInterval)</MudText>
         </MudTd>
     </FooterContent>
@@ -142,9 +142,9 @@
 <MudBreakpointProvider>
     <MudHidden Breakpoint="Breakpoint.Xs" Invert="true">
         <MudText Typo="Typo.h5" Color="_summaryColor">Summary:</MudText>
-        <MudText Color="_summaryColor"><b>Average (E):</b> @Project.ExpectedValue.RoundBy(0.01M)</MudText>
-        <MudText Color="_summaryColor"><b>Error (SD):</b> @Project.StandardDeviation.RoundBy(0.01M)</MudText>
-        <MudText Color="_summaryColor"><b>@($"{ConfidenceInterval}% Confidence Interval"):</b> @Project.ConfidenceInterval(ConfidenceInterval)</MudText>
+        <MudText Color="_summaryColor"><b>@ExpectedValueLabel:</b> @Project.ExpectedValue.RoundBy(0.01M)</MudText>
+        <MudText Color="_summaryColor"><b>@StandardDeviationLabel:</b> @Project.StandardDeviation.RoundBy(0.01M)</MudText>
+        <MudText Color="_summaryColor"><b>@ConfidenceIntervalLabel:</b> @Project.ConfidenceInterval(ConfidenceInterval)</MudText>
     </MudHidden>
 </MudBreakpointProvider>
 
@@ -234,6 +234,10 @@
 </MudDialog>
 
 @code {
+    private const string ExpectedValueLabel = "Expected Value (E)";
+    private const string StandardDeviationLabel = "Standard Deviation (SD)";
+    private string ConfidenceIntervalLabel => $"{ConfidenceInterval}% Confidence Interval";
+
     private MudTable<EstimateTask> _table;
 
     private TableGroupDefinition<EstimateTask> _groupDefinition = new()
