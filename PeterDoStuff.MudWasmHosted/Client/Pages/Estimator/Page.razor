@@ -263,6 +263,22 @@
     </RowTemplate>
 </MudTable>
 
+<MudGrid>
+    <MudItem xs="12" md="3">
+        <MudText Color="_summaryColor">Total Man-days:</MudText>
+    </MudItem>
+    <MudItem xs="12" md="9">
+        <MudText Color="_summaryColor">
+            @Project.Tasks.Sum(t => t.ExpectedValue.RoundBy(0.01M))
+            + @Project.Tasks.Sum(t => t.Contingency(Project.ContingencyConfidence).RoundBy(0.01M))
+            - @((Project.Tasks.Sum(t => t.Contingency(Project.ContingencyConfidence).RoundBy(0.01M)) - Project.Contingency(Project.ContingencyConfidence).RoundBy(0.01M)))
+        </MudText>
+        <MudText Color="_summaryColor">
+            = @(Project.Tasks.Sum(t => t.ExpectedValue.RoundBy(0.01M)) + Project.Contingency(Project.ContingencyConfidence).RoundBy(0.01M))
+        </MudText>
+    </MudItem>
+</MudGrid>
+
 @code {
     private const string ExpectedValueLabel = "Expected Value (E)";
     private const string StandardDeviationLabel = "Standard Deviation (SD)";
