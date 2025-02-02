@@ -203,14 +203,20 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
                 return this;
             }
 
-            public string ConfidenceInterval(decimal confidenceInteval)
+            public string ConfidenceInterval(decimal confidence)
             {
-                var sdFactor = ConfidenceIntervalMaps[confidenceInteval];
+                var sdFactor = ConfidenceIntervalMaps[confidence];
                 var e = ExpectedValue;
-                var sd = StandardDeviation;
-                var from = e - sdFactor * sd;
-                var to = e + sdFactor * sd;
+                var contingency = Contingency(confidence);
+                var from = e - contingency;
+                var to = e + contingency;
                 return $"{from.RoundBy(0.01M)} - {to.RoundBy(0.01M)}";
+            }
+
+            public decimal Contingency(decimal confidence)
+            {
+                var sdFactor = ConfidenceIntervalMaps[confidence];
+                return StandardDeviation * sdFactor;
             }
         }
 
@@ -227,14 +233,20 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
             public decimal Percentage { get; set; }
             public int PercentageByGroupIndex { get; set; }
 
-            public string ConfidenceInterval(decimal confidenceInteval)
+            public string ConfidenceInterval(decimal confidence)
             {
-                var sdFactor = ConfidenceIntervalMaps[confidenceInteval];
+                var sdFactor = ConfidenceIntervalMaps[confidence];
                 var e = ExpectedValue;
-                var sd = StandardDeviation;
-                var from = e - sdFactor * sd;
-                var to = e + sdFactor * sd;
+                var contingency = Contingency(confidence);
+                var from = e - contingency;
+                var to = e + contingency;
                 return $"{from.RoundBy(0.01M)} - {to.RoundBy(0.01M)}";
+            }
+
+            public decimal Contingency(decimal confidence)
+            {
+                var sdFactor = ConfidenceIntervalMaps[confidence];
+                return StandardDeviation * sdFactor;
             }
 
             public string Caption(EstimateProject project)

@@ -244,6 +244,25 @@
     }
 </MudSelect>
 
+<MudTable Items="Project.Tasks" Breakpoint="Breakpoint.Xs" Dense="true">
+    <HeaderContent>
+        <MudTh>Category</MudTh>
+        <MudTh>Item</MudTh>
+        <MudTh>@ExpectedValueLabel</MudTh>
+        <MudTh>@StandardDeviationLabel</MudTh>
+        <MudTh>Contingency</MudTh>
+        <MudTh>Man-days</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Category">@Project.Groups[context.GroupIndex]</MudTd>
+        <MudTd DataLabel="Item">@context.Name</MudTd>
+        <MudTd DataLabel="@ExpectedValueLabel">@context.ExpectedValue.RoundBy(0.01M)</MudTd>
+        <MudTd DataLabel="@StandardDeviationLabel">@context.StandardDeviation.RoundBy(0.01M)</MudTd>
+        <MudTd DataLabel="Contingency">@context.Contingency(Project.ContingencyConfidence).RoundBy(0.01M)</MudTd>
+        <MudTd DataLabel="Man-days">@((context.ExpectedValue + context.Contingency(Project.ContingencyConfidence)).RoundBy(0.01M))</MudTd>
+    </RowTemplate>
+</MudTable>
+
 @code {
     private const string ExpectedValueLabel = "Expected Value (E)";
     private const string StandardDeviationLabel = "Standard Deviation (SD)";
