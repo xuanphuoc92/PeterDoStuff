@@ -233,6 +233,17 @@
     </DialogContent>
 </MudDialog>
 
+<MudDivider Class="my-2" />
+
+<MudSelect @bind-Value="Project.ContingencyConfidence" Variant="Variant.Outlined" Label="Contingency Confidence Level">
+    @foreach (var kv in ConfidenceIntervalMaps)
+    {
+        var key = kv.Key;
+        var value = kv.Value;
+        <MudSelectItem Value="key">@($"{key}% - {value} x SD")</MudSelectItem>
+    }
+</MudSelect>
+
 @code {
     private const string ExpectedValueLabel = "Expected Value (E)";
     private const string StandardDeviationLabel = "Standard Deviation (SD)";
