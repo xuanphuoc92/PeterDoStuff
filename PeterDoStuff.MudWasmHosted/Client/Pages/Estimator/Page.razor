@@ -42,17 +42,24 @@
 </div>
 
 <MudGrid Class="my-2">
-    <MudItem xs="6" md="9">
+    <MudItem xs="12">
         <MudTextField @bind-Value="@Project.Name" Label="Project Name" Variant="Variant.Outlined"/>
     </MudItem>
-    <MudItem xs="6" md="3">
-        <MudSelect @bind-Value="ConfidenceInterval" Variant="Variant.Outlined" Label="Confidence Interval">
-            @foreach (var keyRef in ConfidenceIntervalMaps.Keys)
+    <MudItem xs="4">
+        <MudSelect @bind-Value="Project.ContingencyConfidence" Variant="Variant.Outlined" Label="Confidence Level">
+            @foreach (var kv in ConfidenceIntervalMaps)
             {
-                var key = keyRef;
-                <MudSelectItem Value="key">@($"{key}%")</MudSelectItem>
+                var key = kv.Key;
+                var value = kv.Value;
+                <MudSelectItem Value="key">@($"{key}% - {value} x SD")</MudSelectItem>
             }
         </MudSelect>
+    </MudItem>
+    <MudItem xs="4">
+        <MudNumericField @bind-Value="Project.BreakdownRound" Label="Breakdown Round" Variant="Variant.Outlined" HideSpinButtons="true" />
+    </MudItem>
+    <MudItem xs="4">
+        <MudNumericField @bind-Value="Project.TotalRound" Label="Total Round" Variant="Variant.Outlined" HideSpinButtons="true" />
     </MudItem>
     <MudItem xs="12">
         <MudButton Color="Color.Primary" Variant="Variant.Outlined" OnClick="() => _table.ExpandAllGroups()">Expand All</MudButton>
@@ -359,7 +366,7 @@
         .Where(et => et != EstimateType.Percentage)
         .ToArray();
 
-    private decimal ConfidenceInterval = 95;
+    private decimal ConfidenceInterval => Project.ContingencyConfidence;
 
     private async Task DownloadJson()
     {
