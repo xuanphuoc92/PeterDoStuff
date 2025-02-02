@@ -181,8 +181,8 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
                 Tasks.Remove(task);
             }
 
-            public decimal ExpectedValue => Tasks.Select(t => t.ExpectedValue).CalculateE();
-            public decimal StandardDeviation => Tasks.Select(t => t.StandardDeviation).CalculateSD();
+            public decimal ExpectedValue => Tasks.Select(t => t.ExpectedValue.RoundBy(BreakdownRound)).CalculateE();
+            public decimal StandardDeviation => Tasks.Select(t => t.StandardDeviation.RoundBy(BreakdownRound)).CalculateSD().RoundBy(BreakdownRound);
 
             public EstimateProject CalculateTasks()
             {
