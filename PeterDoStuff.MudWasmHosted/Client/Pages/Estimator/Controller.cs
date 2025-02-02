@@ -53,7 +53,9 @@ The Estimate is **TEMPORARY**: An estimate for a service today can be different 
 
 The Standard Deviation of all tasks is **NOT the Sum of each task's Standard Deviation**. Instead, it is the Sum of each task's (Standard Deviation)^2, then Square-root the Sum. Hence, the Man-days for all tasks is **NOT the Sum of each task's Man-days**.
 
-If the service has lower risk, consider lowering the Contingency's Confidence Level to 68%, corresponding to 1 x SD. Otherwise, consider increasing the Contingency's Confidence Level to 99.7%, corresponding to 3 x SD.",
+If the service has lower risk, consider lowering the Contingency's Confidence Level to 68%, corresponding to 1 x SD. Otherwise, consider increasing the Contingency's Confidence Level to 99.7%, corresponding to 3 x SD.
+
+To improve future Estimates, it is recommended to perform Retrospective after all the tasks of the service are completed. Actual man-days should be compared to the estimated man-days, for the whole service or for individual tasks, to fine-tune any estimate that is underestimated or overestimated significantly.",
                 Tasks = [
                     new EstimateTask()
                     {
