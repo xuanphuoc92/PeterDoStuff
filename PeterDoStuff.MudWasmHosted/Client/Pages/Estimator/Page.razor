@@ -247,12 +247,16 @@
         </MudSelect>
     </MudItem>
     <MudItem xs="4">
-        <MudNumericField @bind-Value="Project.BreakdownRound" Label="Breakdown Round" />
+        <MudNumericField @bind-Value="Project.BreakdownRound" Label="Breakdown Round" Variant="Variant.Outlined" HideSpinButtons="true" />
     </MudItem>
     <MudItem xs="4">
-        <MudNumericField @bind-Value="Project.TotalRound" Label="Total Round" />
+        <MudNumericField @bind-Value="Project.TotalRound" Label="Total Round" Variant="Variant.Outlined" HideSpinButtons="true" />
     </MudItem>
 </MudGrid>
+
+@{
+    var contingencyLabel = $"Contingency ({ConfidenceIntervalMaps[Project.ContingencyConfidence]} x SD)";
+}
 
 <MudTable Items="Project.Tasks" Breakpoint="Breakpoint.Xs" Dense="true">
     <HeaderContent>
@@ -260,7 +264,7 @@
         <MudTh>Item</MudTh>
         <MudTh>@ExpectedValueLabel</MudTh>
         <MudTh>@StandardDeviationLabel</MudTh>
-        <MudTh>Contingency</MudTh>
+            <MudTh>@contingencyLabel</MudTh>
         <MudTh>Man-days</MudTh>
     </HeaderContent>
     <RowTemplate>
@@ -268,7 +272,7 @@
         <MudTd DataLabel="Item">@context.Name</MudTd>
         <MudTd DataLabel="@ExpectedValueLabel">@context.ExpectedValue.RoundBy(Project.BreakdownRound)</MudTd>
         <MudTd DataLabel="@StandardDeviationLabel">@context.StandardDeviation.RoundBy(0.01M)</MudTd>
-        <MudTd DataLabel="Contingency">@context.Contingency(Project.ContingencyConfidence).RoundBy(Project.BreakdownRound)</MudTd>
+        <MudTd DataLabel="@contingencyLabel">@context.Contingency(Project.ContingencyConfidence).RoundBy(Project.BreakdownRound)</MudTd>
         <MudTd DataLabel="Man-days">@(context.ExpectedValue.RoundBy(Project.BreakdownRound) + context.Contingency(Project.ContingencyConfidence).RoundBy(Project.BreakdownRound))</MudTd>
     </RowTemplate>
 </MudTable>
@@ -279,9 +283,9 @@
     var actualContingency = Project.Contingency(Project.ContingencyConfidence).RoundBy(Project.BreakdownRound);
 }
 
-<MudGrid>
+<MudGrid Class="my-2">
     <MudItem xs="12" md="3">
-        <MudText Typo="Typo.h5" Color="_summaryColor">Total Man-days</MudText>
+        <MudText Color="_summaryColor">Total Man-days</MudText>
     </MudItem>
     <MudItem xs="12" md="3">
         <MudText Color="_summaryColor">
