@@ -203,13 +203,13 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
                 return this;
             }
 
-            public string ConfidenceInterval(decimal confidence, decimal round = 0.01M)
+            public (decimal From, decimal To) ConfidenceInterval(decimal confidence, decimal round = 0.01M)
             {
                 var e = ExpectedValue.RoundBy(round);
                 var contingency = Contingency(confidence, round);
                 var from = e - contingency;
                 var to = e + contingency;
-                return $"{from} - {to}";
+                return (from, to);
             }
 
             public decimal Contingency(decimal confidence, decimal round = 0.01M)
@@ -232,13 +232,13 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
             public decimal Percentage { get; set; }
             public int PercentageByGroupIndex { get; set; }
 
-            public string ConfidenceInterval(decimal confidence, decimal round = 0.01M)
+            public (decimal From, decimal To) ConfidenceInterval(decimal confidence, decimal round = 0.01M)
             {
                 var e = ExpectedValue.RoundBy(round);
                 var contingency = Contingency(confidence, round);
                 var from = e - contingency;
                 var to = e + contingency;
-                return $"{from} - {to}";
+                return (from, to);
             }
 
             public decimal Contingency(decimal confidence, decimal round = 0.01M)

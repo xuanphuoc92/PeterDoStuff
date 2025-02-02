@@ -79,7 +79,7 @@
         <MudTh></MudTh>
     </HeaderContent>
     <GroupHeaderTemplate>
-            @{
+        @{
             var groupIndex = (int)context.Key;
             var groupName = Project.Groups[groupIndex];
             var groupTasks = Project.Tasks.Where(t => t.GroupIndex == groupIndex);
@@ -95,10 +95,10 @@
             <MudText Color="Color.Primary">@groupName</MudText>
         </MudTd>
         <MudTd DataLabel="@ExpectedValueLabel" Class="mud-table-cell-custom-group">
-            <MudText Color="Color.Primary">@groupExpectedValue.RoundBy(0.01M)</MudText>
+            <MudText Color="Color.Primary">@groupExpectedValue</MudText>
         </MudTd>
         <MudTd DataLabel="@StandardDeviationLabel" Class="mud-table-cell-custom-group">
-                <MudText Color="Color.Primary">@groupStandardDeviation.RoundBy(0.01M)</MudText>
+                <MudText Color="Color.Primary">@groupStandardDeviation</MudText>
         </MudTd>
         <MudTd DataLabel="@ConfidenceIntervalLabel" Class="mud-table-cell-custom-group">
             <MudText Color="Color.Primary">@groupCI</MudText>
@@ -119,7 +119,10 @@
         <MudTd DataLabel="@ExpectedValueLabel">@context.ExpectedValue.RoundBy(Project.BreakdownRound)</MudTd>
             <MudTd DataLabel="@StandardDeviationLabel">@context.StandardDeviation.RoundBy(Project.BreakdownRound)</MudTd>
         <MudTd DataLabel="@ConfidenceIntervalLabel">
-            @context.ConfidenceInterval(Project.ContingencyConfidence, Project.BreakdownRound)
+            @{
+                var (from, to) = context.ConfidenceInterval(Project.ContingencyConfidence, Project.BreakdownRound);
+            }
+            @from - @to
         </MudTd>
         <MudTd>
             <MudMenu Size="Size.Small" Icon="@Icons.Material.Filled.KeyboardArrowDown">
@@ -142,7 +145,10 @@
                 <MudText Color="_summaryColor">@Project.StandardDeviation.RoundBy(Project.TotalRound)</MudText>
         </MudTd>
         <MudTd DataLabel="@ConfidenceIntervalLabel">
-            <MudText Color="_summaryColor">@Project.ConfidenceInterval(Project.ContingencyConfidence, Project.TotalRound)</MudText>
+            @{
+                var (from, to) = Project.ConfidenceInterval(Project.ContingencyConfidence, Project.TotalRound);
+            }
+            <MudText Color="_summaryColor">@from - @to</MudText>
         </MudTd>
     </FooterContent>
 </MudTable>
@@ -152,7 +158,10 @@
         <MudText Typo="Typo.h5" Color="_summaryColor">Summary:</MudText>
             <MudText Color="_summaryColor"><b>@ExpectedValueLabel:</b> @Project.ExpectedValue.RoundBy(Project.TotalRound)</MudText>
             <MudText Color="_summaryColor"><b>@StandardDeviationLabel:</b> @Project.StandardDeviation.RoundBy(Project.TotalRound)</MudText>
-            <MudText Color="_summaryColor"><b>@ConfidenceIntervalLabel:</b> @Project.ConfidenceInterval(Project.ContingencyConfidence, Project.TotalRound)</MudText>
+            @{
+                var (from, to) = Project.ConfidenceInterval(Project.ContingencyConfidence, Project.TotalRound);
+            }
+            <MudText Color="_summaryColor"><b>@ConfidenceIntervalLabel:</b> @from - @to</MudText>
     </MudHidden>
 </MudBreakpointProvider>
 
