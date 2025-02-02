@@ -118,7 +118,7 @@
         <MudTd DataLabel="@ExpectedValueLabel">@context.ExpectedValue.RoundBy(Project.BreakdownRound)</MudTd>
             <MudTd DataLabel="@StandardDeviationLabel">@context.StandardDeviation.RoundBy(Project.BreakdownRound)</MudTd>
         <MudTd DataLabel="@ConfidenceIntervalLabel">
-            @context.ConfidenceInterval(ConfidenceInterval)
+            @context.ConfidenceInterval(ConfidenceInterval, Project.BreakdownRound)
         </MudTd>
         <MudTd>
             <MudMenu Size="Size.Small" Icon="@Icons.Material.Filled.KeyboardArrowDown">
@@ -141,7 +141,7 @@
                 <MudText Color="_summaryColor">@Project.StandardDeviation.RoundBy(Project.TotalRound)</MudText>
         </MudTd>
         <MudTd DataLabel="@ConfidenceIntervalLabel">
-            <MudText Color="_summaryColor">@Project.ConfidenceInterval(ConfidenceInterval)</MudText>
+            <MudText Color="_summaryColor">@Project.ConfidenceInterval(ConfidenceInterval, Project.TotalRound)</MudText>
         </MudTd>
     </FooterContent>
 </MudTable>
@@ -151,7 +151,7 @@
         <MudText Typo="Typo.h5" Color="_summaryColor">Summary:</MudText>
             <MudText Color="_summaryColor"><b>@ExpectedValueLabel:</b> @Project.ExpectedValue.RoundBy(Project.TotalRound)</MudText>
             <MudText Color="_summaryColor"><b>@StandardDeviationLabel:</b> @Project.StandardDeviation.RoundBy(Project.TotalRound)</MudText>
-        <MudText Color="_summaryColor"><b>@ConfidenceIntervalLabel:</b> @Project.ConfidenceInterval(ConfidenceInterval)</MudText>
+            <MudText Color="_summaryColor"><b>@ConfidenceIntervalLabel:</b> @Project.ConfidenceInterval(ConfidenceInterval, Project.TotalRound)</MudText>
     </MudHidden>
 </MudBreakpointProvider>
 
@@ -279,15 +279,15 @@
         <MudTd DataLabel="Item">@context.Name</MudTd>
         <MudTd DataLabel="@ExpectedValueLabel">@context.ExpectedValue.RoundBy(Project.BreakdownRound)</MudTd>
         <MudTd DataLabel="@StandardDeviationLabel">@context.StandardDeviation.RoundBy(0.01M)</MudTd>
-        <MudTd DataLabel="@contingencyLabel">@context.Contingency(Project.ContingencyConfidence).RoundBy(Project.BreakdownRound)</MudTd>
-        <MudTd DataLabel="Man-days">@(context.ExpectedValue.RoundBy(Project.BreakdownRound) + context.Contingency(Project.ContingencyConfidence).RoundBy(Project.BreakdownRound))</MudTd>
+        <MudTd DataLabel="@contingencyLabel">@context.Contingency(Project.ContingencyConfidence, Project.BreakdownRound)</MudTd>
+            <MudTd DataLabel="Man-days">@(context.ExpectedValue.RoundBy(Project.BreakdownRound) + context.Contingency(Project.ContingencyConfidence, Project.BreakdownRound))</MudTd>
     </RowTemplate>
 </MudTable>
 
 @{
     var sumExpected = Project.Tasks.Sum(t => t.ExpectedValue.RoundBy(Project.BreakdownRound));
-    var sumContingency = Project.Tasks.Sum(t => t.Contingency(Project.ContingencyConfidence).RoundBy(Project.BreakdownRound));
-    var actualContingency = Project.Contingency(Project.ContingencyConfidence).RoundBy(Project.BreakdownRound);
+    var sumContingency = Project.Tasks.Sum(t => t.Contingency(Project.ContingencyConfidence, Project.BreakdownRound));
+    var actualContingency = Project.Contingency(Project.ContingencyConfidence, Project.BreakdownRound);
 }
 
 <MudGrid Class="my-2">

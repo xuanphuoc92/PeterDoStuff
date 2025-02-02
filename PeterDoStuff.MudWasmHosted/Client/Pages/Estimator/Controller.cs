@@ -23,7 +23,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
         public static readonly Dictionary<decimal, decimal> ConfidenceIntervalMaps = new()
         {
             { 68, 1 },
-            { 90, 1.645M },
+            //{ 90, 1.645M },
             { 95, 2 },
             { 99.7M, 3 },
         };
@@ -203,19 +203,19 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
                 return this;
             }
 
-            public string ConfidenceInterval(decimal confidence)
+            public string ConfidenceInterval(decimal confidence, decimal round = 0.01M)
             {
-                var e = ExpectedValue;
-                var contingency = Contingency(confidence);
+                var e = ExpectedValue.RoundBy(round);
+                var contingency = Contingency(confidence, round);
                 var from = e - contingency;
                 var to = e + contingency;
-                return $"{from.RoundBy(0.01M)} - {to.RoundBy(0.01M)}";
+                return $"{from} - {to}";
             }
 
-            public decimal Contingency(decimal confidence)
+            public decimal Contingency(decimal confidence, decimal round = 0.01M)
             {
                 var sdFactor = ConfidenceIntervalMaps[confidence];
-                return StandardDeviation * sdFactor;
+                return StandardDeviation.RoundBy(round) * sdFactor;
             }
         }
 
@@ -232,19 +232,19 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
             public decimal Percentage { get; set; }
             public int PercentageByGroupIndex { get; set; }
 
-            public string ConfidenceInterval(decimal confidence)
+            public string ConfidenceInterval(decimal confidence, decimal round = 0.01M)
             {
-                var e = ExpectedValue;
-                var contingency = Contingency(confidence);
+                var e = ExpectedValue.RoundBy(round);
+                var contingency = Contingency(confidence, round);
                 var from = e - contingency;
                 var to = e + contingency;
-                return $"{from.RoundBy(0.01M)} - {to.RoundBy(0.01M)}";
+                return $"{from} - {to}";
             }
 
-            public decimal Contingency(decimal confidence)
+            public decimal Contingency(decimal confidence, decimal round = 0.01M)
             {
                 var sdFactor = ConfidenceIntervalMaps[confidence];
-                return StandardDeviation * sdFactor;
+                return StandardDeviation.RoundBy(round) * sdFactor;
             }
 
             public string Caption(EstimateProject project)
