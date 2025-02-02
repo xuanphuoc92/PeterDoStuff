@@ -47,7 +47,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
 
 **Calendar-days** are values to determine the estimated completion date from the date the service commenced. The Calendar-days = Man-days x Calendar-days Factor. The Factor depends on the nature of service and the resource the service involved. For example, if the engineer executing the service can only commit 50% of their working days for the service, the Factor would be 200%. If the service involves external stakeholders with unknown effectiveness in consultation, the Factor would be increased.
 
-The Estimate is **NON-TRANSFERABLE**: One individual/team's estimate can't be used to predict how long (in terms of Man-days and Calendar-days) it might take another individual/team to peform the same service.
+The Estimate is **NON-TRANSFERABLE**: One individual/team's estimate can't be used to predict how long (in terms of Man-days and Calendar-days) it might take another individual/team to perform the same service.
 
 The Estimate is **TEMPORARY**: An estimate for a service today can be different for the same service next month, as important factors such as requirements and resources can be changed over time.
 
