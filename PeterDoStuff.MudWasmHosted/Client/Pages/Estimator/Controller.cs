@@ -181,8 +181,8 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
                 Tasks.Remove(task);
             }
 
-            public decimal ExpectedValue { get; set; }
-            public decimal StandardDeviation { get; set; }
+            public decimal ExpectedValue => Tasks.Select(t => t.ExpectedValue).CalculateE();
+            public decimal StandardDeviation => Tasks.Select(t => t.StandardDeviation).CalculateSD();
 
             public EstimateProject CalculateTasks()
             {
@@ -200,15 +200,11 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
                         task.StandardDeviation = groupTasks.Select(t => t.StandardDeviation).CalculateSD() * task.Percentage / 100;
                     }
                 }
-
-                ExpectedValue = Tasks.Select(t => t.ExpectedValue).CalculateE();
-                StandardDeviation = Tasks.Select(t => t.StandardDeviation).CalculateSD();
                 return this;
             }
 
             public string ConfidenceInterval(decimal confidence)
             {
-                var sdFactor = ConfidenceIntervalMaps[confidence];
                 var e = ExpectedValue;
                 var contingency = Contingency(confidence);
                 var from = e - contingency;
@@ -238,7 +234,6 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
 
             public string ConfidenceInterval(decimal confidence)
             {
-                var sdFactor = ConfidenceIntervalMaps[confidence];
                 var e = ExpectedValue;
                 var contingency = Contingency(confidence);
                 var from = e - contingency;
