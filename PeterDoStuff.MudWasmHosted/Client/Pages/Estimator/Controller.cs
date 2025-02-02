@@ -127,7 +127,10 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
             public string Name { get; set; }
             public List<string> Groups { get; set; } = [];
             public List<EstimateTask> Tasks { get; set; } = [];
+            
             public decimal ContingencyConfidence { get; set; } = 95;
+            public decimal BreakdownRound { get; set; } = 0.01M;
+            public decimal TotalRound { get; set; } = 0.01M;
 
             public void AddGroup()
             {

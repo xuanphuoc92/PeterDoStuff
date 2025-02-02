@@ -235,14 +235,24 @@
 
 <MudDivider Class="my-2" />
 
-<MudSelect @bind-Value="Project.ContingencyConfidence" Variant="Variant.Outlined" Label="Contingency Confidence Level">
-    @foreach (var kv in ConfidenceIntervalMaps)
-    {
-        var key = kv.Key;
-        var value = kv.Value;
-        <MudSelectItem Value="key">@($"{key}% - {value} x SD")</MudSelectItem>
-    }
-</MudSelect>
+<MudGrid>
+    <MudItem xs="4">
+        <MudSelect @bind-Value="Project.ContingencyConfidence" Variant="Variant.Outlined" Label="Contingency Confidence Level">
+            @foreach (var kv in ConfidenceIntervalMaps)
+            {
+                var key = kv.Key;
+                var value = kv.Value;
+                <MudSelectItem Value="key">@($"{key}% - {value} x SD")</MudSelectItem>
+            }
+        </MudSelect>
+    </MudItem>
+    <MudItem xs="4">
+        <MudNumericField @bind-Value="Project.BreakdownRound" Label="Breakdown Round" />
+    </MudItem>
+    <MudItem xs="4">
+        <MudNumericField @bind-Value="Project.TotalRound" Label="Total Round" />
+    </MudItem>
+</MudGrid>
 
 <MudTable Items="Project.Tasks" Breakpoint="Breakpoint.Xs" Dense="true">
     <HeaderContent>
@@ -256,25 +266,38 @@
     <RowTemplate>
         <MudTd DataLabel="Category">@Project.Groups[context.GroupIndex]</MudTd>
         <MudTd DataLabel="Item">@context.Name</MudTd>
-        <MudTd DataLabel="@ExpectedValueLabel">@context.ExpectedValue.RoundBy(0.01M)</MudTd>
+        <MudTd DataLabel="@ExpectedValueLabel">@context.ExpectedValue.RoundBy(Project.BreakdownRound)</MudTd>
         <MudTd DataLabel="@StandardDeviationLabel">@context.StandardDeviation.RoundBy(0.01M)</MudTd>
-        <MudTd DataLabel="Contingency">@context.Contingency(Project.ContingencyConfidence).RoundBy(0.01M)</MudTd>
-        <MudTd DataLabel="Man-days">@((context.ExpectedValue + context.Contingency(Project.ContingencyConfidence)).RoundBy(0.01M))</MudTd>
+        <MudTd DataLabel="Contingency">@context.Contingency(Project.ContingencyConfidence).RoundBy(Project.BreakdownRound)</MudTd>
+        <MudTd DataLabel="Man-days">@(context.ExpectedValue.RoundBy(Project.BreakdownRound) + context.Contingency(Project.ContingencyConfidence).RoundBy(Project.BreakdownRound))</MudTd>
     </RowTemplate>
 </MudTable>
 
+@{
+    var sumExpected = Project.Tasks.Sum(t => t.ExpectedValue.RoundBy(Project.BreakdownRound));
+    var sumContingency = Project.Tasks.Sum(t => t.Contingency(Project.ContingencyConfidence).RoundBy(Project.BreakdownRound));
+    var actualContingency = Project.Contingency(Project.ContingencyConfidence).RoundBy(Project.BreakdownRound);
+}
+
 <MudGrid>
     <MudItem xs="12" md="3">
-        <MudText Color="_summaryColor">Total Man-days:</MudText>
+        <MudText Typo="Typo.h5" Color="_summaryColor">Total Man-days</MudText>
     </MudItem>
-    <MudItem xs="12" md="9">
+    <MudItem xs="12" md="3">
         <MudText Color="_summaryColor">
-            @Project.Tasks.Sum(t => t.ExpectedValue.RoundBy(0.01M))
-            + @Project.Tasks.Sum(t => t.Contingency(Project.ContingencyConfidence).RoundBy(0.01M))
-            - @((Project.Tasks.Sum(t => t.Contingency(Project.ContingencyConfidence).RoundBy(0.01M)) - Project.Contingency(Project.ContingencyConfidence).RoundBy(0.01M)))
+            = @sumExpected (Sum of Expected)
+            + @sumContingency (Sum of Contingencies)
+            - @(sumContingency - actualContingency) (Cancellation of Contingencies)
         </MudText>
+    </MudItem>
+    <MudItem xs="12" md="3">
         <MudText Color="_summaryColor">
-            = @(Project.Tasks.Sum(t => t.ExpectedValue.RoundBy(0.01M)) + Project.Contingency(Project.ContingencyConfidence).RoundBy(0.01M))
+            = @(sumExpected + actualContingency)
+        </MudText>
+    </MudItem>
+    <MudItem xs="12" md="3">
+        <MudText Color="_summaryColor">
+            = @((sumExpected + actualContingency).RoundBy(Project.TotalRound))
         </MudText>
     </MudItem>
 </MudGrid>
