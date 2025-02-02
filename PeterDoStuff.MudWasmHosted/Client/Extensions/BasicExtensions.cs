@@ -1,4 +1,6 @@
-﻿namespace PeterDoStuff.MudWasmHosted.Client.Extensions
+﻿using PeterDoStuff.Extensions;
+
+namespace PeterDoStuff.MudWasmHosted.Client.Extensions
 {
     public static class BasicExtensions
     {
@@ -21,5 +23,8 @@
             list.RemoveAt(currentIndex);
             list.Insert(currentIndex + 1, item);
         }
+
+        public static string[] ToParagraphs(this string input)
+            => input?.Split("\n").Select(p => p.Trim()).Where(p => p.IsNullOrEmpty() == false).ToArray() ?? [];
     }
 }

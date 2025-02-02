@@ -1,4 +1,7 @@
-﻿using static PeterDoStuff.MudWasmHosted.Client.Pages.Estimator.Controller;
+﻿using PeterDoStuff.MudWasmHosted.Client.Extensions;
+using System.Text;
+using static MudBlazor.CategoryTypes;
+using static PeterDoStuff.MudWasmHosted.Client.Pages.Estimator.Controller;
 
 namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
 {
@@ -40,6 +43,17 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
                     "Analysis and Documentation",
                     "Deliveries"
                 ],
+                Footnotes = @"**Man-days** from estimation are to determine the monetary value to compensate the service, NOT the schedule that the service would take.
+
+**Calendar-days** are values to determine the estimated completion date from the date the service commenced. The Calendar-days = Man-days x Calendar-days Factor. The Factor depends on the nature of service and the resource the service involved. For example, if the engineer executing the service can only commit 50% of their working days for the service, the Factor would be 200%. If the service involves external stakeholders with unknown effectiveness in consultation, the Factor would be increased.
+
+The Estimate is **NON-TRANSFERABLE**: One individual/team's estimate can't be used to predict how long (in terms of Man-days and Calendar-days) it might take another individual/team to peform the same service.
+
+The Estimate is **TEMPORARY**: An estimate for a service today can be different for the same service next month, as important factors such as requirements and resources can be changed over time.
+
+The Standard Deviation of all tasks is **NOT the Sum of each task's Standard Deviation**. Instead, it is the Sum of each task's (Standard Deviation)^2, then Square-root the Sum. Hence, the Man-days for all tasks is **NOT the Sum of each task's Man-days**.
+
+If the service has lower risk, consider lowering the Contingency's Confidence Level to 68%, corresponding to 1 x SD. Otherwise, consider increasing the Contingency's Confidence Level to 99.7%, corresponding to 3 x SD.",
                 Tasks = [
                     new EstimateTask()
                     {
@@ -131,6 +145,42 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
             public decimal ContingencyConfidence { get; set; } = 95;
             public decimal BreakdownRound { get; set; } = 0.01M;
             public decimal TotalRound { get; set; } = 0.01M;
+
+            public string Footnotes { get; set; }
+
+            public string GenerateMarkdownReport()
+            {
+                CalculateTasks();
+                StringBuilder sb = new StringBuilder();
+                decimal sdFactor = ConfidenceIntervalMaps[ContingencyConfidence];
+                sb.AppendLine($"| Category | Item | Expected Value (E) | Standard Deviation (SD) | Contingency<br>({ContingencyConfidence}% Confidence - {sdFactor} x SD) | Man-days<br>(E + Contingency) |");
+                sb.AppendLine($"| --- | --- | --- | --- | --- | --- |");
+                decimal sum = 0;
+                foreach (var task in Tasks)
+                {
+                    var group = Groups[task.GroupIndex];
+                    var item = $"{task.Name}<br>`{task.Caption(this)}`";
+                    var e = task.ExpectedValue.RoundBy(BreakdownRound);
+                    var sd = task.StandardDeviation.RoundBy(BreakdownRound);
+                    var contingency = task.Contingency(ContingencyConfidence, BreakdownRound);
+                    var (from, to) = task.ConfidenceInterval(ContingencyConfidence, BreakdownRound);
+                    sum += to;
+                    sb.AppendLine($"| {group} | {item} | {e} | {sd} | {contingency} | {to} |");
+                }
+
+                decimal standardDeviation = StandardDeviation;
+                var (_, projectTo) = ConfidenceInterval(ContingencyConfidence, TotalRound);
+                sb.AppendLine($"| | **TOTAL** | **{ExpectedValue.RoundBy(TotalRound)}** | **{standardDeviation.RoundBy(TotalRound)}** | **{sdFactor * standardDeviation}** | **{projectTo}** |");
+                sb.AppendLine();
+                sb.AppendLine("- Total Standard Deviation Reduction = " + (sum - projectTo) + " Man-days");
+                sb.AppendLine();
+                sb.AppendLine("**Footnotes:**");
+
+                foreach (var footnoteParagraph in Footnotes.ToParagraphs())
+                    sb.AppendLine($"- {footnoteParagraph}");
+
+                return sb.ToString();
+            }
 
             public void AddGroup()
             {
@@ -253,7 +303,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
                     return "Fixed";
 
                 if (Type == EstimateType.ThreePoint)
-                    return $"Best: {Best} | Likely: {Likely} | Worst: {Worst}";
+                    return $"Best: {Best} - Likely: {Likely} - Worst: {Worst}";
 
                 if (Type == EstimateType.Percentage)
                     return $"{Percentage}% of [{project.Groups[PercentageByGroupIndex]}]";
@@ -264,7 +314,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.Estimator
 
         public enum EstimateType
         {
-            Fixed, ThreePoint, Percentage
+            ThreePoint, Percentage, Fixed
         }
     }
 }

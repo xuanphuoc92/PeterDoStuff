@@ -250,10 +250,25 @@
     </DialogContent>
 </MudDialog>
 
-@code {
+<MudDivider Class="my-4" />
+
+<MudTextField @bind-Value="Project.Footnotes" Label="Footnotes" Lines="3" AutoGrow Variant="Variant.Outlined" />
+
+<MudDivider Class="my-4" />
+
+<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateMarkdownReport">Generate Markdown Report</MudButton>
+<MudTextField @bind-Value="MarkdownReport" Label="Markdown Report" Lines="3" AutoGrow Variant="Variant.Outlined" />
+
+ @code {
     private const string ExpectedValueLabel = "Expected Value (E)";
     private const string StandardDeviationLabel = "Standard Deviation (SD)";
     private string ConfidenceIntervalLabel => $"{Project.ContingencyConfidence}% Confidence Interval";
+
+    private string MarkdownReport;
+    private void GenerateMarkdownReport()
+    {
+        MarkdownReport = Project.GenerateMarkdownReport();
+    }
 
     private MudTable<EstimateTask> _table;
 

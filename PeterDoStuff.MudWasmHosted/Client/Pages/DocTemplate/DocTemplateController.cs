@@ -6,9 +6,6 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate
 {
     internal static class TemplateExtensions
     {
-        public static string[] ToParagraphs(this string input)
-            => input?.Split("\n").Select(p => p.Trim()).Where(p => p.IsNullOrEmpty() == false).ToArray() ?? [];
-
         public static string TextOrUrl(this DocTemplateController.Link link)
             => link.Text.IsNullOrEmpty() ? link.Url : link.Text;
 
