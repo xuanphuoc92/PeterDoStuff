@@ -89,6 +89,26 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate
             public List<Skill> Skills { get; set; } = [];
         }
 
+        public static Resume VietnameseProfile()
+        {
+            return new()
+            {
+                AboutMeLabel = "Sơ lược bản thân",
+                EducationsLabel = "Học vấn",
+                ExperiencesLabel = "Kinh nghiệm",
+                FluencyLabel = "Thông thạo",
+                LocationLabel = "Địa điểm",
+                PhoneLabel = "Điện thoại",
+                SkillsLabel = "Kỹ năng",
+                SkillLevels = new()
+                {
+                    { 1, "Hiểu biết" },
+                    { 2, "Thành thạo" },
+                    { 3, "Chuyên sâu" },
+                }
+            };
+        }
+
         public enum PhotoType
         {
             None, Url, Base64

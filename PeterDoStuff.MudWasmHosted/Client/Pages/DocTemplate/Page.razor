@@ -33,7 +33,12 @@
             <MudButton Variant="Variant.Filled" Color="Color.Primary"
                        StartIcon="@Icons.Material.Filled.CleaningServices"
                        OnClick="ClearProfile">
-                Clear Profile
+                Empty English Profile
+            </MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.CleaningServices"
+                       OnClick="VietnameseProfile">
+                Empty Vietnamese Profile
             </MudButton>
         </div>
     </MudItem>
@@ -313,6 +318,11 @@
     private void ClearProfile()
     {
         model = new();
+    }
+
+    private void VietnameseProfile()
+    {
+        model = DocTemplateController.VietnameseProfile();
     }
 
     private Task OpenCustom1() => OpenTemplate("custom1");
