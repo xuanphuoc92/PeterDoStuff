@@ -113,6 +113,196 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate
             };
         }
 
+        public static Resume SampleProfile()
+        {
+            Resume result = new();
+            result.Person.Name = "John Doe";
+            result.Person.PhotoType = PhotoType.Url;
+            result.Person.PhotoUrl = "https://raw.githubusercontent.com/xuanphuoc92/SamplePhotos/refs/heads/main/SampleEuropeanMan.webp";
+
+            result.Location = "New York, United States";
+            result.PhoneNumber = "1234567890";
+            result.Fluency = "English";
+            result.Email = "JohnDoe_Sample@gmail.com";
+            result.Links = [
+                new()
+                {
+                    Icon = nameof(LinkIcons.LinkedIn),
+                    Label = "LinkedIn",
+                    Text = "in/test",
+                },
+            ];
+
+            result.AboutMe = @"Results-driven Project Manager with **10 years of experience** in Procurement.
+Passionate about creating innovative solutions and driving business growth.
+Adept at data analysis, team leadership, and breakdown problem-solving.
+Committed to delivering high-quality work and continuously learning to stay ahead in the industry.";
+
+            result.Educations = [
+                new() 
+                {
+                    Institution = {
+                        Name = "Kent State University",
+                        PhotoType = PhotoType.Url,
+                        PhotoUrl = "https://media.licdn.com/dms/image/v2/C4D0BAQERnKQo-ZgbSA/company-logo_200_200/company-logo_200_200/0/1631304074952?e=1747267200&v=beta&t=iv7znOIDwWff2B5w7I9m2bMh_foIYTdFHhBKXfo_N7A"
+                    },
+                    Degree = "Bachelor, Marketing",
+                    From = new DateTime(2020, 06, 01),
+                    To = new DateTime(2024, 06, 30)
+                }
+            ];
+
+            result.Experiences = [
+                new() 
+                {
+                    Company = {
+                        Name = "Google",
+                        PhotoType = PhotoType.Url,
+                        PhotoUrl = "https://media.licdn.com/dms/image/v2/C4D0BAQHiNSL4Or29cg/company-logo_200_200/company-logo_200_200/0/1631311446380?e=1747267200&v=beta&t=vU6juPS-AVsn9MDUlF0vGmmRbPh0ubxT_u-g_1hfx6c"
+                    },
+                    Items = [
+                        new()
+                        {
+                            Position = "Media and Communication",
+                            From = new DateTime(2025,01,01),
+                            Description = @"Description Line 1
+Description Line 2
+Description Line 3"
+                        },
+                        new()
+                        {
+                            Position = "Marketing",
+                            From = new DateTime(2024,06,01),
+                            To = new DateTime(2024,12,31),
+                            Description = @"Description Line 1
+Description Line 2
+Description Line 3"
+                        }
+                    ]
+                }
+            ];
+
+            result.Skills = [
+                new() {
+                    Group = "Marketing",
+                    Name = "Data Analysis",
+                    Level = 3,
+                },
+                new() {
+                    Group = "Marketing",
+                    Name = "Customer Engagement",
+                    Level = 2,
+                },
+                new() {
+                    Group = "Management",
+                    Name = "Project Management, Strategic Planning",
+                    Level = 3,
+                },
+                new() {
+                    Group = "Management",
+                    Name = "Financial Acumen",
+                    Level = 2,
+                },
+            ];
+
+            return result;
+        }
+
+        public static Resume SampleVietnameseProfile()
+        {
+            Resume result = VietnameseProfile();
+            result.Person.Name = "Nguyễn Văn A";
+            result.Person.PhotoType = PhotoType.Url;
+            result.Person.PhotoUrl = "https://raw.githubusercontent.com/xuanphuoc92/SamplePhotos/refs/heads/main/SampleAsianMan.webp";
+
+            result.Location = "Việt Nam";
+            result.PhoneNumber = "1234567890";
+            result.Fluency = "Việt, Hoa";
+            result.Email = "nguyen_van_a_Testing@gmail.com";
+            result.Links = [
+                new()
+                {
+                    Icon = nameof(LinkIcons.LinkedIn),
+                    Label = "LinkedIn",
+                    Text = "in/test",
+                },
+            ];
+
+            result.AboutMe = @"Chuyên viên Marketing với **10 năm kinh nghiệm** trong lĩnh vực Mua Sắm.
+Đam mê tạo ra các giải pháp sáng tạo và thúc đẩy tăng trưởng kinh doanh.
+Thành thạo phân tích dữ liệu, lãnh đạo nhóm, và giải quyết vấn đề.
+Cam kết mang lại hiệu quả cao trong công việc và không ngừng học hỏi để phát triển bản thân.";
+
+            result.Educations = [
+                new()
+                {
+                    Institution = {
+                        Name = "Đại học Ngoại Thương, Tp.HCM",
+                        PhotoType = PhotoType.Url,
+                        PhotoUrl = "https://media.licdn.com/dms/image/v2/C560BAQFrfd0C2eZg3w/company-logo_200_200/company-logo_200_200/0/1659501664684/foreigntradeuniversity_logo?e=1747267200&v=beta&t=EKDlMtJ2ew8b2vFB_B-O6uOcAZM-2Mki9HFMgtt3J6Y"
+                    },
+                    Degree = "Bachelor, Marketing",
+                    From = new DateTime(2020, 06, 01),
+                    To = new DateTime(2024, 06, 30)
+                }
+            ];
+
+            result.Experiences = [
+                new()
+                {
+                    Company = {
+                        Name = "Google",
+                        PhotoType = PhotoType.Url,
+                        PhotoUrl = "https://media.licdn.com/dms/image/v2/C4D0BAQHiNSL4Or29cg/company-logo_200_200/company-logo_200_200/0/1631311446380?e=1747267200&v=beta&t=vU6juPS-AVsn9MDUlF0vGmmRbPh0ubxT_u-g_1hfx6c"
+                    },
+                    Items = [
+                        new()
+                        {
+                            Position = "Media and Communication",
+                            From = new DateTime(2025,01,01),
+                            Description = @"Description Line 1
+Description Line 2
+Description Line 3"
+                        },
+                        new()
+                        {
+                            Position = "Marketing",
+                            From = new DateTime(2024,06,01),
+                            To = new DateTime(2024,12,31),
+                            Description = @"Description Line 1
+Description Line 2
+Description Line 3"
+                        }
+                    ]
+                }
+            ];
+
+            result.Skills = [
+                new() {
+                    Group = "Tiếp thị",
+                    Name = "Phân tích dữ liệu",
+                    Level = 3,
+                },
+                new() {
+                    Group = "Tiếp thị",
+                    Name = "Tương tác khách hàng",
+                    Level = 2,
+                },
+                new() {
+                    Group = "Quản lý",
+                    Name = "Quản lý dự án, Hoạch định chiến lược",
+                    Level = 3,
+                },
+                new() {
+                    Group = "Quản lý",
+                    Name = "Khả năng tài chính",
+                    Level = 2,
+                },
+            ];
+
+            return result;
+        }
+
         public enum PhotoType
         {
             None, Url, Base64

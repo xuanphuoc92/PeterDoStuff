@@ -30,15 +30,29 @@
                     </MudButton>
                 </ButtonTemplate>
             </MudFileUpload>
+        </div>
+        <div>
             <MudButton Variant="Variant.Filled" Color="Color.Primary"
                        StartIcon="@Icons.Material.Filled.CleaningServices"
-                       OnClick="ClearProfile">
+                       OnClick="EnglishProfile">
                 Empty English Profile
             </MudButton>
             <MudButton Variant="Variant.Filled" Color="Color.Primary"
                        StartIcon="@Icons.Material.Filled.CleaningServices"
                        OnClick="VietnameseProfile">
                 Empty Vietnamese Profile
+            </MudButton>
+        </div>
+        <div>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.CleaningServices"
+                       OnClick="SampleEnglishProfile">
+                Sample English Profile
+            </MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.CleaningServices"
+                       OnClick="SampleVietnameseProfile">
+                Sample Vietnamese Profile
             </MudButton>
         </div>
     </MudItem>
@@ -355,7 +369,7 @@
         model = json.FromJson<Resume>();
     }
 
-    private void ClearProfile()
+    private void EnglishProfile()
     {
         model = new();
     }
@@ -363,6 +377,16 @@
     private void VietnameseProfile()
     {
         model = DocTemplateController.VietnameseProfile();
+    }
+
+    private void SampleEnglishProfile()
+    {
+        model = DocTemplateController.SampleProfile();
+    }
+
+    private void SampleVietnameseProfile()
+    {
+        model = DocTemplateController.SampleVietnameseProfile();
     }
 
     private Task OpenCustom1() => OpenTemplate("custom1");
