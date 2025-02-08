@@ -77,6 +77,10 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate
             public string EducationsLabel { get; set; } = "Education";
             public List<Education> Educations { get; set; } = [];
 
+            public string ProjectIcon { get; set; } = nameof(GeneralIcons.FerrisWheel);
+            public string ProjectLabel { get; set; } = "Projects";
+            public List<Project> Projects { get; set; } = [];
+
             public Dictionary<int, string> SkillLevels { get; set; } = new()
             {
                 { 1, "Familiar" },
@@ -156,6 +160,15 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate
             public const string Work = Icons.Material.Filled.Work;
             public const string School = Icons.Material.Filled.School;
             public const string Build = Icons.Material.Filled.Build;
+            public const string Wand = Icons.Material.Filled.AutoFixHigh;
+            public const string Stars = Icons.Material.Filled.AutoAwesome;
+            public const string Books = Icons.Material.Filled.AutoStories;
+            public const string Apps = Icons.Material.Filled.Apps;
+            public const string FerrisWheel = Icons.Material.Filled.Attractions;
+            public const string MusicNote = Icons.Material.Filled.Audiotrack;
+            public const string Shapes = Icons.Material.Filled.Category;
+            public const string PaintPalette = Icons.Material.Filled.ColorLens;
+            public const string Science = Icons.Material.Filled.Science;
         }
 
         public class Experience
@@ -179,6 +192,13 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate
             public string Description { get; set; }
             public DateTime? From { get; set; }
             public DateTime? To { get; set; }
+        }
+
+        public class Project
+        {
+            public string Name { get; set; }
+            public string Url { get; set; }
+            public string Description { get; set; }
         }
 
         public class Entity
