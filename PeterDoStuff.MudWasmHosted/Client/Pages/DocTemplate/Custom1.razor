@@ -88,8 +88,12 @@
             color: #BBBBBB;
         }
 
-        a {
+        .header a {
             color: #BBBBBB;
+            text-decoration: underline;
+        }
+
+        a {
             text-decoration: underline;
         }
 
@@ -171,6 +175,7 @@
         .entityAvatar img {
             width: 30px;
         }
+
     </style>
 </head>
 <body>
@@ -346,30 +351,68 @@
             </div>
         </div>
         <MudDivider Class="mb-2" />
-        <div class="section">
-            <div class="sectionTitle">
-                <h2>
-                    <MudIcon Icon="@GeneralIcons.GetDictionary()[Model.SkillsIcon]" Class="title-icon" />
-                    @Model.SkillsLabel
-                </h2>
+        <div class="body">
+            <div class="section">
+                <div class="sectionTitle">
+                    <h2>
+                        <MudIcon Icon="@GeneralIcons.GetDictionary()[Model.SkillsIcon]" Class="title-icon" />
+                        @Model.SkillsLabel
+                    </h2>
+                </div>
+                @foreach (var groupRef in Model.Skills.GroupBy(skill => skill.Group))
+                {
+                    var group = groupRef;
+                    <h3>@group.Key</h3>
+                    <div class="skillGrid">
+                        @foreach (var levelGroupRef in group.GroupBy(skill => skill.Level).OrderByDescending(g => g.Key))
+                        {
+                            var levelGroup = levelGroupRef;
+                            var level = levelGroup.Key;
+                            <h4>
+                                @for (int i = 0; i < level; i++)
+                                {
+                                    <MudIcon Icon="@Icons.Material.Filled.Star" Class="star-icon" />
+                                }
+                            </h4>
+                            <div class="sub">(@Model.SkillLevels[level])</div>
+                            <div>@levelGroup.Select(skill => skill.Name).Join(", ")</div>
+                        }
+                    </div>
+                }
             </div>
-            @foreach (var groupRef in Model.Skills.GroupBy(skill => skill.Group))
+            @if (Model.Projects.Any() == true)
             {
-                var group = groupRef;
-                <h3>@group.Key</h3>
-                <div class="skillGrid">
-                    @foreach (var levelGroupRef in group.GroupBy(skill => skill.Level).OrderByDescending(g => g.Key))
+                <div class="section">
+                    <div class="sectionTitle">
+                        <h2>
+                            <MudIcon Icon="@GeneralIcons.GetDictionary()[Model.ProjectIcon]" Class="title-icon" />
+                            @Model.ProjectLabel
+                        </h2>
+                    </div>
+                    @foreach (var projectRef in Model.Projects)
                     {
-                        var levelGroup = levelGroupRef;
-                        var level = levelGroup.Key;
-                        <h4>
-                            @for (int i = 0; i < level; i++)
+                        var project = projectRef;
+                        <h3>
+                            @if (project.Url.IsNullOrEmpty())
                             {
-                                <MudIcon Icon="@Icons.Material.Filled.Star" Class="star-icon" />
+                                @project.Name
                             }
-                        </h4>
-                        <div class="sub">(@Model.SkillLevels[level])</div>
-                        <div>@levelGroup.Select(skill => skill.Name).Join(", ")</div>
+                            else
+                            {
+                                <a href="@project.Url" target="_blank" class="t">
+                                    @project.Name
+                                </a>
+                            }
+                        </h3>
+                        <p>
+                            <ul>
+                                @foreach (var paragraphRef in project.Description.ToParagraphs())
+                                {
+                                    var paragraph = paragraphRef;
+                                    <li>@((MarkupString)paragraph.RenderWithBold())</li>
+                                }
+                            </ul>
+                        </p>
                     }
                 </div>
             }
