@@ -144,7 +144,43 @@
                           Lines="10"
                           @bind-Value="model.AboutMe" For="@(() => model.AboutMe)" />
         </MudItem>
+    </MudGrid>
 
+    <MudGrid>
+        @for (int i = 0; i < model.Sections.Count; i++)
+        {
+            var section = model.Sections[i];
+            <MudItem xs="1">
+                <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete"
+                               OnClick="() => model.Sections.Remove(section)"></MudIconButton>
+            </MudItem>
+            <MudItem xs="11">
+                <MudGrid>
+                    <MudItem xs="3" md="1">
+                        <IconSelectControl @bind-Value="section.Icon" IconDictionary="GeneralIcons.GetDictionary()" />
+                    </MudItem>
+                    <MudItem xs="9" md="11">
+                        <MudTextField Variant="Variant.Outlined" @bind-Value="section.Label" For="@(() => section.Label)" />
+                    </MudItem>
+                    @for (int j = 0; j < section.Items.Count; j++)
+                    {
+                        var item = section.Items[j];
+
+                    }
+                    <MudItem xs="12">
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-2"
+                                   StartIcon="@Icons.Material.Filled.AddCircleOutline"
+                                   OnClick="() => section.Items.Add(new())">Item</MudButton>
+                    </MudItem>
+                </MudGrid>
+            </MudItem>
+        }
+    </MudGrid>
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-2"
+               StartIcon="@Icons.Material.Filled.AddCircleOutline"
+               OnClick="() => model.Sections.Add(new())">Section</MudButton>
+
+    <MudGrid>
         <MudItem xs="3" md="1">
             <IconSelectControl @bind-Value="model.ExperiencesIcon" IconDictionary="GeneralIcons.GetDictionary()" />
         </MudItem>
