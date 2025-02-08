@@ -244,6 +244,46 @@
         StartIcon="@Icons.Material.Filled.AddCircleOutline"
         OnClick="() => model.Educations.Add(new())">Education</MudButton>
 
+    <MudGrid>
+        <MudItem xs="3" md="1">
+            <IconSelectControl @bind-Value="model.ProjectIcon" IconDictionary="GeneralIcons.GetDictionary()" />
+        </MudItem>
+        <MudItem xs="9" md="11">
+            <MudTextField Variant="Variant.Outlined" @bind-Value="model.ProjectLabel" For="@(() => model.ProjectLabel)" />
+        </MudItem>
+    </MudGrid>
+
+    @for (int i = 0; i < model.Projects.Count; i++)
+    {
+        var project = model.Projects[i];
+        <MudGrid>
+            <MudItem xs="1">
+                <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete"
+                               OnClick="() => model.Projects.Remove(project)"></MudIconButton>
+            </MudItem>
+            <MudItem xs="11">
+                <MudGrid>
+                    <MudItem xs="12" sm="6">
+                        <MudTextField Variant="Variant.Outlined" Label="Name"
+                                      @bind-Value="project.Name" For="@(() => project.Name)" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudTextField Variant="Variant.Outlined" Label="Url"
+                                      @bind-Value="project.Url" For="@(() => project.Url)" />
+                    </MudItem>
+                    <MudItem xs="12">
+                        <MudTextField Variant="Variant.Outlined" Label="Description"
+                                      Lines="5"
+                                      @bind-Value="project.Description" For="@(() => project.Description)" />
+                    </MudItem>
+                </MudGrid>
+            </MudItem>
+        </MudGrid>
+    }
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-2"
+               StartIcon="@Icons.Material.Filled.AddCircleOutline"
+               OnClick="() => model.Projects.Add(new())">Project</MudButton>
+
     <MudText Class="mt-4">Skill Levels</MudText>
     @for (int i = model.SkillLevels.Keys.Max(); i >= 1; i--)
     {
