@@ -59,6 +59,11 @@
             text-decoration: underline;
         }
 
+        .projectGrid {
+            display: grid;
+            grid-template-columns: auto auto;
+        }
+
     </style>
 </head>
 <body>
@@ -86,7 +91,7 @@
             {
                 var link = Model.Links[i];
                 <MudIcon Icon="@LinkIcons.GetDictionary()[link.Icon]" Size="Size.Small" />
-                <a href="@link.Url">
+                <a href="@link.Url" target="_blank">
                     @link.TextOrUrl()
                 </a>
                 <span>|</span>
@@ -188,6 +193,43 @@
                     </div>
                 </MudItem>
             </MudGrid>
+        }
+        @if (Model.Projects.Any() == true)
+        {
+            <MudDivider Class="my-2" />
+            <h2 class="d-flex align-center flex-grow-1 gap-4">
+                <MudIcon Icon="@GeneralIcons.GetDictionary()[Model.ProjectIcon]" Size="Size.Small" />
+                @Model.ProjectLabel
+            </h2>
+            <div class="projectGrid">
+                @foreach (var projectRef in Model.Projects)
+                {
+                    var project = projectRef;
+                    <div>
+                        <h3>
+                            @if (project.Url.IsNullOrEmpty())
+                            {
+                                @project.Name
+                            }
+                            else
+                            {
+                                <a href="@project.Url" target="_blank">
+                                    @project.Name
+                                </a>
+                            }
+                        </h3>
+                        <p>
+                            <ul>
+                                @foreach (var paragraphRef in project.Description.ToParagraphs())
+                                {
+                                    var paragraph = paragraphRef;
+                                    <li>@((MarkupString)paragraph.RenderWithBold())</li>
+                                }
+                            </ul>
+                        </p>
+                    </div>
+                }
+            </div>
         }
     </page>
 </body>
