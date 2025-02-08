@@ -69,6 +69,8 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate
             public string AboutMeLabel { get; set; } = "About Me";
             public string AboutMe { get; set; }
 
+            public List<ResumeSection> Sections { get; set; } = [];
+
             public string ExperiencesIcon { get; set; } = nameof(GeneralIcons.Work);
             public string ExperiencesLabel { get; set; } = "Experience";
             public List<Experience> Experiences { get; set; } = [];
@@ -106,6 +108,99 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate
                     { 2, "Thành thạo" },
                     { 3, "Chuyên sâu" },
                 }
+            };
+        }
+
+        public static Resume SampleProfile()
+        {
+            return new()
+            {
+                Sections = [
+                    new() 
+                    {
+                        Icon = nameof(GeneralIcons.Work),
+                        Label = "Experience",
+                        Items = [
+                            new()
+                            {
+                                Entity = new()
+                                {
+                                    Name = "A Sample Current Company",
+                                },
+                                SubItems = [
+                                    new()
+                                    {
+                                        Title = "Regional Manager",
+                                        From = DateTime.Today.AddYears(-1),
+                                        Description = "Line 1 of the description.\nLine 2 of the description.\nLine 3 of the description."
+                                    },
+                                    new()
+                                    {
+                                        Title = "Branch Manager",
+                                        From = DateTime.Today.AddYears(-2),
+                                        To = DateTime.Today.AddYears(-1),
+                                        Description = "Line 1 of the description.\nLine 2 of the description.\nLine 3 of the description."
+                                    },
+                                ]
+                            },
+                            new()
+                            {
+                                Entity = new()
+                                {
+                                    Name = "A Sample Old Company",
+                                },
+                                SubItems = [
+                                    new()
+                                    {
+                                        Title = "Manager",
+                                        From = DateTime.Today.AddYears(-4),
+                                        To = DateTime.Today.AddYears(-3),
+                                        Description = "Line 1 of the description.\nLine 2 of the description.\nLine 3 of the description."
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    new()
+                    {
+                        Icon = nameof(GeneralIcons.School),
+                        Label = "Education",
+                        Items = [
+                            new()
+                            {
+                                Entity = new()
+                                {
+                                    Name = "School 1",
+                                },
+                                SubItems = [
+                                    new()
+                                    {
+                                        Title = "Master of Business Adminstration",
+                                        From = DateTime.Today.AddYears(-3),
+                                        To = DateTime.Today.AddYears(-1),
+                                        Description = "Line 1 of the description.\nLine 2 of the description.\nLine 3 of the description."
+                                    },
+                                ]
+                            },
+                            new()
+                            {
+                                Entity = new()
+                                {
+                                    Name = "School 2",
+                                },
+                                SubItems = [
+                                    new()
+                                    {
+                                        Title = "Bachelor of Computer Engineering",
+                                        From = DateTime.Today.AddYears(-10),
+                                        To = DateTime.Today.AddYears(-6),
+                                        Description = "Line 1 of the description.\nLine 2 of the description.\nLine 3 of the description."
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
             };
         }
 
@@ -156,6 +251,27 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate
             public const string Work = Icons.Material.Filled.Work;
             public const string School = Icons.Material.Filled.School;
             public const string Build = Icons.Material.Filled.Build;
+        }
+
+        public class ResumeSection
+        {
+            public string Icon { get; set; }
+            public string Label { get; set; }
+            public List<ResumeItem> Items { get; set; } = [];
+        }
+
+        public class ResumeItem
+        {
+            public Entity Entity { get; set; } = new();
+            public List<ResumeSubItem> SubItems { get; set; } = [];
+        }
+
+        public class ResumeSubItem
+        {
+            public string Title { get; set; }
+            public DateTime? From { get; set; }
+            public DateTime? To { get; set; }
+            public string Description { get; set; }
         }
 
         public class Experience
