@@ -77,7 +77,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate
             public string EducationsLabel { get; set; } = "Education";
             public List<Education> Educations { get; set; } = [];
 
-            public string ProjectIcon { get; set; } = nameof(GeneralIcons.FerrisWheel);
+            public string ProjectIcon { get; set; } = nameof(GeneralIcons.Shapes);
             public string ProjectLabel { get; set; } = "Projects";
             public List<Project> Projects { get; set; } = [];
 
@@ -135,7 +135,7 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate
 
             result.AboutMe = @"Results-driven Project Manager with **10 years of experience** in Procurement.
 Passionate about creating innovative solutions and driving business growth.
-Adept at data analysis, team leadership, and breakdown problem-solving.
+Adept at **Data Analysis, Team Leadership**, and **Problem-solving**.
 Committed to delivering high-quality work and continuously learning to stay ahead in the industry.";
 
             result.Educations = [
@@ -165,18 +165,18 @@ Committed to delivering high-quality work and continuously learning to stay ahea
                         {
                             Position = "Media and Communication",
                             From = new DateTime(2025,01,01),
-                            Description = @"Description Line 1
-Description Line 2
-Description Line 3"
+                            Description = @"Passionate about crafting compelling narratives that engage, inform, and inspire.
+With expertise in **Media Relations, Content Creation**, and **Strategic Communication**, I help brands and organizations build strong connections with their audiences.
+Whether it’s crafting press releases, managing social media campaigns, or enhancing brand identity, I thrive on creating messages that resonate."
                         },
                         new()
                         {
                             Position = "Marketing",
                             From = new DateTime(2024,06,01),
                             To = new DateTime(2024,12,31),
-                            Description = @"Description Line 1
-Description Line 2
-Description Line 3"
+                            Description = @"Driven by creativity and data, I specialize in crafting marketing strategies that captivate audiences, drive engagement, and accelerate business growth.
+With a deep understanding of **Consumer Behavior** and **Market Trends**, I develop innovative campaigns that make an impact.
+Whether it’s launching campaigns, optimizing digital channels, or building brand loyalty, I’m passionate about helping businesses grow."
                         }
                     ]
                 }
@@ -230,7 +230,7 @@ Description Line 3"
 
             result.AboutMe = @"Chuyên viên Marketing với **10 năm kinh nghiệm** trong lĩnh vực Mua Sắm.
 Đam mê tạo ra các giải pháp sáng tạo và thúc đẩy tăng trưởng kinh doanh.
-Thành thạo phân tích dữ liệu, lãnh đạo nhóm, và giải quyết vấn đề.
+Thành thạo **Phân tích dữ liệu, Lãnh đạo nhóm**, và **Giải quyết vấn đề**.
 Cam kết mang lại hiệu quả cao trong công việc và không ngừng học hỏi để phát triển bản thân.";
 
             result.Educations = [
@@ -258,24 +258,25 @@ Cam kết mang lại hiệu quả cao trong công việc và không ngừng họ
                     Items = [
                         new()
                         {
-                            Position = "Media and Communication",
+                            Position = "Truyền thông và Giao tiếp",
                             From = new DateTime(2025,01,01),
-                            Description = @"Description Line 1
-Description Line 2
-Description Line 3"
+                            Description = @"Đam mê tạo ra những câu chuyện hấp dẫn để thu hút, cung cấp thông tin và truyền cảm hứng.
+Với chuyên môn về **Quan hệ truyền thông, Sáng tạo nội dung**, và **Giao tiếp chiến lược**, tôi giúp các thương hiệu và tổ chức xây dựng mối liên kết vững chắc với khán giả của họ.
+Dù là viết thông cáo báo chí, quản lý chiến dịch truyền thông xã hội hay nâng cao nhận diện thương hiệu, tôi luôn hướng đến việc tạo ra những thông điệp có sức ảnh hưởng."
                         },
                         new()
                         {
-                            Position = "Marketing",
+                            Position = "Tiếp thị",
                             From = new DateTime(2024,06,01),
                             To = new DateTime(2024,12,31),
-                            Description = @"Description Line 1
-Description Line 2
-Description Line 3"
+                            Description = @"Kết hợp giữa sáng tạo và dữ liệu, tôi chuyên xây dựng chiến lược tiếp thị để thu hút khán giả, tăng cường tương tác và thúc đẩy tăng trưởng kinh doanh.
+Với hiểu biết sâu sắc về **Hành vi người tiêu dùng** và **Xu hướng thị trường**, tôi phát triển các chiến dịch sáng tạo có sức tác động mạnh.
+Dù là khởi động chiến dịch, tối ưu hóa kênh kỹ thuật số hay xây dựng lòng trung thành thương hiệu, tôi luôn đam mê giúp doanh nghiệp phát triển."
                         }
                     ]
                 }
             ];
+
 
             result.Skills = [
                 new() {
