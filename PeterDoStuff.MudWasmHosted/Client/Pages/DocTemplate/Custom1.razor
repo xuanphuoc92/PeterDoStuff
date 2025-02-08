@@ -393,15 +393,13 @@
                     {
                         var project = projectRef;
                         <h3>
-                            @if (project.Url.IsNullOrEmpty())
+                            @project.Name
+                            @if (project.Url.IsNullOrEmpty() == false)
                             {
-                                @project.Name
-                            }
-                            else
-                            {
-                                <a href="@project.Url" target="_blank" class="t">
-                                    @project.Name
-                                </a>
+                                <MudIconButton Size="Size.Small"
+                                               Href="@project.Url"
+                                               Target="_blank"
+                                               Icon="@Icons.Material.Filled.ArrowOutward"></MudIconButton>
                             }
                         </h3>
                         <p>
