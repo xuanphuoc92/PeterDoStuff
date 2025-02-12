@@ -2,6 +2,43 @@
 
 <PlaygroundTitle Page="myFinance" />
 
-@code {
+<MudButton Variant="Variant.Filled" Color="Color.Primary"
+    OnClick="() => Profile = Controller.SampleProfile()">
+    Sample Profile
+</MudButton>
 
+<MudTextField Variant="Variant.Outlined"
+              @bind-Value="Profile.Name" Label="Name" />
+
+<MudButton OnClick="() => Profile.Blocks.Add(new UsdBlock())">
+    Add USD
+</MudButton>
+<MudButton OnClick="() => Profile.Blocks.Add(new VndBlock())">
+    Add VND
+</MudButton>
+
+<MudGrid>
+    @foreach (var blockRef in Profile.Blocks)
+    {
+        var block = blockRef;
+        <MudItem xs="3">
+            <MudText>@block.GetType().Name</MudText>
+        </MudItem>
+        <MudItem xs="3">
+            <MudTextField Variant="Variant.Outlined"
+                          @bind-Value="block.Name" Label="Name" />
+        </MudItem>
+        <MudItem xs="3">
+            <MudNumericField Variant="Variant.Outlined"
+                             @bind-Value="block.Value" Label="Value" />
+        </MudItem>
+        <MudItem xs="3">
+            <MudTextField Variant="Variant.Outlined"
+                          @bind-Value="block.Currency" Label="Currency" />
+        </MudItem>
+    }
+</MudGrid>
+
+@code {
+    Profile Profile = new();
 }
