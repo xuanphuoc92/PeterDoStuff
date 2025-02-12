@@ -1,5 +1,6 @@
 ﻿@page "/fileScanner"
 @using System.Text
+@using PeterDoStuff.MudWasmHosted.Client.Extensions
 @using PeterDoStuff.Tools
 
 @inject IJSRuntime JS
@@ -28,7 +29,7 @@
 
 <LoadingOverlay @ref="ScanOverlay"/>
 
-    @code {
+@code {
     private string ScanResult = "Select your zip file";
     private LoadingOverlay ScanOverlay;
 
@@ -41,7 +42,7 @@
         // Read the file stream for scanning
         using MemoryStream inputFileStream = new MemoryStream();
         await file.OpenReadStream(file.Size).CopyToAsync(inputFileStream);
-        
+
         // Do the scanning
         using FileScanner scanner = new FileScanner();        
         var scanResult = scanner.ScanZip(inputFileStream);
@@ -52,12 +53,8 @@
             return;
         }
 
-        // Download the result
-        string csvFileName = file.Name + ".csv";
-        using MemoryStream csvFileStream = new MemoryStream(
-            Encoding.UTF8.GetBytes(scanner.ToCsv()));
-        using var streamRef = new DotNetStreamReference(stream: csvFileStream);
-        await JS.InvokeVoidAsync("downloadFileFromStream", csvFileName, streamRef);
+        // Download the result        
+        await JS.DownloadTextFile(file.Name + ".csv", scanner.ToCsv());
 
         // Report the time taken
         DateTime end = DateTime.Now;
