@@ -14,8 +14,13 @@ namespace PeterDoStuff.MudWasmHosted.Client.Extensions
             if (fileName.ToLowerInvariant().EndsWith(".json") == false)
                 fileName += ".json";
 
+            await JS.DownloadTextFile(fileName, obj.ToJson(beautify: true));
+        }
+
+        public static async Task DownloadTextFile(this IJSRuntime JS, string fileName, string fileContent)
+        {
             using MemoryStream fileStream = new MemoryStream(
-                Encoding.UTF8.GetBytes(obj.ToJson(beautify: true)));
+                Encoding.UTF8.GetBytes(fileContent));
             using var streamRef = new DotNetStreamReference(stream: fileStream);
             await JS.InvokeVoidAsync("downloadFileFromStream", fileName.Trim(), streamRef);
         }
