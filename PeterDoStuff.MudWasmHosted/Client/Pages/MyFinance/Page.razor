@@ -1,6 +1,7 @@
 ﻿@page "/myFinance"
 @using System.Text
 @using PeterDoStuff.Extensions
+@using PeterDoStuff.MudWasmHosted.Client.Extensions
 @inject IJSRuntime JS
 
 <PlaygroundTitle Page="myFinance" />
@@ -64,11 +65,10 @@
 
     private async Task DownloadJson()
     {
-        string fileName = (Profile.Name ?? "") + " Profile.json";
-        using MemoryStream csvFileStream = new MemoryStream(
-            Encoding.UTF8.GetBytes(Profile.ToJson(beautify: true)));
-        using var streamRef = new DotNetStreamReference(stream: csvFileStream);
-        await JS.InvokeVoidAsync("downloadFileFromStream", fileName.Trim(), streamRef);
+        await JS.DownloadJson(
+            obj: Profile, 
+            fileName: Profile.Name,
+            defaultFileName: "My Finance");
     }
 
     private async Task UploadJson(IBrowserFile file)
