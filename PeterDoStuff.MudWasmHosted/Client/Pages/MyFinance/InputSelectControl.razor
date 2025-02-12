@@ -1,0 +1,27 @@
+﻿<MudSelect Variant="Variant.Outlined" Value="@Value" ValueChanged="@ValueChanged">
+    @foreach (var blockRef in Blocks)
+    {
+        var block = blockRef;
+        <MudSelectItem Value="block">
+            @block.Name
+        </MudSelectItem>
+    }
+</MudSelect>
+
+@code {
+    [Parameter]
+    public IEnumerable<Block> Blocks { get; set; } = [];
+
+    /// <summary>
+    /// Fired when the Value property changes.
+    /// </summary>
+    [Parameter]
+    public EventCallback<Block> ValueChanged { get; set; }
+
+    /// <summary>
+    /// The value of this input element.
+    /// </summary>
+    [Parameter]
+    [Category(CategoryTypes.FormComponent.Data)]
+    public Block Value { get; set; }
+}

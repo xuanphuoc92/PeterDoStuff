@@ -31,31 +31,43 @@
 <MudTextField Variant="Variant.Outlined"
               @bind-Value="Profile.Name" Label="Name" />
 
-<MudButton OnClick="() => Profile.Blocks.Add(new UsdBlock())">
-    Add USD
+<MudButton OnClick="() => Profile.Blocks.Add(new InputBlock())">
+    Add Input
 </MudButton>
-<MudButton OnClick="() => Profile.Blocks.Add(new VndBlock())">
-    Add VND
+<MudButton OnClick="() => Profile.Blocks.Add(new MultiplyBlock())">
+    Add Multiply
 </MudButton>
 
 <MudGrid>
     @foreach (var blockRef in Profile.Blocks)
     {
         var block = blockRef;
-        <MudItem xs="3">
-            <MudText>@block.GetType().Name</MudText>
+        <MudItem xs="12" sm="6">
+            @if (block is InputBlock inputBlock)
+            {
+                <MudText Color="Color.Primary">Input Block</MudText>
+                <MudTextField Variant="Variant.Outlined"
+                              @bind-Value="inputBlock.InputName" Label="Name" />
+                <MudTextField Variant="Variant.Outlined"
+                              @bind-Value="inputBlock.InputCurrency" Label="Currency" />
+                <MudNumericField Variant="Variant.Outlined"
+                                 @bind-Value="inputBlock.InputValue" Label="Value" />
+            }
+            @if (block is MultiplyBlock multiplyBlock)
+            {
+                <MudText Color="Color.Primary">Multiply Block</MudText>
+                <InputSelectControl @bind-Value="multiplyBlock.Input" Blocks="Profile.Blocks.Where(b => b != block)" />
+                <MudNumericField Variant="Variant.Outlined"
+                                 @bind-Value="multiplyBlock.Factor" Label="Factor" />
+            }
         </MudItem>
-        <MudItem xs="3">
-            <MudTextField Variant="Variant.Outlined"
-                          @bind-Value="block.Name" Label="Name" />
-        </MudItem>
-        <MudItem xs="3">
-            <MudNumericField Variant="Variant.Outlined"
-                             @bind-Value="block.Value" Label="Value" />
-        </MudItem>
-        <MudItem xs="3">
-            <MudTextField Variant="Variant.Outlined"
-                          @bind-Value="block.Currency" Label="Currency" />
+        <MudItem xs="12" sm="6">
+            <MudText Color="Color.Primary">
+                @block.Name
+            </MudText>
+            <MudText>
+                @block.Currency @block.Value
+            </MudText>
         </MudItem>
     }
 </MudGrid>

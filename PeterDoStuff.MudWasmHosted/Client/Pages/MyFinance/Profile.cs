@@ -9,27 +9,38 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.MyFinance
     }
 
     [JsonPolymorphic(TypeDiscriminatorPropertyName = "$type")]
-    [JsonDerivedType(typeof(UsdBlock), typeDiscriminator: nameof(UsdBlock))]
-    [JsonDerivedType(typeof(VndBlock), typeDiscriminator: nameof(VndBlock))]
+    [JsonDerivedType(typeof(InputBlock), typeDiscriminator: nameof(InputBlock))]
+    [JsonDerivedType(typeof(MultiplyBlock), typeDiscriminator: nameof(MultiplyBlock))]
     public abstract class Block
     {
-        public abstract string Name { get; set; }
-        public abstract decimal Value { get; set; }
-        public abstract string Currency { get; set; }
+        public abstract string Name { get; }
+        public abstract decimal Value { get; }
+        public abstract string Currency { get; }
     }
 
-    public class UsdBlock : Block
+    public class InputBlock : Block
     {
-        public override string Name { get; set; }
-        public override decimal Value { get; set; }
-        public override string Currency { get; set; } = "USD";
+        public string InputName { get; set; }
+        public decimal InputValue { get; set; }
+        public string InputCurrency { get; set; }
+
+        public override string Name => InputName;
+
+        public override decimal Value => InputValue;
+
+        public override string Currency => InputCurrency;
     }
 
-    public class VndBlock : Block
+    public class MultiplyBlock : Block
     {
-        public override string Name { get; set; }
-        public override decimal Value { get; set; }
-        public override string Currency { get; set; } = "VND";
+        public decimal Factor { get; set; }
+        public Block Input { get; set; }
+
+        public override string Name => $"x{Factor}";
+
+        public override decimal Value => (Input?.Value ?? 0) * Factor;
+
+        public override string Currency => Input?.Currency ?? "";
     }
 
     public class Controller
