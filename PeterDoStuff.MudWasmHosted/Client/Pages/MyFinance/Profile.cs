@@ -1,4 +1,6 @@
-﻿namespace PeterDoStuff.MudWasmHosted.Client.Pages.MyFinance
+﻿using System.Text.Json.Serialization;
+
+namespace PeterDoStuff.MudWasmHosted.Client.Pages.MyFinance
 {
     public class Profile
     {
@@ -6,6 +8,9 @@
         public List<Block> Blocks { get; set; } = [];
     }
 
+    [JsonPolymorphic(TypeDiscriminatorPropertyName = "$type")]
+    [JsonDerivedType(typeof(UsdBlock), typeDiscriminator: nameof(UsdBlock))]
+    [JsonDerivedType(typeof(VndBlock), typeDiscriminator: nameof(VndBlock))]
     public abstract class Block
     {
         public abstract string Name { get; set; }
