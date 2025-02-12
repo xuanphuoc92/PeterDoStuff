@@ -352,11 +352,10 @@
 
     private async Task DownloadJson()
     {
-        string fileName = (model.Person.Name ?? "") + " Profile.json";
-        using MemoryStream csvFileStream = new MemoryStream(
-            Encoding.UTF8.GetBytes(model.ToJson(beautify: true)));
-        using var streamRef = new DotNetStreamReference(stream: csvFileStream);
-        await JS.InvokeVoidAsync("downloadFileFromStream", fileName.Trim(), streamRef);
+        await JS.DownloadJson(
+            obj: model,
+            fileName: (model.Person.Name ?? "") + " Profile"
+        );
     }
 
     private async Task UploadJson(IBrowserFile file)

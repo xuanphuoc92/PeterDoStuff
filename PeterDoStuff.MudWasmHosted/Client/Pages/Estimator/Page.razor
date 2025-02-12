@@ -259,7 +259,7 @@
 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateMarkdownReport" Class="mb-2">Generate Markdown Report</MudButton>
 <MudTextField @bind-Value="MarkdownReport" Label="Markdown Report" Lines="3" AutoGrow Variant="Variant.Outlined" />
 
- @code {
+@code {
     private const string ExpectedValueLabel = "Expected Value (E)";
     private const string StandardDeviationLabel = "Standard Deviation (SD)";
     private string ConfidenceIntervalLabel => $"{Project.ContingencyConfidence}% Confidence Interval";
@@ -320,11 +320,10 @@
 
     private async Task DownloadJson()
     {
-        string fileName = (Project.Name ?? "") + " Estimates.json";
-        using MemoryStream csvFileStream = new MemoryStream(
-            Encoding.UTF8.GetBytes(Project.ToJson(beautify: true)));
-        using var streamRef = new DotNetStreamReference(stream: csvFileStream);
-        await JS.InvokeVoidAsync("downloadFileFromStream", fileName.Trim(), streamRef);
+        await JS.DownloadJson(
+            obj: Project,
+            fileName: (Project.Name ?? "") + " Estimates"
+        );
     }
 
     private async Task UploadJson(IBrowserFile file)
