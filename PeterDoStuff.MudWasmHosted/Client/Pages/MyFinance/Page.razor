@@ -1,4 +1,7 @@
 ﻿@page "/myFinance"
+@using System.Text
+@using PeterDoStuff.Extensions
+@inject IJSRuntime JS
 
 <PlaygroundTitle Page="myFinance" />
 
@@ -6,6 +9,23 @@
     OnClick="() => Profile = Controller.SampleProfile()">
     Sample Profile
 </MudButton>
+
+<div>
+    <MudButton Variant="Variant.Filled" Color="Color.Primary"
+               StartIcon="@Icons.Material.Filled.Download"
+               OnClick="DownloadJson">
+        Save Profile
+    </MudButton>
+    <MudFileUpload T="IBrowserFile" FilesChanged="UploadJson" Class="ma-0 d-inline pa-1">
+        <ButtonTemplate>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.Upload"
+                       for="@context.Id" HtmlTag="label">
+                Load Profile
+            </MudButton>
+        </ButtonTemplate>
+    </MudFileUpload>
+</div>
 
 <MudTextField Variant="Variant.Outlined"
               @bind-Value="Profile.Name" Label="Name" />
@@ -41,4 +61,23 @@
 
 @code {
     Profile Profile = new();
+
+    private async Task DownloadJson()
+    {
+        string fileName = (Profile.Name ?? "") + " Profile.json";
+        using MemoryStream csvFileStream = new MemoryStream(
+            Encoding.UTF8.GetBytes(Profile.ToJson(beautify: true)));
+        using var streamRef = new DotNetStreamReference(stream: csvFileStream);
+        await JS.InvokeVoidAsync("downloadFileFromStream", fileName.Trim(), streamRef);
+    }
+
+    private async Task UploadJson(IBrowserFile file)
+    {
+        using MemoryStream inputFileStream = new MemoryStream();
+        await file.OpenReadStream(file.Size).CopyToAsync(inputFileStream);
+        inputFileStream.Position = 0;
+        using StreamReader reader = new StreamReader(inputFileStream, Encoding.UTF8);
+        string json = reader.ReadToEnd();
+        Profile = json.FromJson<Profile>();
+    }
 }
