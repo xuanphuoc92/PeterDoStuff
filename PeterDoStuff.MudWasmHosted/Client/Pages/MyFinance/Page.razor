@@ -65,7 +65,7 @@
             <MudText Color="Color.Primary">
                 @block.Name
             </MudText>
-            <MudText>
+            <MudText Color="@(block is InputBlock ? Color.Secondary : Color.Default)">
                 @block.Currency @block.Value.ToString("#,##0.00")
             </MudText>
         </MudItem>
