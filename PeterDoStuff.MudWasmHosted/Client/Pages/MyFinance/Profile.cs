@@ -33,22 +33,40 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.MyFinance
 
     public class MultiplyBlock : Block
     {
-        public decimal Factor { get; set; }
-        public Block Input { get; set; }
+        public string InputName { get; set; }
+        public decimal InputFactor { get; set; }
+        public Block InputBlock { get; set; }
 
-        public override string Name => $"x{Factor}";
+        public override string Name => $"{InputName} (x{InputFactor})";
 
-        public override decimal Value => (Input?.Value ?? 0) * Factor;
+        public override decimal Value => (InputBlock?.Value ?? 0) * InputFactor;
 
-        public override string Currency => Input?.Currency ?? "";
+        public override string Currency => InputBlock?.Currency ?? "";
     }
 
     public class Controller
     {
         public static Profile SampleProfile()
-            => new()
+        {
+            var profile = new Profile();
+            profile.Name = "John Doe";
+            
+            var monthlyIncome = new InputBlock()
             {
-                Name = "John Doe",
+                InputName = "Monthly Income",
+                InputCurrency = "SGD",
+                InputValue = 8000,
             };
+            var annualIncome = new MultiplyBlock()
+            {
+                InputName = "Annual Income",
+                InputFactor = 12,
+                InputBlock = monthlyIncome,
+            };
+
+            profile.Blocks = [monthlyIncome, annualIncome];
+
+            return profile;
+        }
     }
 }
