@@ -45,6 +45,32 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.MyFinance
         public override string Currency => InputBlock?.Currency ?? "";
     }
 
+    public class DivideBlock : Block
+    {
+        public string InputName { get; set; }
+        public decimal InputFactor { get; set; } = 1;
+        public Block InputBlock { get; set; }
+
+        public override string Name => InputName;
+
+        public override decimal Value => (InputBlock?.Value ?? 0) / InputFactor;
+
+        public override string Currency => InputBlock?.Currency ?? "";
+    }
+
+    public class MinusBlock : Block
+    {
+        public string InputName { get; set; }
+        public Block InputBlock { get; set; }
+        public List<Block> InputMinusBlocks { get; set; } = [];
+
+        public override string Name => InputName;
+
+        public override decimal Value => (InputBlock?.Value ?? 0) - InputMinusBlocks.Sum(b => b.Value);
+
+        public override string Currency => InputBlock?.Currency ?? "";
+    }
+
     public class TaxBlock : Block
     {
         public string InputName { get; set; }
@@ -138,14 +164,46 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.MyFinance
                 InputFactor = 12,
                 InputBlock = monthlyIncome,
             };
-            var tax = new TaxBlock()
+            var annualTax = new TaxBlock()
             {
                 InputName = "Annual Tax",
                 InputBlock = annualIncome,
                 InputTaxProfile = TaxProfile.Singapore(),
             };
+            var monthlyTax = new DivideBlock()
+            {
+                InputName = "Monthly Tax",
+                InputBlock = annualTax,
+                InputFactor = 12,
+            };
+            var monthlyLivingExpense = new InputBlock()
+            {
+                InputName = "Monthly Living Expense",
+                InputCurrency = "SGD",
+                InputValue = 1800,
+            };
+            var monthlySaving = new MinusBlock()
+            {
+                InputName = "Monthly Saving",
+                InputBlock = monthlyIncome,
+                InputMinusBlocks = [monthlyTax, monthlyLivingExpense]
+            };
+            var yearlySaving = new MultiplyBlock()
+            {
+                InputName = "Yearly Saving",
+                InputBlock = monthlySaving,
+                InputFactor = 12,
+            };
 
-            profile.Blocks = [monthlyIncome, annualIncome, tax];
+            profile.Blocks = [
+                monthlyIncome, 
+                annualIncome, 
+                annualTax, 
+                monthlyTax, 
+                monthlyLivingExpense, 
+                monthlySaving,
+                yearlySaving,
+            ];
 
             return profile;
         }
