@@ -42,7 +42,7 @@
     @foreach (var blockRef in Profile.Blocks)
     {
         var block = blockRef;
-        <MudItem xs="12" sm="6">
+        @* <MudItem xs="12" sm="6">
             @if (block is InputBlock inputBlock)
             {
                 <MudText Color="Color.Primary">Input Block</MudText>
@@ -60,8 +60,8 @@
                 <MudNumericField Variant="Variant.Outlined"
                                  @bind-Value="multiplyBlock.InputFactor" Label="Factor" />
             }
-        </MudItem>
-        <MudItem xs="12" sm="6">
+        </MudItem> *@
+        <MudItem xs="12">
             <MudText Color="Color.Primary">
                 @block.Name
             </MudText>
