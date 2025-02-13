@@ -1,9 +1,11 @@
-﻿<MudText Color="Color.Primary">
-    @Value.Name
-</MudText>
-<MudText Color="@(Value is InputBlock ? Color.Secondary : Color.Default)">
-    @Value.Currency @Value.Value.ToString("#,##0.00")
-</MudText>
+﻿<MudPaper Elevation="3" MaxWidth="400">
+    <MudText Color="Color.Primary">
+        @Value.Name
+    </MudText>
+    <MudText Color="@(Value is InputBlock ? Color.Secondary : Color.Default)">
+        @Value.Currency @Value.Value.ToString("#,##0.00")
+    </MudText>
+</MudPaper>
 
 @code {
     /// <summary>

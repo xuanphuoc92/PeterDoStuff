@@ -31,36 +31,10 @@
 <MudTextField Variant="Variant.Outlined"
               @bind-Value="Profile.Name" Label="Name" />
 
-<MudButton OnClick="() => Profile.Blocks.Add(new InputBlock())">
-    Add Input
-</MudButton>
-<MudButton OnClick="() => Profile.Blocks.Add(new MultiplyBlock())">
-    Add Multiply
-</MudButton>
-
 <MudGrid>
     @foreach (var blockRef in Profile.Blocks)
     {
         var block = blockRef;
-        @* <MudItem xs="12" sm="6">
-            @if (block is InputBlock inputBlock)
-            {
-                <MudText Color="Color.Primary">Input Block</MudText>
-                <MudTextField Variant="Variant.Outlined"
-                              @bind-Value="inputBlock.InputName" Label="Name" />
-                <MudTextField Variant="Variant.Outlined"
-                              @bind-Value="inputBlock.InputCurrency" Label="Currency" />
-                <MudNumericField Variant="Variant.Outlined"
-                                 @bind-Value="inputBlock.InputValue" Label="Value" />
-            }
-            @if (block is MultiplyBlock multiplyBlock)
-            {
-                <MudText Color="Color.Primary">Multiply Block</MudText>
-                <InputSelectControl @bind-Value="multiplyBlock.InputBlock" Blocks="Profile.Blocks.Where(b => b != block)" />
-                <MudNumericField Variant="Variant.Outlined"
-                                 @bind-Value="multiplyBlock.InputFactor" Label="Factor" />
-            }
-        </MudItem> *@
         <MudItem xs="12">
             <BlockControl @bind-Value="block" />
         </MudItem>
