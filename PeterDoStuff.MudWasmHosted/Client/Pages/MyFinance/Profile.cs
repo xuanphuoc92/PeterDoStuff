@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Security.Cryptography;
+using System.Text.Json.Serialization;
 
 namespace PeterDoStuff.MudWasmHosted.Client.Pages.MyFinance
 {
@@ -37,11 +38,85 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.MyFinance
         public decimal InputFactor { get; set; }
         public Block InputBlock { get; set; }
 
-        public override string Name => $"{InputName} (x{InputFactor})";
+        public override string Name => InputName;
 
         public override decimal Value => (InputBlock?.Value ?? 0) * InputFactor;
 
         public override string Currency => InputBlock?.Currency ?? "";
+    }
+
+    public class TaxBlock : Block
+    {
+        public string InputName { get; set; }
+        public TaxProfile InputTaxProfile { get; set; }
+        public Block InputBlock { get; set; }
+
+        public override string Name => InputName;
+
+        public override decimal Value
+        {
+            get
+            {
+                if (InputTaxProfile == null || InputBlock == null)
+                    return 0;
+
+                decimal tax = 0;
+                decimal income = InputBlock.Value;
+                var levels = InputTaxProfile.Levels;
+
+                for (int i = 0; i < levels.Count; i++)
+                {
+                    if (income < levels[i].From)
+                        break;
+
+                    decimal taxableAmount;
+                    if (i == levels.Count -1)
+                    {
+                        taxableAmount = income - levels[i].From;
+                    }
+                    else
+                    {
+                        taxableAmount = Math.Min(income, levels[i + 1].From)
+                            - levels[i].From;
+                    }
+
+                    tax += taxableAmount * (levels[i].RatePercentage / 100);
+                }
+
+                return tax;
+            }
+        }
+
+        public override string Currency => InputBlock?.Currency ?? "";
+    }
+
+    public class TaxProfile
+    {
+        public string Name { get; set; }
+        public List<TaxLevel> Levels { get; set; } = [];
+
+        public static TaxProfile Singapore()
+        {
+            return new()
+            {
+                Name = "Singapore Tax",
+                Levels = [
+                    new() { From = 0, RatePercentage = 0 },
+                    new() { From = 20000, RatePercentage = 2 },
+                    new() { From = 30000, RatePercentage = 3.5M },
+                    new() { From = 40000, RatePercentage = 7 },
+                    new() { From = 80000, RatePercentage = 11.5M },
+                    new() { From = 120000, RatePercentage = 15 },
+                    new() { From = 160000, RatePercentage = 18 },
+                ]
+            };
+        }
+    }
+
+    public class TaxLevel
+    {
+        public decimal From { get; set; }
+        public decimal RatePercentage { get; set; }
     }
 
     public class Controller
@@ -63,8 +138,14 @@ namespace PeterDoStuff.MudWasmHosted.Client.Pages.MyFinance
                 InputFactor = 12,
                 InputBlock = monthlyIncome,
             };
+            var tax = new TaxBlock()
+            {
+                InputName = "Annual Tax",
+                InputBlock = annualIncome,
+                InputTaxProfile = TaxProfile.Singapore(),
+            };
 
-            profile.Blocks = [monthlyIncome, annualIncome];
+            profile.Blocks = [monthlyIncome, annualIncome, tax];
 
             return profile;
         }
