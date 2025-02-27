@@ -1,12 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FluentAssertions;
+using PeterDoStuff.Identity;
 
 namespace PeterDoStuff.Test.Identity
 {
-    internal class _01_User
+    [TestClass]
+    public class _01_User
     {
+        [TestMethod]
+        public void _01_DefaultUserStore()
+        {
+            UserStore userStore = UserStore.Default;
+            userStore.Users.Should().HaveCount(1);
+        }
     }
 }
