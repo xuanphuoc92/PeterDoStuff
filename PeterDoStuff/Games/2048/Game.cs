@@ -34,7 +34,6 @@
         {
             var allLocs = Enumerable.Range(0, Size);
             var random = new Random();
-            allLocs.OrderBy(loc => random.Next());
             var startBlockLocations = allLocs
                 .OrderBy(loc => random.Next()) // Shuffle
                 .Take(StartBlocks); // Take the first 2

@@ -86,6 +86,8 @@ namespace PeterDoStuff.Test
             game.Step();
            
             game.State.Should().Be(GameState.Over);
+
+            game.Step();
         }
 
         [TestMethod]
