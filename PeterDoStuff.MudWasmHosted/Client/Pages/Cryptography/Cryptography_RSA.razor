@@ -1,0 +1,280 @@
+﻿@using PeterDoStuff.Extensions
+@using PeterDoStuff.MudWasmHosted.Client.Api
+@using PeterDoStuff.MudWasmHosted.Client.Extensions
+@using PeterDoStuff.MudWasmHosted.Shared
+@inject HttpClient Http
+@inject IJSRuntime JS
+
+<MudText Typo="Typo.h4">
+    Encryption and Signing/Hashing: RSA
+</MudText>
+<MudText Class="mb-8">
+    RSA Encrypting and Decrypting plaground with 2048 bits key
+    <br />
+    Externally cross-checked (PKCS1 Padding) with: <MudLink Target="_blank" Href="https://devtoolcafe.com/tools/rsa">DevToolCafe.com</MudLink>
+    <br />
+    RSA Signing and Verifying with PKCS1 Padding
+    <br />
+    Externally cross-checked (SHA512 Hashing) with: <MudLink Target="_blank" Href="https://8gwifi.org/rsasignverifyfunctions.jsp">8gwifi.org</MudLink>
+</MudText>
+
+<MudGrid Class="mb-8">
+    <MudItem xs="12" md="6">
+        <MudText Typo="Typo.h6" Color="Color.Primary">Online</MudText>
+        <MudText Color="Color.Primary">KeyGen Format</MudText>
+        <MudRadioGroup @bind-Value="keyGenFormat">
+            <MudRadio Color="Color.Primary" Value="@RsaKeysFormat.Spki_Pkcs8">SPKI / PKCS8</MudRadio>
+            <MudRadio Color="Color.Primary" Value="@RsaKeysFormat.Pem">PEM</MudRadio>
+        </MudRadioGroup>
+
+        <MudText Color="Color.Primary">Encryption Padding</MudText>
+        <MudRadioGroup @bind-Value="encryptPadding">
+            <MudRadio Color="Color.Primary" Value="@RsaEncryptPadding.Oaep256">OAEP with SHA256 Hashing</MudRadio>
+            <MudRadio Color="Color.Primary" Value="@RsaEncryptPadding.Pkcs1">PKCS1</MudRadio>
+        </MudRadioGroup>
+
+        <MudText Color="Color.Primary">Signing Hashing</MudText>
+        <MudRadioGroup @bind-Value="signHashing">
+            <MudRadio Color="Color.Primary" Value="@RsaSignHashing.Sha256">SHA256</MudRadio>
+            <MudRadio Color="Color.Primary" Value="@RsaSignHashing.Sha512">SHA512</MudRadio>
+        </MudRadioGroup>
+    </MudItem>
+    <MudItem xs="12" md="6">
+        <MudText Typo="Typo.h6" Color="Color.Secondary">Offline</MudText>
+        <MudText Color="Color.Secondary">KeyGen Format</MudText>
+        <MudRadioGroup @bind-Value="offlineKeyGenFormat">
+            <MudRadio Color="Color.Secondary" Value="@RsaKeysFormat.Spki_Pkcs8">SPKI / PKCS8</MudRadio>
+            <MudRadio Color="Color.Secondary" Value="@RsaKeysFormat.Pem" Disabled="true">PEM</MudRadio>
+        </MudRadioGroup>
+
+        <MudText Color="Color.Secondary">Encryption Padding</MudText>
+        <MudRadioGroup @bind-Value="offlineEncryptPadding">
+            <MudRadio Color="Color.Secondary" Value="@RsaEncryptPadding.Oaep256">OAEP with SHA256 Hashing</MudRadio>
+            <MudRadio Color="Color.Secondary" Value="@RsaEncryptPadding.Pkcs1" Disabled="true">PKCS1</MudRadio>
+        </MudRadioGroup>
+
+        <MudText Color="Color.Secondary">Signing Hashing</MudText>
+        <MudRadioGroup @bind-Value="offlineSignHashing">
+            <MudRadio Color="Color.Secondary" Value="@RsaSignHashing.Sha256">SHA256</MudRadio>
+            <MudRadio Color="Color.Secondary" Value="@RsaSignHashing.Sha512" Disabled="true">SHA512</MudRadio>
+        </MudRadioGroup>
+    </MudItem>
+</MudGrid>
+
+<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateRsaKeysServer" StartIcon="@ServerIcon">
+    Generate Random RSA Keys (online)
+</MudButton>
+<MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="GenerateRsaKeysClient">
+    Generate Random RSA Keys (offline)
+</MudButton>
+<MudGrid Spacing="1" Class="align-top mb-8">
+    <MudItem xs="12" md="4">
+        <MudText Color="Color.Success">Public</MudText>
+        <MudTextField T="string" Variant="Variant.Outlined" AutoGrow Lines="1" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Key"
+                      @bind-Value="rsaPublic" Label="Public Key" AdornmentColor="Color.Success" />
+    </MudItem>
+    <MudItem xs="12" md="8">
+        <MudText Color="Color.Warning">Private</MudText>
+        <MudTextField T="string" Variant="Variant.Outlined" AutoGrow Lines="1" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Key"
+                      @bind-Value="rsaPrivate" Label="Private Key" AdornmentColor="Color.Warning" />
+    </MudItem>
+</MudGrid>
+
+<MudGrid Spacing="1" Class="align-top mb-8">
+    <MudItem xs="1" md="1">
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="OpenInput">Input</MudButton>
+    </MudItem>
+    <MudItem xs="3" md="1" Class="d-flex justify-end">
+        <MudIcon Icon="@Icons.Material.Filled.AddCircle" />
+        <MudIcon Icon="@Icons.Material.Filled.Key" Color="Color.Success" />
+        <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
+    </MudItem>
+    <MudItem xs="8" md="5">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="EncryptRsaServer" StartIcon="@ServerIcon">Encrypt (online)</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="EncryptRsaClient">Encrypt (offline)</MudButton>
+        <ByteArrayTextField IsBase64Format="@IsBase64Format" @bind-Value="rsaEncrypted" />
+    </MudItem>
+    <MudItem xs="5" md="1" Class="d-flex justify-end">
+        <MudIcon Icon="@Icons.Material.Filled.AddCircle" />
+        <MudIcon Icon="@Icons.Material.Filled.Key" Color="Color.Warning" />
+        <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
+    </MudItem>
+    <MudItem xs="7" md="4">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="DecryptRsaServer" StartIcon="@ServerIcon">Decrypt (online)</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="DecryptRsaClient">Decrypt (offline)</MudButton>
+        <ByteArrayTextField AllowUTF8="true" IsBase64Format="@IsBase64Format" @bind-Value="rsaDecrypted" />
+    </MudItem>
+
+    <MudItem xs="1" md="1">
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="OpenInput">Input</MudButton>
+    </MudItem>
+    <MudItem xs="3" md="1" Class="d-flex justify-end">
+        <MudIcon Icon="@Icons.Material.Filled.AddCircle" />
+        <MudIcon Icon="@Icons.Material.Filled.Key" Color="Color.Warning" />
+        <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
+    </MudItem>
+    <MudItem xs="8" md="5">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SignRsaServer" StartIcon="@ServerIcon">Sign (online)</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="SignRsaClient">Sign (offline)</MudButton>
+        <ByteArrayTextField IsBase64Format="@IsBase64Format" @bind-Value="rsaHash" />
+    </MudItem>
+
+    <MudItem xs="5" md="1" Class="d-flex justify-end">
+        <MudIcon Icon="@Icons.Material.Filled.AddCircle" />
+        <MudIcon Icon="@Icons.Material.Filled.Key" Color="Color.Success" />
+        <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
+    </MudItem>
+    <MudItem xs="7" md="4">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="VerifyRsaServer" StartIcon="@ServerIcon">Verify (online)</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="VerifyRsaClient">Verify (offline)</MudButton>
+        @if (rsaVerified != null)
+        {
+            <br/>
+            <MudIcon
+                Icon="@(rsaVerified.Value ? Icons.Material.Filled.CheckCircle : Icons.Material.Filled.Cancel)"
+                Color="@rsaVerifyColor" />
+        }
+    </MudItem>
+</MudGrid>
+
+@code {
+    [Parameter]
+    public EventCallback<MouseEventArgs> OpenInput { get; set; }
+
+    [Parameter]
+    public bool IsBase64Format { get; set; }
+
+    [Parameter]
+    public byte[] InputByteArray { get; set; }
+
+    [Parameter]
+    public string ServerIcon { get; set; }
+
+    [Parameter]
+    public Func<string, Task> ShowError { get; set; }
+
+    private string rsaPublic, rsaPrivate;
+    private byte[] rsaEncrypted, rsaDecrypted;
+
+    private RsaKeysFormat keyGenFormat, offlineKeyGenFormat;
+    private RsaEncryptPadding encryptPadding, offlineEncryptPadding;
+    private RsaSignHashing signHashing, offlineSignHashing;
+
+    private async Task GenerateRsaKeysServer()
+    {
+        try
+        {
+            var result = await Http
+                .As<CryptographyClient>()
+                .GenerateRsaKeys(new RsaKeyConfig(keyGenFormat));
+            rsaPublic = result.Public;
+            rsaPrivate = result.Private;
+        }
+        catch (ApiException ex)
+        {
+            await ShowError(ex.Message);
+        }
+    }
+
+    private async Task GenerateRsaKeysClient()
+    {
+        var result = await JS.InvokeAsync<Dictionary<string, string>>("generateRsaKeys", 2048);
+        rsaPublic = result["Public"];
+        rsaPrivate = result["Private"];
+    }
+
+    private async Task EncryptRsaServer()
+    {
+        try
+        {
+            rsaEncrypted = await Http
+                .As<CryptographyClient>()
+                .EncryptRsa(new RsaBody(InputByteArray, rsaPublic, EncryptPadding: encryptPadding));
+        }
+        catch (ApiException ex)
+        {
+            await ShowError(ex.Message);
+        }
+    }
+
+    private async Task EncryptRsaClient()
+    {
+        // rsaEncrypted = InputByteArray
+        //     .EncryptRSA(rsaPublic);
+        rsaEncrypted = await JS.InvokeAsync<byte[]>("encryptRsa", InputByteArray, rsaPublic);
+    }
+
+    private async Task DecryptRsaServer()
+    {
+        try
+        {
+            rsaDecrypted = await Http
+                .As<CryptographyClient>()
+                .DecryptRsa(new RsaBody(rsaEncrypted, rsaPrivate, EncryptPadding: encryptPadding));
+        }
+        catch (ApiException ex)
+        {
+            await ShowError(ex.Message);
+        }
+    }
+
+    private async Task DecryptRsaClient()
+    {
+        // rsaDecrypted = rsaEncrypted
+        //     .DecryptRSA(rsaPrivate);
+        rsaDecrypted = await JS.InvokeAsync<byte[]>("decryptRsa", rsaEncrypted, rsaPrivate);
+    }
+
+    private byte[] rsaHash;
+    private async Task SignRsaServer()
+    {
+        try
+        {
+            rsaHash = await Http
+                .As<CryptographyClient>()
+                .SignRsa(new RsaBody(InputByteArray, rsaPrivate, SignHashing: signHashing));
+        }
+        catch (ApiException ex)
+        {
+            await ShowError(ex.Message);
+        }
+    }
+    private async Task SignRsaClient()
+    {
+        // rsaHash = InputByteArray
+        //     .SignRSA(rsaPrivate);
+        rsaHash = await JS.InvokeAsync<byte[]>("signRsa", InputByteArray, rsaPrivate);
+    }
+
+    private bool? rsaVerified;
+    private async Task VerifyRsaServer()
+    {
+        try
+        {
+            rsaVerified = await Http
+                .As<CryptographyClient>()
+                .VerifyRsa(new RsaBody(InputByteArray, rsaPublic, rsaHash, SignHashing: signHashing));
+        }
+        catch (ApiException ex)
+        {
+            await ShowError(ex.Message);
+        }
+    }
+    private async Task VerifyRsaClient()
+    {
+        // rsaVerified = InputByteArray
+        //     .VerifyRSA(rsaHash, rsaPublic);
+        rsaVerified = await JS.InvokeAsync<bool>("verifyRsa", InputByteArray, rsaHash, rsaPublic);
+    }
+    private Color rsaVerifyColor
+    {
+        get
+        {
+            if (rsaVerified == true)
+                return Color.Success;
+            if (rsaVerified == false)
+                return Color.Error;
+            return Color.Default;
+        }
+    }
+}

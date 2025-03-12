@@ -1,0 +1,107 @@
+﻿@page "/mineSweeper"
+@using PeterDoStuff.Games
+@inject MineSweeper Game
+
+<PlaygroundTitle Page="mineSweeper" />
+
+@* Gamebar *@
+<div class="d-flex justify-space-around flex-grow-1 gap-4 align-center">
+    <div>
+        <MudText>Mines</MudText>
+        <MudText Typo="Typo.h6">@Game.MineCount</MudText>
+        </div>
+        <MudButton Variant="Variant.Filled" OnClick="NewGame">
+            <MudIcon Icon="@Icons.Material.Filled.EmojiEmotions" Size="Size.Large" Color="@GetGameColor()" />
+        </MudButton>
+        <div>
+            <MudText>Time</MudText>
+            <MudText Typo="Typo.h6">@Time</MudText>
+        </div>
+    </div>
+
+    @* Game cells *@
+    @for (int y = 0; y < Game.Height; y++)
+{
+    <div class="d-flex justify-md-center" @oncontextmenu:preventDefault="true">
+        @for (int x = 0; x < Game.Width; x++)
+        {
+            MineSweeper.Cell cell = Game.Cells[(x, y)];
+            <MudButton Class="d-flex justify-center align-center border-2 border-solid mud-border-lines-default rounded-0"
+                       Style=@($"height:64px;width:64px;background-color:{GetBackgroundColor(cell)}")
+                       @onclick="() => Pick(cell)"
+                       @oncontextmenu="() => Flag(cell)">
+                @if (cell.Content == MineSweeper.CellContent.Number)
+                {
+                    <MudText Typo="Typo.h6">@cell.Number</MudText>
+                }
+                else if (cell.Content == MineSweeper.CellContent.Flag)
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.Flag" Size="@Size.Large" />
+                }
+                else if (cell.Content == MineSweeper.CellContent.Mine)
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.BrightnessHigh" Size="@Size.Large" />
+                }
+            </MudButton>
+        }
+    </div>
+}
+
+@code
+{
+    private int Time = 0;
+    private Timer Timer;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Timer = new Timer(Tick, null, 0, 1000);
+    }
+
+    private void Tick(object? _ = null)
+    {
+        Time = Game.GetLiveSeconds();
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void NewGame()
+    {
+        Game.Reset().RandomizeMines(10).Start();
+        Tick();
+    }
+
+    private void Pick(MineSweeper.Cell cell)
+    {
+        Game.Pick(cell.X, cell.Y);
+    }
+
+    private void Flag(MineSweeper.Cell cell)
+    {
+        Game.Flag(cell.X, cell.Y);
+    }
+
+    private string GetBackgroundColor(MineSweeper.Cell cell)
+    {
+        return cell.Background switch
+        {
+            MineSweeper.CellBackground.PickedMine => Colors.Red.Lighten1,
+            MineSweeper.CellBackground.WrongFlag => Colors.Red.Lighten3,
+            MineSweeper.CellBackground.Picked => Colors.Grey.Darken2,
+            _ => "none"
+        };
+    }
+
+    private Color GetGameColor()
+    {
+        return Game.State switch
+        {
+            MineSweeper.GameState.Win => Color.Success,
+            MineSweeper.GameState.Lose => Color.Error,
+            _ => Color.Warning
+        };
+    }
+}
+
+@code {
+
+}

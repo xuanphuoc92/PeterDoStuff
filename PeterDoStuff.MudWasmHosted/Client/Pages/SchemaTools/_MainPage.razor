@@ -1,0 +1,94 @@
+﻿@page "/schemaTools"
+@using PeterDoStuff.Tools.Schema
+
+<PlaygroundTitle Page="schemaTools" />
+
+<MudText Typo="Typo.h4">The Chase</MudText>
+
+<MudDivider Class="my-4" />
+
+<MudText Typo="Typo.h5">Dependencies</MudText>
+
+<MudButton StartIcon="@Icons.Material.Filled.Add" Variant="Variant.Filled" Color="Color.Primary" OnClick="AddDependency">Add</MudButton>
+<MudButton StartIcon="@Icons.Material.Filled.ClearAll" Variant="Variant.Filled" Color="Color.Secondary" OnClick="ClearDependencies">Clear</MudButton>
+
+@foreach (var form in dependencyForms)
+{
+    <MudGrid Class="align-center">
+        <DependencyForm Form="@form" />
+        <MudItem xs="1">
+            <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="() => RemoveDependency(form)">
+                <MudIcon Icon="@Icons.Material.Filled.Delete" />
+            </MudButton>
+        </MudItem>
+    </MudGrid>
+}
+
+<MudDivider Class="my-4"/>
+
+<MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mb-4" OnClick="ChaseDependency">Chase</MudButton>
+
+<MudGrid Class="align-center">
+    <DependencyForm Form="@chaseDependency" />
+</MudGrid>
+
+<MudTextField T="string" Label="Result" Variant="Variant.Outlined" AutoGrow Lines="5"
+    @bind-Value="chaseLogs"
+    Style="@($"font-family: {codeFontFamily}")" />
+
+@code {
+    List<DependencyForm.FormClass> dependencyForms = [];
+
+    void AddDependency()
+    {
+        dependencyForms.Add(new DependencyForm.FormClass());
+    }
+
+    void ClearDependencies()
+    {
+        dependencyForms.Clear();
+    }
+
+    void RemoveDependency(DependencyForm.FormClass form)
+    {
+        dependencyForms.Remove(form);
+    }
+
+    private string codeFontFamily = "Fira Code, Consolas, Input, DejaVu Sans Mono, JetBrains Mono, and MonoLisa;";
+    string chaseLogs = "";
+
+    DependencyForm.FormClass chaseDependency = new();
+
+    private static IEnumerable<string> GetAttributes(string attributes)
+    {
+        return attributes.Split(",").Select(atb => atb.Trim()).Where(atb => atb != "");
+    }
+
+    private static Dependency GetDependency(DependencyForm.FormClass form)
+    {
+        return form.IsMVD
+            ? new MultiValDependency(form.Left, form.Right)
+            : new FuncDependency(form.Left, form.Right);
+    }
+
+    private void ChaseDependency()
+    {
+        var schema = dependencyForms
+            .SelectMany(df =>
+            {
+                var lefts = GetAttributes(df.Left);
+                var rights = GetAttributes(df.Right);
+                return lefts.Union(rights);
+            })
+            .Distinct();
+
+        var theChase = new TheChase();
+        theChase.Schema.AddRange(schema);
+        foreach (var dependencyForm in dependencyForms)
+            theChase.Dependencies.Add(GetDependency(dependencyForm));
+
+        // Act Process
+        var result = theChase.ChaseDependency(GetDependency(chaseDependency));
+        chaseLogs = theChase.Logs;
+    }
+}

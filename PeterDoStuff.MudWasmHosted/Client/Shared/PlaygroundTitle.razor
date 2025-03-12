@@ -1,0 +1,16 @@
+﻿<PageTitle>@Title</PageTitle>
+
+<MudText Typo="Typo.h3" GutterBottom="true">
+    <MudIcon Size="Size.Large" Icon="@Icon" />
+    @Title
+</MudText>
+<MudText Class="mb-8">@Description</MudText>
+
+@code {
+    [Parameter]
+    public string Page { get; set; }
+
+    private string? Icon => PlaygroundItem.Items.FirstOrDefault(i => i.Link == Page)?.Icon;
+    private string? Title => PlaygroundItem.Items.FirstOrDefault(i => i.Link == Page)?.Title;
+    private string? Description => PlaygroundItem.Items.FirstOrDefault(i => i.Link == Page)?.Description;
+}

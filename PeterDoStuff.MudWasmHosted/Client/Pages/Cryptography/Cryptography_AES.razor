@@ -1,0 +1,120 @@
+﻿@using PeterDoStuff.Extensions
+@using PeterDoStuff.MudWasmHosted.Client.Api
+@using PeterDoStuff.MudWasmHosted.Client.Extensions
+@using PeterDoStuff.MudWasmHosted.Shared
+@inject HttpClient Http
+@inject IJSRuntime JS
+
+<MudText Typo="Typo.h4">
+    Encryption: AES
+</MudText>
+<MudText Class="mb-8">
+    AES Encrypting and Decrypting with CBC Cipher Mode and PKCS7 Paddding.
+    <br />
+    IMPORTANT: Since I have not found any external cross-check that returns the identical results, the implementation may have a slight difference in implementations than the cross-checked sources.
+</MudText>
+
+<MudGrid Spacing="1" Class="align-center mb-8">
+    <MudItem xs="1" md="1">
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="OpenInput">Input</MudButton>
+    </MudItem>
+    <MudItem xs="3" md="1" Class="d-flex justify-end">
+        <MudIcon Icon="@Icons.Material.Filled.AddCircle" />
+    </MudItem>
+    <MudItem xs="8" md="10">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateAesKey256">Generate Random AES Key (256 bit)</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateAesKey128">Generate Random AES Key (128 bit)</MudButton>
+        <ByteArrayTextField IsBase64Format="@IsBase64Format" @bind-Value="aesKey" />
+
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateAesIV">Generate Random AES IV</MudButton>
+        <ByteArrayTextField IsBase64Format="@IsBase64Format" @bind-Value="aesIV" />
+    </MudItem>
+    <MudItem xs="4" md="2" Class="d-flex justify-end">
+        <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
+    </MudItem>
+    <MudItem xs="8" md="5">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="EncryptAesServer" StartIcon="@ServerIcon">Encrypt (online)</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="EncryptAesClient">Encrypt (offline)</MudButton>
+        <ByteArrayTextField IsBase64Format="@IsBase64Format" @bind-Value="aesEncrypted" />
+    </MudItem>
+    <MudItem xs="5" md="1" Class="d-flex justify-end">
+        <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
+    </MudItem>
+    <MudItem xs="7" md="4">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="DecryptAesServer" StartIcon="@ServerIcon">Decrypt (online)</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="DecryptAesClient">Decrypt (offline)</MudButton>
+        <ByteArrayTextField AllowUTF8="true" IsBase64Format="@IsBase64Format" @bind-Value="aesDecrypted" />
+    </MudItem>
+</MudGrid>
+
+
+@code {
+    [Parameter]
+    public EventCallback<MouseEventArgs> OpenInput { get; set; }
+
+    [Parameter]
+    public bool IsBase64Format { get; set; }
+
+    [Parameter]
+    public byte[] InputByteArray { get; set; }
+
+    [Parameter]
+    public string ServerIcon { get; set; }
+
+    [Parameter]
+    public Func<string, Task> ShowError { get; set; }
+
+    private byte[]? aesKey;
+
+    private void GenerateAesKey256() => GenerateAesKey(256);
+    private void GenerateAesKey128() => GenerateAesKey(128);
+
+    private void GenerateAesKey(int keySize)
+    {
+        aesKey = SecurityExtensions.GenerateAesKey(keySize);
+    }
+
+    private byte[]? aesIV;
+    private void GenerateAesIV()
+    {
+        aesIV = SecurityExtensions.GenerateAesIV();
+    }
+
+    private byte[]? aesEncrypted;
+    private async Task EncryptAesServer()
+    {
+        try
+        {
+            aesEncrypted = await Http
+                .As<CryptographyClient>()
+                .EncryptAes(new AesBody(InputByteArray, aesKey, aesIV));
+        }
+        catch (ApiException ex)
+        {
+            await ShowError(ex.Message);
+        }
+    }
+    private async Task EncryptAesClient()
+    {
+        aesEncrypted = await JS.InvokeAsync<byte[]>("encryptAes", InputByteArray, aesKey, aesIV);
+    }
+
+    private byte[]? aesDecrypted;
+    private async Task DecryptAesServer()
+    {
+        try
+        {
+            aesDecrypted = await Http
+                .As<CryptographyClient>()
+                .DecryptAes(new AesBody(aesEncrypted, aesKey, aesIV));
+        }
+        catch (ApiException ex)
+        {
+            await ShowError(ex.Message);
+        }
+    }
+    private async Task DecryptAesClient()
+    {
+        aesDecrypted = await JS.InvokeAsync<byte[]>("decryptAes", aesEncrypted, aesKey, aesIV);
+    }
+}

@@ -1,0 +1,73 @@
+﻿@page "/whatsapp"
+@using System.Web
+@inject IJSRuntime js
+
+<PlaygroundTitle Page="whatsapp" />
+
+<MudText Class="mb-8">Reference: <MudLink Href="https://faq.whatsapp.com/5913398998672934/?helpref=uf_share" Target="_blank">How to use click to chat</MudLink>.</MudText>
+
+<MudGrid Spacing="1" Class="mb-8">
+    <MudItem xs="12" md="6">
+        <MudTextField T="string" @bind-Text="_phoneNumber" Label="Phone Number"
+            Variant="Variant.Outlined"></MudTextField>
+        <MudText Typo="Typo.caption">Use full phone number in international format, e.g. +001-(XXX)XXXXXX or 1XXXXXXXXX</MudText>
+    </MudItem>
+    <MudItem xs="12">
+        <MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="SetSampleMessage">Create a Sample Message</MudButton>
+        <MudTextField T="string" @bind-Text="_message" Label="Message"
+            AutoGrow Lines="10"
+            Variant="Variant.Outlined"></MudTextField>
+        <MudText Typo="Typo.caption">Max length not known?</MudText>
+    </MudItem>
+</MudGrid>
+
+<MudButton 
+    IconColor="Color.Success"
+    Variant="Variant.Filled" 
+    StartIcon="@Icons.Custom.Brands.WhatsApp"
+    @onclick="ChatOnWhatsApp">
+    Chat on WhatsApp
+</MudButton>
+
+@code {
+    private string _phoneNumber;
+    private string _message;
+
+    private void SetSampleMessage()
+    {
+        _message = @"Hi,
+I saw your advertisement on XYZ.com.
+I would like to discuss on a quotation of your service.
+My details:
+Name: Alex Smith
+Location: Singapore
+Title: Inventory Management
+Thanks and regards,
+Alex Smith";
+    }
+
+    private async Task ChatOnWhatsApp()
+    {
+        if (string.IsNullOrEmpty(_phoneNumber) || string.IsNullOrEmpty(_message))
+            return;
+
+        // Clear all the white spaces, brackets, signs
+        var phoneNumber = _phoneNumber
+            .Trim()
+            .Replace(" ", "")
+            .Replace("+", "")
+            .Replace("-", "")
+            .Replace("(", "")
+            .Replace(")", "");
+
+        // Remove any starting 0
+        while (phoneNumber.StartsWith('0'))
+            phoneNumber = phoneNumber.Substring(1);
+
+        if (string.IsNullOrEmpty(phoneNumber))
+            return;
+
+        var url = $"https://wa.me/{HttpUtility.UrlEncode(phoneNumber)}?text={HttpUtility.UrlEncode(_message)}";
+        await js.InvokeVoidAsync("open", url, "_blank");
+    }
+}

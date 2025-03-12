@@ -1,0 +1,30 @@
+﻿@using System.Text
+@using PeterDoStuff.Graphics.Models
+<path d="@D"
+      stroke="@Model.Style.StrokeColor"
+      stroke-opacity="@Model.Style.StrokeOpacity"
+      stroke-width="@Model.Style.StrokeWidth"
+      fill="@Model.Style.FillColor"
+      fill-opacity="@Model.Style.FillOpacity" />
+
+@code {
+    [Parameter]
+    public PathModel Model { get; set; }
+
+    private string D
+    {
+        get
+        {            
+            var sb = new StringBuilder();
+
+            foreach (var command in Model.Commands)
+            {
+                sb.Append($"{command.Name} ");
+                foreach (var p in command.Points)
+                    sb.Append($"{p.X} {p.Y} ");
+            }
+
+            return sb.ToString().Trim();
+        }
+    }
+}

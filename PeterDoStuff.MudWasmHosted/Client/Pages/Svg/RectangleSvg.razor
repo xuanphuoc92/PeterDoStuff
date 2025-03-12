@@ -1,0 +1,15 @@
+﻿@using PeterDoStuff.Graphics.Models
+
+<rect x="@Model.X" y="@Model.Y"
+      width="@Model.Width" height="@Model.Height"
+      fill="@Model.Style.FillColor"
+      fill-opacity="@Model.Style.FillOpacity"
+      stroke="@Model.Style.StrokeColor"
+      stroke-opacity="@Model.Style.StrokeOpacity"
+      stroke-width="@Model.Style.StrokeWidth"
+      transform="@Model.SvgTransform" />
+
+@code {
+    [Parameter]
+    public RectangleModel Model { get; set; }
+}

@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.3" />
+		<PackageReference Include="SmartComponents.AspNetCore" Version="0.1.0-preview10146" />
+		<PackageReference Include="SmartComponents.Inference.OpenAI" Version="0.1.0-preview10146" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Client\PeterDoStuff.MudWasmHosted.Client.csproj" />
+		<ProjectReference Include="..\Shared\PeterDoStuff.MudWasmHosted.Shared.csproj" />
+	</ItemGroup>
+
+
+</Project>

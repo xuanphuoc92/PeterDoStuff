@@ -1,0 +1,51 @@
+﻿@using PeterDoStuff.Extensions
+@using static PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate.DocTemplateController
+
+<MudGrid>
+    <MudItem xs="12" sm="12">
+        <MudTextField Variant="Variant.Outlined" Label="Name" @bind-Value="Entity.Name" For="@(() => Entity.Name)" />
+    </MudItem>
+    <MudItem xs="12" sm="12">
+        Photo:
+        <MudRadioGroup @bind-Value="Entity.PhotoType">
+            <MudRadio Value="@(PhotoType.None)" Color="Color.Default">None</MudRadio>
+            <MudRadio Value="@(PhotoType.Url)" Color="Color.Primary">Url</MudRadio>
+            <MudRadio Value="@(PhotoType.Base64)" Color="Color.Primary">Base64</MudRadio>
+        </MudRadioGroup>
+    </MudItem>
+    @if (Entity.PhotoType == PhotoType.Url)
+    {
+        <MudItem xs="6" sm="9">
+            <MudTextField Variant="Variant.Outlined" Label="Url"
+                @bind-Value="Entity.PhotoUrl" For="@(() => Entity.PhotoUrl)" />
+        </MudItem>
+        <MudItem xs="6" sm="3">
+            @if (Entity.PhotoUrl.IsNullOrEmpty() == false)
+            {
+                <img height="150" src="@Entity.PhotoUrl" />
+            }
+        </MudItem>
+        
+    }
+    @if (Entity.PhotoType == PhotoType.Base64)
+    {
+        <MudItem xs="6" sm="9">
+            <MudTextField Variant="Variant.Outlined" Label="Image Type"
+                @bind-Value="Entity.PhotoImageType" For="@(() => Entity.PhotoImageType)" />
+            <MudTextField Variant="Variant.Outlined" Label="Base64"
+                Lines="5"
+                @bind-Value="Entity.PhotoBase64" For="@(() => Entity.PhotoBase64)" />
+        </MudItem>
+        <MudItem xs="6" sm="3">
+            @if (Entity.PhotoBase64.IsNullOrEmpty() == false)
+            {
+                <img height="150" src="@($"data:{Entity.PhotoImageType};base64,{Entity.PhotoBase64}")" />
+            }
+        </MudItem>
+    }
+</MudGrid>
+
+@code {
+    [Parameter]
+    public Entity Entity { get; set; }
+}

@@ -1,0 +1,38 @@
+﻿CREATE TABLE [__AuditableTestTable__] (
+    [Id] int,
+    [Name] nvarchar(100),
+    CONSTRAINT PK___AuditableTestTable___Id PRIMARY KEY (Id)
+);
+CREATE TABLE [__AuditableTestTable___Audit] (
+    [Id] int,
+    [Name] nvarchar(100),
+    [AuditId] uniqueidentifier,
+    INDEX IDX___AuditableTestTable___Audit_Id ([Id]),
+    INDEX IDX___AuditableTestTable___Audit_AuditId ([AuditId])
+);
+CREATE TABLE [__NonAuditableTestTable__] (
+    [Id] int,
+    [Name] nvarchar(100),
+    CONSTRAINT PK___NonAuditableTestTable___Id PRIMARY KEY (Id)
+);
+CREATE TABLE [__AuditableTestLineItemTable__] (
+    [Id] int,
+    [AuditableEntityId] int,
+    [Name] nvarchar(100),
+    CONSTRAINT PK___AuditableTestLineItemTable___Id PRIMARY KEY (Id)
+);
+CREATE TABLE [__AuditableTestLineItemTable___Audit] (
+    [Id] int,
+    [AuditableEntityId] int,
+    [Name] nvarchar(100),
+    [AuditId] uniqueidentifier,
+    INDEX IDX___AuditableTestLineItemTable___Audit_Id ([Id]),
+    INDEX IDX___AuditableTestLineItemTable___Audit_AuditId ([AuditId])
+);
+CREATE TABLE [Audit] (
+    [Id] uniqueidentifier,
+    [AuditTable] nvarchar(50),
+    [Action] nvarchar(20),
+    [Time] datetime2,
+    CONSTRAINT PK_Audit_Id PRIMARY KEY (Id)
+);

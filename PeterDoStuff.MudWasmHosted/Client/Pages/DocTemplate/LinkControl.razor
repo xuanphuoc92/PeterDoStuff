@@ -1,0 +1,28 @@
+﻿@using static PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate.DocTemplateController
+
+<MudGrid>
+    <MudItem xs="3" md="2">
+        <IconSelectControl @bind-Value="Link.Icon" IconDictionary="LinkIcons.GetDictionary()" />
+    </MudItem>
+    <MudItem xs="9" md="2">
+        <MudTextField Variant="Variant.Outlined"
+                      @bind-Value="Link.Label" For="@(() => Link.Label)" />
+    </MudItem>
+    <MudItem xs="6" md="4">
+        <MudTextField Variant="Variant.Outlined"
+                      @bind-Value="Link.Url" For="@(() => Link.Url)" />
+    </MudItem>
+    <MudItem xs="6" md="4">
+        <MudTextField Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.FontDownload" Adornment="Adornment.Start"
+                      @bind-Value="Link.Text" For="@(() => Link.Text)" />
+    </MudItem>
+</MudGrid>
+
+
+@code {
+    [Parameter]
+    public Link Link { get; set; }
+
+    [Parameter]
+    public string Icon { get; set; } = Icons.Material.Filled.Link;
+}

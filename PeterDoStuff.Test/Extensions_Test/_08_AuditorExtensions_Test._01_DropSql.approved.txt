@@ -1,0 +1,6 @@
+﻿DROP TABLE IF EXISTS [__AuditableTestTable__];
+DROP TABLE IF EXISTS [__AuditableTestTable___Audit];
+DROP TABLE IF EXISTS [__NonAuditableTestTable__];
+DROP TABLE IF EXISTS [__AuditableTestLineItemTable__];
+DROP TABLE IF EXISTS [__AuditableTestLineItemTable___Audit];
+DROP TABLE IF EXISTS [Audit];

@@ -1,0 +1,41 @@
+﻿@using PeterDoStuff.Graphics
+@using PeterDoStuff.Graphics.Models
+@using PeterDoStuff.MudWasmHosted.Client.Pages.Svg
+
+@if (Model is RectangleModel rectangle)
+{
+    <RectangleSvg Model="@rectangle" />
+}
+@if (Model is CircleModel circle)
+{
+    <CircleSvg Model="@circle" />
+}
+@if (Model is PolygonModel polygon)
+{
+    <PolygonSvg Model="@polygon" />
+}
+@if (Model is CurveModel curve)
+{
+    <CurveSvg Model="@curve" />
+}
+@if (Model is EllipseModel ellipse)
+{
+    <EllipseSvg Model="@ellipse" />
+}
+@if (Model is PathModel path)
+{
+    <PathSvg Model="@path" />
+}
+@if (Model is CompositeModel compositeModel)
+{
+    for (int i = 0; i < compositeModel.Children.Count; i++)
+    {
+        var model = compositeModel.Children[i];
+        <ModelSvg Model="@model" />
+    }
+}
+
+@code {
+    [Parameter]
+    public Model Model { get; set; }  
+}

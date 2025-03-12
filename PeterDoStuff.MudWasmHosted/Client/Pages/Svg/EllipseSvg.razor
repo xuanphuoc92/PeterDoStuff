@@ -1,0 +1,14 @@
+﻿@using PeterDoStuff.Graphics.Models
+
+<ellipse rx="@Model.Rx" ry="@Model.Ry"
+        fill="@Model.Style.FillColor"
+        fill-opacity="@Model.Style.FillOpacity"
+        stroke="@Model.Style.StrokeColor"
+        stroke-opacity="@Model.Style.StrokeOpacity"
+        stroke-width="@Model.Style.StrokeWidth"
+        transform="@Model.SvgTransform" />
+
+@code {
+    [Parameter]
+    public EllipseModel Model { get; set; }
+}

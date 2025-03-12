@@ -1,0 +1,187 @@
+﻿@page "/lingo"
+@using PeterDoStuff.Games.Lingo
+@inject ISnackbar Snackbar
+@inject IJSRuntime JS
+
+<PlaygroundTitle Page="lingo" />
+
+<MudText Class="mb-8">
+    It picks random valid words, not word pool of common words. So it is harder, I suppose.
+</MudText>
+
+<MudButton Class="mb-8" Variant="Variant.Filled" OnClick="() => game = new Game()">New Game</MudButton>
+
+<style>
+    .lingoGuessText,
+    .lingoAlphabetText {
+        text-transform: uppercase;
+    }
+    .lingoGuessPaper {
+        width: 3.5rem;
+        height: 3.5rem;
+    }
+
+    .lingoAlphabetButton {
+        min-width: 2.5rem;
+        width: 2.5rem;
+        height: 3.5rem;
+    }
+</style>
+
+@foreach (Guess guess in game.Guesses)
+{
+    <MudContainer Class="d-flex">
+        @for (int i = 0; i < guess.States.Count; i++)
+        {
+            var guessState = guess.States[i];
+            var guessChar = guess.Word[i];
+            var color = guessState switch
+            {
+                GuessState.Match => MatchColor,
+                GuessState.Misplace => MisplaceColor,
+                _ => MissColor
+            };
+            var style = $"background-color: {color}";
+            <MudPaper Class="@guessPaperClass" Style="@style">
+                <MudText Typo="Typo.h5" Class="lingoGuessText">@guessChar</MudText>
+            </MudPaper>
+        }
+    </MudContainer>
+}
+
+@if (game.Guesses.Count < Game.MAX_GUESS)
+{
+    <MudContainer Class="d-flex">
+        @foreach (char guessChar in game.CurrentGuess)
+        {
+            <MudPaper Class="@guessPaperClass">
+                <MudText Typo="Typo.h5" Class="lingoGuessText">@guessChar</MudText>
+            </MudPaper>
+        }
+        @for (int guessIndex = 0; guessIndex < Game.WORD_LENGTH - game.CurrentGuess.Length; guessIndex++)
+        {
+            <MudPaper Class="@guessPaperClass">
+            </MudPaper>
+        }
+    </MudContainer>
+}
+
+@for (int emptyGuess = 0; emptyGuess < Game.MAX_GUESS - game.Guesses.Count - 1; emptyGuess++)
+{
+    <MudContainer Class="d-flex">
+        @for (int guessIndex = 0; guessIndex < Game.WORD_LENGTH; guessIndex++)
+        {
+            <MudPaper Class="@guessPaperClass">
+            </MudPaper>
+        }
+    </MudContainer>
+}
+
+@if (game.IsGameOver)
+{
+    <MudText Class="mt-8" Color="Color.Error">The Secret Word:</MudText>
+    <MudContainer Class="d-flex">
+        @foreach (char guessChar in game.SecretWord)
+        {
+            <MudPaper Class="@guessPaperClass">
+                <MudText Color="Color.Warning" Typo="Typo.h5" Class="lingoGuessText">@guessChar</MudText>
+            </MudPaper>
+        }
+    </MudContainer>
+}
+
+<MudDivider Class="mt-8 mb-8" />
+
+<MudContainer Class="d-flex mt-3">
+    @foreach (char c in row1)
+    {
+        var style = $"background-color: {GetAlphabetColor(c)}";
+        <MudButton Class="@alphabetPaperClass" Style="@style" OnClick="() => game.Input(c)">
+            <MudText Typo="Typo.h6" Class="lingoAlphabetText">@c</MudText>
+        </MudButton>
+    }
+</MudContainer>
+
+<MudContainer Class="d-flex mt-3">
+    @foreach (char c in row2)
+    {
+        var style = $"background-color: {GetAlphabetColor(c)}";
+        <MudButton Class="@alphabetPaperClass" Style="@style" OnClick="() => game.Input(c)">
+            <MudText Typo="Typo.h6" Class="lingoAlphabetText">@c</MudText>
+        </MudButton>
+    }
+</MudContainer>
+
+<MudContainer Class="d-flex mt-3">
+    <MudButton Class="@buttonClasss" Color="Color.Primary" Variant="Variant.Filled" OnClick="EnterGuess">
+        <MudText Typo="Typo.caption" Class="lingoAlphabetText">ENTER</MudText>
+    </MudButton>
+    @foreach (char c in row3)
+    {
+        var style = $"background-color: {GetAlphabetColor(c)}";
+        <MudButton Class="@alphabetPaperClass" Style="@style" OnClick="() => game.Input(c)">
+            <MudText Typo="Typo.h6" Class="lingoAlphabetText">@c</MudText>
+        </MudButton>
+    }
+    <MudButton Class="@buttonClasss" Color="Color.Secondary" Variant="Variant.Filled" OnClick="() => game.Backspace()">
+        <MudIcon Icon="@Icons.Material.TwoTone.Backspace" />
+    </MudButton>
+</MudContainer>
+
+@code {
+    private Game game = new Game();
+
+    private readonly string MatchColor = Colors.Green.Default;
+    private readonly string MisplaceColor = Colors.Yellow.Darken4;
+    private readonly string MissColor = Colors.Grey.Darken4;
+    private readonly string DefaultColor = Colors.Grey.Default;
+
+    private readonly string guessPaperClass = "ma-1 d-flex justify-center align-center lingoGuessPaper";
+    private readonly string alphabetPaperClass = "lingoAlphabetButton rounded d-flex justify-center align-center ml-2";
+
+    private readonly string buttonClasss = "rounded d-flex justify-center align-center ml-2";
+
+    private string row1 = "qwertyuiop";
+    private string row2 = "asdfghjkl";
+    private string row3 = "zxcvbnm";
+
+    private string GetAlphabetColor(char c)
+    {
+        if (game.AlphabetStates.ContainsKey(c) == false)
+            return DefaultColor;
+        return game.AlphabetStates[c] switch
+        {
+            GuessState.Match => MatchColor,
+            GuessState.Misplace => MisplaceColor,
+            _ => MissColor
+        };
+    }
+
+    private void EnterGuess()
+    {
+        var result = game.EnterGuess();
+        if (result == GuessResult.Invalid)
+            Snackbar.Add("Invalid word!", Severity.Error);
+        if (result == GuessResult.Correct)
+            Snackbar.Add("You guess right!", Severity.Success);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+            await JS.InvokeVoidAsync("keyDownFunction", DotNetObjectReference.Create(this), "KeyboardEventHandler");
+    }
+
+    [JSInvokable]
+    public void KeyboardEventHandler(string key) 
+    {
+        //string key = e.Key;
+        if (key == "Enter")
+            EnterGuess();
+        if (key == "Backspace")
+            game.Backspace();
+        if (key.Length == 1 && char.IsLetter(key[0]))
+            game.Input(key[0]);
+        StateHasChanged();
+    }
+}

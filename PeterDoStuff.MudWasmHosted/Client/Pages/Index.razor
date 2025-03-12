@@ -1,0 +1,64 @@
+﻿@page "/"
+
+<PageTitle>Peter Do Stuff</PageTitle>
+
+<MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.False">
+    <MudGrid>
+        <MudItem xs="12" sm="12" md="3" >
+            <MudImage Width="175" Height="175"
+                      Src="images/logo.png"
+                      Alt="Logo" 
+                Class="border-solid rounded-circle border-8"></MudImage>            
+            <MudDivider Class="mt-4" />
+            <MudIconButton Href="https://www.linkedin.com/in/peter-vo-43bb1337/" Icon="@Icons.Custom.Brands.LinkedIn" Target="_blank" />
+            <MudIconButton Href="https://github.com/xuanphuoc92" Icon="@Icons.Custom.Brands.GitHub" Target="_blank" />
+            <MudIconButton Href="https://petervo92.hashnode.dev/" Icon="@Icons.Material.Filled.Edit" Target="_blank" />
+            @* <MudPaper Elevation="2">
+            </MudPaper> *@
+        </MudItem>
+        <MudItem xs="12" sm="12" md="9">
+            <MudText Typo="Typo.h3" GutterBottom="true">
+                Peter Do Stuff
+            </MudText>
+            <MudText Class="mb-8">
+                Welcome to my playground!
+                <br />
+                Try out the toolkits, services, demos, and games in this site.
+            </MudText>
+
+            <MudCarousel ItemsSource="@groups" @bind-SelectedIndex="selectedGroupIndex" 
+                Class="mud-width-full" Style="height:150px;" 
+                ShowArrows="true" EnableSwipeGesture="true" AutoCycle="false">
+                <ItemTemplate>
+                    <div class="d-flex flex-column flex-column justify-center" style="height:100%; background-color: @context.GetColor()">
+                        <MudIcon Class="mx-auto" Icon="@context.GetIcon()" Size="@Size.Large" />
+                        <MudText Align="@Align.Center" Typo="Typo.h6" Class="mx-auto">@context.ToString()</MudText>
+                    </div>
+                </ItemTemplate>
+            </MudCarousel>
+
+            <MudDivider Class="my-4" />
+
+            @foreach (var item in PlaygroundItem.Items.Where(i => i.Group == groups[selectedGroupIndex]))
+            {
+                <MudButton Class="d-block pa-4 mb-8" Variant="Variant.Filled" Href="@item.Link">
+                    <MudText Typo="Typo.h5" GutterBottom="true">
+                        <MudIcon Style="font-size:0.75em;" Icon="@item.Icon" />
+                        @item.Title
+                    </MudText>
+                    <MudDivider />
+                    <MudText>
+                        @item.Description
+                    </MudText>
+                </MudButton>
+            }
+
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+@code {
+    private Transition transition = Transition.Slide;
+    private List<PlaygroundGroup> groups = new List<PlaygroundGroup>() { PlaygroundGroup.Tools, PlaygroundGroup.Demos, PlaygroundGroup.Games };
+    private int selectedGroupIndex = 0;
+}

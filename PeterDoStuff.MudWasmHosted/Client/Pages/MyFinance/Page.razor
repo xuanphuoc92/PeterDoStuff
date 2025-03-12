@@ -1,0 +1,64 @@
+﻿@page "/myFinance"
+@using System.Text
+@using PeterDoStuff.Extensions
+@using PeterDoStuff.MudWasmHosted.Client.Extensions
+@inject IJSRuntime JS
+
+<PlaygroundTitle Page="myFinance" />
+
+<MudButton Variant="Variant.Filled" Color="Color.Primary"
+    OnClick="() => Profile = Controller.SampleProfile()">
+    Sample Profile
+</MudButton>
+
+<div>
+    <MudButton Variant="Variant.Filled" Color="Color.Primary"
+               StartIcon="@Icons.Material.Filled.Download"
+               OnClick="DownloadJson">
+        Save Profile
+    </MudButton>
+    <MudFileUpload T="IBrowserFile" FilesChanged="UploadJson" Class="ma-0 d-inline pa-1">
+        <ButtonTemplate>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.Upload"
+                       for="@context.Id" HtmlTag="label">
+                Load Profile
+            </MudButton>
+        </ButtonTemplate>
+    </MudFileUpload>
+</div>
+
+<MudTextField Variant="Variant.Outlined"
+              @bind-Value="Profile.Name" Label="Name" />
+
+<MudGrid>
+    @foreach (var blockRef in Profile.Blocks)
+    {
+        var block = blockRef;
+        <MudItem xs="12">
+            <BlockControl @bind-Value="block" />
+        </MudItem>
+    }
+</MudGrid>
+
+@code {
+    Profile Profile = new();
+
+    private async Task DownloadJson()
+    {
+        await JS.DownloadJson(
+            obj: Profile, 
+            fileName: Profile.Name,
+            defaultFileName: "My Finance");
+    }
+
+    private async Task UploadJson(IBrowserFile file)
+    {
+        using MemoryStream inputFileStream = new MemoryStream();
+        await file.OpenReadStream(file.Size).CopyToAsync(inputFileStream);
+        inputFileStream.Position = 0;
+        using StreamReader reader = new StreamReader(inputFileStream, Encoding.UTF8);
+        string json = reader.ReadToEnd();
+        Profile = json.FromJson<Profile>();
+    }
+}

@@ -1,0 +1,65 @@
+﻿@page "/fileScanner"
+@using System.Text
+@using PeterDoStuff.MudWasmHosted.Client.Extensions
+@using PeterDoStuff.Tools
+
+@inject IJSRuntime JS
+
+<PlaygroundTitle Page="fileScanner" />
+
+<MudText Class="mb-8">
+    <p>The result of the statistics will be downloaded for your view after scanning.</p>
+</MudText>
+
+<MudFileUpload T="IBrowserFile" FilesChanged="SelectFile">
+    <ButtonTemplate>
+        <MudButton HtmlTag="label"
+                   Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.InsertDriveFile"
+                   for="@context.Id">
+            Select Zip File
+        </MudButton>
+    </ButtonTemplate>
+</MudFileUpload>
+
+<MudDivider DividerType="DividerType.Middle" Class="my-6" />
+
+<MudText Class="mb-8" Color="Color.Secondary">@ScanResult</MudText>
+
+<LoadingOverlay @ref="ScanOverlay"/>
+
+@code {
+    private string ScanResult = "Select your zip file";
+    private LoadingOverlay ScanOverlay;
+
+    public async Task SelectFile(IBrowserFile file)
+    {
+        ScanOverlay.Show("Scanning");
+        ScanResult = "Scanning...";
+        DateTime start = DateTime.Now;
+
+        // Read the file stream for scanning
+        using MemoryStream inputFileStream = new MemoryStream();
+        await file.OpenReadStream(file.Size).CopyToAsync(inputFileStream);
+
+        // Do the scanning
+        using FileScanner scanner = new FileScanner();        
+        var scanResult = scanner.ScanZip(inputFileStream);
+        if (scanResult != FileScanner.SUCCESSFUL)
+        {
+            ScanResult = scanResult;
+            ScanOverlay.Hide();
+            return;
+        }
+
+        // Download the result        
+        await JS.DownloadTextFile(file.Name + ".csv", scanner.ToCsv());
+
+        // Report the time taken
+        DateTime end = DateTime.Now;
+        ScanResult = scanResult + $" (in {(end - start).TotalSeconds} seconds)";
+
+        ScanOverlay.Hide();
+    }
+}

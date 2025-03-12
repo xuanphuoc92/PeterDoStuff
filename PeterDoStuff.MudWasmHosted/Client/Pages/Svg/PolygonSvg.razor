@@ -1,0 +1,23 @@
+﻿@using PeterDoStuff.Extensions
+@using PeterDoStuff.Graphics.Models
+
+<polygon points="@Points"
+         fill="@Model.Style.FillColor"
+         fill-opacity="@Model.Style.FillOpacity"
+         stroke="@Model.Style.StrokeColor"
+         stroke-opacity="@Model.Style.StrokeOpacity"
+         stroke-width="@Model.Style.StrokeWidth"
+         transform="@Model.SvgTransform" />
+
+@code {
+    [Parameter]
+    public PolygonModel Model { get; set; }
+
+    public string Points
+    {
+        get
+        {
+            return Model.Points.Select(p => $"{p.X},{p.Y}").Join(" ");
+        }
+    }
+}

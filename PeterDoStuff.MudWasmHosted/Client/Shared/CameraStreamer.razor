@@ -1,0 +1,142 @@
+﻿@inject IJSRuntime JS
+
+<MudButton OnClick="ToggleCamera" Variant="Variant.Filled" Color="Color.Primary"
+           StartIcon="@(State != CameraState.InProgress ? Icons.Material.Filled.CameraAlt : null)">
+    @if (State == CameraState.Close)
+    {
+        <div>@OpenText</div>
+    }
+    else if (State == CameraState.Open)
+    {
+        <div>@CloseText</div>
+    }
+    else // In Progress
+    {
+        <MudProgressCircular Color="Color.Default" Size="Size.Small" Indeterminate="true" />
+    }
+</MudButton>
+
+@if (State == CameraState.Open)
+{
+    <MudButton OnClick="SwitchCamera" Variant="Variant.Filled" Color="Color.Secondary"
+               StartIcon="@Icons.Material.Filled.Cameraswitch">
+        Switch
+    </MudButton>
+}
+
+@if (ShowCapture && State == CameraStreamer.CameraState.Open)
+{
+    <MudButton OnClick="CaptureImage" Color="Color.Primary" Variant="Variant.Filled" StartIcon="@(captureInProgress == false ? Icons.Material.Filled.Camera : null)">
+        @if (captureInProgress)
+        {
+            <MudProgressCircular Color="Color.Default" Size="Size.Small" Indeterminate="true" />
+        }
+        else
+        {
+            <div>Capture</div>
+        }
+    </MudButton>
+}
+
+@if (cameraBlocked)
+{
+    <MudText Class="mb-8" Color="Color.Error">
+        @cameraBlockedError
+    </MudText>
+}
+
+@code {
+    public enum CameraState
+    {
+        Close, Open, InProgress
+    }
+
+    public CameraState State { get; private set; } = CameraState.Close;
+
+    [Parameter]
+    public string? VideoElementId { get; set; }
+
+    [Parameter]
+    public string OpenText { get; set; } = "Open";
+
+    [Parameter]
+    public string CloseText { get; set; } = "Close";
+
+    private bool cameraBlocked = false;
+    private string cameraBlockedError = "";
+
+    private async Task ToggleCamera()
+    {
+        if (State == CameraState.Close)
+            await OpenCamera();
+        else if (State == CameraState.Open)
+            await CloseCamera();
+    }
+
+    private List<string> deviceIds = new();
+    private int deviceIdIndex = 0;
+
+    public async Task OpenCamera()
+    {
+        State = CameraState.InProgress;
+        StateHasChanged();
+        await Task.Delay(200);
+        bool success;
+        try
+        {
+            deviceIds = await JS.InvokeAsync<List<string>>("getVideoDeviceIds");
+            var deviceId = deviceIds.Any() ? deviceIds[deviceIdIndex] : "";
+            await JS.InvokeVoidAsync("startCameraStream", VideoElementId, deviceId);
+            success = true;
+        }
+        catch (Exception ex)
+        {
+            success = false;
+            cameraBlockedError = ex.GetType().ToString() + ": " + ex.Message;
+        }
+        State = success ? CameraState.Open : CameraState.Close;
+        cameraBlocked = !success;
+    }
+
+    public async Task SwitchCamera()
+    {
+        deviceIds = await JS.InvokeAsync<List<string>>("getVideoDeviceIds");
+        deviceIdIndex++;
+        if (deviceIdIndex >= deviceIds.Count())
+            deviceIdIndex = 0;
+
+        var deviceId = deviceIds.Any() ? deviceIds[deviceIdIndex] : "";
+        // Stop first, then restart:
+        await JS.InvokeVoidAsync("stopCameraStream", VideoElementId);
+        await JS.InvokeVoidAsync("startCameraStream", VideoElementId, deviceId);
+    }
+
+    public async Task CloseCamera()
+    {
+        State = CameraState.InProgress;
+        await Task.Delay(100);
+        await JS.InvokeVoidAsync("stopCameraStream", VideoElementId);        
+        State = CameraState.Close;
+        StateHasChanged();
+        await Task.Delay(100);
+    }
+
+    private bool captureInProgress = false;
+    private string capturedImageSrc = "";
+
+    public async Task<string> CaptureImage()
+    {
+        captureInProgress = true;
+        await Task.Delay(200);
+        capturedImageSrc = await JS.InvokeAsync<string>("captureImage", VideoElementId);
+        captureInProgress = false;
+        await OnCaptureImage.InvokeAsync(capturedImageSrc);
+        return capturedImageSrc;
+    }
+
+    [Parameter]
+    public EventCallback<string> OnCaptureImage { get; set; }
+
+    [Parameter]
+    public bool ShowCapture { get; set; } = false;
+}

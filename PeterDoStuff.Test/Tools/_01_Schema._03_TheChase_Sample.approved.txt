@@ -1,0 +1,164 @@
+﻿Schema: A, B, C, D, E, G
+Dependencies:
+A, B -> C
+A, B ->> A, E
+C, D ->> A, B
+Decomposition 1: A, B, C, D, G
+Decomposition 2: C, D, E
+======================================================================
+Intersect of Decompositions: C, D
+Chase Dependencies (Intesect ->> Decomposition except Intersect):
+C, D ->> A, B, G
+C, D ->> E
+======================================================================
+Chase Depedency 1: C, D ->> A, B, G
+Step 1: Initialize table with 2 rows of distinct values
+A  | B  | C  | D  | E  | G 
+---------------------------
+a1 | b1 | c1 | d1 | e1 | f1
+a2 | b2 | c2 | d2 | e2 | f2
+
+Step 2: For each attribute in Left (C, D), make their values the same
+A  | B  | C  | D  | E  | G 
+---------------------------
+a1 | b1 | c1 | d1 | e1 | f1
+a2 | b2 | c1 | d1 | e2 | f2
+
+Step 3: Check each dependency and update table until table satisifies all dependencies
+> Check dependency A, B -> C:
+Satisfied
+> Check dependency A, B ->> A, E:
+Satisfied
+> Check dependency C, D ->> A, B:
+Not Satisfied
+Update table to satisfy dependency
+New Row Add:
+A  | B  | C  | D  | E  | G 
+a2 | b2 | c1 | d1 | e1 | f1
+New Row Add:
+A  | B  | C  | D  | E  | G 
+a1 | b1 | c1 | d1 | e2 | f2
+Updated table:
+A  | B  | C  | D  | E  | G 
+---------------------------
+a1 | b1 | c1 | d1 | e1 | f1
+a2 | b2 | c1 | d1 | e2 | f2
+a2 | b2 | c1 | d1 | e1 | f1
+a1 | b1 | c1 | d1 | e2 | f2
+> Check dependency A, B -> C:
+Satisfied
+> Check dependency A, B ->> A, E:
+Not Satisfied
+Update table to satisfy dependency
+New Row Add:
+A  | B  | C  | D  | E  | G 
+a1 | b1 | c1 | d1 | e2 | f1
+New Row Add:
+A  | B  | C  | D  | E  | G 
+a2 | b2 | c1 | d1 | e1 | f2
+New Row Add:
+A  | B  | C  | D  | E  | G 
+a2 | b2 | c1 | d1 | e2 | f1
+New Row Add:
+A  | B  | C  | D  | E  | G 
+a1 | b1 | c1 | d1 | e1 | f2
+Updated table:
+A  | B  | C  | D  | E  | G 
+---------------------------
+a1 | b1 | c1 | d1 | e1 | f1
+a2 | b2 | c1 | d1 | e2 | f2
+a2 | b2 | c1 | d1 | e1 | f1
+a1 | b1 | c1 | d1 | e2 | f2
+a1 | b1 | c1 | d1 | e2 | f1
+a2 | b2 | c1 | d1 | e1 | f2
+a2 | b2 | c1 | d1 | e2 | f1
+a1 | b1 | c1 | d1 | e1 | f2
+> Check dependency C, D ->> A, B:
+Satisfied
+> Check dependency A, B -> C:
+Satisfied
+> Check dependency A, B ->> A, E:
+Satisfied
+> Check dependency C, D ->> A, B:
+Satisfied
+Table satisifes all dependencies. End step 3.
+
+Step 4: Check if table satisfies the chase depedency C, D ->> A, B, G
+Satisfied
+The decomposition is Lossless
+======================================================================
+Chase Depedency 2: C, D ->> E
+Step 1: Initialize table with 2 rows of distinct values
+A  | B  | C  | D  | E  | G 
+---------------------------
+a1 | b1 | c1 | d1 | e1 | f1
+a2 | b2 | c2 | d2 | e2 | f2
+
+Step 2: For each attribute in Left (C, D), make their values the same
+A  | B  | C  | D  | E  | G 
+---------------------------
+a1 | b1 | c1 | d1 | e1 | f1
+a2 | b2 | c1 | d1 | e2 | f2
+
+Step 3: Check each dependency and update table until table satisifies all dependencies
+> Check dependency A, B -> C:
+Satisfied
+> Check dependency A, B ->> A, E:
+Satisfied
+> Check dependency C, D ->> A, B:
+Not Satisfied
+Update table to satisfy dependency
+New Row Add:
+A  | B  | C  | D  | E  | G 
+a2 | b2 | c1 | d1 | e1 | f1
+New Row Add:
+A  | B  | C  | D  | E  | G 
+a1 | b1 | c1 | d1 | e2 | f2
+Updated table:
+A  | B  | C  | D  | E  | G 
+---------------------------
+a1 | b1 | c1 | d1 | e1 | f1
+a2 | b2 | c1 | d1 | e2 | f2
+a2 | b2 | c1 | d1 | e1 | f1
+a1 | b1 | c1 | d1 | e2 | f2
+> Check dependency A, B -> C:
+Satisfied
+> Check dependency A, B ->> A, E:
+Not Satisfied
+Update table to satisfy dependency
+New Row Add:
+A  | B  | C  | D  | E  | G 
+a1 | b1 | c1 | d1 | e2 | f1
+New Row Add:
+A  | B  | C  | D  | E  | G 
+a2 | b2 | c1 | d1 | e1 | f2
+New Row Add:
+A  | B  | C  | D  | E  | G 
+a2 | b2 | c1 | d1 | e2 | f1
+New Row Add:
+A  | B  | C  | D  | E  | G 
+a1 | b1 | c1 | d1 | e1 | f2
+Updated table:
+A  | B  | C  | D  | E  | G 
+---------------------------
+a1 | b1 | c1 | d1 | e1 | f1
+a2 | b2 | c1 | d1 | e2 | f2
+a2 | b2 | c1 | d1 | e1 | f1
+a1 | b1 | c1 | d1 | e2 | f2
+a1 | b1 | c1 | d1 | e2 | f1
+a2 | b2 | c1 | d1 | e1 | f2
+a2 | b2 | c1 | d1 | e2 | f1
+a1 | b1 | c1 | d1 | e1 | f2
+> Check dependency C, D ->> A, B:
+Satisfied
+> Check dependency A, B -> C:
+Satisfied
+> Check dependency A, B ->> A, E:
+Satisfied
+> Check dependency C, D ->> A, B:
+Satisfied
+Table satisifes all dependencies. End step 3.
+
+Step 4: Check if table satisfies the chase depedency C, D ->> E
+Satisfied
+The decomposition is Lossless

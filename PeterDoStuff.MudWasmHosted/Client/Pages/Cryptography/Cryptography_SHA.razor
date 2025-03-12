@@ -1,0 +1,47 @@
+﻿@using PeterDoStuff.Extensions
+
+<MudText Typo="Typo.h4">
+    Hashing: SHA
+</MudText>
+<MudText Class="mb-8">
+    SHA Hashing
+    <br />
+    Externally cross-checked with: <MudLink Target="_blank" Href="https://coding.tools/sha256">Coding.tools</MudLink>
+</MudText>
+
+<MudGrid Spacing="1" Class="align-center mb-8">
+    <MudItem xs="1" md="1">
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="OpenInput">Input</MudButton>
+    </MudItem>
+    <MudItem xs="3" md="1" Class="d-flex justify-end">
+        <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
+    </MudItem>
+    <MudItem xs="8" md="10">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ToSHA256">Hash SHA256</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ToSHA512">Hash SHA512</MudButton>
+        <ByteArrayTextField IsBase64Format="@IsBase64Format" @bind-Value="shaHash" />
+    </MudItem>
+</MudGrid>
+
+@code {
+    [Parameter]
+    public EventCallback<MouseEventArgs> OpenInput { get; set; }
+
+    [Parameter]
+    public bool IsBase64Format { get; set; }
+
+    [Parameter]
+    public byte[] InputByteArray { get; set;  }
+
+    private byte[]? shaHash;
+    private void ToSHA256()
+    {
+        shaHash = InputByteArray
+            .HashSHA256();
+    }
+    private void ToSHA512()
+    {
+        shaHash = InputByteArray
+            .HashSHA512();
+    }
+}

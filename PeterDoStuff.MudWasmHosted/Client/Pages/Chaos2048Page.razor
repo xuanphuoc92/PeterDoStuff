@@ -1,0 +1,354 @@
+﻿@page "/chaos2048"
+@using PeterDoStuff.Games._2048
+@inject IJSRuntime JS
+
+<PlaygroundTitle Page="chaos2048" />
+
+<div class="d-flex mb-4 align-center">
+    <MudButton Class="mr-4" Color="Color.Warning" Variant="MudBlazor.Variant.Outlined" OnClick="NewGame">New Game</MudButton>
+    <MudButton Variant="MudBlazor.Variant.Outlined" OnClick="ShowVariants">Variants</MudButton>
+</div>
+
+<MudMessageBox @ref="variantBox" YesText="">
+    <TitleContent>
+        <MudText Typo="Typo.h5">Variants</MudText>
+    </TitleContent>
+    <MessageContent>
+        <MudList Clickable="true">
+            @for (int i = 0; i < variants.Count; i++)
+            {
+                var variant = variants[i];
+                var color = (selectedVariantIndex == i) ? Color.Primary : Color.Default;
+                <MudListItem 
+                    IconColor="color"
+                    OnClick="() => SelectVariant(variant)" 
+                    Icon="@Icons.Material.Filled.Brightness1">@variant.Name</MudListItem>
+            }
+        </MudList>
+    </MessageContent>
+</MudMessageBox>
+
+<style>
+    .chaos-2048-block {
+        left: 0;
+        top: 0;
+        transition: transform .2s ease-in-out, opacity .2s ease-in-out .2s;
+    }
+
+    .normal-2048-block {        
+        transition: transform .2s ease-in-out, opacity .2s ease-in-out .2s;
+        transform: scale(0);
+        animation: .2s ease-in-out appear-animation;
+    }
+
+    @@keyFrames appear-animation {
+        from {
+            transform: scale(0);
+        }
+        to {
+            transform: scale(1);
+        }
+    }
+
+    .normal-empty {
+        transform: scale(0);
+    }
+
+    .normal-appear-0 {
+        animation: .4s ease-in-out animation-appear-0;
+    }
+    .normal-appear-1 {
+        animation: .4s ease-in-out animation-appear-1;
+    }
+    @@keyFrames animation-appear-0 {
+        from {
+            transform: scale(0);
+        }
+        to {
+            transform: scale(1);
+        }
+    }
+    @@keyFrames animation-appear-1 {
+        from {
+            transform: scale(0);
+        }
+        to {
+            transform: scale(1);
+        }
+    }
+
+    .normal-stay {
+    }
+
+    .gameOver {
+        left: 0; top: 0;
+        opacity: 0.85;
+        background-color: @Colors.Red.Default;
+        z-index: 2;
+    }
+</style>
+
+@for (int x = -game.Width; x < game.Width; x++)
+{
+    for (int y = -game.Height; y < game.Height; y++)
+    {
+        var moveInClass = $".normal-movein-{x}-{y}";
+        var animation = $"animation-movein-{x}-{y}";
+        <style>
+            @moveInClass {
+                animation: .2s ease-in-out 1 @animation;
+            }
+            @@keyFrames @animation {
+                from {
+                    transform: translate3d(@(x*-blockWidth)px, @(y*-blockHeight)px, 0);
+                }
+                to {
+                    transform: translate3d(0,0,0);
+                }
+            }
+        </style>
+    }
+}
+
+@if (isNormal)
+{
+    <div>
+        @for (int y = 0; y < game.Height; y++)
+        {
+            <div class="d-flex">
+                @for (int x = 0; x < game.Width; x++)
+                {
+                    var cell = game.Grid.Cells[(x, y)];
+                    var colors = GetNormalColors(cell.Number??2);
+                    var backgroundColor = colors.Background;
+                    var textColor = colors.Text;
+                    var typo = GetTypo(cell.Number??2);
+                    var style = $"background-color: {backgroundColor}; color: {textColor};";
+
+                    var cellClass = cell.State switch
+                    {
+                        CellState.Appear => $"normal-appear-{(appearCounter ? 0 : 1)}",
+                        CellState.Stay => "normal-stay",
+                        CellState.MoveIn => $"normal-movein-{cell.MoveInX}-{cell.MoveInY}",
+                        _ => "normal-empty"
+                    };
+
+                    var normalClass = $"d-flex align-center justify-center {cellClass}";
+
+                    <MudPaper Class="border-solid border-2"
+                    Width="@($"{blockWidth}px")"
+                    Height="@($"{blockHeight}px")">
+                        <MudPaper Class="@normalClass"
+                        Width="@($"{blockWidth}px")"
+                        Height="@($"{blockHeight}px")"
+                        Style="@style">
+                            <MudText Typo="@typo"><b>@cell.Number</b></MudText>
+                        </MudPaper>
+                    </MudPaper>
+                }
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="relative">
+        @* Grid *@
+        @for (int y = 0; y < game.Height; y++)
+        {
+            <div class="d-flex">
+                @for (int x = 0; x < game.Width; x++)
+                {
+                    <MudPaper 
+                        Class="border-solid border-2"
+                        Width="@($"{blockWidth}px")"
+                        Height="@($"{blockHeight}px")">
+                    </MudPaper>
+                }
+            </div>
+        }
+
+        @foreach (var block in game.Blocks)
+        {
+            var colors = GetChaosColors(block.Number);
+            var backgroundColor = colors.Background;
+            var textColor = colors.Text;
+            var opacity = isNormal == true ? 0 : 1;
+            var style = $"transform: translate3d({block.X * blockWidth}px, {block.Y * blockHeight}px, 0); opacity: {opacity}; background-color: {backgroundColor}; color: {textColor}; border: white;";
+            Typo typo = GetTypo(block.Number);
+            <MudPaper Class="border-solid border-2 absolute d-flex align-center justify-center chaos-2048-block"
+                      Width="@($"{blockWidth}px")"
+                      Height="@($"{blockHeight}px")"
+                      Style="@style">
+                <MudText Typo="@typo"><b>@block.Number</b></MudText>
+            </MudPaper>
+        }
+    </div>
+}
+
+@if (ShowSample)
+{
+    <div class="d-flex">
+        @foreach (var block in SampleBlocks)
+        {
+            var colors = GetNormalColors(block.Number);
+            var backgroundColor = colors.Background;
+            var textColor = colors.Text;
+            var style = $"background-color: {backgroundColor}; color: {textColor}; border: white;";
+            Typo typo = GetTypo(block.Number);
+            <MudPaper Class="border-solid border-2 d-flex align-center justify-center"
+                      Width="@($"{blockWidth}px")"
+                      Height="@($"{blockHeight}px")"
+                      Style="@style">
+                <MudText Typo="@typo"><b>@block.Number</b></MudText>
+            </MudPaper>
+        }
+    </div>
+}
+
+<div class="d-flex mt-4 align-center">
+    <MudText Class="mr-4" Typo="Typo.h5">Score: @game.Score</MudText>
+    <MudButton Class="mr-4" Color="Color.Primary" Variant="@(isNormal ? MudBlazor.Variant.Outlined : MudBlazor.Variant.Filled)" OnClick="ToggleMode">Chaos</MudButton>
+    <MudButton Color="Color.Success" Variant="@(isNormal ? MudBlazor.Variant.Filled: MudBlazor.Variant.Outlined)" OnClick="ToggleMode">Normal</MudButton>
+</div>
+
+
+@code {
+    private MudMessageBox variantBox;
+
+    private void ShowVariants()
+    {
+        variantBox.Show();
+    }
+
+    private class Variant
+    {
+        public string Name;
+        public Func<Game> Game;
+    }
+
+    private List<Variant> variants = new List<Variant>()
+    {
+        new Variant() { Name = "4x4 - 1 spawn (Default)", Game = () => new Game() },
+        new Variant() { Name = "5x4 - 2 spawns", Game = () => new VariantGame(5, 4, 3, 2) },
+        new Variant() { Name = "5x5 - 3 spawns", Game = () => new VariantGame(5, 5, 3, 3) },
+    };
+
+    private int selectedVariantIndex = 0;
+
+    private void SelectVariant(Variant variant)
+    {
+        var newSelectedIndex = variants.IndexOf(variant);
+        if (selectedVariantIndex != newSelectedIndex)
+        {
+            selectedVariantIndex = newSelectedIndex;
+            NewGame();
+        }
+        variantBox.Close();
+    }
+
+    private bool appearCounter = false;
+
+    private bool isNormal;
+    private void ToggleMode() => isNormal = !isNormal;
+
+    private Game game = new Game();
+
+    private void NewGame()
+    {
+        game = variants[selectedVariantIndex].Game();
+    }
+
+    private int blockWidth => selectedVariantIndex == 0 ? 80 : 70;
+    private int blockHeight => selectedVariantIndex == 0 ? 80 : 70;    
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("keyDownFunction", DotNetObjectReference.Create(this), "KeyboardEventHandler");
+            await JS.InvokeVoidAsync("swipeDetection", DotNetObjectReference.Create(this), "SwipeEventHandler");
+        }
+    }
+
+    [JSInvokable]
+    public void KeyboardEventHandler(string key)
+    {
+        appearCounter = !appearCounter;
+        if (key == "ArrowDown") game.Down();
+        if (key == "ArrowUp") game.Up();
+        if (key == "ArrowRight") game.Right();
+        if (key == "ArrowLeft") game.Left();
+        StateHasChanged();
+    }
+
+    [JSInvokable]
+    public void SwipeEventHandler(string swipe)
+    {
+        appearCounter = !appearCounter;
+        if (swipe == "down") game.Down();
+        if (swipe == "up") game.Up();
+        if (swipe == "right") game.Right();
+        if (swipe == "left") game.Left();
+        StateHasChanged();
+    }
+
+    private bool ShowSample = false;
+    private List<Games._2048.Block> SampleBlocks => new List<Games._2048.Block>()
+    {
+        new Games._2048.Block(0, new Game(), 2),
+        new Games._2048.Block(0, new Game(), 4),
+        new Games._2048.Block(0, new Game(), 8),
+        new Games._2048.Block(0, new Game(), 16),
+        new Games._2048.Block(0, new Game(), 32),
+        new Games._2048.Block(0, new Game(), 64),
+        new Games._2048.Block(0, new Game(), 128),
+        new Games._2048.Block(0, new Game(), 256),
+        new Games._2048.Block(0, new Game(), 512),
+        new Games._2048.Block(0, new Game(), 1024),
+        new Games._2048.Block(0, new Game(), 2048),
+    };
+
+    private Typo GetTypo(int number)
+    {
+        return number < 100 ? Typo.h4
+            : number < 1000 ? Typo.h5
+            : Typo.h6;
+    }
+
+    private (string Background, string Text) GetChaosColors(int number)
+    {
+        return number switch
+        {
+            2 => (Colors.DeepPurple.Lighten3, Colors.Grey.Darken4),
+            4 => (Colors.DeepPurple.Lighten2, Colors.Grey.Darken3),
+            8 => (Colors.DeepPurple.Lighten1, Colors.Green.Lighten5),
+            16 => (Colors.DeepPurple.Darken1, Colors.LightGreen.Lighten5),
+            32 => (Colors.DeepPurple.Darken2, Colors.LightGreen.Lighten5),
+            64 => (Colors.DeepPurple.Darken3, Colors.LightGreen.Lighten5),
+            128=> (Colors.DeepPurple.Darken4, Colors.Lime.Lighten5),
+            256 => (Colors.Purple.Darken4, Colors.Lime.Lighten5),
+            512 => (Colors.Pink.Darken4, Colors.Lime.Lighten5),
+            1024 => (Colors.Red.Darken4, Colors.Yellow.Lighten5),
+            _ => (Colors.DeepOrange.Darken4, Colors.Yellow.Lighten5)
+        };
+    }
+
+    private (string Background, string Text) GetNormalColors(int number)
+    {
+        return number switch
+        {
+            2 => (Colors.Teal.Lighten3, Colors.Grey.Darken4),
+            4 => (Colors.Teal.Lighten2, Colors.Grey.Darken3),
+            8 => (Colors.Teal.Lighten1, Colors.Pink.Lighten5),
+            16 => (Colors.Teal.Darken1, Colors.Purple.Lighten5),
+            32 => (Colors.Teal.Darken2, Colors.Purple.Lighten5),
+            64 => (Colors.Teal.Darken3, Colors.Purple.Lighten5),
+            128 => (Colors.Teal.Darken4, Colors.DeepPurple.Lighten5),
+            256 => (Colors.Teal.Darken4, Colors.DeepPurple.Lighten5),
+            512 => (Colors.Green.Darken4, Colors.DeepPurple.Lighten5),
+            1024 => (Colors.LightGreen.Darken4, Colors.Indigo.Lighten5),
+            _ => (Colors.Lime.Darken4, Colors.Indigo.Lighten5)
+        };
+    }
+}

@@ -1,0 +1,349 @@
+﻿@page "/estimator"
+@using PeterDoStuff.Extensions
+@using PeterDoStuff.MudWasmHosted.Client.Extensions
+@using System.Text
+@using static PeterDoStuff.MudWasmHosted.Client.Pages.Estimator.Controller
+@inject IJSRuntime JS
+
+<PlaygroundTitle Page="estimator" />
+<MudScrollToTop>
+    <MudFab Color="Color.Tertiary" StartIcon="@Icons.Material.Filled.ArrowCircleUp" />
+</MudScrollToTop>
+
+@{
+    var sdFactor = ConfidenceIntervalMaps[Project.ContingencyConfidence];
+}
+
+<div>
+    <MudButton Variant="Variant.Filled" Color="Color.Primary"
+               StartIcon="@Icons.Material.Filled.Download"
+               OnClick="DownloadJson">
+        Save Project
+    </MudButton>
+    <MudFileUpload T="IBrowserFile" FilesChanged="UploadJson" Class="ma-0 d-inline pa-1">
+        <ButtonTemplate>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.Upload"
+                       for="@context.Id" HtmlTag="label">
+                Load Project
+            </MudButton>
+        </ButtonTemplate>
+    </MudFileUpload>
+    <MudButton Variant="Variant.Filled" Color="Color.Primary"
+               StartIcon="@Icons.Material.Filled.CleaningServices"
+               OnClick="SampleProject">
+        Sample Project
+    </MudButton>
+    <MudButton Variant="Variant.Filled" Color="Color.Primary"
+               StartIcon="@Icons.Material.Filled.CleaningServices"
+               OnClick="ClearProject">
+        Empty Project
+    </MudButton>
+</div>
+
+<MudGrid Class="my-2">
+    <MudItem xs="12">
+        <MudTextField @bind-Value="@Project.Name" Label="Project Name" Variant="Variant.Outlined"/>
+    </MudItem>
+    <MudItem xs="4">
+        <MudSelect @bind-Value="Project.ContingencyConfidence" Variant="Variant.Outlined" Label="Confidence Level">
+            @foreach (var kv in ConfidenceIntervalMaps)
+            {
+                var key = kv.Key;
+                var value = kv.Value;
+                <MudSelectItem Value="key">@($"{key}% - {value} x SD")</MudSelectItem>
+            }
+        </MudSelect>
+    </MudItem>
+    <MudItem xs="4">
+        <MudNumericField @bind-Value="Project.BreakdownRound" Label="Breakdown Round" Variant="Variant.Outlined" HideSpinButtons="true" />
+    </MudItem>
+    <MudItem xs="4">
+        <MudNumericField @bind-Value="Project.TotalRound" Label="Total Round" Variant="Variant.Outlined" HideSpinButtons="true" />
+    </MudItem>
+    <MudItem xs="12">
+        <MudButton Color="Color.Primary" Variant="Variant.Outlined" OnClick="() => _table.ExpandAllGroups()">Expand All</MudButton>
+        <MudButton Color="Color.Primary" Variant="Variant.Outlined" OnClick="() => _table.CollapseAllGroups()">Collapse All</MudButton>
+    </MudItem>
+</MudGrid>
+
+<MudTable @ref="_table"
+    Items="Project.Tasks" Breakpoint="Breakpoint.Xs" Dense="true"
+    GroupBy="_groupDefinition"
+    GroupFooterClass="mb-4">
+    <HeaderContent>
+        <MudTh>Task</MudTh>
+        <MudTh>@ExpectedValueLabel</MudTh>
+        <MudTh>@StandardDeviationLabel</MudTh>
+        <MudTh>@ConfidenceIntervalLabel</MudTh>
+        <MudTh></MudTh>
+    </HeaderContent>
+    <GroupHeaderTemplate>
+        @{
+            var groupIndex = (int)context.Key;
+            var groupName = Project.Groups[groupIndex];
+            var groupTasks = Project.Tasks.Where(t => t.GroupIndex == groupIndex);
+            var groupExpectedValue = groupTasks.Select(t => t.ExpectedValue.RoundBy(Project.BreakdownRound)).CalculateE();
+            var groupStandardDeviation = groupTasks.Select(t => t.StandardDeviation.RoundBy(Project.BreakdownRound)).CalculateSD().RoundBy(Project.BreakdownRound);
+
+            var groupContingency = sdFactor * groupStandardDeviation;
+            var from = groupExpectedValue - groupContingency;
+            var to = groupExpectedValue + groupContingency;
+            var groupCI = $"{from} - {to}";
+        }
+        <MudTd DataLabel="Group" Class="mud-table-cell-custom-group">
+            <MudText Color="Color.Primary">@groupName</MudText>
+        </MudTd>
+        <MudTd DataLabel="@ExpectedValueLabel" Class="mud-table-cell-custom-group">
+            <MudText Color="Color.Primary">@groupExpectedValue</MudText>
+        </MudTd>
+        <MudTd DataLabel="@StandardDeviationLabel" Class="mud-table-cell-custom-group">
+                <MudText Color="Color.Primary">@groupStandardDeviation</MudText>
+        </MudTd>
+        <MudTd DataLabel="@ConfidenceIntervalLabel" Class="mud-table-cell-custom-group">
+            <MudText Color="Color.Primary">@groupCI</MudText>
+        </MudTd>
+        <MudTd>
+            <MudMenu Size="Size.Small" Color="Color.Primary" Icon="@Icons.Material.Filled.KeyboardArrowDown">
+                <MudMenuItem IconSize="Size.Small" Icon="@Icons.Material.Filled.Add" IconColor="Color.Success" OnClick="() => Project.AddTask(groupIndex)">Add Task</MudMenuItem>
+                <MudMenuItem IconSize="Size.Small" Icon="@Icons.Material.Filled.Edit" IconColor="Color.Primary" OnClick="() => OpenRenameGroup(groupIndex)">Rename Group</MudMenuItem>
+                <MudMenuItem IconSize="Size.Small" Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" OnClick="() => Project.DeleteGroup(groupIndex)">Remove Group</MudMenuItem>
+            </MudMenu>
+        </MudTd>
+    </GroupHeaderTemplate>
+    <RowTemplate>
+        <MudTd DataLabel="Task">
+            <MudText>@context.Name</MudText>
+            <MudText Typo="Typo.caption">@context.Caption(Project)</MudText>
+        </MudTd>
+        <MudTd DataLabel="@ExpectedValueLabel">@context.ExpectedValue.RoundBy(Project.BreakdownRound)</MudTd>
+            <MudTd DataLabel="@StandardDeviationLabel">@context.StandardDeviation.RoundBy(Project.BreakdownRound)</MudTd>
+        <MudTd DataLabel="@ConfidenceIntervalLabel">
+            @{
+                var (from, to) = context.ConfidenceInterval(Project.ContingencyConfidence, Project.BreakdownRound);
+            }
+            @from - @to
+        </MudTd>
+        <MudTd>
+            <MudMenu Size="Size.Small" Icon="@Icons.Material.Filled.KeyboardArrowDown">
+                <MudMenuItem IconSize="Size.Small" Icon="@Icons.Material.Filled.Edit" OnClick="() => OpenEditTask(context)">Edit Task</MudMenuItem>
+                @if (Project.Tasks.Count(t => t.GroupIndex == context.GroupIndex) > 1)
+                {
+                    <MudMenuItem IconSize="Size.Small" Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" OnClick="() => Project.DeleteTask(context)">Remove Task</MudMenuItem>
+                }
+            </MudMenu>
+        </MudTd>
+    </RowTemplate>
+    <FooterContent>
+        <MudTd>
+            <MudText Color="_summaryColor"><b>Summary:</b></MudText>
+        </MudTd>
+        <MudTd DataLabel="@ExpectedValueLabel">
+            <MudText Color="_summaryColor">@Project.ExpectedValue.RoundBy(Project.TotalRound)</MudText>
+        </MudTd>
+        <MudTd DataLabel="@StandardDeviationLabel">
+                <MudText Color="_summaryColor">@Project.StandardDeviation.RoundBy(Project.TotalRound)</MudText>
+        </MudTd>
+        <MudTd DataLabel="@ConfidenceIntervalLabel">
+            @{
+                var (from, to) = Project.ConfidenceInterval(Project.ContingencyConfidence, Project.TotalRound);
+            }
+            <MudText Color="_summaryColor">@from - @to</MudText>
+        </MudTd>
+    </FooterContent>
+</MudTable>
+
+<MudBreakpointProvider>
+    <MudHidden Breakpoint="Breakpoint.Xs" Invert="true">
+        <MudText Typo="Typo.h5" Color="_summaryColor">Summary:</MudText>
+            <MudText Color="_summaryColor"><b>@ExpectedValueLabel:</b> @Project.ExpectedValue.RoundBy(Project.TotalRound)</MudText>
+            <MudText Color="_summaryColor"><b>@StandardDeviationLabel:</b> @Project.StandardDeviation.RoundBy(Project.TotalRound)</MudText>
+            @{
+                var (from, to) = Project.ConfidenceInterval(Project.ContingencyConfidence, Project.TotalRound);
+            }
+            <MudText Color="_summaryColor"><b>@ConfidenceIntervalLabel:</b> @from - @to</MudText>
+    </MudHidden>
+</MudBreakpointProvider>
+
+<MudButton 
+    Class="mt-2"
+    Variant="Variant.Filled"
+    StartIcon="@Icons.Material.Filled.Add" 
+    Color="Color.Primary"
+    OnClick="() => Project.AddGroup()">
+    Add Group
+</MudButton>
+
+<MudDialog @bind-IsVisible="_groupRenameDialog" Options="_groupRenameDialogOptions">
+    <DialogContent>
+        <MudTextField @bind-Value="Project.Groups[_groupIndexToRename]" Variant="Variant.Outlined" Label="Group Name" />
+    </DialogContent>
+</MudDialog>
+
+<MudDialog @bind-IsVisible="_taskEditDialog" Options="_taskEditDialogOptions">
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="TaskEditCommit" Class="px-10">Update</MudButton>
+    </DialogActions>
+    <DialogContent>
+        @{
+            var context = _taskEdit;
+        }
+        <MudGrid>
+            <MudItem xs="12">
+                <MudTextField @bind-Value="context.Name" Variant="Variant.Outlined" Label="Task" />
+            </MudItem>
+            <MudItem xs="12" md="3">
+                <MudSelect Variant="Variant.Outlined" Label="Estimate Type" @bind-Value="context.Type">
+                    @{
+                    var typesToSelect = context.GroupIndex == 0 ? EstimateTypesWithoutPercentage : EstimateTypes;
+                }
+                @for (int k = 0; k < typesToSelect.Length; k++)
+                {
+                    var value = typesToSelect[k];
+                    var text = value.ToString();
+                    <MudSelectItem Value="value">
+                        <MudText>@text</MudText>
+                        </MudSelectItem>
+                }
+            </MudSelect>
+        </MudItem>
+        @if (context.Type == EstimateType.Fixed)
+        {
+            <MudItem xs="6" md="4">
+                <MudNumericField @bind-Value="context.ExpectedValue" Label="Value" Variant="Variant.Outlined" Step=".5M" />
+            </MudItem>
+            <MudItem xs="6" md="4">
+                <MudNumericField @bind-Value="context.StandardDeviation" Label="Error" Variant="Variant.Outlined" Step=".1M" />
+            </MudItem>
+        }
+        @if (context.Type == EstimateType.ThreePoint)
+        {
+            <MudItem xs="4" md="3">
+                <MudNumericField @bind-Value="context.Best" Label="Best (a)" Variant="Variant.Outlined" Step=".5M" />
+            </MudItem>
+            <MudItem xs="4" md="3">
+                <MudNumericField @bind-Value="context.Likely" Label="Likely (m)" Variant="Variant.Outlined" Step=".5M" />
+            </MudItem>
+            <MudItem xs="4" md="3">
+                <MudNumericField @bind-Value="context.Worst" Label="Worst (b)" Variant="Variant.Outlined" Step=".5M" />
+            </MudItem>
+        }
+        @if (context.Type == EstimateType.Percentage)
+        {
+            <MudItem xs="6" md="4">
+                <MudNumericField @bind-Value="context.Percentage" Label="%" Variant="Variant.Outlined" Step="5M" />
+            </MudItem>
+            <MudItem xs="6" md="4">
+                <MudSelect Label="Group" Variant="Variant.Outlined" @bind-Value="context.PercentageByGroupIndex">
+                    @for (int k = 0; k < context.GroupIndex; k++)
+                    {
+                        var value = k;
+                        var group = Project.Groups[k];
+                        <MudSelectItem Value="value">
+                            <MudText>@group</MudText>
+                        </MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+        }
+        </MudGrid>
+    </DialogContent>
+</MudDialog>
+
+<MudDivider Class="my-4" />
+
+<MudTextField @bind-Value="Project.Footnotes" Label="Footnotes" Lines="3" AutoGrow Variant="Variant.Outlined" />
+
+<MudDivider Class="my-4" />
+
+<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateMarkdownReport" Class="mb-2">Generate Markdown Report</MudButton>
+<MudTextField @bind-Value="MarkdownReport" Label="Markdown Report" Lines="3" AutoGrow Variant="Variant.Outlined" />
+
+@code {
+    private const string ExpectedValueLabel = "Expected Value (E)";
+    private const string StandardDeviationLabel = "Standard Deviation (SD)";
+    private string ConfidenceIntervalLabel => $"{Project.ContingencyConfidence}% Confidence Interval";
+
+    private string MarkdownReport;
+    private void GenerateMarkdownReport()
+    {
+        MarkdownReport = Project.GenerateMarkdownReport();
+    }
+
+    private MudTable<EstimateTask> _table;
+
+    private TableGroupDefinition<EstimateTask> _groupDefinition = new()
+    {
+        GroupName = "Group",
+        Indentation = false,
+        Expandable = true,
+        IsInitiallyExpanded = true,
+        Selector = (e) => e.GroupIndex
+    };
+
+    private Color _summaryColor = Color.Secondary;
+
+    private EstimateProject Project = Controller.SampleProject().CalculateTasks();
+
+    private bool _groupRenameDialog = false;
+    private readonly DialogOptions _groupRenameDialogOptions = new() { FullWidth = true, CloseButton = true };
+    private int _groupIndexToRename = -1;
+    private void OpenRenameGroup(int groupIndex)
+    {
+        _groupIndexToRename = groupIndex;
+        _groupRenameDialog = true;
+    }
+
+    private bool _taskEditDialog = false;
+    private readonly DialogOptions _taskEditDialogOptions = new() { FullWidth = true, CloseButton = false, CloseOnEscapeKey = false, DisableBackdropClick = true };
+    private EstimateTask _taskEdit;
+    private void OpenEditTask(EstimateTask taskEdit)
+    {
+        _taskEdit = taskEdit;
+        _taskEditDialog = true;
+    }
+
+    private void TaskEditCommit()
+    {
+        Project.CalculateTasks();
+        _taskEditDialog = false;
+    }
+
+    private readonly EstimateType[] EstimateTypes 
+        = Enum.GetValues(typeof(EstimateType)).Cast<EstimateType>()
+        .ToArray();
+
+    private readonly EstimateType[] EstimateTypesWithoutPercentage
+        = Enum.GetValues(typeof(EstimateType)).Cast<EstimateType>()
+        .Where(et => et != EstimateType.Percentage)
+        .ToArray();
+
+    private async Task DownloadJson()
+    {
+        await JS.DownloadJson(
+            obj: Project,
+            fileName: (Project.Name ?? "") + " Estimates"
+        );
+    }
+
+    private async Task UploadJson(IBrowserFile file)
+    {
+        using MemoryStream inputFileStream = new MemoryStream();
+        await file.OpenReadStream(file.Size).CopyToAsync(inputFileStream);
+        inputFileStream.Position = 0;
+        using StreamReader reader = new StreamReader(inputFileStream, Encoding.UTF8);
+        string json = reader.ReadToEnd();
+        Project = json.FromJson<EstimateProject>().CalculateTasks();
+    }
+
+
+    private void SampleProject()
+    {
+        Project = Controller.SampleProject().CalculateTasks();
+    }
+
+    private void ClearProject()
+    {
+        Project = new();
+    }
+}

@@ -1,0 +1,29 @@
+﻿<MudItem xs="5">
+    <MudTextField T="string" Variant="Variant.Outlined" @bind-Value="Form.Left" />
+</MudItem>
+<MudItem xs="1">
+    <MudButton OnClick="() => ToggleDependencyType()" Variant="Variant.Filled" Color="Color.Primary">
+        <MudIcon Icon="@(Form.IsMVD ? mvdIcon : fdIcon)" />
+    </MudButton>
+</MudItem>
+<MudItem xs="5">
+    <MudTextField T="string" Variant="Variant.Outlined" @bind-Value="Form.Right" />
+</MudItem>
+
+@code {
+    [Parameter]
+    public FormClass Form { get; set; }
+
+    public class FormClass
+    {
+        public string Left { get; set; }
+        public string Right { get; set; }
+        public bool IsMVD { get; set; }
+    }
+
+    void ToggleDependencyType()
+        => Form.IsMVD = !Form.IsMVD;
+
+    private static readonly string mvdIcon = Icons.Material.Filled.KeyboardDoubleArrowRight;
+    private static readonly string fdIcon = Icons.Material.Filled.KeyboardArrowRight;
+}

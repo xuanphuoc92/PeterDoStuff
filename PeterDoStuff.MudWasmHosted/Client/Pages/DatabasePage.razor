@@ -1,0 +1,142 @@
+﻿@page "/database"
+@inject HttpClient Http
+@using PeterDoStuff.Database
+@using PeterDoStuff.Extensions
+@using PeterDoStuff.MudWasmHosted.Client.Api
+@using PeterDoStuff.MudWasmHosted.Client.Extensions
+@using PeterDoStuff.MudWasmHosted.Shared
+@using System.Reflection;
+@using System.Text
+@using System.Text.Json
+@using PeterDoStuff.Tools
+
+<PlaygroundTitle Page="database" />
+
+@if (accessGranted)
+{
+    @if (string.IsNullOrEmpty(accessWarning) == false)
+    {
+        <MudText Color="Color.Warning">Warning: @accessWarning</MudText>
+        <br />
+        <br />
+    }
+    <MudButton Color="Color.Primary" Variant="Variant.Filled" @onclick="ExecuteSql">Execute</MudButton>
+    <br />
+    <br />
+    <MudTextField T="string" Label="SQL" Variant="Variant.Outlined" AutoGrow Lines="5"
+        @bind-Value="sqlValue"
+        Style="@($"font-family: {codeFontFamily}")" />
+
+    @if (error != null)
+    {
+        <MudTextField T="string" Label="Error" Variant="Variant.Outlined" ReadOnly="true" AutoGrow Lines="10"
+            @bind-Value="error"
+            Style="@($"font-family: {codeFontFamily}; color: {Colors.Red.Default}")" />
+    }
+
+    @if (output != null)
+    {
+        @if (output.Execute >= 0)
+        {
+            <MudCard Outlined="true">
+                <MudCardContent>
+                    <MudText Class="mb-8">@($"{output.Execute} row{(output.Execute > 1 ? "s" : "")} affected")</MudText>
+                </MudCardContent>
+            </MudCard>
+        }
+
+        @if (output.DynamicQuery().Any())
+        {
+            object first = output.DynamicQuery().First();
+            IEnumerable<string> columns = first.GetPropertyNames();
+            <MudTable Items="output.DynamicQuery().AsEnumerable<object>()" Hover="true" SortLabel="Sort By" Elevation="0">
+                <HeaderContent>
+                    @foreach (var column in columns)
+                    {
+                        <MudTh>@column</MudTh>
+                    }
+                </HeaderContent>
+                <RowTemplate>
+                    @foreach (var column in columns)
+                    {
+                        <MudTd DataLabel="@column">@context.GetPropertyValue(column)</MudTd>
+                    }
+                </RowTemplate>
+                <PagerContent>
+                    <MudTablePager PageSizeOptions="new int[]{50, 100}" />
+                </PagerContent>
+            </MudTable>
+        }
+    }
+}
+else
+{
+    <MudTextField T="string" Label="Access Key" Variant="Variant.Outlined" InputType="InputType.Password"
+        @bind-Value="accessKey"
+        @onkeydown="AccessEnter"
+    />
+    <br />
+    <br />
+    <MudButton Color="Color.Primary" Variant="Variant.Filled" @onclick="AccessDatabase">Access</MudButton>
+}
+
+<LoadingOverlay @ref="loadingOverlay" />
+
+@code {
+    private bool accessGranted = false;
+    private string accessKey = "";
+    private string accessWarning = null;
+
+    private async Task AccessEnter(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+            await AccessDatabase();
+    }
+
+    private async Task AccessDatabase()
+    {
+        await loadingOverlay.Show("Accessing");
+        await Task.Delay(200);
+        
+        try
+        {
+            DbAccess accessResult = await Http.As<DatabaseClient>().Access(accessKey);
+            accessWarning = accessResult.Warning;
+            accessGranted = accessResult.IsSuccess;
+        }
+        catch
+        {
+            accessGranted = false;
+            throw;
+        }
+
+        loadingOverlay.Hide();
+    }
+
+    private string sqlValue = SqlCommand.SAMPLE_TEST_SQL;
+
+    private string codeFontFamily = "Fira Code, Consolas, Input, DejaVu Sans Mono, JetBrains Mono, and MonoLisa;";
+
+    private LoadingOverlay loadingOverlay;
+
+    private QueryOutput output;
+    private string error;
+
+    private async Task ExecuteSql()
+    {
+        await loadingOverlay.Show("Executing");
+
+        try
+        {
+            output = await Http.As<DatabaseClient>()
+                .SetKey(accessKey)
+                .Post(sqlValue);
+        } 
+        catch (ApiException ex)
+        {
+            error = ex.Message;
+        }
+
+        loadingOverlay.Hide();
+    }
+}

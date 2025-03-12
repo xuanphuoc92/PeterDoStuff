@@ -1,19 +1,49 @@
-using FluentAssertions;
-using static PeterDoStuff.GameOfLife;
+using ApprovalTests.Reporters;
+using PeterDoStuff.Games;
+using PeterDoStuff.Test.Extensions;
+using System.Text;
+using static PeterDoStuff.Games.GameOfLife;
 
 namespace PeterDoStuff.Test
 {
+    internal static class GameOfLifeTestExtensions
+    {
+        /// <summary>
+        /// Print to string the test grid string, with [O] as Live cell and [ ] as Dead cell.
+        /// </summary>
+        /// <param name="this"></param>
+        /// <returns></returns>
+        internal static string ToTestGrid(this GameOfLife @this)
+        {
+            StringBuilder output = new StringBuilder();
+            for (int y = 1; y <= @this.Height; y++)
+            {
+                for (int x = 1; x <= @this.Width; x++)
+                {
+                    var content = @this.GetCell(x, y).State == CellState.Live
+                        ? "O"
+                        : " ";
+                    output.Append($"[{content}]");
+                }
+                output.AppendLine();
+            }
+            return output.ToString();
+        }
+    }
+
     [TestClass]
+    [UseReporter(typeof(DiffReporter))]
     public class GameOfLife_Test
     {
         [TestMethod]
         public void _01_DeadDueToIsolation()
         {
-            // [O]
+            // [O] --> [ ]
             using var game = new GameOfLife(1, 1);
             game.GetCell(1, 1).State = CellState.Live;
             game.Next();
-            game.GetCell(1, 1).State.Should().Be(CellState.Dead);
+            
+            game.ToTestGrid().Verify();
         }
 
         [TestMethod]
@@ -27,16 +57,9 @@ namespace PeterDoStuff.Test
             game.GetCell(2, 1).State = CellState.Live;
             game.GetCell(3, 2).State = CellState.Live;
             game.GetCell(2, 3).State = CellState.Live;
-            game.Next();            
+            game.Next();
 
-            for (int x = 1; x <= 3; x++)
-                for (int y = 1; y <= 3; y++)
-                {
-                    if (x + y == 3 || x + y == 5)
-                        game.GetCell(x, y).State.Should().Be(CellState.Live);
-                    else
-                        game.GetCell(x, y).State.Should().Be(CellState.Dead);
-                }
+            game.ToTestGrid().Verify();
         }
 
         [TestMethod]
@@ -61,14 +84,7 @@ namespace PeterDoStuff.Test
             
             game.Next();
 
-            for (int x = 1; x <= 3; x++)
-                for (int y = 1; y <= 3; y++)
-                {
-                    if (x == 2 && y == 2)
-                        game.GetCell(x, y).State.Should().Be(CellState.Dead);
-                    else
-                        game.GetCell(x, y).State.Should().Be(CellState.Live);
-                }
+            game.ToTestGrid().Verify();
         }
     }
 }

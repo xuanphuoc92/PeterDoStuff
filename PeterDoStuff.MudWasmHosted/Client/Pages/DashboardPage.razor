@@ -1,0 +1,79 @@
+﻿@page "/dashboard"
+
+<PlaygroundTitle Page="dashboard" />
+
+<MudText Typo="Typo.h5">Table</MudText>
+<MudTable Items="MySampleData" Hover="true" SortLabel="Sort By" Elevation="0" Class="mb-8">
+    <HeaderContent>
+        <MudTh>Month</MudTh>
+        <MudTh>Revenue ($)</MudTh>
+        <MudTh>Cost ($)</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Month">@context.Month.ToString("MMM")</MudTd>
+        <MudTd DataLabel="Revenue ($)">@context.Revenue</MudTd>
+        <MudTd DataLabel="Cost ($)">@context.Cost</MudTd>
+    </RowTemplate>
+</MudTable>
+
+<MudText Typo="Typo.h5">Bar Chart</MudText>
+<MudChart ChartType="ChartType.Bar"
+    ChartSeries="@MySampleDataChartSeries"
+    XAxisLabels="@MySampleData.Select(d => d.Month.ToString("MMM")).ToArray()"
+    Class="mb-8">
+</MudChart>
+
+<MudText Typo="Typo.h5">Pie Chart</MudText>
+<MudGrid Spacing="1" Class="mb-8">
+    @foreach (var sampleData in MySampleData)
+    {
+        double[] data = new double[] { sampleData.Revenue, sampleData.Cost };
+        string[] labels = new string[] { "Revenue", "Cost" };
+        <MudItem xs="6" sm="4" md="3" lg="2" xl="1">
+            <MudPaper>
+                <MudText Typo="Typo.h6" Style="text-align: center">@sampleData.Month.ToString("MMM")</MudText>
+                <MudChart ChartType="ChartType.Pie" InputData="data" InputLabels="labels"></MudChart>
+            </MudPaper>
+        </MudItem>
+    }
+</MudGrid>
+@code {
+
+    private class SampleData
+    {
+        public DateTime Month { get; set; }
+        public double Revenue { get; set; }
+        public double Cost { get; set; }
+        public double Profit => Revenue - Cost;
+
+        public SampleData(int month, double revenue, double cost)
+        {
+            Month = new DateTime(2023, month, 1);
+            Revenue = revenue;
+            Cost = cost;
+        }
+    }
+
+    private List<SampleData> MySampleData = new()
+    {
+        new SampleData(1, 40, 20),
+        new SampleData(2, 50, 25),
+        new SampleData(3, 65, 41),
+        new SampleData(4, 65, 49),
+        new SampleData(5, 50, 49),
+        new SampleData(6, 42, 48),
+        new SampleData(7, 45, 30),
+        new SampleData(8, 44, 25),
+        new SampleData(9, 41, 31),
+        new SampleData(10, 47, 26),
+        new SampleData(11, 71, 42),
+        new SampleData(12, 80, 49)
+    };
+
+    private List<ChartSeries> MySampleDataChartSeries => new List<ChartSeries>()
+    {
+        new ChartSeries() { Name = "Revenue", Data = MySampleData.Select(d => d.Revenue).ToArray() },
+        new ChartSeries() { Name = "Cost", Data = MySampleData.Select(d => d.Cost).ToArray() },
+        new ChartSeries() { Name = "Profit", Data = MySampleData.Select(d => d.Profit).ToArray() }
+    };
+}

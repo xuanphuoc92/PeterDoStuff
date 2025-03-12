@@ -1,0 +1,109 @@
+﻿@page "/gameOfLife"
+@using PeterDoStuff.Games
+@inject GameOfLife Game
+
+<PlaygroundTitle Page="gameOfLife" />
+
+<MudText Class="mb-8">Find the complete and better playgrounds at: 
+    <MudLink Href="https://playgameoflife.com/" Typo="Typo.body2" Color="Color.Inherit"><b>Play John Conway's Game of Life</b></MudLink>
+</MudText>
+
+@* Game control bar *@
+<div class="d-flex justify-space-around flex-grow-1 gap-4 align-center">
+    <MudButton Variant="Variant.Filled" OnClick="Clear" StartIcon="@Icons.Material.Filled.Replay">
+        Clear
+    </MudButton>
+    @if (isStart == false)
+    {
+        <MudButton Variant="Variant.Filled" OnClick="Start" StartIcon="@Icons.Material.Filled.PlayArrow">
+            Start
+        </MudButton>
+    }
+    else
+    {
+        <MudButton Variant="Variant.Filled" OnClick="Stop" StartIcon="@Icons.Material.Filled.Stop">
+            Stop
+        </MudButton>
+    }
+    <MudButton Variant="Variant.Filled" OnClick="Next" StartIcon="@Icons.Material.Filled.SkipNext">
+        Next
+    </MudButton>
+</div>
+
+<MudDivider DividerType="DividerType.Middle" Class="my-6" />
+
+@* Game grid *@
+<style>
+    .gol-cell {
+        min-width: 2rem;
+        width: 2rem;
+        height: 2rem;
+        margin: 0.1rem;
+        transition: background-color .2s ease-in-out;
+    }
+</style>
+@for (int x = 1; x <= Game.Width; x++)
+{
+    <div class="d-flex justify-md-center flex-grow-1 ">
+    @for (int y = 1; y <= Game.Height; y++)
+    {
+        var cell = Game.GetCell(x, y);
+        <div class="gol-cell" style="@($"background-color:{GetColor(cell)}")" @onclick="() => Flip(cell)"></div>
+    }
+    </div>
+}
+
+@code {
+    private bool isStart = false;
+    private Timer Timer;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Clear();
+        Timer = new Timer(Tick, null, 0, 200);
+    }
+
+    private void Tick(object? _ = null)
+    {
+        if (isStart == false) return;
+        Next();
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void Clear()
+    {
+        Game = new GameOfLife(30, 30);
+        isStart = false;
+    }
+
+    private void Start()
+    {
+        isStart = true;
+    }
+
+    private void Stop()
+    {
+        isStart = false;
+    }
+
+    private void Next()
+    {
+        Game.Next();
+    }
+
+    private string GetColor(GameOfLife.Cell cell)
+    {
+        return cell.State == GameOfLife.CellState.Live
+            ? Colors.Lime.Accent3
+            : Colors.Grey.Darken4;
+    }
+
+    private void Flip(GameOfLife.Cell cell)
+    {
+        if (cell.State == GameOfLife.CellState.Live)
+            cell.State = GameOfLife.CellState.Dead;
+        else
+            cell.State = GameOfLife.CellState.Live;
+    }
+}

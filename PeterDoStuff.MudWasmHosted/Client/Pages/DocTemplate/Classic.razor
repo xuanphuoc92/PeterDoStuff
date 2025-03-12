@@ -1,0 +1,258 @@
+﻿@page "/docTemplate/classic"
+@using PeterDoStuff.Extensions
+@using PeterDoStuff.MudWasmHosted.Client.Extensions
+@using static PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate.DocTemplateController
+@layout EmptyLayout
+@inject IJSRuntime JSRuntime
+
+<PageTitle>@(Model?.Person?.Name ?? "Resume")</PageTitle>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-size: 1em;
+        }
+
+        h1 {
+            font-size: 2em;
+        }
+
+        h2 {
+            font-size: 1.25em;
+        }
+
+        h3 {
+            font-size: 1.10em;
+        }
+
+        h4 {
+            font-size: 1em;
+        }
+
+        .sub {
+            font-size: 0.9em;
+            font-style: italic;
+        }
+
+        page {
+            background: white;
+            display: block;
+            margin: 0 auto;
+            margin-bottom: 0.5cm;
+            width: 21cm;
+            height: 29.7cm;;
+        }
+
+        p {
+            padding-block-end: 1em;
+        }
+
+        ul {
+            list-style-type: disc;
+            margin-left: 1em;
+        }
+
+        a {
+            color: darkblue;
+            text-decoration: underline;
+        }
+
+        .projectGrid {
+            display: grid;
+            grid-template-columns: auto auto;
+        }
+
+    </style>
+</head>
+<body>
+    <page size="A4">
+        <div class="d-flex justify-center flex-grow-1 gap-4">
+            <h1>@Model.Person.Name</h1>
+        </div>
+        <div class="d-flex justify-center align-center flex-grow-1 gap-4">
+            |
+            <MudIcon Icon="@GeneralIcons.GetDictionary()[Model.LocationIcon]" Size="Size.Small" /> @Model.Location
+            |
+            <MudIcon Icon="@GeneralIcons.GetDictionary()[Model.PhoneIcon]" Size="Size.Small" /> @Model.PhoneNumber
+            |
+            <MudIcon Icon="@GeneralIcons.GetDictionary()[Model.FluencyIcon]" Size="Size.Small" /> @Model.Fluency
+            |
+            <MudIcon Icon="@GeneralIcons.GetDictionary()[Model.EmailIcon]" Size="Size.Small" />
+            <a href="@($"mailto:{Model.Email}")">
+                @Model.Email
+            </a>
+            |
+        </div>
+        <div class="d-flex justify-center align-center flex-grow-1 gap-4">
+            |
+            @for (int i = 0; i < Model.Links.Count; i++)
+            {
+                var link = Model.Links[i];
+                <MudIcon Icon="@LinkIcons.GetDictionary()[link.Icon]" Size="Size.Small" />
+                <a href="@link.Url" target="_blank">
+                    @link.TextOrUrl()
+                </a>
+                <span>|</span>
+            }
+        </div>
+        <MudDivider Class="my-2"/>
+        <h2 class="d-flex align-center flex-grow-1 gap-4">
+            <MudIcon Icon="@GeneralIcons.GetDictionary()[Model.AboutMeIcon]" Size="Size.Small" />
+            @Model.AboutMeLabel
+        </h2>
+        @foreach (var paragraphRef in Model.AboutMe.ToParagraphs())
+        {
+            var paragraph = paragraphRef;
+            <p>@((MarkupString)paragraph.RenderWithBold())</p>
+        }
+        <MudDivider Class="my-2" />
+        <h2 class="d-flex align-center flex-grow-1 gap-4">
+            <MudIcon Icon="@GeneralIcons.GetDictionary()[Model.ExperiencesIcon]" Size="Size.Small" />
+            @Model.ExperiencesLabel
+        </h2>
+        @foreach (var experienceRef in Model.Experiences)
+        {
+            var experience = experienceRef;
+            <h3>@experience.Company.Name</h3>
+            @foreach (var experienceItemRef in experience.Items)
+            {
+                var item = experienceItemRef;
+                <div class="d-flex justify-space-between flex-grow-1 gap-4">
+                    <h4>@item.Position</h4>
+                    <div class="sub">@item.From.MonthYearOrPresent() - @item.To.MonthYearOrPresent()</div>
+                </div>
+                <p>
+                    <ul>
+                        @foreach (var paragraphRef in item.Description.ToParagraphs())
+                        {
+                            var paragraph = paragraphRef;
+                            <li>@((MarkupString)paragraph.RenderWithBold())</li>
+                        }
+                    </ul>
+                </p>
+            }
+        }
+        <MudDivider Class="my-2" />
+        <h2 class="d-flex align-center flex-grow-1 gap-4">
+            <MudIcon Icon="@GeneralIcons.GetDictionary()[Model.EducationsIcon]" Size="Size.Small" />
+            @Model.EducationsLabel
+        </h2>
+        @foreach (var educationRef in Model.Educations)
+        {
+            var education = educationRef;
+            <h3>@education.Institution.Name</h3>
+            <div class="d-flex justify-space-between flex-grow-1 gap-4">
+                <h4>@education.Degree.ToOneLine()</h4>
+                <div class="sub">@education.From.MonthYearOrPresent() - @education.To.MonthYearOrPresent()</div>
+            </div>
+            <p>
+                <ul>
+                    @foreach (var paragraphRef in education.Description.ToParagraphs())
+                    {
+                        var paragraph = paragraphRef;
+                        <li>@((MarkupString)paragraph.RenderWithBold())</li>
+                    }
+                </ul>
+            </p>
+        }
+        <MudDivider Class="my-2" />
+        <h2 class="d-flex align-center flex-grow-1 gap-4">
+            <MudIcon Icon="@GeneralIcons.GetDictionary()[Model.SkillsIcon]" Size="Size.Small" />
+            @Model.SkillsLabel
+        </h2>
+        @foreach (var groupRef in Model.Skills.GroupBy(skill => skill.Group))
+        {
+            var group = groupRef;
+            <MudGrid>
+                <MudItem xs="4">
+                    <h3>@group.Key:</h3>
+                </MudItem>
+                <MudItem xs="8">
+                    <div>
+                        @{
+                            var skills = group.OrderByDescending(skill => skill.Level).ToList();
+                        }
+                        @for (int i = 0; i < skills.Count; i++)
+                        {
+                            var skill = skills[i];
+                            if (i > 0)
+                            {
+                                <span>, </span>
+                            }
+                            if (skill.Level > 2)
+                            {
+                                <b>@skill.Name</b>
+                            }
+                            else
+                            {
+                                @skill.Name
+                            }
+                        }
+                    </div>
+                </MudItem>
+            </MudGrid>
+        }
+        @if (Model.Projects.Any() == true)
+        {
+            <MudDivider Class="my-2" />
+            <h2 class="d-flex align-center flex-grow-1 gap-4">
+                <MudIcon Icon="@GeneralIcons.GetDictionary()[Model.ProjectIcon]" Size="Size.Small" />
+                @Model.ProjectLabel
+            </h2>
+            <div class="projectGrid">
+                @foreach (var projectRef in Model.Projects)
+                {
+                    var project = projectRef;
+                    <div>
+                        <h3>
+                            @project.Name
+                            @if (project.Url.IsNullOrEmpty() == false)
+                            {
+                                <MudIconButton Size="Size.Small"
+                                               Href="@project.Url"                                
+                                               Target="_blank"
+                                               Icon="@Icons.Material.Filled.ArrowOutward"></MudIconButton>
+                            }
+                        </h3>
+                        <p>
+                            <ul>
+                                @foreach (var paragraphRef in project.Description.ToParagraphs())
+                                {
+                                    var paragraph = paragraphRef;
+                                    <li>@((MarkupString)paragraph.RenderWithBold())</li>
+                                }
+                            </ul>
+                        </p>
+                    </div>
+                }
+            </div>
+        }
+    </page>
+</body>
+</html>
+
+@code {
+    // protected override async Task OnAfterRenderAsync(bool firstRender)
+    // {
+    //     if (firstRender)
+    //     {
+    //         await JSRuntime.InvokeVoidAsync("clearLayoutStyle");
+    //     }
+    // }
+
+    [Parameter]
+    public Resume Model { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Retrieve the serialized model from sessionStorage
+        var json = await JSRuntime.InvokeAsync<string>("sessionStorage.getItem", "resumeModel");
+
+        if (!string.IsNullOrWhiteSpace(json))
+        {
+            Model = json.FromJson<Resume>();
+        }
+    }
+}

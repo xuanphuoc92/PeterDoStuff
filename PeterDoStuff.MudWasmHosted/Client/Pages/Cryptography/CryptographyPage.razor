@@ -1,0 +1,95 @@
+﻿@page "/cryptography"
+@inject HttpClient Http
+@using PeterDoStuff.Extensions
+@using PeterDoStuff.MudWasmHosted.Client.Extensions
+@using System.Dynamic
+@using PeterDoStuff.MudWasmHosted.Shared
+
+<PlaygroundTitle Page="cryptography" />
+
+<MudText Class="mb-8">
+    Take note that System.Security.Cryptography APIs (with a few exceptions) may not be supported on Blazor WASM and will cause Runtime Error if attempted to call on WASM Client side (but not on Server):
+    <br />
+    <MudLink Href="https://learn.microsoft.com/en-us/dotnet/core/compatibility/cryptography/5.0/cryptography-apis-not-supported-on-blazor-webassembly" Target="_blank">
+        Breaking change: System.Security.Cryptography APIs not supported on Blazor WebAssembly
+    </MudLink>
+    <br />
+    <MudLink Href="https://github.com/dotnet/runtime/issues/82472">
+        .NET 7 WebAssembly - Algorithm 'Aes' is not supported on this platform.
+    </MudLink>
+</MudText>
+<MudText Class="mb-8 align-center">
+    Therefore, some of the services (<MudIcon Icon="@serverIcon" Class="ml-2 mr-2" />) below will be executed at Server Side.
+</MudText>
+<MudText Class="mb-8 align-center">
+    We do not store your inputs/keys/hashes sent to the Server Side.
+    However, if you wish to use the Cryptography services in this App without sending your data to any external server, feel free to visit the App Source
+    <MudLink Href="https://github.com/xuanphuoc92/PeterDoStuff?tab=readme-ov-file#peter-do-stuff" Target="_blank">
+        Peter-Do-Stuff <MudIcon Icon="@Icons.Custom.Brands.GitHub" Class="ml-1 mr-1" />
+    </MudLink>
+    to Fork and run the App on your own PC/Server.
+</MudText>
+
+<MudText Typo="Typo.h4">Byte Array Format</MudText>
+<MudToolBar Class="mb-8 d-flex">
+    <MudText Color="Color.Info">Hex</MudText>
+    <MudSwitch Class="ml-8" @bind-Value="@isBase64Format" UnCheckedColor="Color.Info" Color="Color.Success" />
+    <MudText Color="Color.Success">Base64</MudText>
+</MudToolBar>
+
+<MudText Class="mb-8" Typo="Typo.h4" Color="Color.Primary">
+    Input
+</MudText>
+
+<MudPaper Class="mb-8">
+    <ByteArrayTextField AllowUTF8="true" IsBase64Format="@isBase64Format" @bind-Value="inputByteArray" />
+</MudPaper>
+
+<MudMessageBox @ref="inputBox" YesText="">
+    <TitleContent>
+        <MudText Typo="Typo.h5" Color="Color.Primary">Input</MudText>
+    </TitleContent>
+    <MessageContent>
+        <MudContainer Style="width: 360px">
+            <ByteArrayTextField AllowUTF8="true" IsBase64Format="@isBase64Format" @bind-Value="inputByteArray" />
+        </MudContainer>
+    </MessageContent>
+</MudMessageBox>
+
+<Cryptography_SHA InputByteArray="inputByteArray" OpenInput="OpenInput" IsBase64Format="@isBase64Format" />
+<Cryptography_HMAC InputByteArray="inputByteArray" OpenInput="OpenInput" IsBase64Format="@isBase64Format" />
+<Cryptography_Argon2id InputByteArray="inputByteArray" OpenInput="OpenInput" IsBase64Format="@isBase64Format"
+    ShowError="ShowError" ServerIcon="@serverIcon" />
+<Cryptography_AES InputByteArray="inputByteArray" OpenInput="OpenInput" IsBase64Format="@isBase64Format"
+    ShowError="ShowError" ServerIcon="@serverIcon" />
+<Cryptography_RSA InputByteArray="inputByteArray" OpenInput="OpenInput" IsBase64Format="@isBase64Format"
+    ShowError="ShowError" ServerIcon="@serverIcon" />
+
+<MudMessageBox @ref="errorBox" YesText="Close"> 
+    <MessageContent>
+        <MudText Typo="Typo.h5" Color="Color.Error">Error</MudText>
+        <MudText Color="Color.Error">@errorMessage</MudText>
+    </MessageContent>
+</MudMessageBox>
+
+@code {
+    private string serverIcon = Icons.Material.Filled.Cloud;
+
+    private MudMessageBox errorBox;
+    private string errorMessage;
+    private async Task ShowError(string errorMessage)
+    {
+        this.errorMessage = errorMessage;
+        await errorBox.Show();
+    }
+
+    private MudMessageBox inputBox;
+    private async Task OpenInput()
+    {
+        await inputBox.Show();
+    }
+
+    private bool isBase64Format = false;
+
+    private byte[]? inputByteArray = "Hello".ToByteArray();
+}

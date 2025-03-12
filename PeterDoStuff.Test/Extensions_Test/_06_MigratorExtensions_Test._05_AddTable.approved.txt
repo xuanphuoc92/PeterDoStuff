@@ -1,0 +1,21 @@
+﻿CREATE TABLE [__AddedTestTable__] (
+    [Id] uniqueidentifier,
+    [Name] nvarchar(100),
+    [Description] nvarchar(max),
+    [StandardHash] varbinary(32),
+    [BigHash] varbinary(max),
+    [DefaultDecimal] decimal(18,0),
+    [CustomDecimal] decimal(20,8),
+    [Number] int,
+    [NumberInt32] int,
+    [BigNumberInt64] bigint,
+    [Flag1] bit,
+    [Flag2] bit,
+    [Longitude] real,
+    [Latitude] float,
+    [CreatedTime] datetime2,
+    [CreatedDate] date,
+    [DefaultEnum] int,
+    [StringEnum] nvarchar(7),
+    CONSTRAINT PK___AddedTestTable___Id PRIMARY KEY (Id)
+);

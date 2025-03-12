@@ -1,0 +1,30 @@
+﻿<MudOverlay @bind-Visible="isVisible" DarkBackground="true">
+    <div class="loader-text-container">
+        <div class="loader">
+        </div>
+    </div>
+    <div class="loader-text-container">
+        <div class="loader-text">
+            @LoadingText
+        </div>
+    </div>
+</MudOverlay>
+
+@code {
+    [Parameter]
+    public string LoadingText { get; set; }
+    private bool isVisible { get; set; } = false;
+
+    public async Task Show(string loadingText = "LOADING")
+    {
+        LoadingText = loadingText;
+        isVisible = true;
+        StateHasChanged();
+    }
+
+    public void Hide()
+    {
+        isVisible = false;
+        StateHasChanged();
+    }
+}

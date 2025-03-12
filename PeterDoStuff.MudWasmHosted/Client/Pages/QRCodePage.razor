@@ -1,0 +1,147 @@
+﻿@page "/qrCode"
+@using System.Text
+@using PeterDoStuff.Extensions
+
+@inject IJSRuntime JS
+
+<PlaygroundTitle Page="qrCode" />
+
+<MudText Typo="Typo.h4" GutterBottom="true">Generate QR Code</MudText>
+<MudTextField T="string" @bind-Value="input" Label="String Input" Variant="Variant.Outlined" AutoGrow Lines="1"></MudTextField>
+
+<MudButton Class="my-4" Variant="Variant.Filled" Color="Color.Primary" OnClick="GetQR">Get QR of String Input</MudButton>
+
+<MudDivider Class="my-4"></MudDivider>
+
+<img src="@imgSrc" />
+
+<MudDivider Class="my-4"></MudDivider>
+
+<MudText Typo="Typo.h4" GutterBottom="true">Scan QR Code</MudText>
+
+@if (output != null)
+{
+    <MudGrid Class="d-flex align-start">
+        <MudItem xs="12" sm="2">
+            <MudText Color="Color.Primary">String Output</MudText>
+        </MudItem>
+        <MudItem xs="12" sm="10" Class="d-flex justify-end align-start flex-grow-1 gap-4">
+            <MudText Class="flex-grow-1">@output</MudText>
+            @if (output.ToLower().StartsWith("http://") || output.ToLower().StartsWith("https://"))
+            {
+                <MudIconButton Color="Color.Primary" Variant="Variant.Filled" Href="@output" Target="_blank" Icon="@Icons.Material.Filled.Language">                
+                </MudIconButton>
+            }
+            <MudIconButton OnClick="CopyOutput" Color="Color.Primary" Variant="Variant.Filled" Icon="@Icons.Material.Filled.ContentCopy">
+            </MudIconButton>
+        </MudItem>
+    </MudGrid>
+}
+else
+{
+    <MudText Color="Color.Secondary">No output. Scan or select an image of QR code.</MudText>
+}
+
+<MudDivider Class="my-4"></MudDivider>
+
+<MudFileUpload Class="my-4" T="IBrowserFile" FilesChanged="SelectFile">
+    <ButtonTemplate>
+        <CameraStreamer OpenText="Scan QR" CloseText="Cancel Scan" VideoElementId="@videoElementId" @ref="cameraStreamer" />
+        <MudButton HtmlTag="label"
+                   Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.Image"
+                   for="@context.Id">
+            Select QR Image
+        </MudButton>
+    </ButtonTemplate>
+</MudFileUpload>
+
+<MudDivider Class="my-6"></MudDivider>
+
+<video id="@videoElementId" 
+    autoplay="autoplay" 
+    style="width: 360px; height: auto; @(cameraStreamer?.State != CameraStreamer.CameraState.Close ? "" : "visibility: hidden;" )">
+</video>
+
+<MudDivider Class="my-6"></MudDivider>
+
+@if (qrImageSrc != null)
+{
+    <img id="@qrImageId" src="@qrImageSrc" style="width: auto; height: auto; visibility: hidden; position: fixed; z-index: -100;" />
+}
+
+@code {
+    private string input = "https://peter-do-stuff.azurewebsites.net/";
+    private string imgSrc;
+
+    private void GetQR()
+    {
+        imgSrc = $"data:image/png;base64,{input.ToQRCode().ToBase64String()}";
+    }
+
+    private string videoElementId = "qrScanVideo";
+
+    private string output;
+
+    private string qrImageSrc;
+    private string qrImageId = "qrImageId";
+
+    private async Task SelectFile(IBrowserFile file)
+    {
+        using MemoryStream inputFileStream = new MemoryStream();
+        await file.OpenReadStream(file.Size).CopyToAsync(inputFileStream);
+        qrImageSrc = $"data:image/png;base64,{inputFileStream.ToArray().ToBase64String()}";
+
+        output = await DecodeQR();
+    }
+
+    private async Task<string> DecodeQR()
+    {
+        // Re-rendered, allow 200ms for the image to render before the decodeQRCode kick in
+        StateHasChanged();
+        await Task.Delay(200);
+
+        var result = await JS.InvokeAsync<string>("decodeQRCode", qrImageId);
+        qrImageSrc = null;
+        return result;
+    }
+
+    private CameraStreamer cameraStreamer;
+
+    private Timer Timer;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Timer = new Timer(Tick, null, 0, 1000);
+    }
+
+    private void Tick(object? _ = null)
+    {
+        InvokeAsync(TryScan);
+    }
+
+    private async Task TryScan()
+    {
+        if (cameraStreamer == null)
+            return;
+
+        if (cameraStreamer.State != CameraStreamer.CameraState.Open)
+            return;
+
+        qrImageSrc = await cameraStreamer.CaptureImage();
+        var result = await DecodeQR();
+        if (result != null)
+        {
+            output = result;
+            await cameraStreamer.CloseCamera();
+        }
+        StateHasChanged();        
+    }
+
+    private async Task CopyOutput()
+    {
+        await JS.InvokeVoidAsync("copyToClipboard", output);
+    }
+}

@@ -1,0 +1,186 @@
+﻿@using System.ComponentModel.DataAnnotations
+@using SmartComponents
+@inject IJSRuntime JS
+
+<MudText Class="mt-8" Typo="Typo.h5">SmartPaste</MudText>
+<MudText>
+    <MudLink Href="https://github.com/dotnet-smartcomponents/smartcomponents/blob/main/docs/smart-paste.md" Target="_blank">SmartPaste</MudLink>
+    button uses OpenAI API to detect the content in the clipboard, then fills out forms automatically.
+</MudText>
+
+<MudDivider Class="my-4"></MudDivider>
+
+<MudText Typo="Typo.h6">Step 1:</MudText>
+<MudText Class="mb-4">Copy text, for example in the sample below.</MudText>
+
+<MudButton Color="Color.Primary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.ContentCopy" OnClick="CopySample">Copy</MudButton>
+@for (int i = 0; i < samples.Count(); i++)
+{
+    var num = i + 1;
+    <MudButton Variant="Variant.Outlined" Color="Color.Secondary" OnClick="() => SetSample(num)">Sample @num</MudButton>
+}
+<MudTextField Class="mt-4" Label="Sample Text" T="string" @bind-Value="sampleText" Variant="Variant.Outlined" AutoGrow Lines="3"></MudTextField>
+
+<MudDivider Class="my-4"></MudDivider>
+
+<MudText Typo="Typo.h6">Step 2:</MudText>
+<MudText Class="mb-4">Try Smart Paste for the form below.</MudText>
+
+<style>
+    .smart-form-default {
+        border-color: #FFA80000;
+    }
+
+    .smart-form-highlight {
+        animation: .5s ease-in-out infinite alternate smart-form-highlight-animation;
+    }
+
+    @@keyFrames smart-form-highlight-animation {
+        from {
+            border-color: #FFA80000;
+        }
+        to {
+            border-color: #FFA800FF;
+        }
+    }
+
+</style>
+
+<EditForm Model="@Address" OnValidSubmit="OnValidSubmit" @onreset="Reset">
+    <DataAnnotationsValidator />
+    <div Class="mb-4">
+        <MudButton Variant="Variant.Filled" ButtonType="ButtonType.Submit" Color="Color.Primary">Submit</MudButton>
+        <MudButton Variant="Variant.Outlined" ButtonType="ButtonType.Reset" Color="Color.Primary">Reset</MudButton>
+        <SmartPasteButton 
+            @onmouseover="MouseOver" @onmouseout="MouseOut"
+            class="mud-button-root mud-button mud-button-outlined mud-button-outlined-warning mud-button-outlined-size-medium mud-ripple">
+            <MudIcon Icon="@Icons.Material.Filled.Lightbulb" Class="mr-4"></MudIcon>
+            Smart Paste
+        </SmartPasteButton>
+    </div>
+    <MudGrid Class="@formClass">
+        <MudItem xs="12" md="6">
+            <MudText Color="Color.Primary">Recipient</MudText>
+            <MudTextField T="string" Label="First name" @bind-Value="Address.FirstName" For="@(() => Address.FirstName)"></MudTextField>
+            <MudTextField T="string" Label="Last name" @bind-Value="Address.LastName" For="@(() => Address.LastName)"></MudTextField>
+            <MudTextField T="string" Label="Phone Number" @bind-Value="Address.Phone" For="@(() => Address.Phone)"></MudTextField>
+        </MudItem>
+        <MudItem xs="12" md="6">
+            <MudText Color="Color.Primary">Address</MudText>
+            <MudTextField T="string" Label="Line 1" @bind-Value="Address.Line1" For="@(() => Address.Line1)"></MudTextField>
+            <MudTextField T="string" Label="Line 2" @bind-Value="Address.Line2" For="@(() => Address.Line2)"></MudTextField>            
+            <MudGrid>
+                <MudItem xs="6">
+                    <MudTextField T="string" Label="City" @bind-Value="Address.City" For="@(() => Address.City)"></MudTextField>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudTextField T="string" Label="State" @bind-Value="Address.State" For="@(() => Address.State)"></MudTextField>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudTextField T="string" Label="Zip" @bind-Value="Address.Zip" For="@(() => Address.Zip)"></MudTextField>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudTextField T="string" Label="Country" @bind-Value="Address.Country" For="@(() => Address.Country)"></MudTextField>
+                </MudItem>
+            </MudGrid>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+
+@code {
+    public AddressData Address { get; set; } = new();
+
+    public class AddressData
+    {
+        [Required]
+        public string? FirstName { get; set; }
+
+        [Required]
+        public string? LastName { get; set; }
+
+        public string? Phone { get; set; }
+
+        [Required]
+        public string? Line1 { get; set; }
+
+        public string? Line2 { get; set; }
+
+        [Required]
+        public string? City { get; set; }
+
+        [Required]
+        public string? State { get; set; }
+
+        public string? Country { get; set; }
+
+        [Required]
+        public string? Zip { get; set; }
+    }
+
+    private void OnValidSubmit(EditContext context)
+    {
+        StateHasChanged();
+    }
+
+    private void Reset()
+    {
+        Address = new();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        sampleText = samples[0];
+    }
+
+    private void SetSample(int sampleNo)
+    {
+        sampleText = samples[sampleNo - 1];
+    }
+
+    private async Task CopySample()
+    {
+        await JS.InvokeVoidAsync("copyToClipboard", sampleText);
+    }
+
+    private string sampleText = "";
+    private List<string> samples = new List<string>()
+    {
+        @"Verónica Ortíz
+PROLONGACION 3A NO109
+EJIDO 20 DE NOVIEMBRE
+Tamaulipas
+Matamoros
+87394
+México
+
+Phone 768.312-5495",
+
+        @"Write to us at:
+        Kidwelly Town Council
+        Council Offices
+        Hillfield Villas
+        Kidwelly
+        Carmarthenshire
+        SA17 4UL
+
+        Telephone: 01554 890203
+        E-mail: towncouncil@kidwelly.gov.uk",
+
+        @"Dr. Akio Yamamoto works for Microsoft at Building 92, which is located at 15010 NE 36th St, Redmond, WA 98052."
+    };
+
+    private bool smartButtonHover = false;
+    private void MouseOver()
+    {
+        smartButtonHover = true;
+        StateHasChanged();
+    }
+    private void MouseOut()
+    {
+        smartButtonHover = false;
+        StateHasChanged();
+    }
+
+    private string formClass => $"pa-4 rounded border-solid border-2 {(smartButtonHover ? "smart-form-highlight" : "smart-form-default")}";
+}

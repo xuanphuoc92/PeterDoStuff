@@ -1,0 +1,14 @@
+﻿@using PeterDoStuff.Graphics.Models
+
+<circle r="@Model.Radius"
+        fill="@Model.Style.FillColor"
+        fill-opacity="@Model.Style.FillOpacity"
+        stroke="@Model.Style.StrokeColor"
+        stroke-opacity="@Model.Style.StrokeOpacity"
+        stroke-width="@Model.Style.StrokeWidth"
+        transform="@Model.SvgTransform" />
+
+@code {
+    [Parameter]
+    public CircleModel Model { get; set; }
+}

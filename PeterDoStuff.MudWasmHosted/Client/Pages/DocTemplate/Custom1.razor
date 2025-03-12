@@ -1,0 +1,444 @@
+﻿@page "/docTemplate/custom1"
+@using PeterDoStuff.Extensions
+@using PeterDoStuff.MudWasmHosted.Client.Extensions
+@using static PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate.DocTemplateController
+@layout EmptyLayout
+@inject IJSRuntime JSRuntime
+
+<PageTitle>@(Model?.Person?.Name ?? "Resume")</PageTitle>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #555555;
+            font-size: 0.88em;
+        }
+
+        h1 {
+            font-size: 2em;
+            margin-block-start: 0.25em;
+            margin-block-end: 0em;
+        }
+
+        h2 {
+            font-size: 1.2em;
+        }
+
+        h3 {
+            font-size: 1em;
+            margin-block-start: 0;
+            margin-block-end: 0;
+        }
+
+        h4 {
+            font-size: 0.95em;
+            margin-block-start: 0;
+            margin-block-end: 0;
+        }
+
+        .sub {
+            font-size: 0.8em;
+        }
+
+        p {
+            margin-block-end: 1em;
+        }
+
+        ul {
+            list-style-type: disc;
+        }
+
+        .header-icon {
+            font-size: 1em;
+            justify-self: flex-end;
+            margin-right: 1em;
+        }
+
+        .title-icon {
+            font-size: 1.25em;
+            margin-right: 0.35em;
+            margin-left: 0.3em;
+        }
+
+        .placeholder-icon {
+            font-size: 2em;
+            color: #AAAAAA;
+        }
+
+        .star-icon {
+            font-size: 1em;
+        }
+
+        page {
+            background: white;
+            display: block;
+            margin: 0 auto;
+            margin-bottom: 0.5cm;
+            width: 21cm;
+            height: 29.7cm;;
+        }
+
+        .header {
+            display: grid;
+            grid-template-columns: auto auto;
+            background-color: #333333;
+            color: #BBBBBB;
+        }
+
+        .header a {
+            color: #BBBBBB;
+            text-decoration: underline;
+        }
+
+        a {
+            text-decoration: underline;
+        }
+
+        .avatar {
+            margin: 25px;
+            grid-area: 1 / 2 / 3 / 2
+        }
+
+        .avatar img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 0.15cm solid #777777;
+            object-fit: cover;
+            object-position: 50% 50%;
+        }
+
+        .title, .sectionTitle {
+            font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        }
+
+        .title {
+            justify-self: center;
+        }
+            
+        .subtitle {
+            margin: 20px;
+        }
+            
+        .subtitleItem {
+            display: grid;
+            grid-template-columns: 40px 150px auto;
+            align-items: center;
+        }
+            
+        .fa {
+            justify-self: center;
+            margin-right: 0.1em;
+        }
+
+        .body {
+            display: grid;
+            grid-template-columns: auto auto;
+        }
+
+        .section {
+            padding-left: 1em;
+            padding-right: 1em;
+        }
+
+        .sectionItem {
+            margin-right: 0.2em;
+        }
+
+        ul {
+            padding-inline-start: 1em;
+        }
+
+        .skillGrid {
+            display: grid;
+            grid-template-columns: 50px 75px auto;
+            padding-block-end: 0.5em;
+        }
+
+        hr {
+            margin-block-start: 0em;
+            margin-block-end: 0em;
+        }
+
+        .entitySection {
+            display: grid;
+            grid-template-columns: auto auto;
+        }
+
+        .entityAvatar {
+            padding-right: 0.2em;
+        }
+
+        .entityAvatar img {
+            width: 30px;
+        }
+
+    </style>
+</head>
+<body>
+    <page size="A4">
+        <div class="header">
+            @if (Model.Person.PhotoType != PhotoType.None)
+            {
+                <div class="avatar">
+                    <img width="150" src="@Model.Person.PhotoSrc()" />
+                </div>
+            }
+            <div class="title"><h1>@Model.Person.Name</h1></div>
+            <div class="subtitle">
+                <div class="subtitleItem">
+                    <MudIcon Icon="@GeneralIcons.GetDictionary()[Model.LocationIcon]" Class="header-icon" />
+                    <span>
+                        @Model.LocationLabel:
+                    </span>
+                    <span>
+                        @Model.Location
+                    </span>
+                </div>
+                <div class="subtitleItem">
+                    <MudIcon Icon="@GeneralIcons.GetDictionary()[Model.PhoneIcon]" Class="header-icon" />
+                    <span>
+                        @Model.PhoneLabel:
+                    </span>
+                    <span>
+                        @Model.PhoneNumber
+                    </span>
+                </div>
+                <div class="subtitleItem">
+                    <MudIcon Icon="@GeneralIcons.GetDictionary()[Model.FluencyIcon]" Class="header-icon" />
+                    <span>
+                        @Model.FluencyLabel:
+                    </span>
+                    <span>
+                        @Model.Fluency
+                    </span>
+                </div>
+                <div class="subtitleItem">
+                    <MudIcon Icon="@GeneralIcons.GetDictionary()[Model.EmailIcon]" Class="header-icon" />
+                    <span>@Model.EmailLabel:</span>
+                    <a href="@($"mailto:{Model.Email}")">
+                        @Model.Email
+                    </a>
+                </div>
+                @for (int i = 0; i < Model.Links.Count; i++)
+                {
+                    var link = Model.Links[i];
+                    <div class="subtitleItem">
+                        <MudIcon Icon="@LinkIcons.GetDictionary()[link.Icon]" Class="header-icon" />
+                        <span>@link.Label:</span>
+                        <a href="@link.Url">
+                            @link.TextOrUrl()
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+        <MudDivider Class="mb-2"/>
+        <div class="body">
+            <div class="section">
+                <div class="sectionTitle">
+                    <h2>
+                        <MudIcon Icon="@GeneralIcons.GetDictionary()[Model.AboutMeIcon]" Class="title-icon" />
+                        @Model.AboutMeLabel
+                    </h2>
+                </div>
+                <div class="sectionItem">
+                    @foreach (var paragraphRef in Model.AboutMe.ToParagraphs())
+                    {
+                        var paragraph = paragraphRef;
+                    <p>@((MarkupString)paragraph.RenderWithBold())</p>
+                    }
+                </div>
+            </div>
+        </div>
+        <MudDivider Class="mb-2" />
+        <div class="body">
+            <div class="section">
+                <div class="sectionTitle">
+                    <h2>
+                        <MudIcon Icon="@GeneralIcons.GetDictionary()[Model.ExperiencesIcon]" Class="title-icon" />
+                        @Model.ExperiencesLabel
+                    </h2>
+                </div>
+                <div class="entitySection">
+                    @foreach (var experienceRef in Model.Experiences)
+                    {
+                        var experience = experienceRef;
+                        <div class="entityAvatar">
+                            @if (experience.Company.PhotoType != PhotoType.None)
+                            {
+                                <img width="50" src="@experience.Company.PhotoSrc()" />
+                            }
+                            else
+                            {
+                                <MudIcon Icon="@Icons.Material.Filled.Work" Class="placeholder-icon" />
+                            }
+                        </div>
+                        <div class="sectionItem">
+                            <h3>@experience.Company.Name</h3>
+                            @foreach (var experienceItemRef in experience.Items)
+                            {
+                                var item = experienceItemRef;
+                                <h4>@item.Position</h4>
+                                <div class="sub">@item.From.MonthYearOrPresent() - @item.To.MonthYearOrPresent()</div>
+                                <p>
+                                    <ul>
+                                        @foreach (var paragraphRef in item.Description.ToParagraphs())
+                                        {
+                                            var paragraph = paragraphRef;
+                                            <li>@((MarkupString)paragraph.RenderWithBold())</li>
+                                        }
+                                    </ul>
+                                </p>
+                            }
+                        </div>  
+                    }
+                </div>
+            </div>
+            <div class="section">
+                <div class="sectionTitle">
+                    <h2>
+                        <MudIcon Icon="@GeneralIcons.GetDictionary()[Model.EducationsIcon]" Class="title-icon" />
+                        @Model.EducationsLabel
+                    </h2>
+                </div>
+                <div class="entitySection">
+                    @foreach (var educationRef in Model.Educations)
+                    {
+                        var education = educationRef ;
+                        <div class="entityAvatar">
+                            @if (education.Institution.PhotoType != PhotoType.None)
+                            {
+                                <img width="50" src="@education.Institution.PhotoSrc()" />
+                            }
+                            else
+                            {
+                                <MudIcon Icon="@Icons.Material.Filled.School" Class="placeholder-icon" />
+                            }
+                        </div>
+                        <div class="sectionItem">
+                            <h3>@education.Institution.Name</h3>
+                            <h4>
+                                @{
+                                    var degreeParagraphs = education.Degree.ToParagraphs();
+                                }
+                                @for (int i = 0; i < degreeParagraphs.Length; i++)
+                                {                                        
+                                    var paragraph = degreeParagraphs[i];
+                                    @if (i > 0)
+                                    {
+                                        <br />
+                                    }
+                                    @paragraph
+                                }
+                            </h4>
+                            <div class="sub">@education.From.MonthYearOrPresent() - @education.To.MonthYearOrPresent()</div>
+                            <p>
+                                <ul>
+                                    @foreach (var paragraphRef in education.Description.ToParagraphs())
+                                    {
+                                        var paragraph = paragraphRef;
+                                        <li>@((MarkupString)paragraph.RenderWithBold())</li>
+                                    }
+                                </ul>
+                            </p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <MudDivider Class="mb-2" />
+        <div class="body">
+            <div class="section">
+                <div class="sectionTitle">
+                    <h2>
+                        <MudIcon Icon="@GeneralIcons.GetDictionary()[Model.SkillsIcon]" Class="title-icon" />
+                        @Model.SkillsLabel
+                    </h2>
+                </div>
+                @foreach (var groupRef in Model.Skills.GroupBy(skill => skill.Group))
+                {
+                    var group = groupRef;
+                    <h3>@group.Key</h3>
+                    <div class="skillGrid">
+                        @foreach (var levelGroupRef in group.GroupBy(skill => skill.Level).OrderByDescending(g => g.Key))
+                        {
+                            var levelGroup = levelGroupRef;
+                            var level = levelGroup.Key;
+                            <h4>
+                                @for (int i = 0; i < level; i++)
+                                {
+                                    <MudIcon Icon="@Icons.Material.Filled.Star" Class="star-icon" />
+                                }
+                            </h4>
+                            <div class="sub">(@Model.SkillLevels[level])</div>
+                            <div>@levelGroup.Select(skill => skill.Name).Join(", ")</div>
+                        }
+                    </div>
+                }
+            </div>
+            @if (Model.Projects.Any() == true)
+            {
+                <div class="section">
+                    <div class="sectionTitle">
+                        <h2>
+                            <MudIcon Icon="@GeneralIcons.GetDictionary()[Model.ProjectIcon]" Class="title-icon" />
+                            @Model.ProjectLabel
+                        </h2>
+                    </div>
+                    @foreach (var projectRef in Model.Projects)
+                    {
+                        var project = projectRef;
+                        <h3>
+                            @project.Name
+                            @if (project.Url.IsNullOrEmpty() == false)
+                            {
+                                <MudIconButton Size="Size.Small"
+                                               Href="@project.Url"
+                                               Target="_blank"
+                                               Icon="@Icons.Material.Filled.ArrowOutward"></MudIconButton>
+                            }
+                        </h3>
+                        <p>
+                            <ul>
+                                @foreach (var paragraphRef in project.Description.ToParagraphs())
+                                {
+                                    var paragraph = paragraphRef;
+                                    <li>@((MarkupString)paragraph.RenderWithBold())</li>
+                                }
+                            </ul>
+                        </p>
+                    }
+                </div>
+            }
+        </div>
+    </page>
+</body>
+</html>
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        // if (firstRender)
+        // {
+        //     await JSRuntime.InvokeVoidAsync("clearLayoutStyle");
+        // }
+    }
+
+    [Parameter]
+    public Resume Model { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Retrieve the serialized model from sessionStorage
+        var json = await JSRuntime.InvokeAsync<string>("sessionStorage.getItem", "resumeModel");
+
+        if (!string.IsNullOrWhiteSpace(json))
+        {
+            Model = json.FromJson<Resume>();
+        }
+    }
+}

@@ -1,0 +1,53 @@
+﻿@using PeterDoStuff.Extensions
+
+<MudText Typo="Typo.h4">
+    Hashing: HMAC-SHA
+</MudText>
+<MudText Class="mb-8">
+    HMAC-SHA Hashing
+    <br />
+    Externally cross-checked with: <MudLink Target="_blank" Href="https://www.devglan.com/online-tools/hmac-sha256-online">devglan.com</MudLink>
+</MudText>
+
+<MudGrid Spacing="1" Class="align-center mb-8">
+    <MudItem xs="1" md="1">
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="OpenInput">Input</MudButton>
+    </MudItem>
+    <MudItem xs="3" md="1" Class="d-flex justify-end">
+        <MudIcon Icon="@Icons.Material.Filled.AddCircle" />
+    </MudItem>
+    <MudItem xs="8" md="3">
+        <MudText Color="Color.Primary">Secret Key</MudText>
+        <ByteArrayTextField AllowUTF8="true" IsBase64Format="@IsBase64Format" @bind-Value="hmacKey" />
+    </MudItem>
+    <MudItem xs="4" md="1" Class="d-flex justify-end">
+        <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
+    </MudItem>
+    <MudItem xs="8" md="6">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="HashHMACSHA256">Hash HMAC-SHA256</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="HashHMACSHA512">Hash HMAC-SHA512</MudButton>
+        <ByteArrayTextField IsBase64Format="@IsBase64Format" @bind-Value="hmacHash" />
+    </MudItem>
+</MudGrid>
+
+@code {
+    [Parameter]
+    public EventCallback<MouseEventArgs> OpenInput { get; set; }
+
+    [Parameter]
+    public bool IsBase64Format { get; set; }
+
+    [Parameter]
+    public byte[] InputByteArray { get; set; }
+
+    private byte[]? hmacKey = "MySecretKey".ToByteArray();
+    private byte[]? hmacHash;
+    private void HashHMACSHA256()
+    {
+        hmacHash = InputByteArray.HashHMACSHA256(hmacKey);
+    }
+    private void HashHMACSHA512()
+    {
+        hmacHash = InputByteArray.HashHMACSHA512(hmacKey);
+    }
+}

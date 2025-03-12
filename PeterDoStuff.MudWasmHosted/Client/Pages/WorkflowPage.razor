@@ -1,0 +1,316 @@
+﻿@page "/workflow"
+@using PeterDoStuff.Extensions
+
+<PlaygroundTitle Page="workflow" />
+
+<MudText Typo="Typo.h5">@SampleWorkflow.Name</MudText>
+
+<MudButton StartIcon="@Icons.Material.Filled.Brightness1" IconColor="@allButtonColor" OnClick="AllButtonClick">@allButtonText</MudButton>
+@code {
+    private bool isOnAll => SampleWorkflow.States.SelectMany(s => s.Events).Any(e => e.On == false);
+    private string allButtonText => isOnAll
+        ? "On All"
+        : "Off All";
+    private Color allButtonColor => isOnAll
+        ? Color.Primary
+        : Color.Default;
+    private void AllButtonClick()
+    {
+        bool input = isOnAll;
+        SampleWorkflow.States.ForEach(s => s.Events.ForEach(e => e.On = input));
+        if (input == false)
+            SampleWorkflow.States.ForEach(s => s.Events.ForEach(e => e.Hover = input));
+    }
+}
+
+<style>
+    .workflowLineSvg {
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+    .workflowPassivePath {
+        stroke: @Colors.Grey.Lighten5;
+        stroke-opacity: 0.1;
+        stroke-width: 0.2rem;
+    }
+    .workflowActivePath {
+        stroke: @Colors.DeepPurple.Accent3;
+        stroke-opacity: 0.8;
+        stroke-width: 0.5rem;
+    }
+    .workflowHighlightPath {
+        stroke: @Colors.Grey.Lighten5;
+        stroke-opacity: 0.5;
+        stroke-dasharray: 5% 95%;
+        stroke-dashoffset: 100%;
+        animation: 1s linear infinite animateLine;
+        stroke-width: 0.5rem;
+    }
+    @@keyframes animateLine {
+        to {
+            stroke-dashoffset: 0;
+        }
+    }
+</style>
+
+@* Waterflow mode *@
+<MudHidden Invert="true" Breakpoint="Breakpoint.MdAndUp">
+    <MudContainer Class="relative mt-8">
+        @foreach (var state in SampleWorkflow.States)
+        {
+            string style = $"left: {state.X}px; top: {state.Y}px;";
+            <MudPaper Width="@($"{itemWidth}px")" Class="absolute z-10" Style="@style">
+                <MudList Clickable="true">
+                    <MudListSubheader Style="@($"height: {itemHeight}px")">
+                        <MudText Color="Color.Primary" Typo="Typo.h6">@state.Name</MudText>
+                    </MudListSubheader>
+                    @foreach (var evt in state.Events)
+                    {
+                        var iconColor = (evt.On || evt.Hover) ? Color.Primary : Color.Default;
+                        <MudListItem Style="@($"height: {itemHeight}px")" 
+                            OnClick="() => ClickOnEvent(evt)" 
+                            @onmouseenter="() => MouseEnterEvent(evt)"
+                            @onmouseleave="() => MouseLeaveEvent(evt)"
+                            IconColor="@iconColor" Icon="@Icons.Material.Filled.Brightness1">
+                            @evt.Name
+                            <MudIcon Icon="@Icons.Material.Filled.ArrowForward"></MudIcon>
+                            @evt.ToStates.Select(s => SampleWorkflow.States[s].Name).Join(", ")
+                        </MudListItem>
+                    }
+                </MudList>
+            </MudPaper>
+        }
+        <svg class="workflowLineSvg" viewBox="0 0 @totalWidth @totalHeight" style="width: @(totalWidth)px; height: @(totalHeight)px;">
+            @foreach (var state in SampleWorkflow.States)
+            {
+                int startX = state.X + itemWidth;
+                foreach (var evt in state.Events)
+                {
+                    int startY = state.Y + itemHeight * (1 + state.Events.IndexOf(evt)) + itemHeight / 2;
+                    string pathClass = (evt.On || evt.Hover) ? "workflowActivePath" : "workflowPassivePath";
+                    foreach (var toStateIdx in evt.ToStates)
+                    {
+                        var toState = SampleWorkflow.States[toStateIdx];
+                        int endX = toState.X + itemWidth / 2;
+                        int endY = toState.Y;
+
+                        string d = (endX > startX)
+                        // Flow down the waterfall:
+                        ? $"M {startX} {startY} l {endX - startX} 0 l 0 {endY - startY}"
+                        // Flow backward the waterfall:
+                        : $"M {startX} {startY} l {backwardSpace} 0 l 0 {endY - startY - backwardSpace} l {endX - startX - backwardSpace} 0 l 0 {backwardSpace}";
+
+                        // Draw the lines:
+                        <path d="@d" fill="none" class="@pathClass"></path>
+
+                        // Draw the highlight when event is on:
+                        if (evt.On || evt.Hover)
+                        {
+                            <path d="@d" fill="none" class="workflowHighlightPath"></path>
+                        }
+                    }
+                }
+            }
+        </svg>
+    </MudContainer>
+</MudHidden>
+
+@* Linear mobile mode *@
+<MudHidden Invert="true" Breakpoint="Breakpoint.SmAndDown">
+    <MudContainer Class="relative mt-8">
+        @foreach (var state in SampleWorkflow.States)
+        {
+            string style = $"left: 0px; top: {state.Y}px;";
+            <MudPaper Width="@($"{itemWidth}px")" Class="absolute z-10" Style="@style">
+                <MudList Clickable="true">
+                    <MudListSubheader Style="@($"height: {itemHeight}px")">
+                        <MudText Color="Color.Primary" Typo="Typo.h6">@state.Name</MudText>
+                    </MudListSubheader>
+                    @foreach (var evt in state.Events)
+                    {
+                        var iconColor = evt.On ? Color.Primary : Color.Default;
+                        <MudListItem Style="@($"height: {itemHeight}px")" OnClick="() => ClickOnEvent(evt)" IconColor="@iconColor" Icon="@Icons.Material.Filled.Brightness1">
+                            @evt.Name
+                            <MudIcon Icon="@Icons.Material.Filled.ArrowForward"></MudIcon>
+                            @evt.ToStates.Select(s => SampleWorkflow.States[s].Name).Join(", ")
+                        </MudListItem>
+                    }
+                </MudList>
+            </MudPaper>
+        }
+        <svg class="workflowLineSvg" viewBox="0 0 @narrowWidth @totalHeight" style="width: @(narrowWidth)px; height: @(totalHeight)px;">
+            @foreach (var state in SampleWorkflow.States)
+            {
+                int startX = itemWidth;
+                foreach (var evt in state.Events)
+                {
+                    int startY = state.Y + itemHeight * (1 + state.Events.IndexOf(evt)) + itemHeight / 2;
+                    string pathClass = evt.On ? "workflowActivePath" : "workflowPassivePath";
+                    foreach (var toStateIdx in evt.ToStates)
+                    {
+                        var toState = SampleWorkflow.States[toStateIdx];
+                        int endX = itemWidth / 2;
+                        int endY = toState.Y;
+
+                        string d = $"M {startX} {startY} l {backwardSpace} 0 l 0 {endY - startY - backwardSpace} l {0 - backwardSpace - itemWidth / 2} 0 l 0 {backwardSpace}";
+                        // Draw the lines:
+                        <path d="@d" fill="none" class="@pathClass"></path>
+
+                        // Draw the highlight when event is on:
+                        if (evt.On)
+                        {
+                            <path d="@d" fill="none" class="workflowHighlightPath"></path>
+                        }
+                    }
+                }
+            }
+        </svg>
+    </MudContainer>
+</MudHidden>
+
+
+@code {
+    private Workflow SampleWorkflow = Workflow
+            .New("Sample Workflow")
+            .StateEvent("Draft", "Submit", "Under Review")
+            .StateEvent("Under Review", "Approve", "Executing")
+            .StateEvent("Under Review", "Reject", "Draft")
+            .StateEvent("Executing", "Complete", "Completed")
+            .StateEvent("Executing", "Return", "Draft", "Under Review")
+            .StateEvent("Executing", "Discard", "Discarded")
+            .StateEvent("Draft", "Discard", "Discarded")
+            .EstablishPositions(width: 360, height: 50, padding: 50, backwardSpace: 20);
+
+    private int itemWidth => SampleWorkflow.ItemWidth;
+    private int itemHeight => SampleWorkflow.ItemHeight;
+    private int padding => SampleWorkflow.Padding;
+    private int backwardSpace => SampleWorkflow.BackwardSpace;
+
+    private int totalWidth => SampleWorkflow.TotalWidth;
+    private int totalHeight => SampleWorkflow.TotalHeight;
+
+    private int narrowWidth => itemWidth + padding;
+
+    private void ClickOnEvent(Event evt)
+    {
+        evt.On = !evt.On;
+        if (evt.On == false)
+            evt.Hover = false;
+    }
+
+    private void MouseEnterEvent (Event evt)
+    {
+        evt.Hover = true;
+    }
+
+    private void MouseLeaveEvent(Event evt)
+    {
+        evt.Hover = false;
+    }
+
+    private class Workflow
+    {
+        public string Name { get; set; }
+        public List<State> States { get; set; } = new List<State>();
+
+        public static Workflow New(string name)
+        {
+            Workflow workflow = new();
+            workflow.Name = name;
+            return workflow;
+        }
+
+        private State GetOrCreate(string stateName)
+        {
+            State? state = States.SingleOrDefault(s => s.Name == stateName);
+            if (state == null)
+            {
+                state = new();
+                state.Name = stateName;
+                States.Add(state);
+            }
+            return state;
+        }
+
+        public Workflow StateEvent(string stateName, string eventName, params string[] toStateNames)
+        {
+            State? state = GetOrCreate(stateName);
+
+            Event? evt = state.Events.SingleOrDefault(e => e.Name == eventName);
+            if (evt == null)
+            {
+                evt = new();
+                evt.Name = eventName;
+                state.Events.Add(evt);
+            }
+
+            foreach (var toStateName in toStateNames)
+            {
+                var toState = GetOrCreate(toStateName);
+                evt.ToStates.Add(States.IndexOf(toState));
+            }
+
+            return this;
+        }
+
+        public int ItemWidth { get; private set; }
+        public int ItemHeight { get; private set; }
+        public int Padding { get; private set; }
+        public int BackwardSpace { get; private set; }
+        public int TotalWidth { get; private set; }
+        public int TotalHeight { get; private set; }
+
+        public Workflow EstablishPositions(int width, int height, int padding, int backwardSpace)
+        {
+            ItemWidth = width;
+            ItemHeight = height;
+            Padding = padding;
+            BackwardSpace = backwardSpace;
+
+            int cursorX = 0;
+            int cursorY = padding; // Give a padding on top
+
+            foreach (var state in this.States)
+            {
+                state.X = cursorX;
+                state.Y = cursorY;
+
+                // To next state in the waterfall: Move the cursor right with the State x width + padding
+                cursorX += 1 * width + padding; 
+                // To next state in the waterfall: Move the cursor down with (the State Title + Events) x height + padding
+                cursorY += (1 + state.Events.Count) * height + padding;
+            }
+
+            // At the end, the cursor acts as the coordinator of the bottom right, forming the size of the whole workflow:
+            TotalWidth = cursorX;
+            TotalHeight = cursorY;
+
+            return this;
+        }
+    }
+
+    private class State
+    {
+        public string Name { get; set; }
+        public List<Event> Events { get; set; } = new List<Event>();
+
+        /// <summary>
+        /// X-Coord of the top left corner
+        /// </summary>
+        public int X { get; set; }
+
+        /// <summary>
+        /// Y-Coord of the top left corner
+        /// </summary>
+        public int Y { get; set; }
+    }
+
+    private class Event
+    {
+        public string Name { get; set; }
+        public List<int> ToStates { get; set; } = new List<int>();
+        public bool On { get; set; }
+        public bool Hover { get; set; }
+    }
+}

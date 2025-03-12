@@ -1,0 +1,23 @@
+﻿<MudPaper Elevation="3" MaxWidth="400">
+    <MudText Color="Color.Primary">
+        @Value.Name
+    </MudText>
+    <MudText Color="@(Value is InputBlock ? Color.Secondary : Color.Default)">
+        @Value.Currency @Value.Value.ToString("#,##0.00")
+    </MudText>
+</MudPaper>
+
+@code {
+    /// <summary>
+    /// Fired when the Value property changes.
+    /// </summary>
+    [Parameter]
+    public EventCallback<Block> ValueChanged { get; set; }
+
+    /// <summary>
+    /// The value of this input element.
+    /// </summary>
+    [Parameter]
+    [Category(CategoryTypes.FormComponent.Data)]
+    public Block Value { get; set; }
+}

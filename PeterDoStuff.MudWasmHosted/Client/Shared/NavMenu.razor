@@ -1,0 +1,17 @@
+﻿<MudNavMenu>
+    <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
+    @foreach (var group in groups)
+    {
+        <MudNavGroup Title="@group.ToString()" Icon="@group.GetIcon()" Expanded="true" >
+            @foreach (var item in items.Where(i => i.Group == group))
+            {
+                <MudNavLink Href="@item.Link" Match="NavLinkMatch.Prefix" Icon="@item.Icon">@item.Title</MudNavLink>
+            }
+        </MudNavGroup>
+    }
+</MudNavMenu>
+
+@code {
+    private List<PlaygroundGroup> groups = new List<PlaygroundGroup>() { PlaygroundGroup.Tools, PlaygroundGroup.Demos, PlaygroundGroup.Games };
+    private List<PlaygroundItem> items = PlaygroundItem.Items;
+}

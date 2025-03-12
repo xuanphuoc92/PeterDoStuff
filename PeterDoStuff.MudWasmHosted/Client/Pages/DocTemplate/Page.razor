@@ -1,0 +1,403 @@
+﻿@page "/docTemplate"
+@using System.Text
+@using PeterDoStuff.Extensions
+@using PeterDoStuff.MudWasmHosted.Client.Extensions
+@using static PeterDoStuff.MudWasmHosted.Client.Pages.DocTemplate.DocTemplateController
+@inject IJSRuntime JS
+
+<PlaygroundTitle Page="docTemplate" />
+
+<MudGrid>
+    <MudItem xs="12" md="6">
+        <MudText Typo="Typo.h5">Step 1: Fill in your profile</MudText>
+        <MudList>
+            <MudListItem>Fill in your profile in the form below.</MudListItem>
+            <MudListItem>Use <b>Save Profile</b> button to save your profile into a JSON file.</MudListItem>
+            <MudListItem>Use <b>Load Profile</b> button to load your profile from the JSON file.</MudListItem>
+        </MudList>
+        <div>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.Download"
+                       OnClick="DownloadJson">
+                Save Profile
+            </MudButton>
+            <MudFileUpload T="IBrowserFile" FilesChanged="UploadJson" Class="ma-0 d-inline pa-1">
+                <ButtonTemplate>
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                               StartIcon="@Icons.Material.Filled.Upload"
+                               for="@context.Id" HtmlTag="label">
+                        Load Profile
+                    </MudButton>
+                </ButtonTemplate>
+            </MudFileUpload>
+        </div>
+        <div class="mt-2">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.CleaningServices"
+                       OnClick="EnglishProfile">
+                Empty English Profile
+            </MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.CleaningServices"
+                       OnClick="VietnameseProfile">
+                Empty Vietnamese Profile
+            </MudButton>
+        </div>
+        <div class="mt-2">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.CleaningServices"
+                       OnClick="SampleEnglishProfile">
+                Sample English Profile
+            </MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.CleaningServices"
+                       OnClick="SampleVietnameseProfile">
+                Sample Vietnamese Profile
+            </MudButton>
+        </div>
+    </MudItem>
+    <MudItem xs="12" md="6">
+        <MudText Typo="Typo.h5">Step 2: Export into template</MudText>
+        <MudList>
+            <MudListItem>Press any of the template buttons below.</MudListItem>
+            <MudListItem>The profile will be loaded and bound in a new page.</MudListItem>
+            <MudListItem>To create PDF file, press <b>Ctrl+P</b>, select <b>Save As PDF</b>, uncheck <b>Header and Foooter</b>.</MudListItem>
+        </MudList>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.ColorLens"
+                   OnClick="OpenClassic">
+            Classic
+        </MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.ColorLens"
+                   OnClick="OpenCustom1">
+            Custom 1
+        </MudButton>
+    </MudItem>
+</MudGrid>
+
+<MudDivider Class="my-2" />
+
+<MudText Typo="Typo.h5">Profile</MudText>
+
+<EditForm Model="@model">
+    <EntityControl Entity="@model.Person" />
+    <MudDivider Class="my-4"/>
+    <MudGrid>
+        <MudItem xs="3" md="1">
+            <IconSelectControl @bind-Value="model.LocationIcon" IconDictionary="GeneralIcons.GetDictionary()" />
+        </MudItem>
+        <MudItem xs="9" md="2">
+            <MudTextField Variant="Variant.Outlined" @bind-Value="model.LocationLabel" For="@(() => model.LocationLabel)" />
+        </MudItem>
+        <MudItem xs="12" md="9">
+            <MudTextField Variant="Variant.Outlined" @bind-Value="model.Location" For="@(() => model.Location)" />
+        </MudItem>
+
+        <MudItem xs="3" md="1">
+            <IconSelectControl @bind-Value="model.PhoneIcon" IconDictionary="GeneralIcons.GetDictionary()" />
+        </MudItem>
+        <MudItem xs="9" md="2">
+            <MudTextField Variant="Variant.Outlined" @bind-Value="model.PhoneLabel" For="@(() => model.PhoneLabel)" />
+        </MudItem>
+        <MudItem xs="12" md="9">
+            <MudTextField Variant="Variant.Outlined" @bind-Value="model.PhoneNumber" For="@(() => model.PhoneNumber)" />
+        </MudItem>
+
+        <MudItem xs="3" md="1">
+            <IconSelectControl @bind-Value="model.FluencyIcon" IconDictionary="GeneralIcons.GetDictionary()" />
+        </MudItem>
+        <MudItem xs="9" md="2">
+            <MudTextField Variant="Variant.Outlined" @bind-Value="model.FluencyLabel" For="@(() => model.FluencyLabel)" />
+        </MudItem>
+        <MudItem xs="12" md="9">
+            <MudTextField Variant="Variant.Outlined" @bind-Value="model.Fluency" For="@(() => model.Fluency)" />
+        </MudItem>
+
+        <MudItem xs="3" md="1">
+            <IconSelectControl @bind-Value="model.EmailIcon" IconDictionary="GeneralIcons.GetDictionary()" />
+        </MudItem>
+        <MudItem xs="9" md="2">
+            <MudTextField Variant="Variant.Outlined" @bind-Value="model.EmailLabel" For="@(() => model.EmailLabel)" />
+        </MudItem>
+        <MudItem xs="12" md="9">
+            <MudTextField Variant="Variant.Outlined" @bind-Value="model.Email" For="@(() => model.Email)" />
+        </MudItem>
+    </MudGrid>
+    <MudText Class="mt-4">Links</MudText>
+    @for(int i = 0; i < model.Links.Count; i++)
+    {
+        var link = model.Links[i];
+        <MudGrid>
+            <MudItem xs="12" md="2">
+                <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete"
+                               OnClick="() => model.Links.Remove(link)"></MudIconButton>
+                <MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.ArrowCircleUp"
+                               OnClick="() => model.Links.MoveUp(link)"></MudIconButton>
+                <MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.ArrowCircleDown"
+                               OnClick="() => model.Links.MoveDown(link)"></MudIconButton>
+            </MudItem>
+            <MudItem xs="12" md="10">
+                <LinkControl Link="@link" />
+            </MudItem>
+        </MudGrid>
+    }
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-2"
+               StartIcon="@Icons.Material.Filled.AddCircleOutline"
+               OnClick="() => model.Links.Add(new())">Link</MudButton>
+
+    <MudGrid>
+        <MudItem xs="3" md="1">
+            <IconSelectControl @bind-Value="model.AboutMeIcon" IconDictionary="GeneralIcons.GetDictionary()" />
+        </MudItem>
+        <MudItem xs="9" md="2">
+            <MudTextField Variant="Variant.Outlined" @bind-Value="model.AboutMeLabel" For="@(() => model.AboutMeLabel)" />
+        </MudItem>
+        <MudItem xs="12" md="9">
+            <MudTextField Variant="Variant.Outlined" Label="AboutMe-Value"
+                          Lines="10"
+                          @bind-Value="model.AboutMe" For="@(() => model.AboutMe)" />
+        </MudItem>
+
+        <MudItem xs="3" md="1">
+            <IconSelectControl @bind-Value="model.ExperiencesIcon" IconDictionary="GeneralIcons.GetDictionary()" />
+        </MudItem>
+        <MudItem xs="9" md="11">
+            <MudTextField Variant="Variant.Outlined" @bind-Value="model.ExperiencesLabel" For="@(() => model.ExperiencesLabel)" />
+        </MudItem>
+    </MudGrid>
+    
+    @for (int i = 0; i < model.Experiences.Count; i++)
+    {
+        var experience = model.Experiences[i];
+        <MudGrid>
+            <MudItem xs="1">
+                <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete"
+                    OnClick="() => model.Experiences.Remove(experience)"></MudIconButton>
+            </MudItem>
+            <MudItem xs="11">
+                <EntityControl Entity="@experience.Company" />
+                @for (int j = 0; j < experience.Items.Count; j++)
+                {
+                    var item = experience.Items[j];
+                    <MudGrid>
+                        <MudItem xs="1">
+                            <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete"
+                                OnClick="() => experience.Items.Remove(item)"></MudIconButton>
+                        </MudItem>
+                        <MudItem xs="11" sm="5">
+                            <MudTextField Variant="Variant.Outlined" Label="Position"
+                                @bind-Value="item.Position" For="@(() => item.Position)" />
+                        </MudItem>
+                        <MudItem xs="6" sm="3">
+                            <MudDatePicker Variant="Variant.Outlined" Label="From" @bind-Date="item.From" />
+                        </MudItem>
+                        <MudItem xs="6" sm="3">
+                            <MudDatePicker Variant="Variant.Outlined" Label="To" @bind-Date="item.To" />
+                        </MudItem>
+                        <MudItem xs="12">
+                            <MudTextField Variant="Variant.Outlined" Label="Description"
+                                Lines="5"
+                                @bind-Value="item.Description" For="@(() => item.Description)" />
+                        </MudItem>
+                    </MudGrid>
+                }
+                <MudIconButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-2"
+                    Icon="@Icons.Material.Filled.Add"
+                    OnClick="() => experience.Items.Add(new())" />
+            </MudItem>
+        </MudGrid>
+    }
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-2"
+        StartIcon="@Icons.Material.Filled.AddCircleOutline" 
+        OnClick="() => model.Experiences.Add(new())">Experience</MudButton>
+
+    <MudGrid>
+        <MudItem xs="3" md="1">
+            <IconSelectControl @bind-Value="model.EducationsIcon" IconDictionary="GeneralIcons.GetDictionary()" />
+        </MudItem>
+        <MudItem xs="9" md="11">
+            <MudTextField Variant="Variant.Outlined" @bind-Value="model.EducationsLabel" For="@(() => model.EducationsLabel)" />
+        </MudItem>
+    </MudGrid>
+
+    @for (int i = 0; i < model.Educations.Count; i++)
+    {
+        var education = model.Educations[i];
+        <MudGrid>
+            <MudItem xs="1">
+                <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete"
+                               OnClick="() => model.Educations.Remove(education)"></MudIconButton>
+            </MudItem>
+            <MudItem xs="11">
+                <MudGrid>
+                    <MudItem xs="12" sm="12">
+                        <EntityControl Entity="@education.Institution" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudTextField Variant="Variant.Outlined" Label="Degree"
+                            Lines="3"
+                            @bind-Value="education.Degree" For="@(() => education.Degree)" />
+                    </MudItem>
+                    <MudItem xs="6" sm="3">
+                        <MudDatePicker Variant="Variant.Outlined" Label="From" @bind-Date="education.From" />
+                    </MudItem>
+                    <MudItem xs="6" sm="3">
+                        <MudDatePicker Variant="Variant.Outlined" Label="To" @bind-Date="education.To" />
+                    </MudItem>
+                    <MudItem xs="12" sm="12">
+                        <MudTextField Variant="Variant.Outlined" Label="Description"
+                            Lines="5"
+                            @bind-Value="education.Description" For="@(() => education.Description)" />
+                    </MudItem>
+                </MudGrid>
+            </MudItem>
+        </MudGrid>
+    }
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-2"
+        StartIcon="@Icons.Material.Filled.AddCircleOutline"
+        OnClick="() => model.Educations.Add(new())">Education</MudButton>
+
+    <MudGrid>
+        <MudItem xs="3" md="1">
+            <IconSelectControl @bind-Value="model.ProjectIcon" IconDictionary="GeneralIcons.GetDictionary()" />
+        </MudItem>
+        <MudItem xs="9" md="11">
+            <MudTextField Variant="Variant.Outlined" @bind-Value="model.ProjectLabel" For="@(() => model.ProjectLabel)" />
+        </MudItem>
+    </MudGrid>
+
+    @for (int i = 0; i < model.Projects.Count; i++)
+    {
+        var project = model.Projects[i];
+        <MudGrid>
+            <MudItem xs="1">
+                <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete"
+                               OnClick="() => model.Projects.Remove(project)"></MudIconButton>
+            </MudItem>
+            <MudItem xs="11">
+                <MudGrid>
+                    <MudItem xs="12" sm="6">
+                        <MudTextField Variant="Variant.Outlined" Label="Name"
+                                      @bind-Value="project.Name" For="@(() => project.Name)" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudTextField Variant="Variant.Outlined" Label="Url"
+                                      @bind-Value="project.Url" For="@(() => project.Url)" />
+                    </MudItem>
+                    <MudItem xs="12">
+                        <MudTextField Variant="Variant.Outlined" Label="Description"
+                                      Lines="5"
+                                      @bind-Value="project.Description" For="@(() => project.Description)" />
+                    </MudItem>
+                </MudGrid>
+            </MudItem>
+        </MudGrid>
+    }
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-2"
+               StartIcon="@Icons.Material.Filled.AddCircleOutline"
+               OnClick="() => model.Projects.Add(new())">Project</MudButton>
+
+    <MudText Class="mt-4">Skill Levels</MudText>
+    @for (int i = model.SkillLevels.Keys.Max(); i >= 1; i--)
+    {
+        var level = i;
+        var description = model.SkillLevels[level];
+        <MudGrid>
+            <MudItem xs="12" sm="3">
+                <MudRating SelectedValue="@level" ReadOnly="true" MaxValue="3" />
+            </MudItem>
+            <MudItem xs="12" sm="9">
+                <MudTextField Variant="Variant.Outlined" Label="Description"
+                    @bind-Value="model.SkillLevels[level]" For="@(() => description)" />
+            </MudItem>
+        </MudGrid>
+    }
+
+    <MudGrid>
+        <MudItem xs="3" md="1">
+            <IconSelectControl @bind-Value="model.SkillsIcon" IconDictionary="GeneralIcons.GetDictionary()" />
+        </MudItem>
+        <MudItem xs="9" md="11">
+            <MudTextField Variant="Variant.Outlined" @bind-Value="model.SkillsLabel" For="@(() => model.SkillsLabel)" />
+        </MudItem>
+    </MudGrid>
+    @for (int i = 0; i < model.Skills.Count; i++)
+    {
+        var level = i;
+        var skill = model.Skills[i];
+        <MudGrid>
+            <MudItem xs="12" sm="1">
+                <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete"
+                               OnClick="() => model.Skills.Remove(skill)"></MudIconButton>
+            </MudItem>
+            <MudItem xs="6" sm="2">
+                <MudTextField Variant="Variant.Outlined" Label="Group"
+                    @bind-Value="skill.Group" For="@(() => skill.Group)" />
+            </MudItem>
+            <MudItem xs="6" sm="9">
+                <MudTextField Variant="Variant.Outlined" Label="Name"
+                    @bind-Value="skill.Name" For="@(() => skill.Name)" />
+                <MudRating @bind-SelectedValue="skill.Level" MaxValue="3" />
+            </MudItem>
+        </MudGrid>
+    }
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-2"
+        StartIcon="@Icons.Material.Filled.AddCircleOutline"
+        OnClick="() => model.Skills.Add(new())">Skill</MudButton>
+</EditForm>
+
+@code {
+    private Resume model = new();
+
+    private async Task DownloadJson()
+    {
+        await JS.DownloadJson(
+            obj: model,
+            fileName: (model.Person.Name ?? "") + " Profile"
+        );
+    }
+
+    private async Task UploadJson(IBrowserFile file)
+    {
+        using MemoryStream inputFileStream = new MemoryStream();
+        await file.OpenReadStream(file.Size).CopyToAsync(inputFileStream);
+        inputFileStream.Position = 0;
+        using StreamReader reader = new StreamReader(inputFileStream, Encoding.UTF8);
+        string json = reader.ReadToEnd();
+        model = json.FromJson<Resume>();
+    }
+
+    private void EnglishProfile()
+    {
+        model = new();
+    }
+
+    private void VietnameseProfile()
+    {
+        model = DocTemplateController.VietnameseProfile();
+    }
+
+    private void SampleEnglishProfile()
+    {
+        model = DocTemplateController.SampleProfile();
+    }
+
+    private void SampleVietnameseProfile()
+    {
+        model = DocTemplateController.SampleVietnameseProfile();
+    }
+
+    private Task OpenCustom1() => OpenTemplate("custom1");
+    private Task OpenClassic() => OpenTemplate("classic");
+
+    private async Task OpenTemplate(string templatePage)
+    {
+        // Save the model in sessionStorage
+        await JS.InvokeVoidAsync("sessionStorage.setItem", "resumeModel", model.ToJson());
+
+        // Open the new tab
+        var url = $"/docTemplate/{templatePage}";
+        await JS.InvokeVoidAsync("window.open", url, "_blank");
+    }
+}

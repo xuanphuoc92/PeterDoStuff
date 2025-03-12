@@ -1,0 +1,1 @@
+﻿-- WARNING - Altering column: ALTER TABLE [__TestTable__] ALTER COLUMN [Description] int; -- From: [Description] nvarchar(max)

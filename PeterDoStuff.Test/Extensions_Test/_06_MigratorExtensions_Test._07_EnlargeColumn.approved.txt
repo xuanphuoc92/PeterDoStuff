@@ -1,0 +1,2 @@
+﻿ALTER TABLE [__TestTable__] ALTER COLUMN [NewStringColumn] nvarchar(120); -- From: [NewStringColumn] nvarchar(100)
+ALTER TABLE [__TestTable__] ALTER COLUMN [NewDecimalColumn] decimal(19,4); -- From: [NewDecimalColumn] decimal(18,2)

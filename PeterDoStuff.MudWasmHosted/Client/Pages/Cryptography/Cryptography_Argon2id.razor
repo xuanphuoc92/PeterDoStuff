@@ -1,0 +1,107 @@
+﻿@using PeterDoStuff.Extensions
+@using PeterDoStuff.MudWasmHosted.Client.Api
+@using PeterDoStuff.MudWasmHosted.Client.Extensions
+@using PeterDoStuff.MudWasmHosted.Shared
+@using System.Diagnostics
+@inject HttpClient Http
+
+<MudText Typo="Typo.h4">
+    Hashing: Argon2id
+</MudText>
+<MudText Class="mb-8">
+    Argon2id Password Hashing
+    <br />
+    Default config: @SecurityExtensions.DEFAULT_ITERATIONS Iterations, @SecurityExtensions.DEFAULT_MEMORY_SIZE Memory Size, @SecurityExtensions.DEFAULT_DEGREE_OF_PARALLELISM Parallelism Factor, @SecurityExtensions.DEFAULT_HASH_LENGTH Hash Length
+    <br />
+    Quick config: 2 Iterations, 16 Memory Size, 1 Parallelism Factor, 16 Hash Length
+    <br />
+    Externally cross-checked with: <MudLink Target="_blank" Href="https://argon2.online/">Argon2.online</MudLink>
+</MudText>
+
+<MudGrid Spacing="1" Class="align-center mb-8">
+    <MudItem xs="1" md="1">
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="OpenInput">Input</MudButton>
+    </MudItem>
+    <MudItem xs="3" md="1" Class="d-flex justify-end">
+        <MudIcon Icon="@Icons.Material.Filled.AddCircle" />
+    </MudItem>
+    <MudItem xs="8" md="3">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateArgon2idSalt">Generate Random Salt</MudButton>
+        <ByteArrayTextField AllowUTF8="true" IsBase64Format="@IsBase64Format" @bind-Value="argon2idSalt" />
+    </MudItem>
+    <MudItem xs="4" md="1" Class="d-flex justify-end">
+        <MudIcon Icon="@Icons.Material.Filled.DoubleArrow" />
+    </MudItem>
+    <MudItem xs="8" md="6">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="HashArgon2idServer" StartIcon="@ServerIcon">Hash</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="HashArgon2idQuick" StartIcon="@ServerIcon">Hash (Quick)</MudButton>
+        @* <MudButton Variant="Variant.Filled" Color="Color.Info" OnClick="HashArgon2idClient">Hash at Client (FREEZE)</MudButton> *@
+        @if (argon2idHashTime != null)
+        {
+            <br />
+            <MudText Typo="Typo.caption">@argon2idHashTime</MudText>
+        }
+        <ByteArrayTextField IsBase64Format="@IsBase64Format" @bind-Value="argon2idHash" />
+    </MudItem>
+</MudGrid>
+
+@code {
+    [Parameter]
+    public EventCallback<MouseEventArgs> OpenInput { get; set; }
+
+    [Parameter]
+    public bool IsBase64Format { get; set; }
+
+    [Parameter]
+    public byte[] InputByteArray { get; set; }
+
+    [Parameter]
+    public string ServerIcon { get; set; }
+
+    [Parameter]
+    public Func<string, Task> ShowError { get; set; }
+
+    private byte[]? argon2idSalt, argon2idHash;
+    private string? argon2idHashTime;
+    private void GenerateArgon2idSalt()
+    {
+        argon2idSalt = SecurityExtensions.GenerateSalt();
+    }
+    private void HashArgon2idClient() // will throw error and freeze
+    {
+        argon2idHash = InputByteArray
+            .HashArgon2id(argon2idSalt);
+    }
+    private async Task HashArgon2idServer()
+    {
+        try
+        {
+            Stopwatch sw = Stopwatch.StartNew();
+            argon2idHash = await Http
+                .As<CryptographyClient>()
+                .HashArgon2id(new Argon2idBody(InputByteArray, argon2idSalt));
+            sw.Stop();
+            argon2idHashTime = $"{sw.ElapsedMilliseconds} ms";
+        }
+        catch (ApiException ex)
+        {
+            await ShowError(ex.Message);
+        }
+    }
+    private async Task HashArgon2idQuick()
+    {
+        try
+        {
+            Stopwatch sw = Stopwatch.StartNew();
+            argon2idHash = await Http
+                .As<CryptographyClient>()
+                .HashArgon2idQuick(new Argon2idBody(InputByteArray, argon2idSalt));
+            sw.Stop();
+            argon2idHashTime = $"{sw.ElapsedMilliseconds} ms";
+        } 
+        catch (ApiException ex)
+        {
+            await ShowError(ex.Message);
+        }
+    }
+}

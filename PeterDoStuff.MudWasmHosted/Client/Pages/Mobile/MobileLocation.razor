@@ -1,0 +1,103 @@
+﻿@using PeterDoStuff.MudWasmHosted.Client.Api
+@using PeterDoStuff.MudWasmHosted.Client.Extensions
+@using PeterDoStuff.Extensions
+@inject IJSRuntime JS
+@inject HttpClient Http
+
+<MudButton Variant="Variant.Filled" Color="Color.Primary"
+           StartIcon="@(locationInProgress == false ? Icons.Material.Filled.LocationOn : null)"
+           OnClick="GetLocation">
+    @if (locationInProgress)
+    {
+        <MudProgressCircular Color="Color.Default" Size="Size.Small" Indeterminate="true" />
+    }
+    else
+    {
+        <div>Get Location</div>
+    }
+</MudButton>
+
+@if (locationBlocked != "")
+{
+    <MudText Class="mb-8" Color="Color.Error">
+        Location blocked. Check the Console Error for more info. @locationBlocked
+    </MudText>
+}
+
+<MudText Class="mb-8">Longitude: @longitude</MudText>
+<MudText Class="mb-8">Latitude: @latitude</MudText>
+
+@if (mapAvailable)
+{
+    <script src="@googleMapApi" defer></script>
+    <div id="@mapDivId" style="@mapDivStyle"></div>
+}
+else
+{
+    <MudText Color="Color.Error">Map is not available. Please set the Environment Variable GoogleMapApi in your Azure portal.</MudText>
+}
+
+@code {
+    private double longitude, latitude;
+    private string locationBlocked = "";
+    private bool locationInProgress = false;
+
+    private async Task GetLocation()
+    {
+        locationInProgress = true;
+        await Task.Delay(200);
+        try
+        {
+            // Call JavaScript function to get location coordinates
+            var location = await JS.InvokeAsync<IDictionary<string, double>>("getLocationCoordinates");
+            longitude = location["longitude"];
+            latitude = location["latitude"];
+            locationBlocked = "";
+            locationInProgress = false;
+            await ShowMap(longitude, latitude);
+        }
+        catch (Exception ex)
+        {
+            // Handle JavaScript interop exception
+            Console.WriteLine($"JavaScript interop exception: {ex.Message}");
+            locationBlocked = $"{ex.GetType()}: {ex.Message}";
+            locationInProgress = false;
+        }
+    }
+
+    private string mapDivId = "map";
+    private string mapDivStyle = "display: none";
+    private string mapInteropMethod = "loadMapWithMarker";
+    private string googleMapApi;
+    private bool mapAvailable = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        try
+        {
+            var googleMapApiKey = await Http
+                .As<EnvironmentClient>()
+                .Get("GoogleMapApi");
+            if (googleMapApiKey.IsNullOrEmpty() == false)
+            {
+                googleMapApi = $"https://maps.googleapis.com/maps/api/js?key={googleMapApiKey}&callback={mapInteropMethod}";
+                mapAvailable = true;
+            }
+        }
+        catch (ApiException ex)
+        {
+            mapAvailable = false;
+        }
+    }
+
+    private async Task ShowMap(double longitude, double latitude)
+    {
+        if (mapAvailable == false)
+            return;
+
+        mapDivStyle = "height: 400px;";
+        await JS.InvokeVoidAsync(mapInteropMethod, mapDivId, latitude, longitude);
+    }
+}

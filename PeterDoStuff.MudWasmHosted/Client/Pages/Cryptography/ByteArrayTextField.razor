@@ -1,0 +1,77 @@
+﻿@using PeterDoStuff.Extensions
+
+@if (AllowUTF8)
+{
+    <MudTextField T="byte[]" Variant="Variant.Outlined" AutoGrow Lines="1"
+        Label="UTF8 Format"
+        Value="@Value" ValueChanged="@ValueChanged"
+        Converter="@utf8Converter" />
+}
+
+<MudTextField T="byte[]" Variant="Variant.Outlined" AutoGrow Lines="1" 
+    Disabled="Disabled"
+    Label="@Label"
+    AdornmentColor="@AdornmentColor" AdornmentText="@AdornmentText" Adornment="Adornment.Start" 
+    Converter="@converter"
+    Value="@Value" ValueChanged="@ValueChanged" />
+
+ @code {
+    /// <summary>
+    /// The value of the byte array
+    /// </summary>
+    [Parameter]
+    public byte[] Value { get; set; }
+
+    /// <summary>
+    /// Fired when byte array value changed
+    /// </summary>
+    [Parameter]
+    public EventCallback<byte[]> ValueChanged { get; set; }
+
+    /// <summary>
+    /// Present the byte array as Base64 Format. If false, present as Hex Format.
+    /// </summary>
+    [Parameter]
+    public bool IsBase64Format { get; set; }
+
+    /// <summary>
+    /// If true, the input element is disabled.
+    /// </summary>
+    [Parameter]
+    public bool Disabled { get; set; } = false;
+
+    /// <summary>
+    /// Label of the text field
+    /// </summary>
+    [Parameter]
+    public string Label { get; set; }
+
+    /// <summary>
+    /// Allow UTF8 Input and Presentation
+    /// </summary>
+    [Parameter]
+    public bool AllowUTF8 { get; set; } = false;
+
+    private Color AdornmentColor => IsBase64Format ? Color.Success : Color.Info;
+    private string AdornmentText => IsBase64Format ? "B64" : "HEX";
+
+    private Converter<byte[]> converter => IsBase64Format ? base64Converter : hexConverter;
+    private Converter<byte[]> base64Converter = new Converter<byte[]>()
+    {
+        SetFunc = value => value?.ToBase64String(),
+        GetFunc = text => text?.ToByteArrayAsBase64String()
+    };
+    private Converter<byte[]> hexConverter = new Converter<byte[]>()
+    {
+        SetFunc = value => value?.ToHexString(),
+        GetFunc = text => text?.ToByteArrayAsHexString()
+    };
+    private Converter<byte[]> utf8Converter = new Converter<byte[]>()
+    {
+        SetFunc = value => {
+            try { return value?.ToUTF8String(); }
+            catch { return "Unable to turn to UTF8String"; }
+        },
+        GetFunc = text => text?.ToByteArray()
+    };
+}

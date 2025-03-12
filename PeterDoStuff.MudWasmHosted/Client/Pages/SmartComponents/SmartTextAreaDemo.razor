@@ -1,0 +1,131 @@
+﻿@using System.ComponentModel.DataAnnotations
+@using PeterDoStuff.Extensions
+@using PeterDoStuff.MudWasmHosted.Client.Api
+@using PeterDoStuff.MudWasmHosted.Client.Extensions
+@using SmartComponents
+@inject IJSRuntime JS
+@inject HttpClient Http
+
+<MudText Class="mt-8" Typo="Typo.h5">SmartTextArea</MudText>
+<MudText>
+    <MudLink Href="https://github.com/dotnet-smartcomponents/smartcomponents/blob/main/docs/smart-textarea.md" Target="_blank">SmartTextArea</MudLink>
+    uses OpenAI API to figure how it should autocomplete the sentences using the scenario and tones/phrases/policies/URLs predefined.
+    </MudText>
+
+<MudDivider Class="my-4"></MudDivider>
+
+<MudText Typo="Typo.h6">Step 1:</MudText>
+<MudText Class="mb-4">Choose and update the scenario as below.</MudText>
+
+@for (int i = 0; i < Samples.Count(); i++)
+{
+    var num = i + 1;
+    <MudButton Variant="Variant.Outlined" Color="Color.Secondary" OnClick="() => SetSample(num)">Sample @num</MudButton>
+}
+
+<MudTextField T="string" Label="I am acting as" Variant="Variant.Outlined" @bind-Value="userRole"></MudTextField>
+<MudTextField T="string" Label="My usual phrases as below (separated with new lines)" 
+    Variant="Variant.Outlined" 
+    @bind-Value="userPhrases"
+    AutoGrow Lines="3"></MudTextField>
+
+<MudDivider Class="my-4"/>
+
+<MudText Typo="Typo.h6">Step 2:</MudText>
+<MudText Class="mb-4">Draft the response in the Smart Text Box below.</MudText>
+
+@if (textAreaEnabled)
+{
+    <form>
+        @* <MudTextField T="string" Variant="Variant.Outlined"
+        @bind-Value="comment" 
+        Label="Response" Placeholder="Type your response here..."        
+        AutoGrow Lines="3"></MudTextField> *@
+
+        <div class="mud-input-control mud-input-input-control">
+            <div class="mud-input-control-input-container">
+                <div class="mud-input mud-input-outlined mud-shrink">
+                    <SmartTextArea 
+                    style="height: 150px;"
+                    class="mud-input-slot mud-input-root mud-input-root-outlined"
+                    UserRole="@userRole"
+                    UserPhrases="@userPhrases.Split(Environment.NewLine)" @bind-Value="@comment"
+                    placeholder="Type your response here..." />
+                    <div class="mud-input-outlined-border"></div>
+                </div>
+                <label 
+                class="mud-input-label mud-input-label-animated mud-input-label-outlined mud-input-label-inputcontrol" 
+                >Response</label>
+            </div>
+        </div>
+
+    </form>
+}
+else
+{
+    <MudText Color="Color.Secondary">SmartTextArea is currently disabled. Remove or set the value to false for the Environment Variable with key <b>DisableSmartTextArea</b> from Azure Portal.</MudText>
+}
+
+@code {
+    private string? comment;
+    private string userRole;
+    private string userPhrases;
+
+    private void SetSample(int sampleNo)
+    {
+        int index = sampleNo - 1;
+        userRole = Samples[index].Role;
+        userPhrases = Samples[index].Phrases.JoinLines();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        SetSample(1);
+
+        try
+        {
+            textAreaEnabled = (await Http
+                .As<EnvironmentClient>()
+                .Get("DisableSmartTextArea")) == "true" ? false : true;
+        }
+        catch (ApiException ex)
+        {
+            textAreaEnabled = false;
+        }
+    }
+
+    private bool textAreaEnabled = false;
+
+    private class SampleTemplate
+    {
+        public string Role { get; set; }
+        public string[] Phrases { get; set; }
+    }
+
+    private readonly SampleTemplate[] Samples = [
+        new () {
+            Role = "HR administrator replying to an employee enquiry",
+            Phrases = [
+                "Thank you for your message.",
+                "Full-time employees have 28 days paid vacation per year.",
+                "We have no further information about the company sale at this time.",
+                "We always welcome your feedback about this system. Please fill out our survey at https://example.com/hrsurvey",
+                "Full details about the vacation policy can be found at https://example.com/policies/vacation",
+                "Information about the company car scheme is at https://example.com/benefits/car",
+                "Pets are not allowed in the office, as detailed at https://example.com/policies/pets.",
+                "If you have further questions, you can always email us at hr@example.com or ask your manager.",
+                "Could you provide further details about NEED_INFO",
+            ]
+        },
+        new () {
+            Role = "Technician investigating a down-time incident",
+            Phrases = [
+                "Thank you for your message.",
+                "Please let us know the time the incident started to happen or is suspected to happen.",
+                "Please contact the Facility Management side to retrieve and provide us the logs in server SERVERABC001 at path D:\\Logs\\ABC_System\\.",
+                "Please contact the Admin side to check the dashboard at https://abc.system.com/admin_dashboard and query for any abnormal behaviour, especially during the time the incident started.",
+            ]
+        }
+    ];
+}

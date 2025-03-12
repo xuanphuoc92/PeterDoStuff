@@ -1,0 +1,33 @@
+﻿@inject IJSRuntime JS
+
+<CameraStreamer @ref="cameraStreamer" VideoElementId="@videoElementId" OnCaptureImage="CaptureImage" ShowCapture="true" />
+
+<br />
+<br />
+
+<video id="@videoElementId" autoplay="autoplay" style="width: 360px; height: auto;"></video>
+
+<br />
+<br />
+
+
+@if (imgSrc != null)
+{
+    <img src="@imgSrc" style="width: 360px; height: auto;" />
+}
+
+<br />
+<br />
+
+@code {
+    private CameraStreamer cameraStreamer;
+
+    private string videoElementId = "videoElement";
+
+    private string imgSrc = null;
+
+    private void CaptureImage(string capturedImageSrc)
+    {
+        imgSrc = capturedImageSrc;
+    }
+}

@@ -1,0 +1,50 @@
+﻿@using System.Text
+@using PeterDoStuff.Graphics.Models
+
+<path d="@D"
+      stroke="@Model.Style.StrokeColor"
+      stroke-opacity="@Model.Style.StrokeOpacity"
+      stroke-width="@Model.Style.StrokeWidth"
+      fill="@Model.Style.FillColor"
+      fill-opacity="@Model.Style.FillOpacity" />
+
+@code {
+    [Parameter]
+    public CurveModel Model { get; set; }
+
+    private string D
+    {
+        get
+        {
+            if (Model.Points.Count < 2) return ""; // Need at least 2 points
+
+            var sb = new StringBuilder();
+            sb.Append($"M {Model.Points[0].X} {Model.Points[0].Y} ");
+
+            for (int i = 0; i < Model.Points.Count - 1; i++)
+            {
+                // Handle endpoints
+                var p0 = i == 0 ? Model.Points[i] : Model.Points[i - 1];
+                var p1 = Model.Points[i];
+                var p2 = Model.Points[i + 1];
+                var p3 = i + 2 < Model.Points.Count ? Model.Points[i + 2] : Model.Points[i + 1];
+
+                // Calculate control points
+                var c1x = p1.X + (p2.X - p0.X) / 6.0;
+                var c1y = p1.Y + (p2.Y - p0.Y) / 6.0;
+                var c2x = p2.X - (p3.X - p1.X) / 6.0;
+                var c2y = p2.Y - (p3.Y - p1.Y) / 6.0;
+
+                // Add cubic Bézier curve
+                sb.Append($"C {c1x} {c1y}, {c2x} {c2y}, {p2.X} {p2.Y} ");
+            }
+
+            if (Model.IsClosed)
+            {
+                sb.Append($"Z");
+            }
+
+            return sb.ToString().Trim();
+        }
+    }
+}

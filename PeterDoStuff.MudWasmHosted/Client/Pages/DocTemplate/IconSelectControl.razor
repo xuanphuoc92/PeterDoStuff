@@ -1,0 +1,28 @@
+﻿<MudSelect Variant="Variant.Outlined" Value="@Value" ValueChanged="@ValueChanged">
+    @foreach (var kv in IconDictionary)
+    {
+        var key = kv.Key;
+        var value = kv.Value;
+        <MudSelectItem Value="key">
+            <MudIcon Icon="@value" />
+        </MudSelectItem>
+    }
+</MudSelect>
+
+@code {
+    [Parameter]
+    public Dictionary<string, string> IconDictionary { get; set; } = [];
+
+    /// <summary>
+    /// Fired when the Value property changes.
+    /// </summary>
+    [Parameter]
+    public EventCallback<string> ValueChanged { get; set; }
+
+    /// <summary>
+    /// The value of this input element.
+    /// </summary>
+    [Parameter]
+    [Category(CategoryTypes.FormComponent.Data)]
+    public string Value { get; set; }
+}

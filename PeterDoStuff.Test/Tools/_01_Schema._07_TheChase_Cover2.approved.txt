@@ -1,0 +1,59 @@
+﻿Schema: A, B, C
+Dependencies:
+A -> B
+B -> C
+Decomposition 1: A
+Decomposition 2: B, C
+======================================================================
+Intersect of Decompositions: 
+Chase Dependencies (Intesect ->> Decomposition except Intersect):
+ ->> A
+ ->> B, C
+======================================================================
+Chase Depedency 1:  ->> A
+Step 1: Initialize table with 2 rows of distinct values
+A  | B  | C 
+------------
+a1 | b1 | c1
+a2 | b2 | c2
+
+Step 2: For each attribute in Left (), make their values the same
+A  | B  | C 
+------------
+a1 | b1 | c1
+a2 | b2 | c2
+
+Step 3: Check each dependency and update table until table satisifies all dependencies
+> Check dependency A -> B:
+Satisfied
+> Check dependency B -> C:
+Satisfied
+Table satisifes all dependencies. End step 3.
+
+Step 4: Check if table satisfies the chase depedency  ->> A
+Not Satisfied
+The decomposition is Lossy
+======================================================================
+Chase Depedency 2:  ->> B, C
+Step 1: Initialize table with 2 rows of distinct values
+A  | B  | C 
+------------
+a1 | b1 | c1
+a2 | b2 | c2
+
+Step 2: For each attribute in Left (), make their values the same
+A  | B  | C 
+------------
+a1 | b1 | c1
+a2 | b2 | c2
+
+Step 3: Check each dependency and update table until table satisifies all dependencies
+> Check dependency A -> B:
+Satisfied
+> Check dependency B -> C:
+Satisfied
+Table satisifes all dependencies. End step 3.
+
+Step 4: Check if table satisfies the chase depedency  ->> B, C
+Not Satisfied
+The decomposition is Lossy

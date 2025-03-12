@@ -1,0 +1,116 @@
+﻿@page "/snake"
+@using PeterDoStuff.Games.Snake
+@inject IJSRuntime JS
+
+<PlaygroundTitle Page="snake" />
+
+<MudButton OnClick="Replay" Class="mr-4 mb-4" Variant="Variant.Outlined" Color="Color.Primary">Replay</MudButton>
+@if (isPlaying)
+{
+    <MudButton OnClick="Pause" Class="mr-4 mb-4" StartIcon="@Icons.Material.Filled.Pause" Variant="Variant.Outlined" Color="Color.Secondary">Pause</MudButton>
+}
+else
+{
+    <MudButton OnClick="Resume" Class="mr-4 mb-4" StartIcon="@Icons.Material.Filled.PlayArrow" Variant="Variant.Outlined" Color="Color.Success">Resume</MudButton>
+}
+
+<style>
+    .cellContainer
+    .emptyCell, 
+    .occupiedCell {
+        width: 10px;
+        height: 10px;
+    }
+
+    .cellContainer {
+        background-color: @Colors.Grey.Darken4;
+    }
+
+    .emptyCell {
+        background-color: @Colors.DeepPurple.Default;
+        opacity: 0;
+        transition: opacity .1s ease-in-out;
+    }
+    .occupiedCell {
+        background-color: @Colors.DeepPurple.Default;
+        opacity: 1;
+        transition: opacity .1s ease-in-out;
+    }
+</style>
+
+@for (int y = 0; y < Game.Height; y++)
+{
+    <div class="d-flex">
+        @for (int x = 0; x < Game.Width; x++)
+        {
+            var cell = Game.Cells[(x, y)];
+            var cellClass = cell.State == CellState.Empty ? "emptyCell"  : "occupiedCell";
+            <div class="cellContainer"><div class="@cellClass"></div></div>
+        }
+    </div>    
+}
+
+@code {
+    private Game Game = new Game(80, 60, 5);
+
+    private bool isPlaying = true;
+    private Timer Timer;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Timer = new Timer(Tick, null, 0, 100);
+    }
+
+    private void Replay()
+    {
+        Game = new Game(80, 60, 5);
+        isPlaying = true;
+    }
+
+    private void Pause()
+    {
+        isPlaying = false;
+    }
+
+    private void Resume()
+    {
+        isPlaying = true;
+    }
+
+    private void Tick(object? _ = null)
+    {
+        if (isPlaying == false || Game.State != GameState.Playing) return;
+        Game.Step();
+        InvokeAsync(StateHasChanged);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("keyDownFunction", DotNetObjectReference.Create(this), "KeyboardEventHandler");
+            await JS.InvokeVoidAsync("swipeDetection", DotNetObjectReference.Create(this), "SwipeEventHandler");
+        }
+    }
+
+    [JSInvokable]
+    public void KeyboardEventHandler(string key)
+    {
+        if (key == "ArrowDown") Game.Down();
+        if (key == "ArrowUp") Game.Up();
+        if (key == "ArrowRight") Game.Right();
+        if (key == "ArrowLeft") Game.Left();
+        // InvokeAsync(StateHasChanged);
+    }
+
+    [JSInvokable]
+    public void SwipeEventHandler(string swipe)
+    {
+        if (swipe == "down") Game.Down();
+        if (swipe == "up") Game.Up();
+        if (swipe == "right") Game.Right();
+        if (swipe == "left") Game.Left();
+        // InvokeAsync(StateHasChanged);
+    }
+}
