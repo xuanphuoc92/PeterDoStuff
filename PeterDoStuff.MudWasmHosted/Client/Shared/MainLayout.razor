@@ -1,6 +1,6 @@
 ﻿@inherits LayoutComponentBase
 
-<MudThemeProvider IsDarkMode="true" />
+<MudThemeProvider IsDarkMode="DarkMode" />
 <MudDialogProvider />
 <MudSnackbarProvider />
 
@@ -15,6 +15,7 @@
             </MudLink>
         </MudTooltip>
         <MudSpacer />
+        <MudIconButton Icon="@DarkModeIcon" Color="Color.Inherit" OnClick="SwitchDarkMode" />
         <MudTooltip Text="Repository" Color="Color.Primary" Placement="Placement.Bottom">
             <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Href="https://github.com/xuanphuoc92/PeterDoStuff" Target="_blank" />
         </MudTooltip>
@@ -39,4 +40,10 @@
     {
         _drawerOpen = !_drawerOpen;
     }
+    
+    bool DarkMode = true;
+
+    string DarkModeIcon => DarkMode ? Icons.Material.Filled.Brightness4 : Icons.Material.Filled.BrightnessHigh;
+
+    private void SwitchDarkMode() => DarkMode = !DarkMode;
 }

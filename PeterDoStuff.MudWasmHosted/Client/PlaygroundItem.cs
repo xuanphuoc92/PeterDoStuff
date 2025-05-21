@@ -68,7 +68,7 @@ namespace PeterDoStuff.MudWasmHosted.Client
         {
             return group switch
             {
-                PlaygroundGroup.Tools => Colors.DeepPurple.Default,
+                PlaygroundGroup.Tools => "#7E6FFF",
                 PlaygroundGroup.Demos => Colors.Teal.Default,
                 PlaygroundGroup.Games => Colors.Amber.Darken4,
                 _ => Colors.Pink.Default,
