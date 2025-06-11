@@ -21,16 +21,16 @@ namespace PeterDoStuff.MudWasmHosted.Client
 
         public static readonly List<PlaygroundItem> Items = new List<PlaygroundItem>()
         {
-            new(PlaygroundGroup.Demos, "authDemo", Icons.Material.Filled.People, "Auth Demo", "This page demonstrates different forms of Authentications."),
-            new(PlaygroundGroup.Tools, "myFinance", Icons.Material.Filled.AttachMoney, "My Finance", "This page demonstrates the tools to manage your Finance."),
+            //new(PlaygroundGroup.Demos, "authDemo", Icons.Material.Filled.People, "Auth Demo", "This page demonstrates different forms of Authentications."),
+            //new(PlaygroundGroup.Tools, "myFinance", Icons.Material.Filled.AttachMoney, "My Finance", "This page demonstrates the tools to manage your Finance."),
             new(PlaygroundGroup.Tools, "estimator", Icons.Material.Filled.Balance, "Estimator", "This page demonstrates the tools to support Estimating."),
-            new(PlaygroundGroup.Tools, "schemaTools", Icons.Material.Filled.Schema, "Schema Tools", "This page demonstrates the tools for schema designing."),
+            //new(PlaygroundGroup.Tools, "schemaTools", Icons.Material.Filled.Schema, "Schema Tools", "This page demonstrates the tools for schema designing."),
             new(PlaygroundGroup.Demos, "svg", @Icons.Custom.Uncategorized.Fish, "SVG", "This page demonstrates SVG rendering and animations."),
             new(PlaygroundGroup.Demos, "whatsapp", Icons.Custom.Brands.WhatsApp, "Chat on WhatsApp", "This page demonstrates WhatsApp How to use click to chat."),
             new(PlaygroundGroup.Demos, "smartComponent", Icons.Material.Filled.Lightbulb, "Smart Components", "This page demonstrates of smart components."),
             new(PlaygroundGroup.Tools, "qrCode", Icons.Material.Filled.QrCode, "QR Code", "This page demonstrates the QR code generating and scanning tools."),
             new(PlaygroundGroup.Games, "chaos2048", Icons.Material.Outlined._2k, "Chaos 2048", "This page demonstrates the game 2048 (with chaos animation mode)"),
-            new(PlaygroundGroup.Games, "snake", Icons.Material.Outlined.Earbuds, "Snake", "This page demonstrates the game Snake."),
+            //new(PlaygroundGroup.Games, "snake", Icons.Material.Outlined.Earbuds, "Snake", "This page demonstrates the game Snake."),
             new(PlaygroundGroup.Games, "lingo", Icons.Material.Filled.FontDownload, "Lingo (not Wordle)", "This page demonstrates the game Lingo (not Wordle)."),
             new(PlaygroundGroup.Demos, "workflow", Icons.Material.Filled.AccountTree, "Workflow", "This page demonstrates the workflow presentation in waterfall model (linear vertical in mobile view)."),
             new(PlaygroundGroup.Demos, "animationGallery", Icons.Material.Filled.AutoFixHigh, "Animation Gallery", "This page demonstrates the web animations."),
