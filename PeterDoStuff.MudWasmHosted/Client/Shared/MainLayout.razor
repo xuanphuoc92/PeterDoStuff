@@ -15,7 +15,9 @@
             </MudLink>
         </MudTooltip>
         <MudSpacer />
-        <MudIconButton Icon="@DarkModeIcon" Color="Color.Inherit" OnClick="SwitchDarkMode" />
+        <MudTooltip Text="Light/Dark Mode" Color="Color.Primary" Placement="Placement.Bottom">
+            <MudIconButton Icon="@DarkModeIcon" Color="Color.Inherit" OnClick="SwitchDarkMode" />
+        </MudTooltip>
         <MudTooltip Text="Repository" Color="Color.Primary" Placement="Placement.Bottom">
             <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Href="https://github.com/xuanphuoc92/PeterDoStuff" Target="_blank" />
         </MudTooltip>
