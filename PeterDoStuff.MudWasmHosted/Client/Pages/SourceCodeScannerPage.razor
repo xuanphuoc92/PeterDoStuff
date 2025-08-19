@@ -1,14 +1,18 @@
-﻿@page "/fileScanner"
+﻿@page "/sourceCodeScanner"
 @using System.Text
 @using PeterDoStuff.MudWasmHosted.Client.Extensions
 @using PeterDoStuff.Tools
 
 @inject IJSRuntime JS
 
-<PlaygroundTitle Page="fileScanner" />
+<PlaygroundTitle Page="sourceCodeScanner" />
 
 <MudText Class="mb-8">
-    <p>The result of the statistics will be downloaded for your view after scanning.</p>
+    <p>Download your source code as zip file from GitHub/GitLab.</p>
+    <p>Select the zip file using the button below.</p>
+    <p>The zip file will be analysed by your PC/Device (via WASM).</p>
+    <p>Based on the size of your source code, the wait time can be different, from 10 seconds to 5 minutes.</p>
+    <p>The statistics (the list of the files inside, their extensions, and LOC in each of them) will be downloaded for your view after scanning, in the format of CSV.</p>
 </MudText>
 
 <MudFileUpload T="IBrowserFile" FilesChanged="SelectFile">

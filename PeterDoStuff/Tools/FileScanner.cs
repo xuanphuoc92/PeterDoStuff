@@ -56,8 +56,8 @@ namespace PeterDoStuff.Tools
 
         private string GetExtension(string name)
         {
-            int lastDotIndex = name.IndexOf('.');
-            if (lastDotIndex == -1) return name;
+            int lastDotIndex = name.LastIndexOf('.');
+            if (lastDotIndex == -1) return "";
             return name.Substring(lastDotIndex);
         }
 

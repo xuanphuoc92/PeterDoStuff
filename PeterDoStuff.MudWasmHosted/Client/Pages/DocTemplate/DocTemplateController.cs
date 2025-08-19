@@ -331,6 +331,8 @@ Dù là khởi động chiến dịch, tối ưu hóa kênh kỹ thuật số ha
             public const string GitHub = Icons.Custom.Brands.GitHub;
             public const string Azure = Icons.Custom.Brands.MicrosoftAzure;
             public const string Instagram = Icons.Custom.Brands.Instagram;
+            public const string Twitter = Icons.Custom.Brands.Twitter;
+            public const string X = Icons.Custom.Brands.X;
         }
 
         public class GeneralIcons

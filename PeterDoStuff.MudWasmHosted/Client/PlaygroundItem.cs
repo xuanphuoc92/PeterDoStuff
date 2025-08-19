@@ -41,7 +41,7 @@ namespace PeterDoStuff.MudWasmHosted.Client
             new(PlaygroundGroup.Games, "gameOfLife", Icons.Material.Filled.CrueltyFree, "Conway's Game of Life", "This is playground for Conway's Game of Life. Limitted size: 30x30."),
             new(PlaygroundGroup.Games, "mineSweeper", Icons.Material.Filled.BrightnessHigh, "Minesweeper", "Just a basic minesweeper game."),
             new(PlaygroundGroup.Games, "matchFinder", Icons.Material.Filled.Search, "Match Finder", "Just a basic match finder game."),
-            new(PlaygroundGroup.Tools, "fileScanner", Icons.Material.Filled.InsertDriveFile, "File Scanner", "Select your zip file to scan for statistics."),
+            new(PlaygroundGroup.Tools, "sourceCodeScanner", Icons.Custom.Brands.GitHub, "Source Code Scanner", "Use this tool to know the statistics of your source code (e.g. LOC)."),
             new(PlaygroundGroup.Demos, "docTemplate", @Icons.Custom.FileFormats.FileImage, "Template", "This page demonstrates template rendering."),
         };
     }

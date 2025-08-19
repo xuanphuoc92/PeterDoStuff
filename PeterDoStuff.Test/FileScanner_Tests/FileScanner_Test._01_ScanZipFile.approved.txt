@@ -1,5 +1,5 @@
 ﻿File Path,Extension,Number Of Lines
-SubFolder/Test,Test,2
+SubFolder/Test,,2
 SubFolder/TestTextFile.csv,.csv,3
-Test,Test,2
+Test,,2
 TestTextFile.txt,.txt,3
